@@ -2,7 +2,7 @@
 
 use strict;
 
-use CondTestMore tests => 2;
+use CondTestMore tests => 3;
 
 use WWW::Form;
 
@@ -38,5 +38,7 @@ use WWW::Form;
     is($first_name->{label}, "First Name", "getfield-label");
     # TEST
     is($first_name->{type}, "text", "getfield-text");
+    # TEST
+    is($first_name->{defaultValue}, "Joe", "getfield-defaultValue");
 }
 
