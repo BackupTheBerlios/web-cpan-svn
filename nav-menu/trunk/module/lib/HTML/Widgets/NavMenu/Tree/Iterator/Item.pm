@@ -70,5 +70,12 @@ sub num_subs
     return scalar(@{$self->{'subs'}});
 }
 
+sub get_sub
+{
+    my $self = shift;
+    my $sub_num = shift;
+    return $self->{'subs'}->[$sub_num];
+}
+
 1;
 

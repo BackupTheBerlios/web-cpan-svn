@@ -30,27 +30,39 @@ sub top
     return $self->stack()->top();
 }
 
+sub get_new_item
+{
+    my $self = shift;
+    my %args = (@_);
+
+    my $node = $args{'node'};
+    my $parent_item = $args{'parent_item'};
+
+    return
+        HTML::Widgets::NavMenu::Tree::Iterator::Item->new(
+            'node' => $node,
+            'subs' => $self->get_node_subs('node' => $node),
+            'accum_state' => 
+                $self->get_new_accum_state(
+                    'item' => $parent_item,
+                    'node' => $node,
+                ),
+        );
+}
+
 sub push_into_stack
 {
     my $self = shift;
 
     my %args = (@_);
     my $node = $args{'node'};
-    my $subs = $self->get_node_subs('node' => $node);
-    my $accum_state =
-        $self->get_new_accum_state(
-            'item' => $self->top(),
-            'node' => $node
-        );
 
-    my $new_item =
-        HTML::Widgets::NavMenu::Tree::Iterator::Item->new(
+    $self->stack()->push(
+        $self->get_new_item(
             'node' => $node,
-            'subs' => $subs,
-            'accum_state' => $accum_state,
-        );
-
-    $self->stack()->push($new_item);
+            'parent_item' => $self->top(),
+        ),
+    );
 }
 
 sub traverse
@@ -105,6 +117,45 @@ sub get_node_from_sub
     my %args = (@_);
 
     return $args{'sub'};
+}
+
+sub find_node_by_coords
+{
+    my $self = shift;
+    my $coords = shift;
+    my $callback = shift || (sub { });
+
+    my $idx = 0;
+    my $item =
+        $self->get_new_item(
+            'node' => $self->get_initial_node(),
+        );
+
+    my $internal_callback =
+        sub {
+            $callback->(
+                'idx' => $idx,
+                'item' => $item,
+                'self' => $self,
+            );
+        };
+    
+    $internal_callback->();
+    foreach my $c (@$coords)
+    {
+        $item =
+            $self->get_new_item(
+                'node' =>
+                    $self->get_node_from_sub(
+                        'item' => $item,
+                        'sub' => $item->get_sub($c),
+                    ),
+                'parent_item' => $item,
+            );
+        $idx++;
+        $internal_callback->();
+    }
+    return +{ 'item' => $item, 'self' => $self, };
 }
 
 1;
