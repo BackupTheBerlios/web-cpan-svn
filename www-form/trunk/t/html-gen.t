@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use WWW::Form;
 
@@ -101,6 +101,26 @@ use WWW::Form;
     is ($retrieved_text,
         q{<input type='checkbox' name='is_female' id='is_female' value="Yes." />},
         "Checkbox Unset Value"
+    );
+
+    %fields_values = 
+    (
+        'is_female' => 1,
+        'first_name' => "\"Ben&Shlomi\" <bas\@hello.com>",
+        'comments' => "</textarea><h1>You have been Exploited! (& more)</h1>",
+    );
+
+    $form = WWW::Form->new(
+        \%fields_data,
+        \%fields_values,
+    );
+
+    $retrieved_text = $form->_getCheckBoxHTML("is_female", "");
+
+    # TEST
+    is ($retrieved_text,
+        q{<input type='checkbox' name='is_female' id='is_female' value="Yes." checked='checked' />},
+        "Checkbox Set Value"
     );
 }
 
