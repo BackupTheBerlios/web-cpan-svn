@@ -13,22 +13,22 @@ my @site_args =
     'tree_contents' =>
     {
         'host' => "default",
-        'value' => "Top 1",
+        'text' => "Top 1",
         'title' => "T1 Title",
         'expand_re' => "",
         'subs' =>
         [
             {
-                'value' => "Home",
+                'text' => "Home",
                 'url' => "",
             },
             {
-                'value' => "About Me",
+                'text' => "About Me",
                 'title' => "About Myself",
                 'url' => "me/",
             },
             {
-                'value' => "Last Page",
+                'text' => "Last Page",
                 'title' => "Last Page",
                 'url' => "last-page.html",
             }

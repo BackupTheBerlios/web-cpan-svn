@@ -38,24 +38,24 @@ EOF
         'tree_contents' =>
         {
             'host' => "default",
-            'value' => "Top 1",
+            'text' => "Top 1",
             'title' => "T1 Title",
             'expand_re' => "",
             'subs' =>
             [
                 {
-                    'value' => "Home",
+                    'text' => "Home",
                     'url' => "",
                 },
                 {
-                    'value' => "About Me",
+                    'text' => "About Me",
                     'title' => "About Myself",
                     'url' => "me/",
                     'subs' =>
                     [
                         {
                             'url' => "round/hello/personal.html",
-                            'value' => "Bio",
+                            'text' => "Bio",
                             'title' => "Biography of Myself",
                         },
                     ],
@@ -141,17 +141,17 @@ EOF
         'tree_contents' =>
         {
             'host' => "default",
-            'value' => "Top 1",
+            'text' => "Top 1",
             'title' => "T1 Title",
             'expand_re' => "",
             'subs' =>
             [
                 {
-                    'value' => "Home",
+                    'text' => "Home",
                     'url' => "",
                 },
                 {
-                    'value' => "About Me",
+                    'text' => "About Me",
                     'title' => "About Myself",
                     'url' => "me/",
                 },
@@ -160,7 +160,7 @@ EOF
                     'skip' => 1,
                 },
                 {
-                    'value' => "Hoola",
+                    'text' => "Hoola",
                     'title' => "Hoola Hoop",
                     'url' => "me-too/",
                 },

@@ -83,7 +83,7 @@ sub get_a_tag
     {
         $tag .= " title=\"$title\"";
     }
-    $tag .= ">" . $node->value() . "</a>";
+    $tag .= ">" . $node->text() . "</a>";
     return $tag;
 }
 
