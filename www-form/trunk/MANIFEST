@@ -11,4 +11,5 @@ t/html-gen.t
 t/get_field.t
 t/dummy.t
 CondTestMore.pm
+README
 META.yml                                 Module meta-data (added by MakeMaker)
