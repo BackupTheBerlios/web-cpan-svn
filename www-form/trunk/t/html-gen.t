@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 5;
+use CondTestMore tests => 5;
 
 use WWW::Form;
 

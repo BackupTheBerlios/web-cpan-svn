@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 22;
+use CondTestMore tests => 22;
 
 # TEST
 BEGIN { use_ok("WWW::Form"); }
