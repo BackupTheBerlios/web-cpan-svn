@@ -5,6 +5,7 @@ MANIFEST
 Makefile.PL
 test.pl
 form_test.pl
+t/distro_integrity.t
 t/render_attributes.t
 t/set_fields.t
 t/html-gen.t
