@@ -1,0 +1,7 @@
+#include "../template.wml"
+
+<p>
+Welcome to web-cpan.berlios.de - a BerliOS hub for development of various
+World-Wide-Web-related CPAN modules. 
+</p>
+
