@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use WWW::Form;
 
@@ -60,6 +60,13 @@ use WWW::Form;
             defaultValue => "Joe",
             type => "text",
         },
+        'is_female' =>
+        {
+            type => "checkbox",
+            label => "Are you a Female?",
+            defaultValue => "Yes.",
+            defaultChecked => 0,
+        },
         'comments' =>
         {
             label => "Your Comments",
@@ -70,6 +77,7 @@ use WWW::Form;
     
     my %fields_values = 
     (
+        'is_female' => 0,
         'first_name' => "\"Ben&Shlomi\" <bas\@hello.com>",
         'comments' => "</textarea><h1>You have been Exploited! (& more)</h1>",
     );
@@ -86,5 +94,13 @@ use WWW::Form;
         q{<input type='text' name='first_name' id='first_name' value="&quot;Ben&amp;Shlomi&quot; &lt;bas@hello.com&gt;" />},
         "First Name Escaping Test",
         );
+
+    $retrieved_text = $form->_getCheckBoxHTML("is_female", "");
+    
+    # TEST
+    is ($retrieved_text,
+        q{<input type='checkbox' name='is_female' id='is_female' value="Yes." />},
+        "Checkbox Unset Value"
+    );
 }
 
