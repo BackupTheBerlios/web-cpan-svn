@@ -1,5 +1,6 @@
 Changes
 Form.pm
+FieldValidator.pm
 MANIFEST
 Makefile.PL
 test.pl
@@ -7,4 +8,5 @@ form_test.pl
 t/render_attributes.t
 t/set_fields.t
 t/html-gen.t
+t/get_field.t
 META.yml                                 Module meta-data (added by MakeMaker)
