@@ -840,7 +840,10 @@ sub _setFields {
 		#   as an array () and not an array ref [].  I can't really think
 		#   of a great reason to make this an array reference internally instead
 		#   of an array.
-        $self->{fields}{$fieldName}{feedback} = ();
+        # 15-Jan-2004 - Added by Shlomi Fish
+        #   Changing to [] as assigning an array here does not make much 
+        #   sense. (as discussed over IM). A hash value is always a scalar.
+        $self->{fields}{$fieldName}{feedback} = [];
 
         # If the input type is a select box or a radio button then we need an
         # array of labels and values for the radio button group or select box
