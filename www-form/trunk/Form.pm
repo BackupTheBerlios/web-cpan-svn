@@ -769,6 +769,11 @@ sub _setFields {
     my $fieldsData  = shift;
     my $fieldValues = shift;
 
+    # TODO :
+    # Create a _setField() method that will encapsulate the functionality
+    # inside the loop. This will enable adding more variables to each field
+    # in the sub-classes more easily.
+
     foreach my $fieldName (keys %{$fieldsData}) {
         # Use the supplied field value if one is given generally the supplied
         # data will be a hash of HTTP POST data
