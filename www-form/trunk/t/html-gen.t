@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use WWW::Form;
 
@@ -52,5 +52,39 @@ use WWW::Form;
 }
 
 {
+    my %fields_data = 
+    (
+        'first_name' =>
+        {
+            label => "First Name",
+            defaultValue => "Joe",
+            type => "text",
+        },
+        'comments' =>
+        {
+            label => "Your Comments",
+            defaultValue => "Enter your comments here.",
+            type => "textarea",
+        },
+    );
+    
+    my %fields_values = 
+    (
+        'first_name' => "\"Ben&Shlomi\" <bas\@hello.com>",
+        'comments' => "</textarea><h1>You have been Exploited! (& more)</h1>",
+    );
+    
+    my $form = WWW::Form->new(
+        \%fields_data,
+        \%fields_values,
+    );
+
+    my $retrieved_text = $form->_getInputHTML("first_name", "");
+
+    # TEST
+    is ($retrieved_text,
+        q{<input type='text' name='first_name' id='first_name' value="&quot;Ben&amp;Shlomi&quot; &lt;bas@hello.com&gt;" />},
+        "First Name Escaping Test",
+        );
 }
 
