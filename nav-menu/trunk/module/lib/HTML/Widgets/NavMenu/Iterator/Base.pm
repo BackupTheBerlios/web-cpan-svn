@@ -97,10 +97,21 @@ sub get_new_accum_state
     {
         $show_always = $node->show_always();
     }
-    return 
-        { 
+    
+    my $rec_url_type;
+    if (exists($prev_state->{'rec_url_type'}))
+    {
+        $rec_url_type = $prev_state->{'rec_url_type'};
+    }
+    if (defined($node->rec_url_type()))
+    {
+        $rec_url_type = $node->rec_url_type();
+    }
+    return
+        {
             'host' => ($node->host() || $prev_state->{'host'}),
             'show_always' => $show_always,
+            'rec_url_type' => $rec_url_type,
         };
 }
 
