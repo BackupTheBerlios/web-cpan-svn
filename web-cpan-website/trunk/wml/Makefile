@@ -47,6 +47,7 @@ $(RAW_FILES_DEST) :: $(TARGET)/% : src/%
 
 $(SUBDIRS_DEST) :: % : unchanged
 	if [ ! -e $@ ] ; then mkdir $@ ; fi
+	touch $@
 
 $(PODS_DESTS) :: $(TARGET)/% : src/%
 	cp -f $< $@
@@ -60,10 +61,7 @@ $(PODS_DESTS_HTMLS) :: $(TARGET)/%.html : src/%.pod
 upload: upload_berlios
 
 upload_berlios: all
-	(cd dest && $(RSYNC) -r * shlomif@shell.berlios.de:/home/groups/perl-begin/htdocs/)
-
-upload_iglu: all
-	(cd dest && $(RSYNC) -r * shlomif@iglu.org.il:/iglu/html/shlomif/Perl-Begin/)
+	(cd dest && $(RSYNC) -r * shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/)
 
 .PHONY: 
 

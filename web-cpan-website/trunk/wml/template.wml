@@ -64,7 +64,7 @@ $(ROOT)/<get-var url />
 <define-tag site:link whitespace="delete">
 <preserve url />
 <set-var %attributes />
-http://perl-begin.berlios.de/<get-var url />
+http://web-cpan.berlios.de/<get-var url />
 <restore url />
 </define-tag>
 
@@ -77,14 +77,6 @@ http://perl-begin.berlios.de/<get-var url />
     />
 <site:link url="Wiki/pmwiki/pmwiki.php" /><get-var url />
 <restore url />
-</define-tag>
-
-<define-tag mailing:list:link whitespace="delete">
-https://lists.berlios.de/mailman/listinfo/perl-begin-help
-</define-tag>
-
-<define-tag web:forum:link whitespace="delete">
-http://developer.berlios.de/forum/forum.php?forum_id=2341
 </define-tag>
 
 <define-tag nothing></define-tag>
@@ -109,7 +101,7 @@ http://developer.berlios.de/forum/forum.php?forum_id=2341
          /></a>
 </p>
 <p>
- <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%%3A//perl-begin.berlios.de/$(FILENAME)"><img style="border:0"
+ <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%%3A//web-cpan.berlios.de/$(FILENAME)"><img style="border:0"
        src="http://jigsaw.w3.org/css-validator/images/vcss" 
        alt="Valid CSS!" /></a>
 </p>
@@ -141,7 +133,25 @@ http://developer.berlios.de/forum/forum.php?forum_id=2341
 {#SUBJECT_LOC#:%0:##}
 </define-tag>
 
+<define-tag gen_module_html>
+<set-var module_name="%0" />
+<subject "<get-var module_name />" />
+<:{
+my $module_name = "<get-var module_name />";
+my $modules_list = MyModulesList::get_module_list();
+my ($module_record) = (grep {$_->{'perl_name'} eq $module_name } @$modules_list);
 
+print "<h2>CPAN Record</h2>\n\n";
+my $cpan_link = "http://search.cpan.org/dist/$module_name/";
+print "<p><a href=\"$cpan_link\">$cpan_link</a></p>\n";
+print "<h2>Description</h2>\n";
+print $module_record->{'desc'};
+print "<h2>Subversion Directories</h2>\n";
+my $svn_url = "svn://svn.berlios.de/web-cpan/$module_record->{svn_dir}";
+print "<p>\n<a href=\"$svn_url/trunk/\">Trunk URL</a> (other
+branches and tags can be found one level below it.)\n</p>\n";
+}:>
+</define-tag>
 #   per default we are in body
 {#BODY#:
 

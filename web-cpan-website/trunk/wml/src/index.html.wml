@@ -1,7 +1,24 @@
 #include "../template.wml"
 
+<subject "Web-CPAN" />
+
 <p>
-Welcome to web-cpan.berlios.de - a BerliOS hub for development of various
-World-Wide-Web-related CPAN modules. 
+Welcome to web-cpan.berlios.de - a 
+<a href="http://developer.berlios.de/">BerliOS</a> hub for development of 
+various World-Wide-Web-related CPAN modules. 
+</p>
+
+<p>
+Our <a href="svn://svn.berlios.de/web-cpan/">Subversion repository</a> 
+maintains the code for the modules, and this web-site provides links, and
+some information besides what is available on 
+<a href="http://search.cpan.org/">search.cpan.org</a>.
+</p>
+
+<p>
+If you want to maintain your own module here, then register at BerliOS, 
+and send <a href="mailto:shlomif@iglu.org.il">the webmaster</a> a request
+with the name of the module, a link to its homepage on search.cpan.org, your
+BerliOS username and other information you consider relevant.
 </p>
 

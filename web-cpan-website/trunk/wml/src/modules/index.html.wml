@@ -1,5 +1,7 @@
 #include "../template.wml"
 
+<subject "Web-CPAN Modules" />
+
 <p>
 Nothing to find here - look in the sub-dirs.
 </p>
