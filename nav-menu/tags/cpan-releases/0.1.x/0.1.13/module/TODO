@@ -1,0 +1,33 @@
+* Make the syntax of the navigation menus more sane ("label" or "text" 
+instead of "value", etc.) That would break compatibility.
+
+* Write the predicate class and assign it to 'expand' and possibly other
+places where it's appropriate.
+
+* Restore the abs_url directive only as url_type or whatever.
+    - Add a url_type accessor to LeadingPath::Component.
+
+* Add an option to link to the pages as:
+
+1. By relative URLs. (../../../hello/world/yes.html)
+
+2. By site-abs URLs (/hoola/hello/world/yes.html)
+
+3. By fully qualified URLs (http://www.mysite.org/hoola/hello/world/yes.html)
+
+* Write full documentation for the module.
+
+Long-Term:
+----------
+
+* Use Build.PL instead of Makefile.PL. (?)
+
+* Make the module support URLs with CGI GET parameters properly.
+
+* Add support for more attributes other than class="" to the ul and li
+tags.
+    - like id=""
+
+* Add a host-based regexp arbitrator to the predicate:
+    { 'host_re' => { 't2' => "^home/", 'vipe' => "^home2/" } }
+
