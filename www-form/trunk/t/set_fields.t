@@ -2,7 +2,7 @@
 
 use strict;
 
-use CondTestMore tests => 27;
+use CondTestMore tests => 33;
 
 # TEST
 BEGIN { use_ok("WWW::Form"); }
@@ -137,7 +137,8 @@ sub make_obj
 
     $form->{fields} = {};
 
-    $form->_setField(        
+    my @params = 
+    (
         'name' => 'first_name',
         'params' =>
         {
@@ -147,6 +148,29 @@ sub make_obj
             hint => "Type your first name here",
         },
         'value' => "Eran",
+    );
+
+    my $out = $form->_getFieldInitParams(@params);
+    # TEST
+    is ($out->{label}, "First Name");
+    # TEST
+    is ($out->{defaultValue}, "Daniel");
+    # TEST
+    is ($out->{type}, "text");
+    # TEST
+    is ($out->{hint}, "Type your first name here");
+    # TEST
+    is ($out->{value}, "Eran");
+
+    # Final test - make sure that $self->{fields} is unharmed.
+    # _getFieldInitParams() is a functional (as in Functional Programming)
+    # routine
+    
+    # TEST
+    ok ((scalar(keys(%{$form->{fields}})) == 0), "_getFieldInitParams() does not touches the \$self->{fields} hash");
+
+    $form->_setField(        
+        @params,
     );
 
     # TEST

@@ -787,7 +787,7 @@ sub _setFields {
     }
 }
 
-sub _setField
+sub _getFieldInitParams
 {
     my $self = shift;
     
@@ -796,6 +796,11 @@ sub _setField
     my $fieldName = $args{name};
     my $params = $args{params};
     my $user_given_field_value = $args{value};
+
+    # This is the output parameters that we eventually place under
+    # $out_params->. It is declared it so it can later be filled
+    # in by a different function other 
+    my $out_params = {};
 
     # Use the supplied field value if one is given generally the supplied
     # data will be a hash of HTTP POST data
@@ -816,7 +821,7 @@ sub _setField
         }
 
         # See if this checkbox should be checked by default
-        $self->{fields}{$fieldName}{defaultChecked} =
+        $out_params->{defaultChecked} =
             $params->{defaultChecked};
     }
     else {
@@ -834,29 +839,29 @@ sub _setField
     # Value suitable for displaying to users as a label for a form input,
     # e.g. 'Email address', 'Full name', 'Street address', 'Phone number',
     # etc.
-    $self->{fields}{$fieldName}{label} = $params->{label};
+    $out_params->{label} = $params->{label};
 
     # Holds the value that the user enters after the form is submitted
-    $self->{fields}{$fieldName}{value} = $fieldValue;
+    $out_params->{value} = $fieldValue;
 
     # The value to pre-populate a form input with before the form is
     # submitted, the only exception is a checkbox form input in the case
     # of a checkbox, the default value will be the value of the checkbox
     # input if the check box is selected and the form is submitted, see
     # form_test.pl for an example
-    $self->{fields}{$fieldName}{defaultValue} =
+    $out_params->{defaultValue} =
         $params->{defaultValue};
 
     # The validators for this field, validators are used to test user
     # entered form input to make sure that it the user entered data is
     # acceptable
-    $self->{fields}{$fieldName}{validators} =
+    $out_params->{validators} =
         \@{$params->{validators}};
 
     # Type of the form input, i.e. 'radio', 'text', 'select', 'checkbox',
     # etc. this is mainly used to determine what type of HTML method
     # should be used to display the form input in a web page
-    $self->{fields}{$fieldName}{type} = $params->{type};
+    $out_params->{type} = $params->{type};
 
     # If any validators fail, this property will contain the error
     # feedback associated with those failing validators
@@ -870,18 +875,18 @@ sub _setField
     # 15-Jan-2004 - Added by Shlomi Fish
     #   Changing to [] as assigning an array here does not make much 
     #   sense. (as discussed over IM). A hash value is always a scalar.
-    $self->{fields}{$fieldName}{feedback} = [];
+    $out_params->{feedback} = [];
 
     # If the input type is a select box or a radio button then we need an
     # array of labels and values for the radio button group or select box
     # option groups
     if (my $optionsGroup = $params->{optionsGroup}) {
-        $self->{fields}{$fieldName}{optionsGroup} = \@{$optionsGroup};
+        $out_params->{optionsGroup} = \@{$optionsGroup};
     }
 
     # Arbitrary HTML attributes that will be used when the field's input
     # element is displayed.
-    $self->{fields}{$fieldName}{extraAttributes} =
+    $out_params->{extraAttributes} =
         ($params->{extraAttributes} || "");
 
     # Add the hint
@@ -904,24 +909,37 @@ sub _setField
     #  So "Input the city..." would be the hint.
     if (my $hint = $params->{hint})
     {
-        $self->{fields}{$fieldName}{hint} = $hint;
+        $out_params->{hint} = $hint;
     }
 
     # Add the container_attributes. These are HTML attributes that would 
     # be added to the rows of this HTML row.
     if (my $attribs = $params->{container_attributes})
     {
-        $self->{fields}{$fieldName}{container_attributes} = $attribs;
+        $out_params->{container_attributes} = $attribs;
     }
 
     # Add the hint_container_attributes. These are HTML attributes that 
     # would  be added to the Hint row of this HTML row.
     if (my $attribs = $params->{hint_container_attributes})
     {
-        $self->{fields}{$fieldName}{hint_container_attributes} = $attribs;
+        $out_params->{hint_container_attributes} = $attribs;
     }
 
-    return 0;
+    return $out_params;
+}
+
+sub _setField
+{
+    my $self = shift;
+
+    my %args = (@_);
+
+    my $params = $self->_getFieldInitParams(%args);
+    
+    $self->{fields}{$args{name}} = $params;
+
+    return $self;
 }
 
 =head2 asString
