@@ -52,12 +52,4 @@ sub is_expanded
     return 1;
 }
 
-sub get_results
-{
-    my $self = shift;
-
-    return join("", map { "$_\n" } @{$self->{'html'}});
-}
-
 1;
-
