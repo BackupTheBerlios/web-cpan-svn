@@ -2,11 +2,41 @@ package HTML::Widgets::NavMenu::Iterator::NavMenu;
 
 use base qw(HTML::Widgets::NavMenu::Iterator::Html);
 
+use CGI;
+
+sub gen_ul_tag
+{
+    my $self = shift;
+
+    my %args = (@_);
+
+    my $depth = $args{'depth'};
+
+    my $class = $self->get_ul_class('depth' => $depth);
+
+    return "<ul" .
+        (defined($class) ?
+            (" class=\"" . CGI::escapeHTML($class) . "\"") :
+            ""
+        ) . ">";
+}
+
+sub get_ul_class
+{
+    my $self = shift;
+
+    my %args = (@_);
+
+    my $depth = $args{'depth'};
+
+    return ($depth <= 1) ? "navbarmain" : "navbarnested";
+}
+
 sub start_root
 {
     my $self = shift;
     
-    $self->_add_tags("<ul class=\"navbarmain\">");
+    $self->_add_tags($self->gen_ul_tag('depth' => $self->stack->len()));
 }
 
 sub start_sep
@@ -43,15 +73,19 @@ sub start_regular
         if ($self->is_role_header())
         {
             @tags_to_add = ("</ul>","<h2>", $tag, "</h2>",
-                "<ul class=\"navbarmain\">");
+                $self->gen_ul_tag('depth' => $self->stack->len()-1)
+                );
         }
         else
         {
             @tags_to_add = ("<li>", $tag);
             if ($top_item->num_subs_to_go() && $self->is_expanded())
             {
+                # TODO:
+                # Should it be 'depth' => $self->stack->len() + 1?
+                # Check further.
                 push @tags_to_add, 
-                    ("<br />", "<ul class=\"navbarnested\">");
+                    ("<br />", $self->gen_ul_tag('depth' => $self->stack->len()));
             }
         }
         $self->_add_tags(@tags_to_add);
@@ -61,11 +95,8 @@ sub start_regular
 sub end_sep
 {
     my $self = shift;
-    my $class =
-        ($self->stack->len() <= 2) ?
-            "navbarmain" :
-            "navbarnested";
-    $self->_add_tags("<ul class=\"$class\">");
+
+    $self->_add_tags($self->gen_ul_tag('depth' => $self->stack->len()-1));
 }
 
 sub end_regular
