@@ -160,7 +160,16 @@ inputs.  The basic structure is as follows:
      type => 'text',
      # An array ref of various validations that should be performed on the
      # user entered input
-     validators => []
+     validators => [],
+     # A hash ref that contains extra HTML attributes to add to the 
+     # container.
+     container_attributes => {},
+     # A hint that will be displayed to the user near the control and its
+     # label to guide him what to fill in that control. (optional)
+     hint => 'text',
+     # A hash ref that contains extra HTML attributes to add to the 
+     # container of the hint.
+     hint_container_attributes => {},
  }
 
 So to create a WWW::Form object with one text box you would have the
@@ -174,7 +183,10 @@ following data structure:
          validators   => [WWW::FieldValidator->new(
              WWW::FieldValidator::WELL_FORMED_EMAIL,
              'Make sure email address is well formed
-         )]
+         )],
+         container_attributes => { 'class' => "green",},
+         hint => "Fill in a valid E-mail address",
+         hint_container_attributes => { 'style' => "border : double", },
      }
  };
 
@@ -849,18 +861,35 @@ sub _setFields {
 		#   documentation.  I assume that this is some helpful text that can
 		#   be displayed if the user enters a field's input incorrectly.  Is that
 		#   right?
-        $self->{fields}{$fieldName}{hint} = $fieldsData->{$fieldName}{hint};
+        #
+        # 2004-Jan-04 - Added by Shlomi Fish:
+        #  Ben, no. Actually it's a hint that will always be displayed below
+        #  the table row to instruct the users what to input there. For instance
+        #  +----------+---------------------------+
+        #  |  City:   | [================]        |
+        #  +----------+---------------------------+
+        #  |  Input the city in which you live    |
+        #  |  in.                                 |
+        #  +---------------------------------------
+        #  So "Input the city..." would be the hint.
+        if (my $hint = $fieldsData->{$fieldName}{hint})
+        {
+            $self->{fields}{$fieldName}{hint} = $hint;
+        }
 
-        # Add the tr class
-		# 12/28/2003 - Added by Ben Schmaus:
-		#   Shlomi, I guess this property is used when getFieldHTMLRow is called
-		#   so you can apply a specific class to each row.  Could you mention this
-		#   in the pod documentation somewhere?  Also, why not just have a
-		#   parameter called 'tr_attributes' so developers aren't limited to
-		#   just a class attribute.  Although, if this is a string, I guess
-		#   people could still use this to add other attributes.
-        $self->{fields}{$fieldName}{tr_class} =
-			$fieldsData->{$fieldName}{tr_class};
+        # Add the container_attributes. These are HTML attributes that would 
+        # be added to the rows of this HTML row.
+        if (my $attribs = $fieldsData->{$fieldName}{container_attributes})
+        {
+            $self->{fields}{$fieldName}{container_attributes} = $attribs;
+        }
+
+        # Add the hint_container_attributes. These are HTML attributes that 
+        # would  be added to the Hint row of this HTML row.
+        if (my $attribs = $fieldsData->{$fieldName}{hint_container_attributes})
+        {
+            $self->{fields}{$fieldName}{hint_container_attributes} = $attribs;
+        }
     }
 }
 
@@ -974,6 +1003,19 @@ The only caveat for using this method is that it must be called between
   </tr>
 
 =cut
+
+sub _render_attributes {
+    my $self = shift;
+    my $attribs = shift;
+
+    # We sort the keys to produce reproducible output on perl 5.8.1 and above
+    # where the order of the hash keys is not deterministic
+    return join("", 
+            map { " $_=\"" . $self->_escapeValue($attribs->{$_}) . "\"" } 
+                (sort {$a cmp $b} keys(%$attribs))
+            );
+}
+
 sub getFieldHTMLRow {
     my $self = shift;
     my $fieldName = shift;
@@ -990,20 +1032,20 @@ sub getFieldHTMLRow {
 
     my $html = "";
 
-    my @tr_css_classes = ();
+    my %tr_attributes = ();
 
-    if (exists($field->{tr_class})) {
-        push @tr_css_classes, $field->{tr_class};
+    if (exists($field->{container_attributes})) {
+        %tr_attributes = (%tr_attributes, %{$field->{container_attributes}});
     }
 
-    my $tr_css_classes = " class=\"".join(" ", @tr_css_classes)."\"";
+    my $tr_attr_string = $self->_render_attributes(\%tr_attributes);
     foreach my $error (@feedback) {
-        $html .= "<tr${tr_css_classes}><td colspan='2'>"
+        $html .= "<tr${tr_attr_string}><td colspan='2'>"
             . "<span style='color: #ff3300'>$error</span>"
-	        . "</td></tr>\n";
+            . "</td></tr>\n";
     }
 
-    $html .= "<tr${tr_css_classes}><td>" .
+    $html .= "<tr${tr_attr_string}><td>" .
         $self->getFieldLabel($fieldName) . "</td>"
         . "<td>" . $self->getFieldFormInputHTML(
             $fieldName,
@@ -1014,15 +1056,21 @@ sub getFieldHTMLRow {
     my $hint = $self->getFieldHint($fieldName);
 
     if (defined($hint)) {
-        my @hint_tr_css_classes = @tr_css_classes;
-        my $hint_tr_class = $form_args->{'hint_tr_class'};
+        my %hint_attributes = ();
+        my $hint_attributes = $form_args->{'hint_container_attributes'};
 
-		if (defined($hint_tr_class)) {
-            push @hint_tr_css_classes, $hint_tr_class;
+        if (defined($hint_attributes)) {
+            %hint_attributes = (%hint_attributes, %$hint_attributes);
         }
 
-		my $hint_tr_classes = " class=\"".join(" ", @hint_tr_css_classes)."\"";
-        $html .= "<tr${hint_tr_classes}><td colspan=\"2\">$hint</td></tr>\n";
+        %hint_attributes = (%hint_attributes, %tr_attributes);
+
+        if (exists($field->{hint_container_attributes})) {
+            %hint_attributes = (%hint_attributes, %{$field->{hint_container_attributes}});
+        }
+
+        my $hint_attr_string = $self->_render_attributes(\%hint_attributes);
+        $html .= "<tr${hint_attr_string}><td colspan=\"2\">$hint</td></tr>\n";
     }
 
     return $html;
@@ -1188,7 +1236,8 @@ HTML attributes.
 is_file_upload - Optional boolean that should be true if your form contains
 a file input.
 
-hint_tr_class - Optional CSS class for all the table rows containing hints.
+hint_container_attributes - Optional HTML attributes for all the table rows 
+containing the hints.
 
 buttons - Use this if you want your form to have multiple submit buttons.  See
 API documentation for getSubmitButtonHTML() for more info on this parameter.
