@@ -929,6 +929,9 @@ sub _getFieldInitParams
     return $out_params;
 }
 
+# This function should not be left alone in sub-classing.
+# Instead override _getFieldInitParams() to add your own parameters
+# there.
 sub _setField
 {
     my $self = shift;
