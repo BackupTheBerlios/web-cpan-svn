@@ -51,7 +51,9 @@ use_ok ('HTML::Widgets::NavMenu::Tree::Node'); # TEST
 {
     my $node = HTML::Widgets::NavMenu::Tree::Node->new();
 
-    is($node->role(), "normal", "Testing role default value"); # TEST
+    # TEST
+    ok(!defined($node->role()), 
+        "Testing that role is undeffed at start");
     $node->set("role", "hoola");
     is($node->role(), "hoola", "Testing role setted value"); # TEST
 }
