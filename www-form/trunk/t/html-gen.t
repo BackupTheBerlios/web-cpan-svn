@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use WWW::Form;
 
@@ -42,5 +42,15 @@ use WWW::Form;
         q{<textarea name='comments'>&lt;/textarea&gt;&lt;h1&gt;You have been Exploited! (&amp; more)&lt;/h1&gt;</textarea>},
         "Textarea HTML Escape"
        );
+
+    # TEST
+    $retrieved_text = $form->_getInputHTML("first_name", "");
+    is ($retrieved_text,
+        q{<input type='text' name='first_name' id='first_name' value="Josephine" />},
+        "First Name HTML Fetch",
+    );
+}
+
+{
 }
 
