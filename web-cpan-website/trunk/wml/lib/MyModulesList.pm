@@ -66,6 +66,14 @@ EOF
         'perl_name' => "WWW-Form",
         'text' => "WWW::Form",
         'title' => "Manage Forms Flow Using Perl",
+        'svn_dir' => "www-form",
+        'desc' => <<"EOF"
+<p>
+WWW::Form is a module for handling the world-wide-web form process. It
+enables generating forms, filling them from user input, verifying them,
+and re-displaying them in case something is wrong.
+</p>
+EOF
     },
 );
 
