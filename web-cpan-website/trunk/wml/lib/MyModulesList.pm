@@ -8,6 +8,22 @@ my @modules_list =
         'perl_name' => "HTML-Strip-Whitespace",
         'text' => "Strip Whitespace",
         'title' => "Strip Unnecessary Whitespace from HTML",
+        'svn_dir' => "html-strip-ws",
+        'desc' => <<"EOF",
+<p>
+This is a module to strip whitespace out of HTML pages. As opposed to other
+solutions (like 
+<a href="http://search.cpan.org/dist/HTML-Clean/">HTML-Clean</a>), it does not
+touch whitespace inside <tt>&lt;pre&gt;</tt> tags (and in the future possibly
+other whitespace-aware markup.) 
+</p>
+<p>
+Using the <a href="http://search.cpan.org/dist/HTML-Tidy/">HTML-Tidy</a> (or
+otherwise <a href="http://tidy.sourceforge.net/">the HTML Tidy library</a>) for
+that may be preferable, because they are probably faster, but this module still
+exists and will be maintained.
+</p>
+EOF
     },
     {
         'perl_name' => "HTML-Widgets-NavMenu",
