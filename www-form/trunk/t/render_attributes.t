@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # TEST
 BEGIN { use_ok("WWW::Form"); }
@@ -45,5 +45,16 @@ ok($www_form, "Initialization");
     my $real = $www_form->_render_attributes(\%attributes);
     # TEST
     is ( $real, $expected, "Attribute Rendering with Double Quotes (\" -> &quot;)");
+}
+
+{
+    my %attributes = 
+        (
+            'name' => "<jonathan>",
+        );
+    my $expected = q{ name="&lt;jonathan&gt;"};
+    my $real = $www_form->_render_attributes(\%attributes);
+    # TEST
+    is ( $real, $expected, "Attribute Rendering with < and > Signs");
 }
 
