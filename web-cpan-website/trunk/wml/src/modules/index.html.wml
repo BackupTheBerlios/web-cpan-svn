@@ -2,6 +2,15 @@
 
 <subject "Web-CPAN Modules" />
 
-<p>
-Nothing to find here - look in the sub-dirs.
-</p>
+<:{
+my $modules_list = MyModulesList::get_module_list();
+print "<ul>\n";
+foreach my $module_record (@$modules_list)
+{
+    my $name = $module_record->{'perl_name'};
+    my $title = $module_record->{'title'};
+    print "<li><a href=\"./$name/\">$name</a> - $title</li>\n";
+}
+print "</ul>\n";
+}:>
+
