@@ -59,4 +59,40 @@ sub add_sub
     return 0;
 }
 
+sub list_regular_keys
+{
+    my $self = shift;
+
+    return (qw(host role show_always title url value));
+}
+
+sub list_boolean_keys
+{
+    my $self = shift;
+
+    return (qw(hide separator));
+}
+
+sub set_values_from_hash_ref
+{
+    my $self = shift;
+    my $sub_contents = shift;
+
+    foreach my $key ($self->list_regular_keys())
+    {
+        if (exists($sub_contents->{$key}))
+        {
+            $self->set($key, $sub_contents->{$key});
+        }
+    }
+
+    foreach my $key ($self->list_boolean_keys())
+    {
+        if ($sub_contents->{$key})
+        {
+            $self->set($key, 1);
+        }
+    }
+}
+
 1;

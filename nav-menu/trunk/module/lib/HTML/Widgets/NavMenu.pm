@@ -229,21 +229,7 @@ sub create_new_nav_menu_item
 
     my $new_item = $self->gen_blank_nav_menu_tree_node();
 
-    foreach my $key (qw(host role show_always title url value))
-    {
-        if (exists($sub_contents->{$key}))
-        {
-            $new_item->set($key, $sub_contents->{$key});
-        }
-    }
-
-    foreach my $key (qw(hide separator))
-    {
-        if ($sub_contents->{$key})
-        {
-            $new_item->set($key, 1);
-        }
-    }
+    $new_item->set_values_from_hash_ref($sub_contents);
 
     if (exists($sub_contents->{expand_re}))
     {
