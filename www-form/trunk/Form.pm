@@ -1486,6 +1486,10 @@ sub _getTextAreaHTML {
 
     $textarea .= ">";
 
+    # 16-Jan-2003: Added by Shlomi Fish
+    # TODO :
+    # There seems to be an HTML injection bug here.
+
     $textarea .= $field->{value};
 
     $textarea .= "</textarea>";
