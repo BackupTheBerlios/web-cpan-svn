@@ -16,6 +16,7 @@ BEGIN
     if ($@)
     {
         warn "You don't have Test::More. Terminating";
+        print "1..0\n";
         exit 0;
     }
 }
