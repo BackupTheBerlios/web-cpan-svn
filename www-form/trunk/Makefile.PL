@@ -4,7 +4,10 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'		=> 'WWW::Form',
     'VERSION_FROM'	=> 'Form.pm', # finds $VERSION
-    'PREREQ_PM'		=> {}, # e.g., Module::Name => 1.1
+    'PREREQ_PM'		=> 
+    { 
+        "Test::More" => 0,
+    }, # e.g., Module::Name => 1.1
     'PM'                => {'Form.pm' => '$(INST_LIBDIR)/Form.pm',
                             'FieldValidator.pm' => '$(INST_LIBDIR)/FieldValidator.pm'}
 );
