@@ -1,0 +1,13 @@
+To install this module:
+
+Uncompress and untar the most recent version of WWW::Form using gunzip and
+tar.
+
+Then follow the standard steps for installing a Perl module.
+
+perl Makefile.PL
+make test
+make install
+
+To test out the WWW::Form module you can place the file included in this
+bundle, named 'form_test.pl', in a CGI executable location and run it.
