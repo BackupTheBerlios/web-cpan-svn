@@ -1490,7 +1490,7 @@ sub _getTextAreaHTML {
     # TODO :
     # There seems to be an HTML injection bug here.
 
-    $textarea .= $field->{value};
+    $textarea .= $self->_escapeValue($field->{value});
 
     $textarea .= "</textarea>";
 
