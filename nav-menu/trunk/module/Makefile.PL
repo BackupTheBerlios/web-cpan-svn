@@ -10,7 +10,6 @@ WriteMakefile(
         'Test::More' => 0,
         'Class::Accessor' => 0,
         'Error' => 0,
-        'CGI' => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (AUTHOR         => 'Shlomi Fish <shlomif@iglu.org.il>') : ()),
