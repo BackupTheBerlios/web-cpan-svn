@@ -33,15 +33,29 @@ EOF
         'desc' => <<"EOF",
 <p>        
 This is a module to generate HTML navigation menus, such as those found in
-the side-bar of various sites (like this one, or 
+the side-bar of various sites (like that of this one, or of
 <a href="http://www.shlomifish.org/">Shlomi Fish' Homepage</a>). It supports
 many advanced features such as building relative links or absolute links, 
 selective expansion, and multi-host sites.
 </p>
 <p>
 Furthermore, it is extensively tested, and the author believes its code can
-be easily extended and customized, given a small amount of studies.
+be easily extended and customized, given a small amount of studying.
 </p>
+<h2>Web-Sites that Use HTML::Widgets::NavMenu</h2>
+<ul>
+<li>
+<a href="http://www.shlomifish.org/">Shlomi Fish' Homepage</a> 
+(<a href="http://stalker.iguide.co.il:8080/svn/shlomif-homepage/homepage/trunk/">Code</a>)
+</li>
+<li>
+<a href="http://perl-begin.berlios.de/">The Perl Beginners' Site</a>
+(<a href="http://opensvn.csie.org/perlbegin/perl-begin/trunk/">Code</a>)
+</li>
+<li>
+<a href="http://www.aspetersen.de/">Alexia &amp; Stephan Petersen</a> 
+</li>
+</ul>
 EOF
     },
     {
