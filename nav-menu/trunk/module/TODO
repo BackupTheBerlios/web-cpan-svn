@@ -2,10 +2,8 @@
 
 * Make 'expand_always', 'expand_cb' directives.
 
-* Build a non-unit test of the homepage and perl-begin.
-
-* Upload an initial version (marked with _) to CPAN in order to
-"liqbo'a uvdoth bashetakh".
+* Eliminate the hard-coded class="navbarnested", etc. directives by making
+the code more modular.
 
 * Restore the abs_url directive only as use_abs_url or whatever.
 
@@ -23,4 +21,5 @@
 similar modules)
 
 * Write full documentation for the module.
+
 
