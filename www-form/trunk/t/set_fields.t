@@ -2,7 +2,7 @@
 
 use strict;
 
-use CondTestMore tests => 22;
+use CondTestMore tests => 27;
 
 # TEST
 BEGIN { use_ok("WWW::Form"); }
@@ -131,3 +131,32 @@ sub make_obj
     ok((! exists($form->{fields}{comments}{hint})), "hint-comments-hint");
 }
 
+# Tests for _setField()
+{
+    my $form = make_obj();
+
+    $form->{fields} = {};
+
+    $form->_setField(        
+        'name' => 'first_name',
+        'params' =>
+        {
+            label => "First Name",
+            defaultValue => "Daniel",
+            type => "text",
+            hint => "Type your first name here",
+        },
+        'value' => "Eran",
+    );
+
+    # TEST
+    is ($form->{fields}->{first_name}{label}, "First Name");
+    # TEST
+    is ($form->{fields}->{first_name}{defaultValue}, "Daniel");
+    # TEST
+    is ($form->{fields}->{first_name}{type}, "text");
+    # TEST
+    is ($form->{fields}->{first_name}{hint}, "Type your first name here");
+    # TEST
+    is ($form->{fields}->{first_name}{value}, "Eran");
+}

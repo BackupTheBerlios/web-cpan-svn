@@ -368,6 +368,10 @@ sub new {
 
     bless($self, $class);
 
+    # Set up a fields hash ref for the fields, so we will not need 
+    # autovivificatiopn later
+    $self->{fields} = {};
+
     # Creates and populates fields hash
     $self->_setFields($fieldsData, $fieldValues);
 
@@ -775,130 +779,149 @@ sub _setFields {
     # in the sub-classes more easily.
 
     foreach my $fieldName (keys %{$fieldsData}) {
-        # Use the supplied field value if one is given generally the supplied
-        # data will be a hash of HTTP POST data
-        my $fieldValue = '';
+        $self->_setField(
+            'name' => $fieldName, 
+            'params' => $fieldsData->{$fieldName},
+            'value' => $fieldValues->{$fieldName}
+        );
+    }
+}
 
-        # Only use the default value of a check box if the form has been
-        # submitted, that is, the default value should be the value that you
-        # want to show up in the POST data if the checkbox is selected when
-        # the form is submitted
-        if ($fieldsData->{$fieldName}{type} eq 'checkbox') {
+sub _setField
+{
+    my $self = shift;
+    
+    my %args = (@_);
+    
+    my $fieldName = $args{name};
+    my $params = $args{params};
+    my $user_given_field_value = $args{value};
 
-            # If the checkbox was selected then we're going to use the default
-            # value for the checkbox input's value in our WWW::Form object, if
-            # the checkbox was not selected and the form was submitted that
-            # variable will not show up in the hash of HTTP variables
-            if ($fieldValues->{$fieldName}) {
-                $fieldValue = $fieldsData->{$fieldName}{defaultValue};
-            }
+    # Use the supplied field value if one is given generally the supplied
+    # data will be a hash of HTTP POST data
+    my $fieldValue = '';
 
-            # See if this checkbox should be checked by default
-            $self->{fields}{$fieldName}{defaultChecked} =
-                $fieldsData->{$fieldName}{defaultChecked};
+    # Only use the default value of a check box if the form has been
+    # submitted, that is, the default value should be the value that you
+    # want to show up in the POST data if the checkbox is selected when
+    # the form is submitted
+    if ($params->{type} eq 'checkbox') {
+
+        # If the checkbox was selected then we're going to use the default
+        # value for the checkbox input's value in our WWW::Form object, if
+        # the checkbox was not selected and the form was submitted that
+        # variable will not show up in the hash of HTTP variables
+        if ($user_given_field_value) {
+            $fieldValue = $params->{defaultValue};
+        }
+
+        # See if this checkbox should be checked by default
+        $self->{fields}{$fieldName}{defaultChecked} =
+            $params->{defaultChecked};
+    }
+    else {
+        # If a key exists in the $fieldValues hashref, use that value
+        # instead of the default, we generally want to favor displaying
+        # user entered values than defaults
+        if (defined($user_given_field_value)) {
+            $fieldValue = $user_given_field_value;
         }
         else {
-            # If a key exists in the $fieldValues hashref, use that value
-            # instead of the default, we generally want to favor displaying
-            # user entered values than defaults
-            if (exists($fieldValues->{$fieldName})) {
-                $fieldValue = $fieldValues->{$fieldName};
-            }
-            else {
-                $fieldValue = $fieldsData->{$fieldName}{defaultValue};
-            }
-        }
-
-        # Value suitable for displaying to users as a label for a form input,
-        # e.g. 'Email address', 'Full name', 'Street address', 'Phone number',
-        # etc.
-        $self->{fields}{$fieldName}{label} = $fieldsData->{$fieldName}{label};
-
-        # Holds the value that the user enters after the form is submitted
-        $self->{fields}{$fieldName}{value} = $fieldValue;
-
-        # The value to pre-populate a form input with before the form is
-        # submitted, the only exception is a checkbox form input in the case
-        # of a checkbox, the default value will be the value of the checkbox
-        # input if the check box is selected and the form is submitted, see
-        # form_test.pl for an example
-        $self->{fields}{$fieldName}{defaultValue} =
-            $fieldsData->{$fieldName}{defaultValue};
-
-        # The validators for this field, validators are used to test user
-        # entered form input to make sure that it the user entered data is
-        # acceptable
-        $self->{fields}{$fieldName}{validators} =
-            \@{$fieldsData->{$fieldName}{validators}};
-
-        # Type of the form input, i.e. 'radio', 'text', 'select', 'checkbox',
-        # etc. this is mainly used to determine what type of HTML method
-        # should be used to display the form input in a web page
-        $self->{fields}{$fieldName}{type} = $fieldsData->{$fieldName}{type};
-
-        # If any validators fail, this property will contain the error
-        # feedback associated with those failing validators
-        #
-        # TODO : Added by Shlomif: Should it be a [] ?
-		# 12/28/2003 - Added by Ben Schmaus:
-		#   each field has an array of feedback, right now it's implemented
-		#   as an array () and not an array ref [].  I can't really think
-		#   of a great reason to make this an array reference internally instead
-		#   of an array.
-        # 15-Jan-2004 - Added by Shlomi Fish
-        #   Changing to [] as assigning an array here does not make much 
-        #   sense. (as discussed over IM). A hash value is always a scalar.
-        $self->{fields}{$fieldName}{feedback} = [];
-
-        # If the input type is a select box or a radio button then we need an
-        # array of labels and values for the radio button group or select box
-        # option groups
-        if (my $optionsGroup = $fieldsData->{$fieldName}{optionsGroup}) {
-            $self->{fields}{$fieldName}{optionsGroup} = \@{$optionsGroup};
-        }
-
-        # Arbitrary HTML attributes that will be used when the field's input
-		# element is displayed.
-        $self->{fields}{$fieldName}{extraAttributes} =
-            ($fieldsData->{$fieldName}{extraAttributes} || "");
-
-        # Add the hint
-		# 12/28/2003 - Added by Ben Schmaus:
-		#   Shlomi, could you please be more specific about the purpose of this
-		#   property?  It doesn't appear to be mentioned anywhere else in the
-		#   documentation.  I assume that this is some helpful text that can
-		#   be displayed if the user enters a field's input incorrectly.  Is that
-		#   right?
-        #
-        # 2004-Jan-04 - Added by Shlomi Fish:
-        #  Ben, no. Actually it's a hint that will always be displayed below
-        #  the table row to instruct the users what to input there. For instance
-        #  +----------+---------------------------+
-        #  |  City:   | [================]        |
-        #  +----------+---------------------------+
-        #  |  Input the city in which you live    |
-        #  |  in.                                 |
-        #  +---------------------------------------
-        #  So "Input the city..." would be the hint.
-        if (my $hint = $fieldsData->{$fieldName}{hint})
-        {
-            $self->{fields}{$fieldName}{hint} = $hint;
-        }
-
-        # Add the container_attributes. These are HTML attributes that would 
-        # be added to the rows of this HTML row.
-        if (my $attribs = $fieldsData->{$fieldName}{container_attributes})
-        {
-            $self->{fields}{$fieldName}{container_attributes} = $attribs;
-        }
-
-        # Add the hint_container_attributes. These are HTML attributes that 
-        # would  be added to the Hint row of this HTML row.
-        if (my $attribs = $fieldsData->{$fieldName}{hint_container_attributes})
-        {
-            $self->{fields}{$fieldName}{hint_container_attributes} = $attribs;
+            $fieldValue = $params->{defaultValue};
         }
     }
+
+    # Value suitable for displaying to users as a label for a form input,
+    # e.g. 'Email address', 'Full name', 'Street address', 'Phone number',
+    # etc.
+    $self->{fields}{$fieldName}{label} = $params->{label};
+
+    # Holds the value that the user enters after the form is submitted
+    $self->{fields}{$fieldName}{value} = $fieldValue;
+
+    # The value to pre-populate a form input with before the form is
+    # submitted, the only exception is a checkbox form input in the case
+    # of a checkbox, the default value will be the value of the checkbox
+    # input if the check box is selected and the form is submitted, see
+    # form_test.pl for an example
+    $self->{fields}{$fieldName}{defaultValue} =
+        $params->{defaultValue};
+
+    # The validators for this field, validators are used to test user
+    # entered form input to make sure that it the user entered data is
+    # acceptable
+    $self->{fields}{$fieldName}{validators} =
+        \@{$params->{validators}};
+
+    # Type of the form input, i.e. 'radio', 'text', 'select', 'checkbox',
+    # etc. this is mainly used to determine what type of HTML method
+    # should be used to display the form input in a web page
+    $self->{fields}{$fieldName}{type} = $params->{type};
+
+    # If any validators fail, this property will contain the error
+    # feedback associated with those failing validators
+    #
+    # TODO : Added by Shlomif: Should it be a [] ?
+    # 12/28/2003 - Added by Ben Schmaus:
+    #   each field has an array of feedback, right now it's implemented
+    #   as an array () and not an array ref [].  I can't really think
+    #   of a great reason to make this an array reference internally instead
+    #   of an array.
+    # 15-Jan-2004 - Added by Shlomi Fish
+    #   Changing to [] as assigning an array here does not make much 
+    #   sense. (as discussed over IM). A hash value is always a scalar.
+    $self->{fields}{$fieldName}{feedback} = [];
+
+    # If the input type is a select box or a radio button then we need an
+    # array of labels and values for the radio button group or select box
+    # option groups
+    if (my $optionsGroup = $params->{optionsGroup}) {
+        $self->{fields}{$fieldName}{optionsGroup} = \@{$optionsGroup};
+    }
+
+    # Arbitrary HTML attributes that will be used when the field's input
+    # element is displayed.
+    $self->{fields}{$fieldName}{extraAttributes} =
+        ($params->{extraAttributes} || "");
+
+    # Add the hint
+    # 12/28/2003 - Added by Ben Schmaus:
+    #   Shlomi, could you please be more specific about the purpose of this
+    #   property?  It doesn't appear to be mentioned anywhere else in the
+    #   documentation.  I assume that this is some helpful text that can
+    #   be displayed if the user enters a field's input incorrectly.  Is that
+    #   right?
+    #
+    # 2004-Jan-04 - Added by Shlomi Fish:
+    #  Ben, no. Actually it's a hint that will always be displayed below
+    #  the table row to instruct the users what to input there. For instance
+    #  +----------+---------------------------+
+    #  |  City:   | [================]        |
+    #  +----------+---------------------------+
+    #  |  Input the city in which you live    |
+    #  |  in.                                 |
+    #  +---------------------------------------
+    #  So "Input the city..." would be the hint.
+    if (my $hint = $params->{hint})
+    {
+        $self->{fields}{$fieldName}{hint} = $hint;
+    }
+
+    # Add the container_attributes. These are HTML attributes that would 
+    # be added to the rows of this HTML row.
+    if (my $attribs = $params->{container_attributes})
+    {
+        $self->{fields}{$fieldName}{container_attributes} = $attribs;
+    }
+
+    # Add the hint_container_attributes. These are HTML attributes that 
+    # would  be added to the Hint row of this HTML row.
+    if (my $attribs = $params->{hint_container_attributes})
+    {
+        $self->{fields}{$fieldName}{hint_container_attributes} = $attribs;
+    }
+
+    return 0;
 }
 
 =head2 asString
