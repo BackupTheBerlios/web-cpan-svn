@@ -74,6 +74,14 @@ unlike the default HTML one for http:// repositories. (with some improvements)
 If you deploy this module in a public URL with a good bandwidth, let me know 
 so I can link to it here for demonstration purposes.
 </p>
+<h2>Demos</h2>
+<ul>
+<li>
+<a href="http://freehackers.org/~shlomif/svn-raweb-light/berlios.cgi/">The 
+web-cpan repository at berlios</a> - an SVN::RaWeb::Light web-interface to the
+repository holding the sources of the modules here.
+</li>
+</ul>
 EOF
     },
     {
