@@ -1,5 +1,9 @@
 package XML::CompareML;
 
+use vars qw($VERSION);
+
+$VERSION = '0.2.0';
+
 1; # End of XML::CompareML
 
 __END__
@@ -11,10 +15,6 @@ XML::CompareML - A processor for the CompareML markup language
 =head1 VERSION
 
 Version 0.2.0
-
-=cut
-
-our $VERSION = '0.1.3';
 
 =head1 SYNOPSIS
 
