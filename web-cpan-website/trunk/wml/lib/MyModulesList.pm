@@ -81,6 +81,11 @@ so I can link to it here for demonstration purposes.
 web-cpan repository at berlios</a> - an SVN::RaWeb::Light web-interface to the
 repository holding the sources of the modules here.
 </li>
+<li>
+<a href="http://freehackers.org/~shlomif/svn-raweb-light/subversion.cgi/">Browse
+Subversion's Repository</a> - browse the svn.collab.net repository that keeps
+track of the code of Subversion itself.
+</li>
 </ul>
 EOF
     },
