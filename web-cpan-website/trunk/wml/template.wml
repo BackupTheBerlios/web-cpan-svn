@@ -148,7 +148,7 @@ print "<h2>Description</h2>\n";
 print $module_record->{'desc'};
 print "<h2>Subversion Directories</h2>\n";
 my $repos_sub_path = "$module_record->{svn_dir}/trunk/";
-my $svn_url = "svn://svn.berlios.de/web-cpan/";
+my $svn_url = "svn://svn.berlios.de/web-cpan";
 print "<ul>\n<li>\n<a href=\"$svn_url/$repos_sub_path\">Trunk URL</a> (other
 branches and tags can be found one level below it.)\n</li>\n";
 print "<li>\n<a href=\"http://freehackers.org/~shlomif/svn-raweb-light/berlios.cgi/$repos_sub_path\" rel=\"versioncontrol\">Browse the code online</a>\n</li>\n";
