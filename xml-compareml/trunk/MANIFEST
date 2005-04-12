@@ -1,0 +1,13 @@
+Build.PL
+Changes
+MANIFEST
+META.yml # Will be created by "make dist"
+README
+lib/XML/CompareML.pm
+lib/XML/CompareML/Base.pm
+lib/XML/CompareML/DocBook.pm
+lib/XML/CompareML/HTML.pm
+lib/XML/CompareML/DTD/Generate.pm
+t/00-load.t
+t/pod.t
+t/files/scm-comparison.xml
