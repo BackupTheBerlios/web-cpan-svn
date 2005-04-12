@@ -1,0 +1,4 @@
+#include "../template.wml"
+
+<gen_module_html "XML-CompareML" />
+

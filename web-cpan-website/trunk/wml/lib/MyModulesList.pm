@@ -102,6 +102,27 @@ and re-displaying them in case something is wrong.
 </p>
 EOF
     },
+    {
+        'perl_name' => "XML-CompareML",
+        'text' => "XML::CompareML",
+        'title' => "An XML Grammar for Managing Comparisons",
+        'svn_dir' => "xml-compareml",
+        'desc' => <<"EOF"
+<p>
+XML::CompareML is a module for managing multi-system and multi-item 
+comparisons. The primary use of this module by its author was to manage
+<a href="http://better-scm.berlios.de/comparison/">the Better SCM 
+comparison of version control systems</a>.
+</p>
+<p>
+The Perl versions can generate either HTML or 
+<a href="http://www.docbook.org/">DocBook/XML</a>. (the latter can be
+converted into many other formats). Also available is an XSLT stylesheet
+for transforming the XML markup into HTML.
+</p>
+EOF
+    },
+    
 );
 
 sub get_module_list
