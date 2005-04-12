@@ -1,15 +1,16 @@
 package XML::CompareML;
 
-use warnings;
-use strict;
+1; # End of XML::CompareML
+
+__END__
 
 =head1 NAME
 
-XML::CompareML - The great new XML::CompareML!
+XML::CompareML - A processor for the CompareML markup language
 
 =head1 VERSION
 
-Version 0.01
+Version 0.2.0
 
 =cut
 
@@ -17,35 +18,43 @@ our $VERSION = '0.1.3';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    use XML::CompareML::HTML;
 
-Perhaps a little code snippet.
+    my $converter = 
+        XML::CompareML::HTML->new(
+            'input_filename' => "my-comparison.xml",
+            'output_handle' => \*STDOUT,
+        );
 
-    use XML::CompareML;
+    $converter->process();
 
-    my $foo = XML::CompareML->new();
-    ...
+Or alternatively:
 
-=head1 EXPORT
+    use XML::CompareML::DocBook;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    my $converter = 
+        XML::CompareML::DocBook->new(
+            'input_filename' => "my-comparison.xml",
+            'output_handle' => \*STDOUT,
+        );
 
-=head1 FUNCTIONS
+    $converter->process();
 
-=head2 function1
+=head1 USAGE
+
+The CompareML language is currently undocumented, but one can see
+an example for a document written it in the 
+C<t/files/scm-comparison.xml> example in the distribution. 
+
+To convert a CompareML document to HTML instantiate an XML::CompareML::HTML
+object, and pass it the filename as the C<input_filename> named parameter,
+and a reference to the IO handle to output the result as the C<output_handle>
+named parameter.
+
+To convert a CompareML document to DocBook do the same procedure only using
+an XML:CompareML::DocBook object.
 
 =cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -66,8 +75,7 @@ your bug as I make changes.
 Copyright 2005 Shlomi Fish, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+under the same terms as the MIT X11 license.
 
 =cut
 
-1; # End of XML::CompareML
