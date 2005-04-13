@@ -9,9 +9,31 @@ sub print_header
 {
     my $self = shift;
 
-    my $stylesheet_url = undef;
+    my $style = $self->get_head_css_style();
 
-    my ($style, $style_link);
+    my $o = $self->{o};
+    print {*{$o}} <<"EOF";
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title>Version Control Systems Comparison</title>
+$style
+</head>
+<body>
+EOF
+}
+
+sub get_head_css_style
+{
+    my $self = shift;
+    
+    my $stylesheet_url = undef;
+    my $style;
+    
     if ($stylesheet_url)
     {
         $style = "<link rel=\"stylesheet\" href=\"$stylesheet_url\" />";
@@ -58,22 +80,8 @@ tt { color : #8A2BE2 /* The BlueViolet Color */ }
 -->
 </style>
 EOF
-
-    my $o = $self->{o};
-    print {*{$o}} <<"EOF";
-<?xml version="1.0" encoding="iso-8859-1"?>
-<!DOCTYPE html
-     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-<title>Version Control Systems Comparison</title>
-$style
-</head>
-<body>
-EOF
     }
+    return $style;
 }
 
 sub start_rendering
