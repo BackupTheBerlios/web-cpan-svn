@@ -1,0 +1,110 @@
+import re
+import os
+from Autoscons.AutoBuild import Init
+from Autoscons.Tool import Tool
+import Autoscons.Tool.gzip
+
+gzip_tool = Tool('gzip')
+
+def config_script_bld_action(target, source, env):
+    def quote(matchobj):
+        return "\\"+matchobj.group(0)
+    source_fn = str(source[0])
+    target_fn = str(target[0])
+    prefix = env['PREFIX']
+    prefix_quoted = re.sub("[\\\\\"$@]", quote, prefix, 0)
+    f = open(source_fn, 'rb')
+    source_text = f.read()
+    f.close()
+    target_text = source_text.replace('<<<PREFIX>>>', prefix_quoted)
+    f = open(target_fn, 'wb')
+    f.write(target_text)
+    f.close()
+    os.chmod(target_fn, 0755)
+
+
+package_files = []
+
+config_script_bld = Builder(action = config_script_bld_action)
+scp_bld = Builder(action = 'scp $SOURCE shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/latemp/download/arcs/')
+
+env = Environment()
+f = gzip_tool.generate
+f(env)
+env.Append(BUILDERS = {'ConfigScript': config_script_bld, 'Upload':scp_bld})
+
+config_file = 'latemp.conf'
+opts = Options(config_file)
+opts.Add(PathOption('PREFIX',
+    'Directory to install under (Default: /usr/local)',
+    '/usr/local'))
+opts.Add('DESTDIR', 
+        'Prefix to append to the installation directory (without affecting the paths in the files) - Default: empty',
+    '')
+
+opts.Update(env)
+opts.Save(config_file, env)
+
+idir_prefix = '$DESTDIR$PREFIX'
+Export('env idir_prefix')
+
+latemp_wml_files = []
+
+doc_files = []
+
+themes = [
+    { 'id':"better-scm" },
+    { 'id':"perl-begin-1" },
+    { 'id':"sinorca-2.0" },    
+    ]
+
+for file in [ "render.pl", "latemp-ref.pod", "latemp-ref.html" ]:
+    doc_files.append(env.File(file, 'docs'))
+    package_files.append('docs/' + file)
+
+env.Alias('build', env.Command('docs/latemp-ref.html', 'docs/latemp-ref.pod', "cd docs && perl render.pl"))
+
+for file in ['html-header.wml','html-head-tag.wml','h-w-nav-menu.wml', \
+        'latemp-main.wml', 'news-management.wml', 'template-params.wml', 
+        'texts.wml', 'utils.wml']:
+    latemp_wml_files.append(env.File(file, 'wml/latemp'))
+    package_files.append('wml/latemp/' + file)
+
+for t in themes:
+    id = t['id']
+    t['scons_file'] = env.File('template.wml', 'wml/latemp/themes/' + id + '/')
+    package_files.append('wml/latemp/themes/' + id + '/' + 'template.wml')
+
+config_script = env.ConfigScript(target = 'latemp-config', source = 'latemp-config.pl')
+env.Alias('build', config_script)
+package_files.append('latemp-config.pl')
+setup_script = env.File('latemp-setup')
+package_files.append('latemp-setup')
+
+def add_install(install_path, the_file):
+    env.Alias('install', env.Install(install_path, the_file))
+
+wml_install_path = idir_prefix + '/lib/wml/include/'
+latemp_wml_install_path = wml_install_path + 'latemp/'
+for file in latemp_wml_files:
+    add_install(latemp_wml_install_path, file)
+
+for t in themes:
+    add_install(latemp_wml_install_path + 'themes/' + t['id'] + '/', t['scons_file'])
+
+v_file = open('ver.txt', 'rb')
+version = v_file.readline()
+v_file.close()
+package_files.append('ver.txt')
+package = Init("latemp", version)
+package.AddToDist(package_files)
+dist_node = package.BuildDist(env)
+env.Alias('dist', dist_node)
+env.Alias('dist_upload', env.Upload("h67jk343jvnsidnvnoisd", "latemp-" + version + ".tar.gz"))
+
+add_install(idir_prefix + '/bin', config_script)
+add_install(idir_prefix + '/bin', setup_script)
+
+# Set the default target to build.
+env.Default('build');
+
