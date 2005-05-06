@@ -1,0 +1,47 @@
+<set-var latemp_with_breadcrumbs_trail="1" />
+<set-var latemp_nav_links_allowed_places="top-left bottom-left" />
+<set-var latemp_with_timestamp="1" />
+<set-var latemp_with_xml_declaration="1" />
+<set-var latemp_html_standard="xhtml1.1" />
+<set-var latemp_with_head_meta_tags="1" />
+<define-tag latemp_timestamp_wrapper endtag="required">
+<p class="vcs">
+<b>Version Control ID:</b> <tt>%body</tt>
+</p>
+</define-tag>
+
+#include "latemp/latemp-main.wml"
+#include "shlomif/affiliations.wml"
+
+<latemp_lang "en-US" />
+<latemp_encoding "utf-8" />
+<latemp_common_keywords "CMS, Content Management System, Latemp, Shlomi Fish, WML, Web Meta Language, HTML, web authoring, web design" />
+<latemp_author "Shlomi Fish" />
+
+<latemp_webmaster>
+<p class="webmaster">
+Webmaster:
+<a href="http://www.shlomifish.org/">Shlomi Fish</a> (<a href="mailto:shlomif@iglu.org.il">shlomif@iglu.org.il</a>)
+</p>
+</latemp_webmaster>
+
+<latemp_license>
+</latemp_license>
+
+
+<latemp_affiliations_buttons>
+<affil_collection_berlios />
+</latemp_affiliations_buttons>
+
+<latemp_extra_head_elements>
+<link rel="alternate stylesheet" type="text/css" href="$(ROOT)/alternate1.css" media="screen, projection" title="Better SCM" />
+</latemp_extra_head_elements>
+
+<latemp_top_left_corner_logo>
+<div class="logo">
+<a href="$(ROOT)/" title="Latemp - Static HTML Content Management"><img 
+    src="$(ROOT)/images/latemp-logo.png"
+    alt="Latemp - Static HTML Content Management" /></a>
+</div>
+</latemp_top_left_corner_logo>
+

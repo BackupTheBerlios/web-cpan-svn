@@ -1,0 +1,28 @@
+Delay to later:
+---------------
+
+* Create a CSS Zen Garden based theme. (ask for copyright permission for the
+HTML).
+
+* Add a tag to retrieve relative links using the HTML::Widgets::NavMenu 
+get_relative_url function.
+
+* Enable processing of template toolkit-processed files.
+
+* Test for internationalization.
+
+* Write documentation.
+    - write documentation for theme creators.
+
+* Make sure that the perl executable is located and placed in the sh-bang in
+latemp-setup and latemp-config.
+
+* Create theme-based skeletons with style.css, etc.
+
+* Modify NavLinks::GenHtml to make use of the extra attributes in
+nav_links_obj.
+
+Things to investigate:
+----------------------
+
+* Make sure that a utf8 project sets the appropriate wml flags.
