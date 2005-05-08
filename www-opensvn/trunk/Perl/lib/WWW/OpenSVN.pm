@@ -192,6 +192,9 @@ sub fetch_dump
     }
 }
 
+1; 
+
+__END__
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif@iglu.org.il> >>
@@ -215,4 +218,3 @@ under the terms of the MIT X11 License.
 
 =cut
 
-1; # End of WWW::OpenSVN
