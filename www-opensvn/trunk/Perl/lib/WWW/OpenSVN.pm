@@ -14,7 +14,7 @@ WWW::OpenSVN - An automated interface for OpenSVN.csie.org.
 
 use vars qw($VERSION);
 
-$VERSION = '0.01';
+$VERSION = '0.1.2';
 
 =head1 SYNOPSIS
 
