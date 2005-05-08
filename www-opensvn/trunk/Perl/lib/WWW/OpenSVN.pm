@@ -24,11 +24,23 @@ $VERSION = '0.01';
             'password' => "MySecretPassphrase",
         );
 
+    $opensvn->fetch_dump('filename' => "/backup-dir/myproject-dump.gz");
+
 =head1 FUNCTIONS
 
 =cut
 
 package WWW::OpenSVN::Base;
+
+=head2 WWW::OpenSVN->new()
+
+A constructor. Accepts these mandatory named arguments:
+
+'project' - The OpenSVN Project ID.
+
+'password' - The OpenSVN Project Management Password.
+
+=cut
 
 sub new
 {
@@ -126,6 +138,14 @@ sub get_repos_revision
     }
 }
 
+=head2 $opensvn->fetch_dump('filename' => "myfile.dump.gz")
+
+Fetches a subversion repository dump and stores it in a file. Accepts an 
+optional argument - 'filename' that is used to specify the filename to store 
+the dump into. If not specified, it defaults to "$project.dump.gz"
+
+=cut
+
 sub fetch_dump
 {
     my $self = shift;
@@ -189,7 +209,8 @@ sub fetch_dump
     $response =
         $ua->get(
             "$url/$fetch_file_path", 
-            ":content_file" => $self->project() . ".dump.gz",
+            ":content_file" => 
+                ($args{'filename'} || ($self->project() . ".dump.gz")),
         );
 
     if (! $response->is_success())
