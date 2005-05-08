@@ -47,6 +47,10 @@ sub project
 
 package WWW::OpenSVN::Error;
 
+use vars qw(@ISA);
+
+@ISA=(qw(WWW::OpenSVN::Base));
+
 sub initialize
 {
     my $self = shift;
@@ -64,6 +68,10 @@ sub phase
 }
 
 package WWW::OpenSVN;
+
+use vars qw(@ISA);
+
+@ISA=(qw(WWW::OpenSVN::Base));
 
 sub initialize
 {
@@ -99,16 +107,16 @@ sub gen_error
 sub get_repos_revision
 {
     my $self = shift;
-    if (exists($self->{'repos_version'}))
+    if (exists($self->{'repos_revision'}))
     {
-        return $self->{'repos_version'};
+        return $self->{'repos_revision'};
     }
     my $project = $self->project();
     my $url = "http://opensvn.csie.org/$project/";
     my $page = get($url);
     if ($page =~ /<title>Revision (\d+): \/<\/title>/)
     {
-        return ($self->{'repos_version'} = $1);
+        return ($self->{'repos_revision'} = $1);
     }
     else
     {
@@ -125,7 +133,7 @@ sub fetch_dump
 
     my $url = "https://OpenSVN.csie.org/";
 
-    my $repos_top_version = get_repos_revision($self->project());
+    my $repos_top_version = $self->get_repos_revision();
     my %login_params =
     (
         'project' => $self->project(),
