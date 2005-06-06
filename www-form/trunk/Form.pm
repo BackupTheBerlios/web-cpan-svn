@@ -1149,7 +1149,8 @@ sub getTrAttributes
 
     if (exists($field->{container_attributes})) {
         %tr_attributes = (%tr_attributes, %{$field->{container_attributes}});
-    }    
+    }
+    return \%tr_attributes;
 }
 
 sub _render_attributes {
