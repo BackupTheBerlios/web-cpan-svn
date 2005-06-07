@@ -967,6 +967,15 @@ onclick='someJSFunction()', and so forth.
   );
 
 =cut
+
+sub _getFieldType
+{
+    my $self = shift;
+    my $fieldName = shift;
+
+    return $self->getField($fieldName)->{type};
+}
+
 sub getFieldFormInputHTML {
     my $self = shift;
 
@@ -978,7 +987,7 @@ sub getFieldFormInputHTML {
     # or control the size of your text inputs, for example
     my $attributesString = shift || '';
 
-    my $type = $self->getField($fieldName)->{type};
+    my $type = $self->_getFieldType($fieldName);
 
     if ($type =~ /text$|password|hidden|file/) {
 
@@ -1175,6 +1184,11 @@ sub getTrAttrString
 sub getFieldHTMLRow {
     my $self = shift;
     my $fieldName = shift;
+
+    if ($self->_getFieldType($fieldName) eq "hidden")
+    {
+        return "";
+    }
 
     my %func_args = (@_);
     my $attributesString = $func_args{'attributesString'};
@@ -1390,10 +1404,25 @@ API documentation for getSubmitButtonHTML() for more info on this parameter.
   );
 
 =cut
+
+sub getHiddenFieldsHTML
+{
+    my $self = shift;
+
+    return 
+        join("", 
+            (map { $self->_getInputHTML($_, "") . "\n" }
+            grep { $self->_getFieldType($_) eq "hidden" }
+            (@{$self->getFieldsOrder()}))
+        );
+}
+
 sub getFormHTML {
     my ($self, %args) = @_;
 
     my $html = $self->startForm(%args) . "\n";
+
+    $html .= $self->getHiddenFieldsHTML();
     $html .= "<table>\n";
 
     # Go through all of our form fields and build an HTML input for each field
