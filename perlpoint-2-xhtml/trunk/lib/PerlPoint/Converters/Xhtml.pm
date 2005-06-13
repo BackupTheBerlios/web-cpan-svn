@@ -1,4 +1,4 @@
-package PerlPoint::Conveters::Xhtml;
+package PerlPoint::Converters::Xhtml;
 
 use warnings;
 use strict;
@@ -70,4 +70,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of PerlPoint::Conveters::Xhtml
+1; # End of PerlPoint::Converters::Xhtml
