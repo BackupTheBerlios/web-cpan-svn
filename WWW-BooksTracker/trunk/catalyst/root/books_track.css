@@ -1,0 +1,43 @@
+.book_info table, .book_list table
+{
+    width:95%;
+    border-collapse:collapse;
+}
+.book_info .key
+{
+    width: 5em;
+    background-color: #A0FF80;    
+}
+.book_info .value
+{
+    background-color: moccasin;
+}
+.book_info .key, .book_info .value, .book_list td, .book_list th
+{
+    padding-left: 0.5em;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    padding-right: 0.5em;
+    border-left: 1pt black solid;
+    border-right: 1pt black solid;
+}
+.book_info tr, .book_list tr
+{
+    border-top : 1px black solid;
+    border-bottom : 1px black solid;
+}
+.book_info td
+{
+    vertical-align : top;
+}
+.book_info input, .book_info textarea
+{
+    margin-top: 0.2em;
+    margin-bottom: 0.2em;
+}
+.book_list td, .book_list th
+{
+    text-align: left;
+    vertical-align : top;    
+}
+

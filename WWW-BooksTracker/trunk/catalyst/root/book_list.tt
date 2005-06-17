@@ -1,0 +1,33 @@
+[% USE HTML %]
+[% INCLUDE 'book_header.tt' %]
+<h1>Online Books Tracker - List Books</h1>
+
+<div class="book_list">
+<table>
+<thead>
+<tr>
+<th scope="col">Title</th>
+<th scope="col">Authors</th>
+<th scope="col">Link</th>
+</tr>
+</thead>
+<tbody>
+[% FOR object = all_objects %]
+<tr>
+<td>
+<a href="../[% object.id %]/">[% HTML.escape(object.title) %]</a>
+</td>
+<td>
+[% HTML.escape(object.authors) %]
+</td>
+<td>
+<a href="[% HTML.escape(object.url) %]" rel="nofollow">Link</a>
+</td>
+</tr>
+[% END %]
+</tbody>
+</table>
+</div>
+
+</body>
+</html>

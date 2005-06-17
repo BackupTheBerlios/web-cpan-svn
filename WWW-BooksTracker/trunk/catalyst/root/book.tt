@@ -1,0 +1,41 @@
+[% USE HTML %]
+[% INCLUDE 'book_header.tt' %]
+<h1>Online Books Tracker - [% HTML.escape(book.title) %]</h1>
+
+<h2>Book Information</h2>
+
+<div class="book_info">
+<table>
+
+<!-- TODO: Make sure we don't display the entire URL if it's too long. -->
+
+[% FOREACH field = 
+    [ 
+        { 'name' => "title", 'label' => "Title", },
+        { 'name' => "url", 'label' => "Link", },
+        { 'name' => "authors", 'label' => "Authors", },
+        { 'name' => "abstract", 'label' => "Abstract", },
+        { 'name' => "year", 'label' => "Year of Publication", },
+        { 'name' => "publisher", 'label' => "Publisher", },
+        { 'name' => "isbn", 'label' => "ISBN", },
+    ]
+%]
+<tr>
+<td class="key">
+[% field.label %]
+</td>
+<td class="value">
+[% HTML.escape(book.${field.name}) %]
+</td>
+</tr>
+[% END %]
+
+</table>
+</div>
+
+<p>
+<a href="./?mode=edit">Edit</a>
+</p>
+
+</body>
+</html>

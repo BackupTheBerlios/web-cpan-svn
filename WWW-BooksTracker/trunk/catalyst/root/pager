@@ -1,0 +1,22 @@
+[% IF pager %]
+<p class="pager">
+	Page:
+	[% FOR num IN [pager.first_page .. pager.last_page];
+		IF num == pager.current_page;
+			'<span class="current-page">' _ num _ '</span>';
+		ELSE;
+			SET args = "?";
+			SET args = args _ "order=" _ c.req.parameters.order _ "&"
+				IF c.req.parameters.order;
+            SET args = args _ "o2=" _ c.req.parameters.o2 _ "&"
+				IF c.req.parameters.o2;
+			SET args = args _ "page=" _ num;
+			IF (pager.current_page - 2) <= num && (pager.current_page + 2) >= num OR num == pager.last_page OR num == pager.first_page;
+				'<a href="' _ args _ '">' _ num _ '</a>';
+			ELSE;
+				'&middot;';
+			END;
+		END;
+	END %]
+</p>
+[% END %]

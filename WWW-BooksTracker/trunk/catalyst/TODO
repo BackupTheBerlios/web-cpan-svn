@@ -1,0 +1,8 @@
+* Make the /books/list/ functional.
+    - Nicely format it.
+* Make the book addition form to redirect to the new book entry.
+
+* Add an "Add" link at the bottom.
+
+* Make the controller of the books more modular.
+
