@@ -23,6 +23,8 @@ CREATE TABLE formats (
     description text
 );
 
+CREATE SEQUENCE formats_id_seq NO MAXVALUE START WITH 1 ;
+
 CREATE TABLE books_formats (
     id bigint primary key,
     book int,

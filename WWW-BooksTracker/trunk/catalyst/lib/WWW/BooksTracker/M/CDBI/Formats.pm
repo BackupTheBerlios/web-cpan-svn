@@ -2,6 +2,9 @@ package WWW::BooksTracker::M::CDBI::Formats;
 
 use strict;
 
+__PACKAGE__->columns(Primary => 'id');
+__PACKAGE__->sequence('formats_id_seq');
+
 =head1 NAME
 
 WWW::BooksTracker::M::CDBI::Formats - CDBI Model Component Table Class
