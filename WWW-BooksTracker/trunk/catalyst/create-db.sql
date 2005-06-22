@@ -31,6 +31,8 @@ CREATE TABLE books_formats (
     format int
 );
 
+CREATE SEQUENCE books_formats_id_seq NO MAXVALUE START WITH 1 ;
+
 CREATE TABLE languages (
     id integer primary key,
     name varchar(100)

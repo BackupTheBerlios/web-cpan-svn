@@ -2,6 +2,13 @@ package WWW::BooksTracker::M::CDBI::BooksFormats;
 
 use strict;
 
+__PACKAGE__->columns(Primary => 'id');
+__PACKAGE__->sequence('books_formats_id_seq');
+
+# Define some relationships
+__PACKAGE__->has_a(book => "WWW::BooksTracker::M::CDBI::Books");
+__PACKAGE__->has_a(format => "WWW::BooksTracker::M::CDBI::Formats");
+
 =head1 NAME
 
 WWW::BooksTracker::M::CDBI::BooksFormats - CDBI Model Component Table Class

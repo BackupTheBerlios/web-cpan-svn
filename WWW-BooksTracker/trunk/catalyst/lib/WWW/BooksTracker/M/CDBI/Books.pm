@@ -5,6 +5,12 @@ use strict;
 __PACKAGE__->columns(Primary => 'id');
 __PACKAGE__->sequence('books_id');
 
+# Define some relationships.
+
+__PACKAGE__->has_many('formats' => "WWW::BooksTracker::M::CDBI::BooksFormats");
+
+    
+    
 =head1 NAME
 
 WWW::BooksTracker::M::CDBI::Books - CDBI Model Component Table Class
