@@ -15,7 +15,11 @@
 [% field.label %]
 </td>
 <td class="value">
+[% IF field.output_trans == "url" %]
+<a href="[% HTML.escape(book.${field.name}) %]" rel="nofollow">[% book.${field.name} %]</a>
+[% ELSE %]
 [% HTML.escape(book.${field.name}) %]
+[% END %]
 </td>
 </tr>
 [% END %]

@@ -55,7 +55,8 @@ sub get_books_meta_data
 {
     return [
         { 'name' => "title", 'label' => "Title", 'type' => "text",},
-        { 'name' => "url", 'label' => "Link", 'type' => "text",},
+        { 'name' => "url", 'label' => "Link", 'type' => "text",
+          'output_trans' => "url",},
         { 'name' => "authors", 'label' => "Authors", 'type' => "text",},
         { 'name' => "abstract", 'label' => "Abstract", 
             'type' => "textarea",},
