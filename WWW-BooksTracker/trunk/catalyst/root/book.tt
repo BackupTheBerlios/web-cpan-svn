@@ -33,9 +33,10 @@
 </table>
 </div>
 
-<p>
-<a href="./?mode=edit">Edit</a>
-</p>
+<ol>
+<li><a href="./?mode=edit">Edit</a></li>
+<li><a href="../list/">Back to List</a></li>
+</ol>
 
 </body>
 </html>
