@@ -9,4 +9,7 @@
 * Make sure the front page does not display a book entry.
 
 * Add more links between the pages.
+    - Add an "Add" Link to the bottom of the List books.
+    - Add Forward and Backward buttons in the list.
+    - Make sure the back to the list goes to the correct place in the list.
 
