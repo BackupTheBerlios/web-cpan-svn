@@ -8,6 +8,9 @@ __PACKAGE__->sequence('books_id');
 # Define some relationships.
 
 __PACKAGE__->has_many('formats' => "WWW::BooksTracker::M::CDBI::BooksFormats");
+__PACKAGE__->has_many('translations' => "WWW::BooksTracker::M::CDBI::BooksFormats");
+
+__PACKAGE__->has_a('license' => "WWW::BooksTracker::M::CDBI::Licenses");
 
 =head1 NAME
 

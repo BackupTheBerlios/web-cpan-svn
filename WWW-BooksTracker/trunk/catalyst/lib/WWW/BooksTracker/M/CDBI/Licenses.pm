@@ -2,6 +2,9 @@ package WWW::BooksTracker::M::CDBI::Licenses;
 
 use strict;
 
+__PACKAGE__->columns(Primary => 'id');
+__PACKAGE__->sequence('licenses_id_seq');
+
 =head1 NAME
 
 WWW::BooksTracker::M::CDBI::Licenses - CDBI Model Component Table Class

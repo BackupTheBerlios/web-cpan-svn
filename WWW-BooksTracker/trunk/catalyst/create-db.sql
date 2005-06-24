@@ -38,15 +38,21 @@ CREATE TABLE languages (
     name varchar(100)
 );
 
+CREATE SEQUENCE languages_id_seq NO MAXVALUE START WITH 1 ;
+
 CREATE TABLE translations (
     id bigint primary key,
     language integer,
     book integer
 );
 
+CREATE SEQUENCE translations_id_seq NO MAXVALUE START WITH 1 ;
+
 CREATE TABLE licenses (
     id integer,
     name varchar(500),
     description text
 );
+
+CREATE SEQUENCE licenses_id_seq NO MAXVALUE START WITH 1;
 
