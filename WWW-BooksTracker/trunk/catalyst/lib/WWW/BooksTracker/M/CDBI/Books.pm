@@ -9,8 +9,6 @@ __PACKAGE__->sequence('books_id');
 
 __PACKAGE__->has_many('formats' => "WWW::BooksTracker::M::CDBI::BooksFormats");
 
-    
-    
 =head1 NAME
 
 WWW::BooksTracker::M::CDBI::Books - CDBI Model Component Table Class
