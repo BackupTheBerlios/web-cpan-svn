@@ -9,17 +9,7 @@
 
 <!-- TODO: Make sure we don't display the entire URL if it's too long. -->
 
-[% FOREACH field = 
-    [ 
-        { 'name' => "title", 'label' => "Title", },
-        { 'name' => "url", 'label' => "Link", },
-        { 'name' => "authors", 'label' => "Authors", },
-        { 'name' => "abstract", 'label' => "Abstract", },
-        { 'name' => "year", 'label' => "Year of Publication", },
-        { 'name' => "publisher", 'label' => "Publisher", },
-        { 'name' => "isbn", 'label' => "ISBN", },
-    ]
-%]
+[% FOREACH field = books_meta %]
 <tr>
 <td class="key">
 [% field.label %]

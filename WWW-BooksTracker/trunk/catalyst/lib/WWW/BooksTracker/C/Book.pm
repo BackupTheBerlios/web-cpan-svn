@@ -65,6 +65,7 @@ sub list : Regex('^books/list/$')
 sub show : Regex('^books/(\d+)/$')
 {
     my ( $self, $c ) = @_;
+    $self->reg_books_meta($c);
     my $req = $c->req;
     my $mode = $req->params()->{'mode'} || "";
     my $id = $c->req->snippets->[0] || 1;
