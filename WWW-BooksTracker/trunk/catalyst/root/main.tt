@@ -1,0 +1,12 @@
+[% INCLUDE header %]
+
+<h1>Welcome to the Online Books Tracker</h1>
+
+<h2><a href="./books/list/">Go to the Books List</a></h2>
+
+<p>
+Lorem ipsum quodrom Klopi.
+</p>
+
+</body>
+</html>

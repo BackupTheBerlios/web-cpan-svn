@@ -14,7 +14,7 @@ WWW::BooksTracker->setup;
 
 sub default : Private {
     my ( $self, $c ) = @_;
-    $c->forward('/book/show');
+    $c->forward('/main/show');
 }
 
 sub end : Private {
