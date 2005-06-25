@@ -12,7 +12,8 @@ CREATE TABLE books (
     year integer,
     publisher varchar(500),
     isbn varchar(40),
-    last_updated timestamp
+    last_updated timestamp,
+    status integer
 );
 
 CREATE SEQUENCE books_id NO MAXVALUE START WITH 1 ;

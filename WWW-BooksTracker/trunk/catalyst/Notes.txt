@@ -1,2 +1,6 @@
 Database name: books_tracker1
 
+The appropriate status codes:
+* 0 - active.
+* 1 - pending for acception.
+* 2 - disabled/deleted.

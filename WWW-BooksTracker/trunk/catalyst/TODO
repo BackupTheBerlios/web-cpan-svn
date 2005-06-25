@@ -11,3 +11,6 @@
     - Add Forward and Backward buttons in the list.
     - Make sure the back to the list goes to the correct place in the list.
 
+* Make sure only the books with status 0 are displayed.
+
+* Add a "Delete/Disable" functionality.
