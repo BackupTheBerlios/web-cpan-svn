@@ -4,32 +4,12 @@
 
 <h2>Book Information</h2>
 
-<div class="book_info">
-<table>
-
-<!-- TODO: Make sure we don't display the entire URL if it's too long. -->
-
-[% FOREACH field = books_meta %]
-<tr>
-<td class="key">
-[% field.label %]
-</td>
-<td class="value">
-[% IF field.output_trans == "url" %]
-<a href="[% HTML.escape(book.${field.name}) %]" rel="nofollow">[% book.${field.name} %]</a>
-[% ELSE %]
-[% HTML.escape(book.${field.name}) %]
-[% END %]
-</td>
-</tr>
-[% END %]
-
-</table>
-</div>
+[% INCLUDE 'book_display.tt' %]
 
 <ol>
 <li><a href="./?mode=edit">Edit</a></li>
 <li><a href="../list/">Back to List</a></li>
+<li><a href="./disable/">Disable</a></li>
 </ol>
 
 </body>

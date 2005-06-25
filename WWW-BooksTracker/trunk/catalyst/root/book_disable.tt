@@ -1,0 +1,22 @@
+[% USE HTML %]
+[% INCLUDE 'book_header.tt' %]
+<h1>Disable the book?</h1>
+
+<p>
+Are you sure you want to disable this book:
+</p>
+
+[% INCLUDE 'book_display.tt' %]
+
+<form method="POST" action=".">
+<input type="hidden" name="mode" value="disable" />
+<p>
+<input type="checkbox" name="confirm" /> Yes, I am sure.
+</p>
+<p>
+<input type="submit" value="Disable" />
+</p>
+</form>
+
+[% INCLUDE 'book_footer.tt' %]
+

@@ -3,8 +3,9 @@ package WWW::BooksTracker::C::Book;
 use strict;
 use base 'Catalyst::Base';
 
-use WWW::BooksTracker::M::CDBI::CRUD;
 use WWW::BooksTracker;
+use WWW::BooksTracker::M::CDBI;
+use WWW::BooksTracker::Const qw(STATUS_DISABLED);
 
 use Data::Dumper;
 
@@ -57,25 +58,49 @@ sub list : Regex('^books/list/$')
     $pager->page( $c->req->params->{'page'} || 1);
 
     # TODO: Change to search_where() once we know the query better.
-    $c->stash->{'all_objects'} = [ $pager->retrieve_all() ];
+    $c->stash->{'all_objects'} = 
+        [ 
+            $pager->search_where(
+                where => { 'status' => 0 },
+            )
+        ];
     $c->stash->{'pager'} = $pager;
     $c->stash->{'template'} = "book_list.tt";
 }
 
-sub show : Regex('^books/(\d+)/$')
+sub show : Regex('^books/(\d+)/(disable/|)$')
 {
     my ( $self, $c ) = @_;
     $self->reg_books_meta($c);
     my $req = $c->req;
     my $mode = $req->params()->{'mode'} || "";
     my $id = $c->req->snippets->[0] || 1;
+    my $disable = $c->req->snippets->[1];
     my $query = { id => $id };
     my $book = WWW::BooksTracker::M::CDBI::Books->find_or_create($query);
     $c->stash->{book} = $book;
+    my $path = $c->req->path;
+    $c->stash->{rel_url_to_root} =
+        "./" . join("/", ("..") x (1+(() = $path =~ m!/!g)));
     
     $self->init_form($c);
     
-    if ($mode eq "edit")
+    if ($disable)
+    {
+        # TODO: Make sure the confirm CGI param is processed.
+        if (($req->method() eq "POST")
+            && ($mode eq "disable")
+            && $req->params()->{'confirm'})
+        {
+            $book->status(STATUS_DISABLED());
+            $c->stash->{template} = 'book_after_disable.tt';
+        }
+        else
+        {
+            $c->stash->{template} = 'book_disable.tt';
+        }
+    }
+    elsif ($mode eq "edit")
     {
         $c->stash->{template} = 'book_edit.tt';
         $c->forward('book_edit');

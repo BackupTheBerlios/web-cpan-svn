@@ -14,3 +14,13 @@
 * Make sure only the books with status 0 are displayed.
 
 * Add a "Delete/Disable" functionality.
+
+* Customize the title properly.
+
+* Implement the footer in any other place.
+
+Add tests to:
+-------------
+
+* Make sure disabled items don't appear in the list.
+

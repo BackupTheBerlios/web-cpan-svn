@@ -1,0 +1,12 @@
+[% USE HTML %]
+[% INCLUDE 'book_header.tt' %]
+
+<h1>Book Disabled</h1>
+
+<p>
+Book disabled.
+</p>
+
+<h2><a href="../../list/">Return to Book List</a></h2>
+
+[% INCLUDE 'book_footer.tt' %]

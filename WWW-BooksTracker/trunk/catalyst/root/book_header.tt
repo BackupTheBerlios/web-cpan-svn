@@ -7,7 +7,7 @@
 <head>
 <title>Edit [% HTML.escape(book.title) %]</title>
 <link title="Books Tracker Default Stylesheet" 
-    href="../../books_track.css" 
+    href="[% rel_url_to_root %]/books_track.css" 
     type="text/css" rel="stylesheet" />
 </head>
 <body>

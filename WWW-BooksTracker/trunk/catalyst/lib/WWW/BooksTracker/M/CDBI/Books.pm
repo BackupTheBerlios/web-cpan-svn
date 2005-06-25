@@ -1,6 +1,7 @@
 package WWW::BooksTracker::M::CDBI::Books;
 
 use strict;
+use warnings;
 
 __PACKAGE__->columns(Primary => 'id');
 __PACKAGE__->sequence('books_id');
