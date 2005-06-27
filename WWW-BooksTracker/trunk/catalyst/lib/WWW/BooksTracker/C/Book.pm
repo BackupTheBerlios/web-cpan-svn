@@ -93,6 +93,7 @@ sub show : Regex('^books/(\d+)/(disable/|)$')
             && $req->params()->{'confirm'})
         {
             $book->status(STATUS_DISABLED());
+            $book->dbi_commit();
             $c->stash->{template} = 'book_after_disable.tt';
         }
         else

@@ -1,3 +1,9 @@
+Bugs:
+-----
+
+Tasks:
+------
+
 * Make the /books/list/ functional.
     - Nicely format it.
 * Make the book addition form to redirect to the new book entry.
