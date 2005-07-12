@@ -2,7 +2,7 @@
 
 use strict;
 
-use Test::More tests => 7;
+use Test::More tests => 9;
 
 use HTML::Widgets::NavMenu;
 
@@ -39,4 +39,22 @@ ok (! $url->is_dir()); # TEST
     ok ((HTML::Widgets::NavMenu::get_relative_url("open-source/", "") eq "../"),
         "get_relative_url(): Checking for link to root directory"
     );
+}
+
+{
+    eval {
+    my $iter = HTML::Widgets::NavMenu::Iterator::Base->new();
+    };
+
+    # TEST
+    like($@, qr{^nav_menu not specified}, 
+        "nav_menu not specified");
+}
+
+{
+    my $obj = HTML::Widgets::NavMenu::Object->new();
+
+    # TEST
+    isa_ok($obj, "HTML::Widgets::NavMenu::Object", 
+        "Testing creation of object");
 }
