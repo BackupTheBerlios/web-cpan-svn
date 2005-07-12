@@ -33,7 +33,7 @@ sub get_url
 sub is_dir
 {
     my $self = shift;
-
+                                   
     return $self->{'is_dir'};
 }
 
@@ -41,15 +41,16 @@ sub get_relative_url
 {
     my $base = shift;
     my $to = shift;
+    my $slash_terminated = shift;
+
     my @this_url = @{$base->get_url()};
     my @other_url = @{$to->get_url()};
-    my $slash_terminated = shift;
 
     my $ret;
 
     my @this_url_bak = @this_url;
     my @other_url_bak = @other_url;
-    
+
     while(
         scalar(@this_url) &&
         scalar(@other_url) &&
@@ -60,9 +61,23 @@ sub get_relative_url
         shift(@other_url);
     }
 
-    if ((! @this_url) && (! @other_url) && (! $base->is_dir()) && (! $to->is_dir()) && scalar(@this_url_bak))
+    if ((! @this_url) && (! @other_url))
     {
-        return "./" . $this_url_bak[-1];
+        if ((!$base->is_dir() ) ne (!$to->is_dir()))
+        {
+            die "Two identical URLs with non-matching is_dir()'s";
+        }
+        if (! $base->is_dir())
+        {
+            if (scalar(@this_url_bak))
+            {
+                return "./" . $this_url_bak[-1];
+            }
+            else
+            {
+                die "Root URL is not a directory";
+            }
+        }
     }
 
     if (($base->{'mode'} eq "harddisk") && ($to->is_dir()))
