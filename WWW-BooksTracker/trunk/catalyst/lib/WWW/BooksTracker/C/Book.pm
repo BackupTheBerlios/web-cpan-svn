@@ -44,7 +44,9 @@ sub book_add : Regex('^books/add/$')
     }
     else
     {
-        $c->stash->{template} = 'book_add.tt';
+        $c->stash->{template} = 'book_edit.tt';
+        $c->stash->{mode} = "do_add";
+        $c->stash->{title} = "Add New Book";
     }    
 }
 
@@ -104,6 +106,8 @@ sub show : Regex('^books/(\d+)/(disable/|)$')
     elsif ($mode eq "edit")
     {
         $c->stash->{template} = 'book_edit.tt';
+        $c->stash->{mode} = "do_edit";
+        $c->stash->{title} = "Edit " . $book->get('title');
         $c->forward('book_edit');
     }
     elsif ($mode eq "do_edit")
@@ -141,6 +145,7 @@ sub book_do_add : Private
 {
     my ($self, $c) = @_;
     my $book = WWW::BooksTracker::M::CDBI::Books->create_from_form( $c->form );
+    $book->set('status', 0);
     $book->dbi_commit();
     $c->res->redirect("../list/");
 }

@@ -1,6 +1,12 @@
 Bugs:
 -----
 
+Cleanups:
+---------
+
+* Merge book_edit.tt and book_add.tt
+* Extract most of the Perl code out of the templates.
+
 Tasks:
 ------
 
@@ -8,18 +14,11 @@ Tasks:
     - Nicely format it.
 * Make the book addition form to redirect to the new book entry.
 
-* Add an "Add" link at the bottom.
-
 * Make the controller of the books more modular.
 
 * Add more links between the pages.
-    - Add an "Add" Link to the bottom of the List books.
     - Add Forward and Backward buttons in the list.
     - Make sure the back to the list goes to the correct place in the list.
-
-* Make sure only the books with status 0 are displayed.
-
-* Add a "Delete/Disable" functionality.
 
 * Customize the title properly.
 

@@ -1,6 +1,6 @@
 [% USE HTML %]
 [% INCLUDE 'book_header.tt' %]
-<h1>Online Books Tracker - Edit [% HTML.escape(book.title) %]</h1>
+<h1>Online Books Tracker - [% HTML.escape(title) %]</h1>
 
 <div class="book_info edit">
 [% PERL %]
@@ -33,12 +33,16 @@ my %fields =
 $fields{'mode'} = 
 { 
     'label' => "mode", 
-    'defaultValue' => "do_edit", 
+    'defaultValue' => $stash->{mode}, 
     'type' => "hidden",
 };    
 my $params =
 +{
-    map { $_->{'name'} => $book->get($_->{'name'}), } @$book_meta,
+    map { $_->{'name'} =>
+        (($stash->{mode} eq "do_add") ?
+            "" :
+            $book->get($_->{'name'})),
+        } @$book_meta,
 };
 
 my $form = 
