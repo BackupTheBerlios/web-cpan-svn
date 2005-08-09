@@ -1,0 +1,83 @@
+body
+{
+    background-color : white;
+}
+.record 
+{ 
+    border-style : double ; 
+    border-color : green ; 
+    width : 30em;
+    margin-bottom : 2em;
+}
+.posted 
+{ 
+    text-align : right;
+    margin-top : 0.2em;
+}
+.posted b { color : red }
+.record h3 
+{ 
+    background-color : #E6E6FA; /* Lavender */
+    margin-top : 0em;
+    padding : 0.5em 0.2em 0.5em 0.2em;
+    margin-bottom : 0em;
+}
+.desc 
+{
+    margin : 0em;
+    padding-left : 1em;
+    background-color : #FFFF88 ;
+}
+.myform td
+{
+    vertical-align : top;
+    border-color : #006400; /* Dark Green */
+    border-style : solid;
+    border-width : thin;
+    padding : 0.2em;
+}
+.warning
+{
+    font-size : large;
+}
+/* Highlight each two rows in the input table in different colors */
+.hilight
+{
+    background-color : #F5DEB3; /* Wheat */
+}
+.hilight2
+{
+    background-color : #84db84;
+}
+/* Put some spacing between each two rows to distiniguish the records */
+tr.space td
+{
+    margin-bottom : 20em;
+    border-spacing : 0em 20em;
+}
+/* The extra style attributes of the record if it is in admin mode. */
+.recadmin
+{
+    float : left;
+    clear : left;
+}
+/* The style of the admin record toolbox */
+.recordtoolbox
+{
+    float : left;
+    background-color : lavendar;
+    border-style : double ; 
+    border-color : red ; 
+}
+
+h2
+{
+    clear : left;
+}
+
+.footer
+{
+    font-size : smaller;
+    clear : both;
+}
+
