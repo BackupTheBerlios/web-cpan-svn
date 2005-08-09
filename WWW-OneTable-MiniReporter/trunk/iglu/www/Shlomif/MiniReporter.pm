@@ -213,6 +213,22 @@ sub get_record_template_gen
     return $self->{record_tt};
 }
 
+sub get_css_path
+{
+    my $self = shift;
+    my $path = $self->get_path();
+
+    my $path2 = $path;
+
+    $path2 =~ s/^\///;
+
+    my @css_path_components = (map { "../" } split(/\//, $path2));
+
+    my $css_path = join("", @css_path_components);
+    
+    return $css_path;
+}
+
 sub linux_il_header
 {
     my $self = shift;
@@ -240,13 +256,7 @@ sub linux_il_header
 		$title2 = "";
 	}
 
-    my $path2 = $path;
-
-    $path2 =~ s/^\///;
-
-    my @css_path_components = (map { "../" } split(/\//, $path2));
-
-    my $css_path = join("", @css_path_components);
+    my $css_path = $self->get_css_path();
 
     my $index_rss = $self->get_rss_table_name() ? 
         qq(<link rel="alternate" title="Better SCM RSS Feed" href="./${css_path}index.rss" type="application/rss+xml" />) :
@@ -434,15 +444,19 @@ sub render_record
 
     my $values = $args{'values'};
     my $fields = $args{'fields'};
-    my $with_toolbox = $args{'toolbox'};
     my $template = $args{'template'} || "record_tt";
 
     my $vars = { map { $fields->[$_] => htmlize($values->[$_]) } (0 .. $#$values)};
 
-    if ($with_toolbox)
+    foreach my $flag (qw(for_rss toolbox))
     {
-        $vars->{'toolbox'} = 1;
+        if ($args{$flag})
+        {
+            $vars->{$flag} = 1;
+        }
     }
+
+    $vars->{'css_path'} = $self->get_css_path();
 
     $self->{$template}->process('main', $vars, \$ret);
 
@@ -923,7 +937,7 @@ sub get_url_to_main
 {
     my $self = shift;
 
-    # SCIPRT_URI requires Apache 1.3.x's mod_rewrite
+    # SCRIPT_URI requires Apache 1.3.x's mod_rewrite
     my $script_uri = $ENV{'SCRIPT_URI'};
 
     my $path_info = $self->query()->path_info();
@@ -1003,6 +1017,7 @@ sub update_rss_feed
                 htmlize($self->render_record(
                     'values' => $values,
                     'fields' => $query->{'field_names'},
+                    'for_rss' => 1,
                 )),
             'author' => "Unknown",
             'pubDate' => scalar(localtime($date_time)),
