@@ -42,6 +42,17 @@ selective expansion, and multi-host sites.
 Furthermore, it is extensively tested, and the author believes its code can
 be easily extended and customized, given a small amount of studying.
 </p>
+
+<h2>Documents</h2>
+
+<ul>
+<li>
+<a href="http://www.perl.com/pub/a/2005/07/07/navwidgets.html">"Building 
+Navigation Menus" at Perl.com</a> - an article that covers common web-site
+navigation and site flow patterns in general and then demonstrates how to
+implement them using HTML-Widgets-NavMenu.
+</li>
+</ul>
 <h2>Web-Sites that Use HTML::Widgets::NavMenu</h2>
 <ul>
 <li>
