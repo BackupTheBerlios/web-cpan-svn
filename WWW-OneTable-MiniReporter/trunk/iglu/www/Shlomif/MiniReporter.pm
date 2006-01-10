@@ -88,6 +88,14 @@ sub setup
     );
 }
 
+sub cgiapp_prerun
+{
+    my $self = shift;
+
+    # This is so the CGI header won't print a character set.
+    $self->query()->charset('');
+}
+
 sub redirect_to_main
 {
     my $self = shift;
@@ -684,7 +692,7 @@ sub get_form_fields
    
     $fields{area} = {
         label => "Area",
-        defaultValue => "Tel Aviv",
+        defaultValue => ($q->param("area") || "Tel Aviv"),
         type => 'select',
         optionsGroup => [
             map { +{ 'label' => $_, 'value' => $_, }, } @{$config->{'areas'}},
