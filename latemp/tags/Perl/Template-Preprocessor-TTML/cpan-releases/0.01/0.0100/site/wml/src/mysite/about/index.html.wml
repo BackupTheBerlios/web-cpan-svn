@@ -1,0 +1,135 @@
+#include "template.wml"
+
+<latemp_subject "About Latemp" />
+<latemp_version_control_id "$Id$" />
+
+<h2 id="history">History and Motivation</h2>
+
+<p>
+After <a href="http://www.shlomifish.org/">Shlomi Fish</a> has learned HTML,
+and has worked for a web-design company, he maintained his own web-site on
+his University servers by manually editing HTML pages and other such content.
+This, while being sufficient, produced relatively uninteresting HTML with
+little resemblance to an integrated site. As he had to maintain some other
+sites, he was looking for a better solution.
+</p>
+
+<p>
+He came across <a href="http://thewml.org/">Website Meta Language</a> which
+after he learned, and set up on his Linux servers, allowed him to build 
+integrated, usable and attractive sites. As time went by he created a great
+deal of sites this way, by copying the contents of an old site and adapting
+it to the needs of the new site.
+</p>
+
+<p>
+More recently, he came to the conclusion that he shouldn't duplicate his work
+in so many places. As he came upon older sites, he often found he had to
+revise their build system or templates to adapt them to the knowledge he
+acquired more recently. To remedy this, he decided to create a content
+management system that will allow to maintain multiple sites by abstracting
+the common code.
+</p>
+
+<p>
+This was the birth of Latemp ("Latemp" being a play on the word "Template"):
+a powerful, integrated framework for maintaining static HTML web-sites. This
+site, for example was created using Latemp, and so are 
+<a href="$(ROOT)/examples/">others</a>.
+</p>
+
+<h2 id="features">Features</h2>
+
+<ul class="links">
+<li>
+Generates Static HTML Files.
+</li>
+<li>
+Allows sites to have a common look and feel.
+</li>
+<li>
+Supports setting up navigation menus, breadcrumbs trails, navigation 
+links ("Up", "Next" and "Previous"), site maps with sophisticated site
+flow.
+</li>
+<li>
+Makes use of <a href="http://thewml.org/">Web Meta Language</a> and so has
+all of its power (including extending its functionality by using 
+embedded <a href="http://www.perl.org/">Perl</a>).
+</li>
+<li>
+Themable. Three themes (<tt>perl-begin-1</tt>, <tt>better-scm</tt>, and
+<tt>sinorca-2.0</tt>) are supplied in the distribution. More can be written
+by the user. (and contributed).
+</li>
+<li>
+Open Source. Distributed under the 
+<a href="http://www.opensource.org/licenses/mit-license.php">MIT X11 
+License</a>, which allows for free distribution, use, modification and 
+re-licensing.
+</li>
+<li>
+Can generate valid XHTML 1.0 Transitional, XHTML 1.0 Strict or XHTML 1.1.
+</li>
+<li>
+Has pre-defined insertion points for including a breadcrumbs trail, a 
+navigation menu, various HTML <tt>&lt;head&gt;</tt> elements, a logo, 
+navigation links buttons, affiliation buttons, a license, a webmaster 
+contact, a time stamp, and a foot image.
+</li>
+<li>
+Supports generating plain pages (without any additional content or layout
+aside from the body).
+</li>
+<li>
+Supported <tt>&lt;head&gt;</tt> elements: <tt>&lt;title&gt;</tt> tag,
+"author", "description" and "keywords" <tt>&lt;meta&gt;</tt> elements,
+Stylesheets (screen and print), favicon, Mozilla/Opera-style navigation 
+links, and customizable user-defined text to be inserted there.
+</li>
+<li>
+Supports a unified management of news items with navigation menu entries,
+a news box, an RSS Feed, and news page entries.
+</li>
+</ul>
+
+<h2 id="technologies">Technologies</h2>
+
+<p>
+Latemp makes use of the following technologies:
+</p>
+<ul>
+<li>
+<a href="http://thewml.org/">Website Meta Language</a> - a powerful HTML 
+generating system.
+</li>
+<li>
+<a href="http://www.gnu.org/software/make/">GNU Make</a> - a building system
+which is a superset of traditional UNIX make. Very powerful and usable.
+</li>
+<li>
+<a href="http://web-cpan.berlios.de/modules/HTML-Widgets-NavMenu/">HTML-Widgets-NavMenu</a> - a CPAN module used to maintain navigation menus and site flow.
+</li>
+<li>
+<a href="http://www.template-toolkit.org/">The Template Toolkit</a> - a 
+powerful templating system for Perl.
+</li>
+<li>
+<a href="http://search.cpan.org/dist/HTML-Latemp-GenMakeHelpers/">HTML-Latemp-GenMakeHelpers</a> -
+a small utility module used to maintain the files list to be inputted to the
+makefile.
+</li>
+<li>
+<a href="http://search.cpan.org/dist/HTML-Latemp-News/">HTML-Latemp-News</a> -
+a module for managing news items.
+</li>
+
+</ul>
+
+<p>
+Additionally, in order to install Latemp, you'll need 
+<a href="http://www.scons.org/">SCons</a>, which is a Python-based build 
+system.
+</p>
+
+
