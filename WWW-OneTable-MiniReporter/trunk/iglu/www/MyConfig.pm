@@ -161,7 +161,7 @@ Posted at <b>[% post_date %]</b>
 </p>
 [% UNLESS for_rss %]
 <p>
-<a href="[% css_path %]show-record/[% id %]/" title="A Permanent URL (until this item is removed or outdated) that describes only this particular item"><b>This Entry's Standalone URL</b></a>
+<a href="[% path_to_root %]show-record/[% id %]/" title="A Permanent URL (until this item is removed or outdated) that describes only this particular item"><b>This Entry's Standalone URL</b></a>
 </p>
 [% END %]
 </div>

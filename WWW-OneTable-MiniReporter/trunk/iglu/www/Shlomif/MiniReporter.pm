@@ -221,20 +221,30 @@ sub get_record_template_gen
     return $self->{record_tt};
 }
 
-sub get_css_path
+sub remove_leading_slash
+{
+    my ($self, $string) = @_;
+    $string =~ s{^/}{};
+    return $string;
+}
+
+sub get_path_wo_leading_slash
 {
     my $self = shift;
-    my $path = $self->get_path();
+    return $self->remove_leading_slash($self->get_path());
+}
 
-    my $path2 = $path;
+sub get_rel_url_to_root
+{
+    my ($self, $string) = @_;
+    return join("", (map { "../" } split(/\//, $string)));
+}
 
-    $path2 =~ s/^\///;
+sub get_path_to_root
+{
+    my $self = shift;
 
-    my @css_path_components = (map { "../" } split(/\//, $path2));
-
-    my $css_path = join("", @css_path_components);
-    
-    return $css_path;
+    return $self->get_rel_url_to_root($self->get_path_wo_leading_slash());
 }
 
 sub linux_il_header
@@ -264,10 +274,10 @@ sub linux_il_header
 		$title2 = "";
 	}
 
-    my $css_path = $self->get_css_path();
+    my $path_to_root = $self->get_path_to_root();
 
     my $index_rss = $self->get_rss_table_name() ? 
-        qq(<link rel="alternate" title="Better SCM RSS Feed" href="./${css_path}index.rss" type="application/rss+xml" />) :
+        qq(<link rel="alternate" title="Better SCM RSS Feed" href="./${path_to_root}index.rss" type="application/rss+xml" />) :
         "";
 
 	$ret .= <<"EOF"
@@ -278,7 +288,7 @@ sub linux_il_header
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
 <head>
 $title1
-<link rel="stylesheet" href="./${css_path}style.css" type="text/css" />
+<link rel="stylesheet" href="./${path_to_root}style.css" type="text/css" />
 $index_rss
 </head>
 <body>
@@ -464,7 +474,7 @@ sub render_record
         }
     }
 
-    $vars->{'css_path'} = $self->get_css_path();
+    $vars->{'path_to_root'} = $self->get_path_to_root();
 
     $self->{$template}->process('main', $vars, \$ret);
 
