@@ -1165,6 +1165,8 @@ sub show_record
     }
 
     $ret .= $self->linux_il_footer();
+
+    return $ret;
 }
 1;
 
