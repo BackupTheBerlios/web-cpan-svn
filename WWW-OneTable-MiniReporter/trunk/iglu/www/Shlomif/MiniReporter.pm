@@ -1087,25 +1087,43 @@ sub get_record_fields
     return ($query->{'field_names'}, $values);
 }
 
-# TODO : Add a header and title to show_record.
-sub show_record_by_id
+sub get_show_record_params
 {
     my ($self, $record_id) = @_;
 
     my ($field_names, $values) = $self->get_record_fields($record_id);
 
+    if (defined($values))
+    {
+        return (
+            "Displaying Record $record_id",                 
+            $self->render_record(
+                'values' => $values,
+                'fields' => $field_names,
+                'toolbox' => 0,
+            )
+        );
+    }
+    else
+    {
+        return (
+            "Record not found - sorry",
+            "",
+        );
+    }
+}
+
+sub show_record_by_id
+{
+    my ($self, $record_id) = @_;
+
+    my ($title, $record) = $self->get_show_record_params($record_id);
+
     return $self->tt_process(
         'show_record_page.tt',
         {
-            'record' => 
-            (defined($values) ?
-                $self->render_record(
-                    'values' => $values,
-                    'fields' => $field_names,
-                    'toolbox' => 0,
-                ) :
-                "<h1>Record not found - sorry</h1>"
-            )
+            (map { $_ => $title } qw(header title)),
+            'record' => $record,
         }
     );
 }
