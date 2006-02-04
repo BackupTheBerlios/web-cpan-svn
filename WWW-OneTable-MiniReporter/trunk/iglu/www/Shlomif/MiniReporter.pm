@@ -454,7 +454,7 @@ sub construct_fetch_query
     	}
     	else
     	{
-    		@areas = $area_param;
+    		@areas = ($area_param);
     	}
     }
 
@@ -480,6 +480,53 @@ sub construct_fetch_query
         };
 }
 
+sub get_display_records_query
+{
+    my $self = shift;
+    my $args = shift;
+    my $conn = $self->dbi_connect();
+    my $query = $self->construct_fetch_query($args);
+
+    my $sth = $conn->prepare($query->{'query'});
+
+    $sth->execute();
+
+    $query->{'rows'} = $sth->fetchall_arrayref();
+
+    $conn->disconnect();
+
+    return $query;
+}
+
+sub get_jobs_by_area
+{
+    my $self = shift;
+    my $args = shift;
+
+    my $display_toolbox = $args->{'toolbox'} || 0;
+
+    my %jobs_by_area;
+
+    my $query = $self->get_display_records_query($args);
+
+    foreach my $values (@{$query->{rows}})
+    {
+        push @{$jobs_by_area{$values->[0]}},
+            $self->render_record(
+                'values' => $values,
+                'fields' => $query->{'field_names'},
+                'toolbox' => $display_toolbox,
+            );
+    }
+
+    return
+    [
+        map { +{ 'name' => $_, 'records' => ($jobs_by_area{$_} || []), } }
+        @{$query->{'areas'}},
+    ];
+}
+
+
 =head2 $self->display_records(%args)
 
 Accepts the following optional parameters:
@@ -492,67 +539,36 @@ Accepts the following optional parameters:
     show_enabled - show enabled records as well.
 =cut
 
+
 sub display_records
 {
     my $self = shift;
 
     my %args = (@_);
 
-    my $display_toolbox = $args{'toolbox'} || 0;
+    my %does_area_exists_map = (map { $_ => 1} $self->get_area_list());
 
-    my $conn = $self->dbi_connect();
+    my $jobs_by_area = $self->get_jobs_by_area(\%args);
 
     my $ret = "";
 
-    my %does_area_exists_map = (map { $_ => 1} $self->get_area_list());
-
     $ret .= $self->linux_il_header("Search Results", "Search Results");
-
-    my $query = $self->construct_fetch_query(\%args);
-
-    my $sth = $conn->prepare($query->{'query'});
-
-    $sth->execute();
-
-    my (%areas_jobs);
-
-    foreach my $a ($self->get_area_list())
+    
+    AREA_LOOP: foreach my $area (@$jobs_by_area)
     {
-    	$areas_jobs{$a} = [ ];
-    }
-
-    my ($string);
-
-    my $values;
-
-    while ($values = $sth->fetchrow_arrayref())
-    {
-        my $string =
-            $self->render_record(
-                'values' => $values,
-                'fields' => $query->{'field_names'},
-                'toolbox' => $display_toolbox,
-            );
-
-        push @{$areas_jobs{$values->[0]}}, $string;
-    }
-
-    AREA_LOOP: foreach my $area (@{$query->{'areas'}})
-    {
+        my $name = $area->{'name'};
         # Check if the area is a valid one and if not skip this 
         # iteration.
-        if (!exists($does_area_exists_map{$area}))
+        if (!exists($does_area_exists_map{$name}))
         {
             next AREA_LOOP;
         }
-    	$ret .= "<h2>" . $area . "</h2>\n\n";
+    	$ret .= "<h2>$name</h2>\n\n";
 
-    	$ret .= join("", @{$areas_jobs{$area}});
+    	$ret .= join("", @{$area->{'records'}});
     }
 
     $ret .= $self->linux_il_footer();
-
-    $conn->disconnect();
 
     return $ret;
 }
