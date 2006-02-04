@@ -1,0 +1,23 @@
+<h3>Search the Database</h3>
+
+<form action="./search/" method="post">
+
+<p>Area: 
+<select name="area">
+<option selected="selected">All</option>
+[% FOREACH a = areas %]<option>[% a %]</option>
+[% END %]</select>
+</p>
+<p>
+Keyword from description: <input name="keyword" />
+</p>
+<p>
+<input type="submit" value="Search" />
+</p>
+</form>
+<ul>
+<li><a href="./search/?all=1">[% show_all_records_text %]</a></li>
+<li><a href="./add/">[% add_a_record_text %]</a></li>
+<li><a href="./remove/">[% remove_a_record_text %]</a></li>
+[% IF with_rss %]<li><a href="./index.rss">Subscribe to our RSS Feed</a></li>
+[% END %]</ul>

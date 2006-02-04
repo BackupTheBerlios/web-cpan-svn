@@ -315,45 +315,17 @@ sub main_page
     
     $ret .= $self->linux_il_header($title, $title);
     
-    $ret .= <<'EOF'
-<h3>Search the Database</h3>
-
-<form action="./search/" method="post">
-
-<p>Area: 
-<select name="area">
-<option selected="selected">All</option>
-EOF
-
-    ;
-
-    foreach my $area ($self->get_area_list())
-    {
-    	$ret .= ( "<option>" . $area . "</option>\n");
-    }
-
-    $ret .= <<'EOF';
-</select>
-</p>
-<p>
-Keyword from description: <input name="keyword" />
-</p>
-<p>
-<input type="submit" value="Search" />
-</p>
-</form>
-EOF
-	;
-
-    $ret .= "<ul>\n";
-    $ret .= "<li><a href=\"./search/?all=1\">" . $self->get_string('show_all_records_text') . "</a></li>\n";
-    $ret .= "<li><a href=\"./add/\">" . $self->get_string('add_a_record_text') . "</a></li>\n";
-    $ret .= "<li><a href=\"./remove/\">" . $self->get_string('remove_a_record_text') . "</a></li>\n" ;
-    if ($self->get_rss_table_name())
-    {
-        $ret .= "<li><a href=\"./index.rss\">Subscribe to our RSS Feed</a></li>\n";
-    }
-    $ret .= "</ul>\n";
+    $ret .= ${$self->tt_process(
+        'main_page.tt',
+        {
+            'areas' => [ $self->get_area_list() ],
+            (
+                map { $_ => $self->get_string($_) } 
+                (qw(show_all_records_text add_a_record_text remove_a_record_text))
+            ),
+            'with_rss' => $self->get_rss_table_name(),
+        }
+    )};
 
     $ret .= $self->linux_il_footer();
 
