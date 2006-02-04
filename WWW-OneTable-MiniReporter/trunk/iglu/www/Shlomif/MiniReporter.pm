@@ -1063,9 +1063,19 @@ sub update_rss
 sub show_record
 {
     my $self = shift;
-    $self->get_path() =~ /\/show-record\/(\d+)\// or
+    if ($self->get_path() =~ m!/show-record/(\d+)/!)
+    {
+        return $self->show_record_by_id($1);
+    }
+    else
+    {
         return $self->redirect_to_main();
-    my $record_id = $1;
+    }
+}
+
+sub show_record_by_id
+{
+    my ($self, $record_id) = @_;
 
     my $ret = "";
     $ret .= $self->linux_il_header();
