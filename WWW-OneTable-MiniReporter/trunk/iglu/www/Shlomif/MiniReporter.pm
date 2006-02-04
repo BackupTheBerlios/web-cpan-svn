@@ -9,6 +9,8 @@ use Template;
 use base 'CGI::Application';
 use base 'Class::Accessor';
 
+use CGI::Application::Plugin::TT;
+
 use XML::RSS;
 
 use WWW::Form;
@@ -91,6 +93,16 @@ sub setup
 sub cgiapp_prerun
 {
     my $self = shift;
+
+    $self->tt_params(
+        'path_to_root' => $self->get_path_to_root(),
+    );
+
+    # TODO : There may be a more efficient/faster way to do it, but I'm 
+    # anxious to get it to work. -- Shlomi Fish
+    $self->tt_include_path(
+        [ './templates' ],
+    );
 
     # This is so the CGI header won't print a character set.
     $self->query()->charset('');
@@ -249,71 +261,19 @@ sub get_path_to_root
 
 sub linux_il_header
 {
-    my $self = shift;
-	my $title = shift;
-	my $header = shift;
-    my $path = $self->get_path();
-	
-	my ($ret, $title1, $title2);
-	
-	if ($title)
-	{
-		$title1 = "<title>" . $title . "</title>\n";
-	}
-	else
-	{	
-		$title1 = "";
-	}
-	
-	if ($header)
-	{	
-		$title2 = "<h1>" . $header . "</h1>\n";
-	}
-	else
-	{
-		$title2 = "";
-	}
+    my ($self, $title, $header) = @_;
 
-    my $path_to_root = $self->get_path_to_root();
-
-    my $index_rss = $self->get_rss_table_name() ? 
-        qq(<link rel="alternate" title="Better SCM RSS Feed" href="./${path_to_root}index.rss" type="application/rss+xml" />) :
-        "";
-
-	$ret .= <<"EOF"
-<!DOCTYPE html
-    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<?xml version="1.0" encoding="iso-8859-1"?>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
-<head>
-$title1
-<link rel="stylesheet" href="./${path_to_root}style.css" type="text/css" />
-$index_rss
-</head>
-<body>
-<p>
-<a href="/" title="Back to the IGLU Homepage"><img 
-    src="/images/IGLU-banner.jpg" 
-    width="499" height="86" 
-    alt="IGLU - Israeli Group of Linux Users" 
-    style="border : 0" /></a>
-</p>
-<p style="margin-bottom : 2em">[<a href="/">Home</a> |
-<a href="/IGLU/">News</a> |
-<a href="/about.shtml">About</a> |
-<a href="/faq/">FAQ</a> |
-<a href="/mailing-lists/">Mailing Lists</a> |
-<a href="/events/">Events</a> |
-<a href="/faq/cache/52.html">Help!</a> |
-<a href="/faq/cache/8.html">Hebrew</a>]</p>
-
-$title2	
-EOF
-	;
-	
-	return $ret;
+    # TODO : Add and implement a parameter for the title of the RSS feed.
+    return ${$self->tt_process(
+        'header.tt',
+        {
+            'title' => $title,
+            'header' => $header,
+            'with_rss' => $self->get_rss_table_name(),
+        },
+    )};
 }
+
 
 sub linux_il_footer
 {
