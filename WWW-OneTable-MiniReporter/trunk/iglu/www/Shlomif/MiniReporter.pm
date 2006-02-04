@@ -553,14 +553,12 @@ sub display_records
 {
     my $self = shift;
 
-    my %args = (@_);
-
     return $self->tt_process(
         'display_records_page.tt',
         {
             'header' => "Search Results",
             'title' => "Search Results",
-            'jobs_by_area' => $self->get_jobs_by_area(\%args),
+            'jobs_by_area' => $self->get_jobs_by_area(@_),
         },
     );
 }
@@ -578,9 +576,11 @@ sub search_results
     my $area_param = $q->param("area") || "";
 
     return $self->display_records(
-        'all_records' => $all_param,
-        'keyword' => $keyword_param,
-        'area_choice' => $area_param,
+        {
+            'all_records' => $all_param,
+            'keyword' => $keyword_param,
+            'area_choice' => $area_param,
+        }
     );
 }
 
@@ -1002,8 +1002,10 @@ sub admin_screen
     my $self = shift;
 
     return $self->display_records(
-       'all_records' => 1,
-       'toolbox' => 1,
+        {
+            'all_records' => 1,
+            'toolbox' => 1,
+        }
     );
 }
 
