@@ -1,0 +1,15 @@
+[% INCLUDE "header.tt" %]
+<p>
+In order to remove your entry from the [% service %], please send a personal
+E-mail to <a href="mailto:webmaster@iglu.org.il">webmaster@iglu.org.il</a>
+specifying the entry you wish to remove. (please be as clear as possible,
+and as detailed as necessary.) We will disable it (so it won't be seen)
+and let you know about it.
+</p>
+<p>
+We regret the fact that there isn't an automated mechanism for disabling 
+an entry. However, this will require much more work to be conducted in the
+[% service %]. This may be done in the future, but at the moment the gain
+is far below the effort that would need to be invested.
+</p>
+[% INCLUDE "footer.tt" %]

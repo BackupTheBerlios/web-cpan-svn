@@ -1010,33 +1010,15 @@ sub remove
 {
     my $self = shift;
 
-    my $service = $self->get_string('service');
-
-    my $ret = "";
-
-    $ret .= $self->linux_il_header($self->get_string('remove_result_title'), "Remove a Job");
-
-    $ret .= <<"EOF" ;
-<p>
-In order to remove your entry from the $service, please send a personal
-E-mail to <a href="mailto:webmaster\@iglu.org.il">webmaster\@iglu.org.il</a>
-specifying the entry you wish to remove. (please be as clear as possible,
-and as detailed as necessary.) We will disable it (so it won't be seen)
-and let you know about it.
-</p>
-<p>
-We regret the fact that there isn't an automated mechanism for disabling 
-an entry. However, this will require much more work to be conducted in the
-$service. This may be done in the future, but at the moment the gain
-is far below the effort that would need to be invested.
-</p>
-EOF
-
-    ;
-    
-    $ret .= $self->linux_il_footer();
-
-    return $ret;
+    return $self->tt_process(
+        'remove_page.tt',
+        {
+            'title' => $self->get_string('remove_result_title'),
+            'header' => "Remove a Job",
+            'with_rss' => $self->get_rss_table_name(),
+            (map { $_ => $self->get_string($_) } ('service')),
+        },
+    );
 }
 
 sub rss_feed
