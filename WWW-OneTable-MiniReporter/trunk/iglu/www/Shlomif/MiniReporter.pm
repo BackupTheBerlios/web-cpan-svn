@@ -277,30 +277,11 @@ sub linux_il_header
 
 sub linux_il_footer
 {
-    my $ret;
-    
-    $ret .= <<'EOF';
-<hr />
-<div class="footer">
-<p>For more info or
-for website remarks mail the 
-<a href="mailto:webmaster@iglu.org.il"><em>webmasters</em></a>.
-</p>
-<p>
-All Trademarks and copyrights are owned by their respective owners, Linux is a Tradmark of Linus Torvalds.
-</p>
-<p>
-The information contained herein is CopyLeft IGLU, you are granted permission to
-copy it and distribute it.
-</p>
-</div>
-</body>
-</html>
-EOF
+    my $self = shift;
 
-	;
-    
-    return $ret;
+    return ${$self->tt_process(
+        'footer.tt',
+    )};
 }
 
 sub get_string
@@ -374,7 +355,7 @@ EOF
     }
     $ret .= "</ul>\n";
 
-    $ret .= linux_il_footer();
+    $ret .= $self->linux_il_footer();
 
     return $ret;
 }
@@ -605,7 +586,7 @@ sub display_records
     	$ret .= join("", @{$areas_jobs{$area}});
     }
 
-    $ret .= linux_il_footer();
+    $ret .= $self->linux_il_footer();
 
     $conn->disconnect();
 
@@ -893,7 +874,7 @@ EOF
         $ret .= "<a href=\"../\">" . $self->get_string('add_back_link_text') . "</a>\n";
     }
 
-    $ret .= linux_il_footer();
+    $ret .= $self->linux_il_footer();
 
     return $ret;
 }
@@ -1057,7 +1038,7 @@ EOF
 
     ;
     
-    $ret .= linux_il_footer();
+    $ret .= $self->linux_il_footer();
 
     return $ret;
 }
