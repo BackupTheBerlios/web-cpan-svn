@@ -555,23 +555,14 @@ sub display_records
 
     my %args = (@_);
 
-    my $jobs_by_area = $self->get_jobs_by_area(\%args);
-
-    my $ret = "";
-
-    $ret .= $self->linux_il_header("Search Results", "Search Results");
-    
-    AREA_LOOP: foreach my $area (@$jobs_by_area)
-    {
-        my $name = $area->{'name'};
-    	$ret .= "<h2>$name</h2>\n\n";
-
-    	$ret .= join("", @{$area->{'records'}});
-    }
-
-    $ret .= $self->linux_il_footer();
-
-    return $ret;
+    return $self->tt_process(
+        'display_records_page.tt',
+        {
+            'header' => "Search Results",
+            'title' => "Search Results",
+            'jobs_by_area' => $self->get_jobs_by_area(\%args),
+        },
+    );
 }
 
 sub search_results
