@@ -727,36 +727,92 @@ sub get_form_html
     return $ret;
 }
 
+sub get_add_form_single_field_value
+{
+    my $self = shift;
+    my $a = shift;
+
+    if (exists($a->{'gen'}))
+    {
+        return $a->{'gen'}->{callback}->(
+            $self->query()->param($a->{'sql'})
+        );
+    }
+    else
+    {
+        return $self->query()->param($a->{'sql'});
+    }
+}
+
+sub get_add_form_single_field
+{
+    my $self = shift;
+    my $a = shift;
+    return 
+        { 
+            'field' =>$a->{sql}, 
+            'value' => $self->get_add_form_single_field_value($a)
+        };
+}
+
+sub get_add_form_fields
+{
+    my $self = shift;
+
+    my @ret = 
+    (
+        map { $self->get_add_form_single_field($_) } 
+            $self->get_fields()
+    );
+    return 
+        (
+            [ map { $_->{'field'} } @ret], 
+            [ map { $_->{'value'} } @ret], 
+        );
+}
+
+sub perform_insert
+{
+    my ($self, $field_names, $values) = @_;
+
+    my $conn = $self->dbi_connect();
+    my $query_str = "INSERT INTO " . $self->config()->{'table_name'} .
+        " (" . join(",", "id", "status", "area", @$field_names) . ") " .
+        " VALUES (0, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $conn->quote($_); } @$values)) . ")";
+
+    $conn->do($query_str);
+
+    $self->update_rss_feed($conn);
+
+    $conn->disconnect();
+
+    return $self->tt_process(
+        'perform_insert_page.tt',
+        {
+            'title' => $self->get_string('add_result_title'),
+            'header' => "Success",
+            (map { $_ => $self->get_string($_) } ('add_back_link_text')),
+            'areas' => [ $self->get_area_list() ],
+            (
+                map { $_ => $self->get_string($_) } 
+                (qw(show_all_records_text add_a_record_text remove_a_record_text))
+            ),
+            'with_rss' => $self->get_rss_table_name(),
+        }
+    );
+}
+
 sub add_form
 {
     my $self = shift;
 
     my $q = $self->query();
 
-    # return join("\n<br />\n", (map { "$_ = " . $q->param($_) } $q->param()));
-    
     my $config = $self->{config};
 
-    my $id = 0;
-
     # Prepare the insert statement
-
-    my (@values, @field_names);
-
-    foreach my $a ($self->get_fields())
-    {
-    	push @field_names, $a->{'sql'};
-        my $v;
-        if (exists($a->{'gen'}))
-        {
-            $v= $a->{'gen'}->{callback}->($q->param($a->{'sql'}));
-        }
-        else
-        {
-    	    $v = $q->param($a->{'sql'});
-        }
-        push @values, $v;
-    }
+    
+    my ($field_names, $values) = $self->get_add_form_fields();
 
     my $ret = "";
 
@@ -788,8 +844,8 @@ sub add_form
         {
             $ret .= 
                 $self->render_record(
-                    'fields' => \@field_names,
-                    'values' => \@values,
+                    'fields' => $field_names,
+                    'values' => $values,
                 );
         }
 
@@ -814,45 +870,28 @@ sub add_form
                 attributes => { 'class' => "myform" },
             ]
          );
+         
+        $ret .= $self->linux_il_footer();
+        return $ret;
     }
     else
     {
-        $ret .= $self->linux_il_header($self->get_string('add_result_title'), "Success");
-
-        my $conn = $self->dbi_connect();
-        my $query_str = "INSERT INTO " . $config->{'table_name'} .
-            " (" . join(",", "id", "status", "area", @field_names) . ") " .
-            " VALUES ($id, 1, '" . $q->param("area") . "'," .  join(",", (map { $conn->quote($_); } @values)) . ")";
-
-        $conn->do($query_str);
-
-        $self->update_rss_feed($conn);
-
-        $conn->disconnect();
-
-        $ret .= <<'EOF';
-The job was added to the database.<br>
-<br>
-EOF
-        ;
-
-        $ret .= "<a href=\"../\">" . $self->get_string('add_back_link_text') . "</a>\n";
+        return $self->perform_insert(
+            $field_names,
+            $values,
+        );
     }
-
-    $ret .= $self->linux_il_footer();
-
-    return $ret;
 }
 
 sub css_stylesheet
 {
     my $self = shift;
 
-    local (*I);
-    open I, "<style.css";
+    local $/;
+    open my $in, "<style.css";
     $self->header_props(-type => "text/css");
-    my $output = join("", <I>);
-    close(I);
+    my $output = <$in>;
+    close($in);
     
     return $output;
 }

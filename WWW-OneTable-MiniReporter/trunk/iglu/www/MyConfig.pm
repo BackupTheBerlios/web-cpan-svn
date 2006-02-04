@@ -4,6 +4,15 @@ use vars qw($config);
 
 use POSIX;
 
+sub get_admin_pass
+{
+    open my $in, "<admin-password.txt"; 
+    my $l = <$in>; 
+    chomp($l); 
+    close($in);
+    return $l;
+}
+
 $config = 
 {
     'strings' => 
@@ -20,7 +29,7 @@ $config =
         'area_hint' => "The area in Israel of the employing firm.<br />" . 
                 "If the work is from home, select the area of the office.",
     },
-    'admin_password' => do { open I, "<admin-password.txt"; my $l = <I>; chomp($l); $l},
+    'admin_password' => get_admin_pass(),
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'jobs2',
     'rss_table_name' => 'jobs2_feeds',
