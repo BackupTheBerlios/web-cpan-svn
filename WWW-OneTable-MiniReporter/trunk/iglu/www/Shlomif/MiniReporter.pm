@@ -402,6 +402,15 @@ sub get_field_names
     return \@field_names;
 }
 
+sub sanitize_areas
+{
+    my ($self, $areas) = @_;
+
+    my %map = (map { $_ => 1} $self->get_area_list());
+
+    return [grep { exists($map{$_}) } @$areas];
+}
+
 sub construct_fetch_query
 {
     my $self = shift;
@@ -476,7 +485,7 @@ sub construct_fetch_query
         {
             'field_names' => $field_names,
             'query' => $query_str,
-            'areas' => \@areas,
+            'areas' => $self->sanitize_areas(\@areas),
         };
 }
 
@@ -509,7 +518,7 @@ sub get_jobs_by_area
 
     my $query = $self->get_display_records_query($args);
 
-    foreach my $values (@{$query->{rows}})
+    foreach my $values (@{$query->{'rows'}})
     {
         push @{$jobs_by_area{$values->[0]}},
             $self->render_record(
@@ -546,8 +555,6 @@ sub display_records
 
     my %args = (@_);
 
-    my %does_area_exists_map = (map { $_ => 1} $self->get_area_list());
-
     my $jobs_by_area = $self->get_jobs_by_area(\%args);
 
     my $ret = "";
@@ -557,12 +564,6 @@ sub display_records
     AREA_LOOP: foreach my $area (@$jobs_by_area)
     {
         my $name = $area->{'name'};
-        # Check if the area is a valid one and if not skip this 
-        # iteration.
-        if (!exists($does_area_exists_map{$name}))
-        {
-            next AREA_LOOP;
-        }
     	$ret .= "<h2>$name</h2>\n\n";
 
     	$ret .= join("", @{$area->{'records'}});
@@ -803,11 +804,6 @@ sub perform_insert
             'title' => $self->get_string('add_result_title'),
             'header' => "Success",
             (map { $_ => $self->get_string($_) } ('add_back_link_text')),
-            'areas' => [ $self->get_area_list() ],
-            (
-                map { $_ => $self->get_string($_) } 
-                (qw(show_all_records_text add_a_record_text remove_a_record_text))
-            ),
         }
     );
 }
