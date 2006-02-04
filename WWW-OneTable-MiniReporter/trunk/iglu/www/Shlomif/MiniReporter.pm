@@ -309,15 +309,12 @@ sub main_page
 {
     my $self = shift;
 
-    my $ret = "";
-    
     my $title = $self->get_string('main_title');
-    
-    $ret .= $self->linux_il_header($title, $title);
-    
-    $ret .= ${$self->tt_process(
+    return $self->tt_process(
         'main_page.tt',
         {
+            'title' => $title,
+            'header' => $title,
             'areas' => [ $self->get_area_list() ],
             (
                 map { $_ => $self->get_string($_) } 
@@ -325,11 +322,7 @@ sub main_page
             ),
             'with_rss' => $self->get_rss_table_name(),
         }
-    )};
-
-    $ret .= $self->linux_il_footer();
-
-    return $ret;
+    );
 }
 
 sub htmlize

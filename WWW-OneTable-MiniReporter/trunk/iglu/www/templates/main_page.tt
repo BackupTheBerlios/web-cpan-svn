@@ -1,3 +1,4 @@
+[% INCLUDE "header.tt" %]
 <h3>Search the Database</h3>
 
 <form action="./search/" method="post">
@@ -21,3 +22,4 @@ Keyword from description: <input name="keyword" />
 <li><a href="./remove/">[% remove_a_record_text %]</a></li>
 [% IF with_rss %]<li><a href="./index.rss">Subscribe to our RSS Feed</a></li>
 [% END %]</ul>
+[% INCLUDE "footer.tt" %]
