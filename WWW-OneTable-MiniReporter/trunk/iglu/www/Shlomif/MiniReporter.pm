@@ -96,6 +96,7 @@ sub cgiapp_prerun
 
     $self->tt_params(
         'path_to_root' => $self->get_path_to_root(),
+        'with_rss' => $self->get_rss_table_name(),
     );
 
     # TODO : There may be a more efficient/faster way to do it, but I'm 
@@ -269,7 +270,6 @@ sub linux_il_header
         {
             'title' => $title,
             'header' => $header,
-            'with_rss' => $self->get_rss_table_name(),
         },
     )};
 }
@@ -320,7 +320,6 @@ sub main_page
                 map { $_ => $self->get_string($_) } 
                 (qw(show_all_records_text add_a_record_text remove_a_record_text))
             ),
-            'with_rss' => $self->get_rss_table_name(),
         }
     );
 }
@@ -793,7 +792,6 @@ sub perform_insert
                 map { $_ => $self->get_string($_) } 
                 (qw(show_all_records_text add_a_record_text remove_a_record_text))
             ),
-            'with_rss' => $self->get_rss_table_name(),
         }
     );
 }
@@ -1015,7 +1013,6 @@ sub remove
         {
             'title' => $self->get_string('remove_result_title'),
             'header' => "Remove a Job",
-            'with_rss' => $self->get_rss_table_name(),
             (map { $_ => $self->get_string($_) } ('service')),
         },
     );
@@ -1097,25 +1094,20 @@ sub show_record_by_id
 
     my ($field_names, $values) = $self->get_record_fields($record_id);
 
-    my $ret = "";
-    $ret .= $self->linux_il_header();
-
-    if (!defined($values))
-    {
-        $ret .= "<h1>Record not found - sorry</h1>";
-    }
-    else
-    {
-        $ret .= $self->render_record(
-                'values' => $values,
-                'fields' => $field_names,
-                'toolbox' => 0,
-            );
-    }
-
-    $ret .= $self->linux_il_footer();
-
-    return $ret;
+    return $self->tt_process(
+        'show_record_page.tt',
+        {
+            'record' => 
+            (defined($values) ?
+                $self->render_record(
+                    'values' => $values,
+                    'fields' => $field_names,
+                    'toolbox' => 0,
+                ) :
+                "<h1>Record not found - sorry</h1>"
+            )
+        }
+    );
 }
 
 1;
