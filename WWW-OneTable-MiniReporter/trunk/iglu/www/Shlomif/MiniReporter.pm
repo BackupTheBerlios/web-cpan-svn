@@ -1073,12 +1073,9 @@ sub show_record
     }
 }
 
-sub show_record_by_id
+sub get_record_fields
 {
     my ($self, $record_id) = @_;
-
-    my $ret = "";
-    $ret .= $self->linux_il_header();
 
     my $query = $self->construct_fetch_query({'id' => $record_id});
 
@@ -1090,6 +1087,19 @@ sub show_record_by_id
 
     my $values = $sth->fetchrow_arrayref();
 
+    return ($query->{'field_names'}, $values);
+}
+
+# TODO : Add a header and title to show_record.
+sub show_record_by_id
+{
+    my ($self, $record_id) = @_;
+
+    my ($field_names, $values) = $self->get_record_fields($record_id);
+
+    my $ret = "";
+    $ret .= $self->linux_il_header();
+
     if (!defined($values))
     {
         $ret .= "<h1>Record not found - sorry</h1>";
@@ -1098,7 +1108,7 @@ sub show_record_by_id
     {
         $ret .= $self->render_record(
                 'values' => $values,
-                'fields' => $query->{'field_names'},
+                'fields' => $field_names,
                 'toolbox' => 0,
             );
     }
@@ -1107,6 +1117,7 @@ sub show_record_by_id
 
     return $ret;
 }
+
 1;
 
 
