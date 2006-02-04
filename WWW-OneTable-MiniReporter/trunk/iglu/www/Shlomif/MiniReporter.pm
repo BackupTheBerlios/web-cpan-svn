@@ -583,8 +583,6 @@ sub get_form_fields
 
     my $q = $self->query();
 
-    my $config = $self->{config};
-
     my %fields = ();
 
     my $field_idx = 0;
@@ -611,7 +609,7 @@ sub get_form_fields
         defaultValue => ($q->param("area") || "Tel Aviv"),
         type => 'select',
         optionsGroup => [
-            map { +{ 'label' => $_, 'value' => $_, }, } @{$config->{'areas'}},
+            map { +{ 'label' => $_, 'value' => $_, }, } @{$self->config()->{'areas'}},
         ],
         validators => [],
         $get_attribs->(),
@@ -674,8 +672,6 @@ sub get_form_fields
 sub get_form_fields_sequence
 {
     my $self = shift;
-
-    my $config = $self->{config};
 
     my @ret;
 
@@ -807,8 +803,6 @@ sub add_form
     my $self = shift;
 
     my $q = $self->query();
-
-    my $config = $self->{config};
 
     # Prepare the insert statement
     
@@ -1016,8 +1010,6 @@ sub remove
 {
     my $self = shift;
 
-    my $config = $self->{config};
-    
     my $service = $self->get_string('service');
 
     my $ret = "";
