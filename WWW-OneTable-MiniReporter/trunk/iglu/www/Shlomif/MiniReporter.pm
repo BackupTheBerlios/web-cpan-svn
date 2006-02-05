@@ -799,17 +799,42 @@ sub perform_insert
     );
 }
 
+sub get_add_form_titles
+{
+    my ($self, $no_cgi_params, $valid_params) = @_;
+    if ($no_cgi_params)
+    {
+        return 
+        {
+            'title' => "Add a job to the Linux-IL jobs' list", 
+            'header' => "Add a job"
+        };
+    }
+    elsif ($valid_params)
+    {
+        return
+        {
+            'title' => $self->get_string('preview_result_title'), 
+            'header' => "Preview the Added Record"
+        };
+    }
+    else
+    {
+        return
+        {
+            'title' => "Invalid Parameters Entered", 
+            'header' => "Invalid Parameters Entered"
+        };
+    }
+}
+
 sub add_form
 {
     my $self = shift;
 
     my $q = $self->query();
 
-    # Prepare the insert statement
-    
     my ($field_names, $values) = $self->get_add_form_fields();
-
-    my $ret = "";
 
     my $form = $self->get_form();
 
@@ -821,19 +846,12 @@ sub add_form
 
     if ($q->param('preview') || (! $valid_params) || $no_cgi_params)
     {
-        if ($no_cgi_params)
-        {
-            $ret .= $self->linux_il_header("Add a job to the Linux-IL jobs' list", "Add a job");
-        }
-        elsif ($valid_params)
-        {
-            $ret .= $self->linux_il_header($self->get_string('preview_result_title'), "Preview the Added Record");
-        }
-        else
-        {
-            $ret .= $self->linux_il_header("Invalid Parameters Entered", 
-            "Invalid Parameters Entered");
-        }
+        my $titles =
+            $self->get_add_form_titles($no_cgi_params, $valid_params);
+
+        my $ret = "";
+
+        $ret .= $self->linux_il_header($titles->{'title'}, $titles->{'header'});
 
         if (! $no_cgi_params)
         {
