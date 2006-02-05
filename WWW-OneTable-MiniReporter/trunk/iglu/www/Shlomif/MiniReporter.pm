@@ -260,29 +260,7 @@ sub get_path_to_root
     return $self->get_rel_url_to_root($self->get_path_wo_leading_slash());
 }
 
-sub linux_il_header
-{
-    my ($self, $title, $header) = @_;
-
-    # TODO : Add and implement a parameter for the title of the RSS feed.
-    return ${$self->tt_process(
-        'header.tt',
-        {
-            'title' => $title,
-            'header' => $header,
-        },
-    )};
-}
-
-
-sub linux_il_footer
-{
-    my $self = shift;
-
-    return ${$self->tt_process(
-        'footer.tt',
-    )};
-}
+# TODO : Add and implement a parameter for the title of the RSS feed.
 
 sub get_string
 {
