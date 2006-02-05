@@ -846,23 +846,15 @@ sub add_form
 
     if ($q->param('preview') || (! $valid_params) || $no_cgi_params)
     {
-        my $titles =
-            $self->get_add_form_titles($no_cgi_params, $valid_params);
-
-        my $ret = "";
-
-        $ret .= $self->linux_il_header($titles->{'title'}, $titles->{'header'});
-
-        if (! $no_cgi_params)
-        {
-            $ret .= 
+        my $record_html =
+            $no_cgi_params ?
+                "" :
                 $self->render_record(
                     'fields' => $field_names,
                     'values' => $values,
                 );
-        }
 
-        $ret .= $self->get_form_html($form,
+        my $form_html = $self->get_form_html($form,
             [
                 'action' => "",
                 'buttons' =>
@@ -882,10 +874,16 @@ sub add_form
                 ],
                 attributes => { 'class' => "myform" },
             ]
-         );
+        );
          
-        $ret .= $self->linux_il_footer();
-        return $ret;
+        return $self->tt_process(
+            'add_form_page.tt',
+            {
+                %{$self->get_add_form_titles($no_cgi_params, $valid_params)},
+                'record_html' => $record_html,
+                'form_html' => $form_html,
+            },
+        );
     }
     else
     {

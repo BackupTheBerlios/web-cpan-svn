@@ -1,0 +1,4 @@
+[% INCLUDE "header.tt" %]
+[% record_html %]
+[% form_html %]
+[% INCLUDE "footer.tt" %]
