@@ -750,7 +750,7 @@ sub get_add_form_fields
 {
     my $self = shift;
 
-    my @ret = 
+    my @ret =
     (
         map { $self->get_add_form_single_field($_) } 
             $self->get_fields()
@@ -787,34 +787,6 @@ sub perform_insert
     );
 }
 
-sub get_add_form_titles
-{
-    my ($self, $no_cgi_params, $valid_params) = @_;
-    if ($no_cgi_params)
-    {
-        return 
-        {
-            'title' => "Add a job to the Linux-IL jobs' list", 
-            'header' => "Add a job"
-        };
-    }
-    elsif ($valid_params)
-    {
-        return
-        {
-            'title' => $self->get_string('preview_result_title'), 
-            'header' => "Preview the Added Record"
-        };
-    }
-    else
-    {
-        return
-        {
-            'title' => "Invalid Parameters Entered", 
-            'header' => "Invalid Parameters Entered"
-        };
-    }
-}
 
 sub add_form
 {
@@ -1121,6 +1093,12 @@ sub _initialize
     return 0;
 }
 
+sub query
+{
+    my $self = shift;
+    return $self->main()->query();
+}
+
 sub is_valid
 {
     my $self = shift;
@@ -1130,7 +1108,7 @@ sub is_valid
 sub no_cgi_params
 {
     my $self = shift;
-    return (scalar($self->main()->query()->param()) ? 0 : 1);
+    return (scalar($self->query()->param()) ? 0 : 1);
 }
 
 sub detach
@@ -1144,7 +1122,7 @@ sub _should_display_form
     my $self = shift;
     return 
     (
-        $self->main()->query()->param('preview') || 
+        $self->query()->param('preview') || 
         (! $self->is_valid()) || 
         $self->no_cgi_params()
     );
@@ -1160,11 +1138,17 @@ sub get_page
     }
     else
     {
-        return $self->main()->perform_insert(
-            $self->field_names(),
-            $self->values_(),
-        );
+        return $self->perform_insert();
     }
+}
+
+sub perform_insert
+{
+    my $self = shift;
+    return $self->main()->perform_insert(
+        $self->field_names(),
+        $self->values_(),
+    );
 }
 
 sub record_html
@@ -1179,32 +1163,79 @@ sub record_html
             );
 }
 
+sub get_submit_button
+{
+    my $self = shift;
+    if ($self->is_valid() && ! $self->no_cgi_params())
+    {
+        return
+        {
+            submit_label => "Submit",
+            submit_name => "submit",
+        };
+    }
+    else
+    {
+        return ();
+    }
+}
+
+sub get_buttons
+{
+    my $self = shift;
+    
+    return
+    [
+        {
+            submit_label => "Preview", 
+            submit_name => "preview",
+            submit_class => "preview",
+        },
+        $self->get_submit_button(),
+    ];
+}
+
 sub form_html
 {
     my $self = shift;
 
-    return 
+    return
         $self->main()->get_form_html($self->form(),
         [
             'action' => "",
-            'buttons' =>
-            [
-                {
-                    submit_label => "Preview", 
-                    submit_name => "preview",
-                    submit_class => "preview",
-                },
-                (($self->is_valid() && ! $self->no_cgi_params())?
-                ({
-                    submit_label => "Submit",
-                    submit_name => "submit",
-                },) :
-                (),
-                )
-            ],
-            attributes => { 'class' => "myform" },
+            'buttons' => $self->get_buttons(),
+            'attributes' => { 'class' => "myform" },
         ]
     );    
+}
+
+sub get_add_form_titles
+{
+    my $self = shift;
+    if ($self->no_cgi_params())
+    {
+        return
+        [
+            'title' => "Add a job to the Linux-IL jobs' list", 
+            'header' => "Add a job"
+        ];
+    }
+    elsif ($self->is_valid())
+    {
+        return
+        [
+            'title' => $self->main()->get_string('preview_result_title'), 
+            'header' => "Preview the Added Record"
+        ];
+    }
+    else
+    {
+        return
+        [
+            'title' => "Invalid Parameters Entered", 
+            'header' => "Invalid Parameters Entered"
+        ];
+    }
 }
 
 sub get_add_form_page
@@ -1214,10 +1245,7 @@ sub get_add_form_page
     return $self->main()->tt_process(
         'add_form_page.tt',
         {
-            %{$self->main()->get_add_form_titles(
-                $self->no_cgi_params(), 
-                $self->is_valid()
-            )},
+            @{$self->get_add_form_titles()},
             'record_html' => $self->record_html(),
             'form_html' => $self->form_html(),
         },
