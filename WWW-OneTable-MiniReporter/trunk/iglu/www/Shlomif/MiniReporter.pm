@@ -562,6 +562,16 @@ sub search_results
     );
 }
 
+sub _is_field_auto
+{
+    my ($self, $field) = @_;
+    return (
+        exists($field->{'gen'}) &&
+        exists($field->{'gen'}->{'auto'}) &&
+        $field->{'gen'}->{'auto'}
+    );
+}
+
 sub get_form_fields
 {
     my $self = shift;
@@ -609,7 +619,7 @@ sub get_form_fields
 
     foreach my $f ($self->get_fields())
     {
-        if ($f->{'gen'}->{'auto'})
+        if ($self->_is_field_auto($f))
         {
             next;
         }
@@ -665,7 +675,7 @@ sub get_form_fields_sequence
     
     foreach my $f ($self->get_fields())
     {
-        if ($f->{'gen'}->{'auto'})
+        if ($self->_is_field_auto($f))
         {
             next;
         }
@@ -713,15 +723,15 @@ sub get_add_form_single_field_value
     my $self = shift;
     my $a = shift;
 
-    if (exists($a->{'gen'}))
+    my $value = scalar($self->query()->param($a->{'sql'}));
+
+    if ($self->_is_field_auto($a))
     {
-        return $a->{'gen'}->{callback}->(
-            $self->query()->param($a->{'sql'})
-        );
+        return $a->{'gen'}->{callback}->($value);
     }
     else
     {
-        return $self->query()->param($a->{'sql'});
+        return $value;
     }
 }
 
@@ -729,10 +739,10 @@ sub get_add_form_single_field
 {
     my $self = shift;
     my $a = shift;
-    return 
-        { 
-            'field' =>$a->{sql}, 
-            'value' => $self->get_add_form_single_field_value($a)
+    return
+        {
+            'field' => $a->{sql},
+            'value' => $self->get_add_form_single_field_value($a),
         };
 }
 
@@ -810,66 +820,13 @@ sub add_form
 {
     my $self = shift;
 
-    my $q = $self->query();
+    my $form = Shlomif::MiniReporter::Form->new({'main' => $self});
 
-    my ($field_names, $values) = $self->get_add_form_fields();
+    my $ret = $form->get_page();
 
-    my $form = $self->get_form();
+    $form->detach();
 
-    $form->validate_fields();
-    
-    my $valid_params = $form->is_valid();
-
-    my $no_cgi_params = (scalar($q->param()) ? 0 : 1);
-
-    if ($q->param('preview') || (! $valid_params) || $no_cgi_params)
-    {
-        my $record_html =
-            $no_cgi_params ?
-                "" :
-                $self->render_record(
-                    'fields' => $field_names,
-                    'values' => $values,
-                );
-
-        my $form_html = $self->get_form_html($form,
-            [
-                'action' => "",
-                'buttons' =>
-                [
-                    {
-                        submit_label => "Preview", 
-                        submit_name => "preview",
-                        submit_class => "preview",
-                    },
-                    (($valid_params && ! $no_cgi_params)?
-                    ({
-                        submit_label => "Submit",
-                        submit_name => "submit",
-                    },) :
-                    (),
-                    )
-                ],
-                attributes => { 'class' => "myform" },
-            ]
-        );
-         
-        return $self->tt_process(
-            'add_form_page.tt',
-            {
-                %{$self->get_add_form_titles($no_cgi_params, $valid_params)},
-                'record_html' => $record_html,
-                'form_html' => $form_html,
-            },
-        );
-    }
-    else
-    {
-        return $self->perform_insert(
-            $field_names,
-            $values,
-        );
-    }
+    return $ret;
 }
 
 sub css_stylesheet
@@ -1129,4 +1086,143 @@ sub show_record_by_id
 
 1;
 
+package Shlomif::MiniReporter::Form;
+
+use base 'Class::Accessor';
+
+__PACKAGE__->mk_accessors(qw(
+    field_names
+    form
+    main
+    values_
+));
+
+sub new
+{
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    $self->_initialize(@_);
+    return $self;
+}
+
+sub _initialize
+{
+    my $self = shift;
+    my $args = shift;
+    $self->main($args->{'main'});
+    $self->form($self->main()->get_form());
+    $self->form()->validate_fields();
+
+    my ($field_names, $values) = $self->main()->get_add_form_fields();
+    $self->field_names($field_names);
+    $self->values_($values);
+
+    return 0;
+}
+
+sub is_valid
+{
+    my $self = shift;
+    return $self->form()->is_valid();
+}
+
+sub no_cgi_params
+{
+    my $self = shift;
+    return (scalar($self->main()->query()->param()) ? 0 : 1);
+}
+
+sub detach
+{
+    my $self = shift;
+    $self->main(undef);
+}
+
+sub _should_display_form
+{
+    my $self = shift;
+    return 
+    (
+        $self->main()->query()->param('preview') || 
+        (! $self->is_valid()) || 
+        $self->no_cgi_params()
+    );
+}
+
+sub get_page
+{
+    my $self = shift;
+    
+    if ($self->_should_display_form())
+    {
+        return $self->get_add_form_page();
+    }
+    else
+    {
+        return $self->main()->perform_insert(
+            $self->field_names(),
+            $self->values_(),
+        );
+    }
+}
+
+sub record_html
+{
+    my $self = shift;
+    return 
+        $self->no_cgi_params() ?
+            "" :
+            $self->main()->render_record(
+                'fields' => $self->field_names(),
+                'values' => $self->values_(),
+            );
+}
+
+sub form_html
+{
+    my $self = shift;
+
+    return 
+        $self->main()->get_form_html($self->form(),
+        [
+            'action' => "",
+            'buttons' =>
+            [
+                {
+                    submit_label => "Preview", 
+                    submit_name => "preview",
+                    submit_class => "preview",
+                },
+                (($self->is_valid() && ! $self->no_cgi_params())?
+                ({
+                    submit_label => "Submit",
+                    submit_name => "submit",
+                },) :
+                (),
+                )
+            ],
+            attributes => { 'class' => "myform" },
+        ]
+    );    
+}
+
+sub get_add_form_page
+{
+    my $self = shift;
+
+    return $self->main()->tt_process(
+        'add_form_page.tt',
+        {
+            %{$self->main()->get_add_form_titles(
+                $self->no_cgi_params(), 
+                $self->is_valid()
+            )},
+            'record_html' => $self->record_html(),
+            'form_html' => $self->form_html(),
+        },
+    );
+}
+
+1;
 
