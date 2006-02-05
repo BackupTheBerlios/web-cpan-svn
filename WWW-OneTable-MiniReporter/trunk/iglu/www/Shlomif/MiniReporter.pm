@@ -787,12 +787,17 @@ sub perform_insert
     );
 }
 
+sub get_add_form_handler
+{
+    my $self = shift;
+    return Shlomif::MiniReporter::Form->new({'main' => $self});
+}
 
 sub add_form
 {
     my $self = shift;
 
-    my $form = Shlomif::MiniReporter::Form->new({'main' => $self});
+    my $form = $self->get_add_form_handler();
 
     my $ret = $form->get_page();
 
