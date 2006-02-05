@@ -700,24 +700,6 @@ sub get_form
     return $form;
 }
 
-sub get_form_html
-{
-    my $self = shift;
-
-    my $form = shift;
-
-    my $params = shift;
-
-    my $ret = "";
-
-    $ret .= "<p class=\"warning\"><b>Note:</b> all entries must be in English.".
-            "(or else they won't be displayed correctly</p>";
-
-    $ret .= $form->get_form_HTML(@$params);
-
-    return $ret;
-}
-
 sub get_add_form_single_field_value
 {
     my $self = shift;
@@ -1200,18 +1182,45 @@ sub get_buttons
     ];
 }
 
+sub get_form_header
+{    
+    my $self = shift;
+    return "<p class=\"warning\"><b>Note:</b> all entries must be in English.".
+           "(or else they won't be displayed correctly</p>"
+}
+
+sub get_form_html_from_params
+{
+    my ($self, $params) = @_;
+
+    return $self->get_form_header($params) .
+        $self->form()->get_form_HTML(@$params);
+}
+
+sub get_form_attributes
+{
+    return { 'class' => "myform" };
+}
+
+sub get_form_params
+{
+    my $self = shift;
+    return
+    [
+        'action' => "",
+        'buttons' => $self->get_buttons(),
+        'attributes' => $self->get_form_attributes(),
+    ];
+}
+
 sub form_html
 {
     my $self = shift;
 
     return
-        $self->main()->get_form_html($self->form(),
-        [
-            'action' => "",
-            'buttons' => $self->get_buttons(),
-            'attributes' => { 'class' => "myform" },
-        ]
-    );    
+        $self->get_form_html_from_params(
+            $self->get_form_params(),
+        );
 }
 
 sub get_add_form_titles
