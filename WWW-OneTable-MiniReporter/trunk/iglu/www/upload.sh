@@ -1,7 +1,7 @@
 #!/bin/bash
 arg="$1"
 shift
-upload_to_base="shlomif@iglu.org.il:/iglu/cgi-bin/jobs/"
+upload_to_base="shlomif@iglu.org.il:/iglu/Hosts/www.iglu.org.il/webapps/jobs-db/"
 upload_to="${upload_to_base}new/"
 if [ "$arg" = "--stable" ] ; then
     upload_to="$upload_to_base"
@@ -13,5 +13,6 @@ rsync -v --progress --rsh=ssh --relative \
     MyConfig.pm style.css Shlomif/MiniReporter.pm \
     Consultants.pl ConsultantsConfig.pm update-rss-feed.pl \
     admin-password.txt \
+    templates/*.tt \
     "$upload_to"
 
