@@ -70,6 +70,19 @@ implement them using HTML-Widgets-NavMenu.
 EOF
     },
     {
+        'perl_name' => "SVN-Pusher",
+        'text' => "SVN::Pusher", 
+        'title' => "Propagate Changesets between Subversion Repositories",
+        'svn_dir' => "SVN-Pusher",
+        'desc' => <<"EOF",
+<p>
+This module allows one to propagate changesets from one 
+<a href="http://subversion.tigris.org/">Subversion repository</a> to the
+other.
+</p>
+EOF
+    },
+    {
         'perl_name' => "SVN-RaWeb-Light",
         'text' => "Light SVN Interface",
         'title' => "A Lightweight Web-based Subversion Interface",
@@ -101,6 +114,20 @@ track of the code of Subversion itself.
 EOF
     },
     {
+        'perl_name' => "Test-Run",
+        'text' => "Test::Run", 
+        'title' => "A new and improved test harness",
+        'svn_dir' => "Test-Harness-NG",
+        'desc' => <<"EOF",
+<p>
+Test::Run is a new and improved test harness. It is based on 
+<a href="http://search.cpan.org/dist/Test-Harness/">Test-Harness</a>,
+but incoroporates many internals improvement, a separation of the code
+to a backend and frontend, etc.
+</p>
+EOF
+    },
+    {
         'perl_name' => "WWW-Form",
         'text' => "WWW::Form",
         'title' => "Manage Forms Flow Using Perl",
@@ -110,6 +137,20 @@ EOF
 WWW::Form is a module for handling the world-wide-web form process. It
 enables generating forms, filling them from user input, verifying them,
 and re-displaying them in case something is wrong.
+</p>
+EOF
+    },
+    {
+        'perl_name' => "WWW-OpenSVN",
+        'text' => "WWW::OpenSVN",
+        'title' => "An automated interface to http://opensvn.csie.org/",
+        'svn_dir' => "www-opensvn",
+        'desc' => <<"EOF"
+<p>
+WWW::OpenSVN is an automated interface for the 
+<a href="http://opensvn.csie.org/">OpenSVN online Subversion repositories
+service</a>. At the moment it allows one to backup the dumps of one's 
+repositories.
 </p>
 EOF
     },

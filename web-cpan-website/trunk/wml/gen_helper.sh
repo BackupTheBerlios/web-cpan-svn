@@ -1,4 +1,7 @@
 #!/bin/bash
+
+perl ./gen-module-pages.pl
+
 list_wmls()
 {
     find ./src/ -name '*.html.wml' | 
