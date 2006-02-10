@@ -106,6 +106,9 @@ http://web-cpan.berlios.de/<get-var url />
        alt="Valid CSS!" /></a>
 </p>
 <p>
+<a href="https://developer.berlios.de/project/make_donation.php?group_id=2352"
+title="Make a Donation to support the project."><img
+style="border:0" src="$(ROOT)/images/paypal.gif" alt="PayPal Donate" /></a>
 </p>
 </define-tag>
 
