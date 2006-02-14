@@ -576,92 +576,16 @@ sub get_form_fields
 {
     my $self = shift;
 
-    my $q = $self->query();
+    my $fields_gen =
+        Shlomif::MiniReporter::FormFieldsGen->new(
+            { 'main' => $self }
+        );
 
-    my %fields = ();
+    my $fields = $fields_gen->get_form_fields();
 
-    my $field_idx = 0;
-
-    my $get_alternate_style = sub {
-        my $ret = (($field_idx % 2 == 1) ? "hilight" : "hilight2");
-
-        $field_idx++;
-        
-        return $ret;
-    };
-
-    my $get_attribs = sub {
-        my $class = $get_alternate_style->();
-        return ('container_attributes' => 
-                { 'class' => $class, },
-                'hint_container_attributes' => 
-                { 'class' => "$class space", },
-               );
-    };
-   
-    $fields{area} = {
-        label => "Area",
-        defaultValue => ($q->param("area") || "Tel Aviv"),
-        type => 'select',
-        optionsGroup => [
-            map { +{ 'label' => $_, 'value' => $_, }, } @{$self->config()->{'areas'}},
-        ],
-        validators => [],
-        $get_attribs->(),
-        hint => $self->get_string('area_hint'),
-    };
-
-    # Number of characters for the input tag or textarea to be as wide;
-    my $input_length = 40;
-    my $input_height = 10;
-
+    $fields_gen->detach();
     
-
-    foreach my $f ($self->get_fields())
-    {
-        if ($self->_is_field_auto($f))
-        {
-            next;
-        }
-
-        $fields{$f->{sql}} = 
-        {
-            label => $f->{'pres'},
-            defaultValue => ($q->param($f->{sql}) || ""),
-            type => ($f->{sameline} ? "text" : "textarea"),
-            validators => 
-            [ 
-                ($f->{sameline} ? 
-                (
-                    WWW::FieldValidator->new(WWW::FieldValidator::REGEX_MATCH,
-                    "No newlines allowed",
-                    '^([^\n\r]*)$'
-                    ), 
-                ): 
-                ()),
-                ($f->{len} ?
-                (
-                    WWW::FieldValidator->new(
-                        WWW::FieldValidator::MAX_STR_LENGTH,
-                        "$f->{pres} is limited to $f->{len} characters",
-                        $f->{len}
-                    ),
-                ) :
-                ()),
-            ],
-            extraAttributes => 
-                ($f->{sameline} ? 
-                    " size=\"$input_length\" " :
-                    " cols=\"$input_length\" rows=\"$input_height\""
-                ),
-            # Give the hint if it exists
-            (exists($f->{hint}) ? (hint => $f->{hint}) : ()),
-            # Highlight the odd numbered fields
-            $get_attribs->(),
-        };
-    }
-
-    return \%fields;
+    return $fields;
 }
 
 sub get_form_fields_sequence
@@ -1264,6 +1188,240 @@ sub get_add_form_page
             'form_html' => $self->form_html(),
         },
     );
+}
+
+1;
+
+package Shlomif::MiniReporter::FormFieldsGen;
+
+use base 'Class::Accessor';
+
+__PACKAGE__->mk_accessors(qw(
+    f
+    field_idx
+    fields
+    fields_seq
+    input_length
+    input_height
+    main
+));
+
+sub new
+{
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    $self->_initialize(@_);
+    return $self;
+}
+
+sub _initialize
+{
+    my $self = shift;
+    my $args = shift;
+    $self->main($args->{'main'});
+    $self->fields({});
+    $self->field_idx(0);
+    $self->fields_seq([$self->main()->get_fields()]);
+
+    # Number of characters for the input tag or textarea to be as wide;
+    $self->input_length(40);
+    $self->input_height(10);
+
+    return 0;
+}
+
+sub get_alternate_style
+{
+    my $self = shift;
+
+    my $ret = (($self->field_idx() % 2 == 1) ? "hilight" : "hilight2");
+
+    $self->field_idx($self->field_idx()+1);
+
+    return $ret;
+}
+
+sub get_attribs
+{
+    my $self = shift;
+    my $class = $self->get_alternate_style();
+    return ('container_attributes' =>
+            { 'class' => $class, },
+            'hint_container_attributes' =>
+            { 'class' => "$class space", },
+           );
+}
+
+sub set_field
+{
+    my ($self, $name, $value) = @_;
+    $self->fields()->{$name} = $value;
+}
+
+sub get_area
+{
+    my $self = shift;
+
+    return
+    {
+        label => "Area",
+        defaultValue => ($self->main()->query()->param("area") || "Tel Aviv"),
+        type => 'select',
+        optionsGroup => [
+            map { +{ 'label' => $_, 'value' => $_, }, } @{$self->main()->config()->{'areas'}},
+        ],
+        validators => [],
+        $self->get_attribs(),
+        hint => $self->main()->get_string('area_hint'),
+    }
+}
+
+sub shift_f
+{
+    my $self = shift;
+    return $self->f(shift(@{$self->fields_seq()}));
+}
+
+sub set_f_auto_field
+{
+}
+
+sub get_sameline_validator
+{
+    my $self = shift;
+    if ($self->f()->{sameline})
+    {
+        return
+            WWW::FieldValidator->new(WWW::FieldValidator::REGEX_MATCH,
+            "No newlines allowed",
+            '^([^\n\r]*)$'
+            );
+    }
+    else
+    {
+        return ();
+    }
+}
+
+sub get_len_validator
+{
+    my $self = shift;
+    if ($self->f()->{len})
+    {
+        return 
+            WWW::FieldValidator->new(
+                WWW::FieldValidator::MAX_STR_LENGTH,
+                sprintf("%s is limited to %s characters",
+                    $self->f()->{pres}, $self->f()->{len}),
+                $self->f()->{len}
+            );
+    }
+    else
+    {
+        return ();
+    }
+}
+
+sub get_validators
+{
+    my $self = shift;
+    return 
+    [ 
+        $self->get_sameline_validator(),
+        $self->get_len_validator(),
+    ];
+}
+
+sub get_extra_attributes
+{
+    my $self = shift;
+    if ($self->f()->{sameline})
+    {
+        return " size=\"" . $self->input_length() . "\" ";
+    }
+    else
+    {
+        return sprintf(' cols="%d" rows="%d"',
+            $self->input_length(), $self->input_height()
+        );
+    }
+}
+
+sub get_hint
+{
+    my $self = shift;
+    if (exists($self->f()->{hint}))
+    {
+        return (hint => $self->f()->{hint});
+    }
+    else
+    {
+        return ();
+    }
+}
+
+sub get_f_field_struct
+{
+    my $self = shift;
+    my $f = $self->f();
+
+    return
+    {
+        label => $f->{'pres'},
+        defaultValue => ($self->main()->query()->param($f->{sql}) || ""),
+        type => ($f->{sameline} ? "text" : "textarea"),
+        validators => $self->get_validators(),
+        extraAttributes => $self->get_extra_attributes(),
+        # Give the hint if it exists
+        $self->get_hint(),
+        # Highlight the odd numbered fields
+        $self->get_attribs(),
+    };
+}
+
+sub set_f_nonauto_field
+{
+    my $self = shift;
+
+    my $f = $self->f();
+
+    $self->set_field($f->{sql}, $self->get_f_field_struct());
+}
+
+sub set_f_field
+{
+    my $self = shift;
+    if ($self->main()->_is_field_auto($self->f()))
+    {
+        return $self->set_f_auto_field();
+    }
+    else
+    {
+        return $self->set_f_nonauto_field();
+    }
+}
+
+sub get_form_fields
+{
+    my $self = shift;
+
+    my $q = $self->main()->query();
+
+    $self->set_field('area', $self->get_area());
+
+    while ($self->shift_f())
+    {
+        $self->set_f_field();
+    }
+
+    return $self->fields();
+}
+
+sub detach
+{
+    my $self = shift;
+    $self->main(undef);
 }
 
 1;
