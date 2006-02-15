@@ -971,29 +971,18 @@ sub show_record_by_id
 
 package Shlomif::MiniReporter::Form;
 
-use base 'Class::Accessor';
+use base 'Shlomif::MiniReporter::HelperObj';
 
 __PACKAGE__->mk_accessors(qw(
     field_names
     form
-    main
     values_
 ));
-
-sub new
-{
-    my $class = shift;
-    my $self = {};
-    bless $self, $class;
-    $self->_initialize(@_);
-    return $self;
-}
 
 sub _initialize
 {
     my $self = shift;
-    my $args = shift;
-    $self->main($args->{'main'});
+    $self->SUPER::_initialize(@_);
     $self->form($self->main()->get_form());
     $self->form()->validate_fields();
 
@@ -1002,12 +991,6 @@ sub _initialize
     $self->values_($values);
 
     return 0;
-}
-
-sub query
-{
-    my $self = shift;
-    return $self->main()->query();
 }
 
 sub is_valid
@@ -1020,12 +1003,6 @@ sub no_cgi_params
 {
     my $self = shift;
     return (scalar($self->query()->param()) ? 0 : 1);
-}
-
-sub detach
-{
-    my $self = shift;
-    $self->main(undef);
 }
 
 sub _should_display_form
@@ -1194,7 +1171,7 @@ sub get_add_form_page
 
 package Shlomif::MiniReporter::FormFieldsGen;
 
-use base 'Class::Accessor';
+use base 'Shlomif::MiniReporter::HelperObj';
 
 __PACKAGE__->mk_accessors(qw(
     f
@@ -1203,23 +1180,12 @@ __PACKAGE__->mk_accessors(qw(
     fields_seq
     input_length
     input_height
-    main
 ));
-
-sub new
-{
-    my $class = shift;
-    my $self = {};
-    bless $self, $class;
-    $self->_initialize(@_);
-    return $self;
-}
 
 sub _initialize
 {
     my $self = shift;
-    my $args = shift;
-    $self->main($args->{'main'});
+    $self->SUPER::_initialize(@_);
     $self->fields({});
     $self->field_idx(0);
     $self->fields_seq([$self->main()->get_fields()]);
@@ -1266,7 +1232,7 @@ sub get_area
     return
     {
         label => "Area",
-        defaultValue => ($self->main()->query()->param("area") || "Tel Aviv"),
+        defaultValue => ($self->query()->param("area") || "Tel Aviv"),
         type => 'select',
         optionsGroup => [
             map { +{ 'label' => $_, 'value' => $_, }, } @{$self->main()->config()->{'areas'}},
@@ -1369,7 +1335,7 @@ sub get_f_field_struct
     return
     {
         label => $f->{'pres'},
-        defaultValue => ($self->main()->query()->param($f->{sql}) || ""),
+        defaultValue => ($self->query()->param($f->{sql}) || ""),
         type => ($f->{sameline} ? "text" : "textarea"),
         validators => $self->get_validators(),
         extraAttributes => $self->get_extra_attributes(),
@@ -1406,8 +1372,6 @@ sub get_form_fields
 {
     my $self = shift;
 
-    my $q = $self->main()->query();
-
     $self->set_field('area', $self->get_area());
 
     while ($self->shift_f())
@@ -1416,12 +1380,6 @@ sub get_form_fields
     }
 
     return $self->fields();
-}
-
-sub detach
-{
-    my $self = shift;
-    $self->main(undef);
 }
 
 1;
