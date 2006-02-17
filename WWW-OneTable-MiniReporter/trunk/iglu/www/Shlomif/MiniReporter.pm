@@ -745,6 +745,13 @@ sub get_rss_table_name
     return $self->config()->{'rss_table_name'};
 }
 
+sub get_url_to_item
+{
+    my $self = shift;
+    my $id = shift;
+    return $self->get_url_to_main() . "show-record/$id/";
+}
+
 sub update_rss_feed
 {
     my $self = shift;
@@ -799,8 +806,8 @@ sub update_rss_feed
         my $date_time =
             POSIX::mktime(0, 30, 18, $date_day, $date_month-1, $date_year-1900);
 
-        my $item_url = $self->get_url_to_main() . "show-record/" . $fields{'id'} . "/";
-    
+        my $item_url = $self->get_url_to_item($fields{'id'});
+
         $rss_feed->add_item(
             'title' => $fields{'title'},
             (map { $_ => $item_url, } (qw(permaLink link))),
@@ -963,6 +970,7 @@ sub show_record_by_id
         {
             (map { $_ => $title } qw(header title)),
             'record' => $record,
+            'url' => $self->get_url_to_item($record_id),
         }
     );
 }

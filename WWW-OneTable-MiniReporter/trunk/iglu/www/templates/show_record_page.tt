@@ -1,3 +1,10 @@
 [% INCLUDE "header.tt" %]
 [% record %]
+<h2>How to Remove</h2>
+<p>
+If this entry is yours and you wish to remove it 
+<a href="mailto:webmaster@iglu.org.il?Subject=Delete%20Entry%20[% url %]">send 
+an email to webmaster@iglu.org.il with the subject "Delete Entry [% url %]" and
+some details about why you wish to remove it.
+</p>
 [% INCLUDE "footer.tt" %]
