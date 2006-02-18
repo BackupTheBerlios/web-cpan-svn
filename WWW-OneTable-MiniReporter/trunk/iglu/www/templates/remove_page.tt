@@ -1,10 +1,9 @@
 [% INCLUDE "header.tt" %]
 <p>
-In order to remove your entry from the [% service %], please send a personal
-E-mail to <a href="mailto:webmaster@iglu.org.il">webmaster@iglu.org.il</a>
-specifying the entry you wish to remove. (please be as clear as possible,
-and as detailed as necessary.) We will disable it (so it won't be seen)
-and let you know about it.
+In order to remove your entry from the [% service %], locate it among 
+<a href="[% path_to_root %][% show_all_records_url %]">the active 
+records</a>, press the link to its standalone URL, and follow the instructions
+there.
 </p>
 <p>
 We regret the fact that there isn't an automated mechanism for disabling 

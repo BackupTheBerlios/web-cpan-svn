@@ -97,6 +97,7 @@ sub cgiapp_prerun
     $self->tt_params(
         'path_to_root' => $self->get_path_to_root(),
         'with_rss' => $self->get_rss_table_name(),
+        'show_all_records_url' => "search/?all=1",
     );
 
     # TODO : There may be a more efficient/faster way to do it, but I'm 

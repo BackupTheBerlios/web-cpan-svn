@@ -17,7 +17,7 @@ Keyword from description: <input name="keyword" />
 </p>
 </form>
 <ul>
-<li><a href="./search/?all=1">[% show_all_records_text %]</a></li>
+<li><a href="./[% show_all_records_url %]">[% show_all_records_text %]</a></li>
 <li><a href="./add/">[% add_a_record_text %]</a></li>
 <li><a href="./remove/">[% remove_a_record_text %]</a></li>
 [% IF with_rss %]<li><a href="./index.rss">Subscribe to our RSS Feed</a></li>
