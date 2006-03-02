@@ -68,7 +68,10 @@ my %modes =
 
 my %urls_to_modes = (map { $modes{$_}->{'url'} => $_ } keys(%modes));
 
-__PACKAGE__->mk_accessors(qw(config));
+__PACKAGE__->mk_accessors(qw(
+    config
+    record_tt
+));
 
 sub setup
 {
@@ -214,25 +217,9 @@ sub initialize
         },
     );
 
-    $self->{'record_tt'} = $tt;
-
-    $self->{'record_rss_tt'} = Template->new(
-        {
-            'BLOCKS' => 
-                {
-                    'main' => $config->{'record_rss_template'},
-                },
-        },
-    );
+    $self->record_tt($tt);
 
 	return 0;
-}
-
-sub get_record_template_gen
-{
-    my $self = shift;
-
-    return $self->{record_tt};
 }
 
 sub remove_leading_slash
@@ -346,7 +333,6 @@ sub render_record
 
     my $values = $args{'values'};
     my $fields = $args{'fields'};
-    my $template = $args{'template'} || "record_tt";
 
     my $vars = { map { $fields->[$_] => htmlize($values->[$_]) } (0 .. $#$values)};
 
@@ -360,7 +346,7 @@ sub render_record
 
     $vars->{'path_to_root'} = $self->get_path_to_root();
 
-    $self->{$template}->process('main', $vars, \$ret);
+    $self->record_tt()->process('main', $vars, \$ret);
 
     return $ret;
 }

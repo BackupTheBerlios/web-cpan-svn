@@ -187,30 +187,6 @@ Posted at <b>[% post_date %]</b>
 </div>
 [% END %]
 EOF
-
-    'record_rss_template' => <<'EOF',
-[% title %]
-
-Posted at [% post_date %]
-
-Company: [% workplace %]
-
-Job Description:
-
-[% description %]
-
-Requirements:
-
-[% requirements %]
-
-Address: [% address %]
-Phone: [% phone %]
-Cell Phone: [% cellphone %]
-Fax: [% fax %]
-E-mail: [% email %]
-Contact Person Name: [% contact_person %]
-
-EOF
 };
 
 1;
