@@ -1284,6 +1284,23 @@ sub get_len_validator
     }
 }
 
+sub get_url_validator
+{
+    my $self = shift;
+    if ($self->f()->{flags} =~ m{\burl\b})
+    {
+        return
+            WWW::FieldValidator->new(WWW::FieldValidator::REGEX_MATCH,
+            "URL Should start with http://",
+            '^(?:|http://.*)$'
+            );
+    }
+    else
+    {
+        return ();
+    }
+}
+
 sub get_validators
 {
     my $self = shift;
@@ -1291,6 +1308,7 @@ sub get_validators
     [ 
         $self->get_sameline_validator(),
         $self->get_len_validator(),
+        $self->get_url_validator(),
     ];
 }
 

@@ -123,10 +123,18 @@ $config =
             },
             len => 30,
         },
-        {    
+        {
             qw(sql email pres E-mail sameline 1 flags email),
             hint => qq{
                 E-mail address where you or the company can be contacted at.
+            },
+            len => 255,
+        },
+        {
+            qw(sql homepage pres Homepage sameline 1 flags url),
+            hint => qq{
+                The URL of your company's homepage, where people can learn
+                more about your company.
             },
             len => 255,
         },
@@ -166,6 +174,7 @@ Posted at <b>[% post_date %]</b>
 <b>Cell Phone:</b> [% cellphone %]<br />
 <b>Fax:</b> [% fax %]<br />
 <b>E-mail:</b> [% IF email %]<a rel="nofollow" href="mailto:[% email %]">[% email %]</a>[% END %]<br />
+<b>Homepage:</b> [% IF homepage %]<a rel="nofollow" href="[% homepage %]">[% homepage %]</a>[% END %]<br />
 <b>Contact Person Name:</b> [% contact_person %]<br />
 </p>
 [% UNLESS for_rss %]
