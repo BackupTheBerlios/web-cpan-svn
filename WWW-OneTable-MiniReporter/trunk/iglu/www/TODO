@@ -3,35 +3,17 @@ Pressing:
 
 * Change the date to something more user friendly.
 
-* Add a URL to the /show-record/ permanent URL of the job entry.
-
 Long-term:
 ----------
 
-* Convert to a Templating System (?)
-
-* Convert to Tangram (?).
-
 * Hyperlink E-mail addresses and URLs (with rel="nofollow").
+    - validate emails.
 
-* Find a way to restrict the width of the table to the width of the 
-input cells.
-
-* Add a job add management : password + E-mail to remove it or renew
-it after it expires.
+* Add a link to a homepage of the company for the jobs DB.
 
 * Research Hebrew Integration.
 
-* Create an administration page.
-
-* Fix the Broken Records.
-
 * Put on CPAN.
 
-* Write a search form for another search on the search results page.
-
-* Find a way to do a spacing in the add job form table. I'd like that two 
-arbitrary rows will have a spacing between them.
-
-
+* Create an administration page.
 
