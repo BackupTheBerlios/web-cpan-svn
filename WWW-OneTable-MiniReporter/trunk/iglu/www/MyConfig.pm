@@ -165,7 +165,7 @@ Posted at <b>[% post_date %]</b>
 <b>Phone:</b> [% phone %]<br />
 <b>Cell Phone:</b> [% cellphone %]<br />
 <b>Fax:</b> [% fax %]<br />
-<b>E-mail:</b> [% email %]<br />
+<b>E-mail:</b> [% IF email %]<a rel="nofollow" href="mailto:[% email %]">[% email %]</a>[% END %]<br />
 <b>Contact Person Name:</b> [% contact_person %]<br />
 </p>
 [% UNLESS for_rss %]
