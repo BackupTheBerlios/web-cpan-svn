@@ -87,7 +87,11 @@ $config =
             len => 30,
         },
         {    
-            qw(sql email pres E-mail sameline 1 flags email),
+            qw(sql email pres E-mail sameline 1),
+            flags =>
+            {
+                'email' => 1,
+            },
             hint => qq{
                 E-mail address where you can be contacted at.
             },

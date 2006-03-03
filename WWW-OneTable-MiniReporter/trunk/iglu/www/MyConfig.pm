@@ -124,14 +124,22 @@ $config =
             len => 30,
         },
         {
-            qw(sql email pres E-mail sameline 1 flags email),
+            qw(sql email pres E-mail sameline 1),
+            flags =>
+            {
+                'email' => 1,
+            },
             hint => qq{
                 E-mail address where you or the company can be contacted at.
             },
             len => 255,
         },
         {
-            qw(sql homepage pres Homepage sameline 1 flags url),
+            qw(sql homepage pres Homepage sameline 1),
+            flags =>
+            {
+                'url' => 1,
+            },
             hint => qq{
                 The URL of your company's homepage, where people can learn
                 more about your company.

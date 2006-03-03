@@ -1287,12 +1287,29 @@ sub get_len_validator
 sub get_url_validator
 {
     my $self = shift;
-    if ($self->f()->{flags} =~ m{\burl\b})
+    if ($self->f()->{flags}->{url})
     {
         return
             WWW::FieldValidator->new(WWW::FieldValidator::REGEX_MATCH,
             "URL Should start with http://",
             '^(?:|http://.*)$'
+            );
+    }
+    else
+    {
+        return ();
+    }
+}
+
+sub get_email_validator
+{
+    my $self = shift;
+    if ($self->f()->{flags}->{email})
+    {
+        return
+            WWW::FieldValidator->new(WWW::FieldValidator::WELL_FORMED_EMAIL,
+            "Should be a well-formed Email Address",
+            1,
             );
     }
     else
@@ -1309,6 +1326,7 @@ sub get_validators
         $self->get_sameline_validator(),
         $self->get_len_validator(),
         $self->get_url_validator(),
+        $self->get_email_validator(),
     ];
 }
 
