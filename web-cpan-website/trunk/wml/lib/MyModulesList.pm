@@ -67,6 +67,12 @@ implement them using HTML-Widgets-NavMenu.
 <a href="http://www.aspetersen.de/">Alexia &amp; Stephan Petersen</a> 
 </li>
 </ul>
+<h2>Project Resources</h2>
+<ul>
+<li>
+<a href="http://freshmeat.net/projects/html-widgets-navmenu/">Freshmeat Record</a>
+</li>
+</ul>
 EOF
     },
     {
