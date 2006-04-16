@@ -1,0 +1,17 @@
+Build.PL
+Changes
+lib/CGI/Application/NetNewsIface.pm
+MANIFEST
+META.yml # Will be created by "make dist"
+README
+Serve.pl
+t/00-load.t
+templates/article_display_page.tt
+templates/footer.tt
+templates/group_display_page.tt
+templates/groups_list_page.tt
+templates/header.tt
+TODO
+t/pod-coverage.t
+t/pod.t
+Makefile.PL
