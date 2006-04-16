@@ -1,0 +1,20 @@
+The cache will contain the following tables:
+
+groups:
+
+    name = STRING (Primary key)
+    index = INTEGER (unique - incremented for every group)
+
+articles:
+
+    group_idx - INTEGER
+    article_idx - INTEGER
+        - Primary Key on (group_idx,article_idx)
+    msg_id - STRING
+        - Unique index on (group_idx,msg_id)
+    parent - INTEGER
+        - Non-unique Index on (group_idx,parent)
+    subject - STRING
+    from - STRING
+    date - TIMESTAMP
+
