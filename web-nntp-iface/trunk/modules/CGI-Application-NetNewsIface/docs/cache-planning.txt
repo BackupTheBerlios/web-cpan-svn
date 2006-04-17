@@ -19,3 +19,64 @@ articles:
     from - STRING
     date - TIMESTAMP
 
+Interface:
+----------
+
+A frontend (base class) with multiple backends (sub-classes). The backend 
+handles storing and retrieving data on the disk, and the frontend uses what
+the backend supplies to do more high-level operations.
+
+The interface to the class would be as follows:
+-----------------------------------------------
+
+my $nntp_cache = 
+    CGI::Application::NetNewsIface::Cache::Foo->new(
+        {
+            'nntp' => $nntp,
+        }
+    );
+
+# Makes the group "perl.qa" the active group.
+
+$nntp_cache->select("perl.qa");
+
+# Updates the active group, by inserting the most recent articles to
+# the cache.
+$nntp_cache->update_group();
+
+# Gets the thread for the message indexed $index.
+my ($thread, $coords) = $nntp_cache->get_thread($index);
+# See below for description of $thread and $coords.
+
+--------------------
+
+$thread looks like this:
+
+{
+    'idx' => $index,
+    'subject' => "Problem with Test::More",
+    'date' => $date,
+    'from' => "Shlomi Fish <shlomif@iglu.org.il>",
+    'subs' =>
+    [
+        {
+            'idx' => $index,
+            .
+            'subs' =>
+            [
+                .
+                .
+                .
+            ],
+        }
+        .
+        .
+        .
+    ],
+}
+
+$coords is the coordinates leading to the current article within the thread.
+To access the current article from the coords use:
+
+$thread->{'subs'}->[$coords[0]]->{'subs'}->[$coords[1]]->...
+
