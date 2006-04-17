@@ -46,7 +46,11 @@ $nntp_cache->update_group();
 
 # Gets the thread for the message indexed $index.
 my ($thread, $coords) = $nntp_cache->get_thread($index);
-# See below for description of $thread and $coords.
+# See below for a description of $thread and $coords.
+
+# Gets all the threads for the messages in the range.
+([@threads]) = $nntp_cache->get_threads_for_range($start, $end);
+# (Useful for displaying in the group display)
 
 --------------------
 
