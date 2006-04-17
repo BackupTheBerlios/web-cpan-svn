@@ -52,6 +52,9 @@ my ($thread, $coords) = $nntp_cache->get_thread($index);
 ([@threads]) = $nntp_cache->get_threads_for_range($start, $end);
 # (Useful for displaying in the group display)
 
+# Retrieves the index that corresponds to the ID:
+my $index = $nntp_cache->get_index_of_id($msg_id);
+
 --------------------
 
 $thread looks like this:
