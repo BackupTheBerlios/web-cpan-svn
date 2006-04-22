@@ -14,6 +14,7 @@ templates/group_display_page.tt
 templates/groups_list_page.tt
 templates/header.tt
 t/lib/CGI/Application/NetNewsIface/Test/MockNNTP.pm
+t/lib/CGI/Application/NetNewsIface/Test/Data1.pm
 TODO
 t/pod-coverage.t
 t/pod.t
