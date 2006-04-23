@@ -40,5 +40,20 @@ sub _get_group_info
     return [max(keys(%$group_hash)), min(keys(%$group_hash)), undef];
 }
 
+sub group
+{
+    my ($self, $group) = @_;
+    if (!exists($self->_get_groups()->{$group}))
+    {
+        die "Unknown group.";
+    }
+    $self->{'_group'} = $group;
+    my $group_hash = $self->_get_groups()->{$group};
+    my $keys = [keys(%$group_hash)];
+    return wantarray() ? 
+        ( scalar(@$keys), min(@$keys), max(@$keys), $group ) :
+        $group;
+}
+
 1;
 
