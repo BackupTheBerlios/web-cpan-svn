@@ -55,5 +55,17 @@ sub group
         $group;
 }
 
+sub head
+{
+    my ($self, $idx) = @_;
+    my $group = $self->{'_group'};
+    my $group_hash = $self->_get_groups()->{$group};
+    if (!exists($group_hash->{$idx}))
+    {
+        die "Non existant index $idx.";
+    }
+    return [ @{$group_hash->{$idx}->{'head'}} ];
+}
+
 1;
 

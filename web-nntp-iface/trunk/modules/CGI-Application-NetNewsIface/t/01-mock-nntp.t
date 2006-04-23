@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -43,5 +43,18 @@ use CGI::Application::NetNewsIface::Test::Data1;
             "->group() in list context"
         );
     }
+    {
+        my $nntp = Net::NNTP->new("nntp.shlomifish.org");
+
+        $nntp->group("perl.qa");
+        my @results = grep { m{^Message-ID:} } @{$nntp->head(21)};
+        # TEST
+        is_deeply (
+            \@results, 
+            ["Message-ID: <20060418070932.5541.qmail\@lists.develooper.com>\n",],
+            "head(21)",
+        );
+    }
+    
 }
 
