@@ -165,6 +165,7 @@ Posted at <b>[% post_date %]</b>
 </p>
 <p class="data">
 <b>Company</b>: [% workplace %]<br />
+<b>Area</b>: [% area %]<br />
 <b>Job Description:</b><br />
 </p>
 <div class="desc">
