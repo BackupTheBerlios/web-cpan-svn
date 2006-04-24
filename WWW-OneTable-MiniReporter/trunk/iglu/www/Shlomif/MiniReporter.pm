@@ -869,6 +869,10 @@ sub rss_feed
 
     my $values = $sth->fetchrow_arrayref();
 
+    $sth->finish();
+
+    undef($sth);
+
     $self->header_props(-type => "text/rss");
 
     $conn->disconnect();
