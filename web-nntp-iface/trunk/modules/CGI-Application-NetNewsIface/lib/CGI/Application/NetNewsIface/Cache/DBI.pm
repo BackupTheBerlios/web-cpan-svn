@@ -61,12 +61,52 @@ sub _initialize
 
     $self->{'nntp'} = $args->{'nntp'};
 
-    $self->{'dbh'} = DBI->connect($args->{'dsn'}, "", "");
+    my $dbh = $self->{'dbh'} = DBI->connect($args->{'dsn'}, "", "");
+
+    $self->{'sths'}->{'select_group'} =
+        $dbh->prepare_cached(
+            "SELECT idx, last_art FROM groups WHERE name = ?"
+        );
+
+    $self->{'sths'}->{'insert_group'} =
+        $dbh->prepare_cached(
+            "INSERT INTO groups (name, idx, last_art) VALUES (?, null, 0)"
+        );
+
+    $self->{'sths'}->{'insert_art'} =
+        $dbh->prepare_cached(
+            "INSERT INTO articles (group_idx, article_idx, msg_id, parent, subject, frm, date) 
+             VALUES (?, ?, ?, ?, ?, ?, ?)"
+        );
+
+    $self->{'sths'}->{'update_last_art'} = 
+        $dbh->prepare_cached(
+            "UPDATE groups SET last_art = ? WHERE idx = ?"
+        );
+
+    $self->{'sths'}->{'get_index_of_id'} = 
+        $dbh->prepare_cached(
+            "SELECT article_idx FROM articles WHERE (group_idx = ?) AND (msg_id = ?)"
+        );
 
     return 0;
 }
 
-=head2 $cache->select($group)
+# This is a non-working workaround for the following DBD-SQLite bug:
+# http://rt.cpan.org/Public/Bug/Display.html?id=9643
+# It can probably be removed afterwards.
+sub DESTROY
+{
+    my $self = shift;
+    my @stmts = keys(%{$self->{'sths'}});
+    foreach my $s (@stmts)
+    {
+        my $sth = delete($self->{'sths'}->{$s});
+        $sth->finish();
+    }
+}
+
+=head2 $cache->select( $group )
 
 Selects the newsgroup $group.
 
@@ -84,12 +124,103 @@ sub _update_group
     my $self = shift;
     
     my $group = $self->{'group'};
-    my @info = $self->{'nntp'}->group($group);
+    my $nntp = $self->{'nntp'};
+    my @info = $nntp->group($group);
     if (! @info)
     {
         die "Unknown group \"$group\".";
     }
+
+    my ($num_articles, $first_article, $last_article) = @info;
+
+    # TODO: Add a transaction here
+    my $sth = $self->{sths}->{select_group};
+    $sth->execute($group);
+    my $group_record = $sth->fetchrow_arrayref();
+    if (!defined($group_record))
+    {
+        $self->{sths}->{insert_group}->execute($group);
+        $sth = $self->{sths}->{select_group};
+        $sth->execute($group);
+        $group_record = $sth->fetchrow_arrayref();
+    }
+    my $last_updated_art;
+    my $group_idx;
+    my $start_art;
+    ($group_idx, $last_updated_art) = @$group_record;
+    $self->{group_idx} = $group_idx;
+    if ($last_updated_art == 0)
+    {
+        $start_art = $first_article;
+    }
+    else
+    {
+        $start_art = $last_updated_art+1;
+    }
+
+    my $ins_sth = $self->{sths}->{insert_art};
+    for (my $art_idx=$start_art; $art_idx < $last_article;$art_idx++)
+    {
+        my $head = $nntp->head($art_idx);
+        if (!defined($head))
+        {
+            next;
+        }
+        
+        my ($msg_id,$subject, $from, $date);
+        my $parent = 0;
+        foreach my $header (@$head)
+        {
+            chomp($header);
+            if ($header =~ m{^Subject: (.*)})
+            {
+                $subject = $1;
+            }
+            elsif ($header =~ m{^Message-ID: <(.*?)>$})
+            {
+                $msg_id = $1;
+            }
+            elsif ($header =~ m{In-reply-to: <(.*?)>$})
+            {
+                $parent = $self->get_index_of_id($1);
+            }
+            elsif ($header =~ m{^From: (.*)$})
+            {
+                $from = $1;
+            }
+            elsif ($header =~ m{^Date: (.*)$})
+            {
+                $date = $1;
+            }
+        }
+        $ins_sth->execute(
+            $group_idx, $art_idx, $msg_id, $parent, 
+            $subject, $from, $date,
+        );
+    }
+
+    if ($start_art < $last_article)
+    {
+        $self->{sths}->{update_last_art}
+             ->execute($last_article, $group_idx);
+    }
+
     return 0;
+}
+
+=head2 $cache->get_index_of_id($id)
+
+Retrieves the index of the message with the id C<$id>.
+
+=cut
+
+sub get_index_of_id
+{
+    my ($self, $msg_id) = @_;
+    my $sth = $self->{sths}->{get_index_of_id};
+    $sth->execute($self->{'group_idx'}, $msg_id);
+    my $ret = $sth->fetchrow_arrayref();
+    return (defined($ret) ? $ret->[0] : 0);
 }
 
 =head1 AUTHOR
