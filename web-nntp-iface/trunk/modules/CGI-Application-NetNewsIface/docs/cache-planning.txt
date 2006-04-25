@@ -3,7 +3,7 @@ The cache will contain the following tables:
 groups:
 
     name = STRING (Primary key)
-    index = INTEGER (unique - incremented for every group)
+    idx = INTEGER (unique - incremented for every group)
     last_art = INTEGER (last article updated in the cache)
 
 articles:
