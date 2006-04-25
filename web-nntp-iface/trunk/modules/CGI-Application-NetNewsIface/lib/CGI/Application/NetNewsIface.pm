@@ -534,9 +534,7 @@ your bug as I make changes.
 
 =head2 Known Bugs
 
-The templates are assumed to be under ./templates and are not installed
-under a more meaningful place. (And the code is not configured to use them 
-from there.)
+None, but it doesn't mean there aren't any bugs.
 
 =head1 ACKNOWLEDGEMENTS
 
