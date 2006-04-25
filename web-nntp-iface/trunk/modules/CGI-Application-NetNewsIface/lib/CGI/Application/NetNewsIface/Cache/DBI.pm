@@ -61,6 +61,34 @@ sub _initialize
 
     $self->{'nntp'} = $args->{'nntp'};
 
+    $self->{'dbh'} = DBI->connect($args->{'dsn'}, "", "");
+
+    return 0;
+}
+
+=head2 $cache->select($group)
+
+Selects the newsgroup $group.
+
+=cut
+
+sub select
+{
+    my ($self, $group) = @_;
+    $self->{'group'} = $group;
+    return $self->_update_group();
+}
+
+sub _update_group
+{
+    my $self = shift;
+    
+    my $group = $self->{'group'};
+    my @info = $self->{'nntp'}->group($group);
+    if (! @info)
+    {
+        die "Unknown group \"$group\".";
+    }
     return 0;
 }
 

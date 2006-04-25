@@ -42,6 +42,7 @@ $nntp_cache->select("perl.qa");
 
 # Updates the active group, by inserting the most recent articles to
 # the cache.
+# (It's being run internally by select.)
 $nntp_cache->update_group();
 
 # Gets the thread for the message indexed $index.

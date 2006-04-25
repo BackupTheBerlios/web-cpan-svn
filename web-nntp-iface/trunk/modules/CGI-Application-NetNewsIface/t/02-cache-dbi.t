@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -39,6 +39,18 @@ sub create_db
         );
         # TEST
         ok ($cache, "Cache was initialized");
+    }
+    {
+        my $nntp = Net::NNTP->new("nntp.shlomifish.org");
+        create_db();
+        my $cache = CGI::Application::NetNewsIface::Cache::DBI->new(
+            {
+                'nntp' => $nntp,
+                'dsn' => $dsn,
+            },
+        );
+        # TEST
+        is ($cache->select("perl.qa"), 0, "select() worked");
     }
 }
 1;
