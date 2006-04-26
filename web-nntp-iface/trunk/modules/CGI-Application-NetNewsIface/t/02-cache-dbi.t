@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -24,6 +24,23 @@ sub create_db
     my $dbh = DBI->connect($dsn, "", "");
     $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
     $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
+}
+
+sub normalize_thread
+{
+    my ($thread, $coords) = @_;
+    my $f;
+
+    $f = sub {
+        my $sub = shift;
+        return { 'idx' => $sub->{idx}, 
+            (exists($sub->{subs}) ?  
+                ('subs' => [ map { $f->($_); } @{$sub->{'subs'}} ]) :
+                ()
+            )
+        };    
+    };
+    return [$f->($thread), $coords];
 }
 
 {
@@ -111,6 +128,30 @@ sub create_db
         is ($cache->_get_parent(1),
             0,
             "_get_parent() - 3",
+        );
+        # TEST
+        is_deeply (normalize_thread($cache->get_thread(2)),
+            [
+                # The thread
+                {
+                    'idx' => 1,
+                    'subs' =>
+                    [
+                        {
+                            'idx' => 2,
+                            'subs' =>
+                            [
+                                {
+                                    'idx' => 3,
+                                }
+                            ],
+                        },
+                    ],
+                },
+                # The coords
+                [0],
+            ],
+            "get_thread() - Try 1",
         );
     }
 }

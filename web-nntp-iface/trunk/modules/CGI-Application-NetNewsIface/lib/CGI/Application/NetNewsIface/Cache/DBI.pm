@@ -94,6 +94,11 @@ sub _initialize
             "SELECT parent FROM articles WHERE (group_idx = ?) AND (article_idx = ?)"
         );
 
+    $self->{'sths'}->{'get_sub_thread'} = 
+        $dbh->prepare_cached(
+            "SELECT article_idx, subject, date, frm FROM articles WHERE (group_idx = ?) AND (parent = ?)"
+        );
+
     return 0;
 }
 
@@ -235,6 +240,100 @@ sub _get_parent
     $sth->execute($self->{'group_idx'}, $index);
     my $ret = $sth->fetchrow_arrayref();
     return (defined($ret) ? $ret->[0] : undef);
+}
+
+=head2 ($thread, $coords) = $cache->get_thread($index);
+
+Gets the thread for the message indexed C<$index>. Thread is:
+
+C<$thread> looks like this:
+
+    {
+        'idx' => $index,
+        'subject' => "Problem with Test::More",
+        'date' => $date,
+        'from' => "Shlomi Fish <shlomif@iglu.org.il>",
+        'subs' =>
+        [
+            {
+                'idx' => $index,
+                .
+                'subs' =>
+                [
+                    .
+                    .
+                    .
+                ],
+            }
+            .
+            .
+            .
+        ],
+    }
+
+C<$coords> is the coordinates leading to the current article within the 
+thread. To access the current article from the coords use:
+
+    $thread->{'subs'}->[$coords[0]]->{'subs'}->[$coords[1]]->...
+
+=cut
+
+sub get_thread
+{
+    my ($self, $index) = @_;
+
+    # Get the first ancestor of the thread.
+    my $thread_head;
+    {
+        my ($parent, $grandparent);
+        $parent = $index;
+        while (($grandparent = $self->_get_parent($parent)) != 0)
+        {
+            $parent = $grandparent;
+        }
+        $thread_head = $parent;
+    }
+    my $coords;
+    # TODO : Make sure we retrieve information for the top-most node.
+    my $thread_struct = { 'idx' => $thread_head, };
+    $self->_get_sub_thread($thread_struct, $index, \$coords, []);
+    return ($thread_struct, $coords);
+}
+
+sub _get_sub_thread
+{
+    my ($self, $struct_ptr, $requested, $coords_ptr, $coords) = @_;
+    my $index = $struct_ptr->{idx};
+    if ($index == $requested)
+    {
+        $$coords_ptr = $coords;
+    }
+    my $sth = $self->{sths}->{get_sub_thread};
+    $sth->execute($self->{group_idx}, $index);
+    my @subs;
+    while (my $row = $sth->fetchrow_arrayref())
+    {
+        push @subs,
+        {
+            'idx' => $row->[0],
+            'subject' => $row->[1],
+            'date' => $row->[2],
+            'from' => $row->[3],
+        };
+    }
+    if (@subs)
+    {
+        $struct_ptr->{subs} = \@subs;
+        foreach my $child_idx (0 .. $#subs)
+        {
+            $self->_get_sub_thread(
+                $subs[$child_idx],
+                $requested,
+                $coords_ptr,
+                [@$coords, $child_idx],
+            );
+        }
+    }
 }
 
 =head1 AUTHOR
