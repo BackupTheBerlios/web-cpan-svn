@@ -18,6 +18,7 @@ my $builder = Module::Build->new(
         'Net::NNTP' => 0,
         'Class::Accessor' => 0,
         'CGI::Application::Plugin::TT' => 0,
+        'DBD::SQLite' => 0,
     },
     add_to_cleanup      => [ 'CGI-Application-NetNewsIface-*' ],
     create_makefile_pl => 'passthrough',
