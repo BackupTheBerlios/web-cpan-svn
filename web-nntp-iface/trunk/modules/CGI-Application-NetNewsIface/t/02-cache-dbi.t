@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 8;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -77,7 +77,23 @@ sub create_db
             16,
             "get_index_of_id() - 2"
         );
-        
+        # TEST
+        is ($cache->select("perl.advocacy"), 0, 
+            "select(\"perl.advocacy\") worked");
+        # TEST
+        is ($cache->get_index_of_id(
+            "FE10499CE029B841A9DAAF12E5A52A1B011D9094\@XCH-NW-3V1.nw.nos.boeing.com",
+            ),
+            2,
+            "get_index_of_id() in perl.advocacy - 1"
+        );
+        # TEST
+        is ($cache->get_index_of_id(
+            "x7d5g44iyg.fsf\@mail.sysarch.com",
+            ),
+            4,
+            "get_index_of_id() in perl.advocacy - 2"
+        );
     }
 }
 1;
