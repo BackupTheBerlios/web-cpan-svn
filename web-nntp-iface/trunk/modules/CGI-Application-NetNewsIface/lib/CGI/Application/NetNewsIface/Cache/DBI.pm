@@ -99,6 +99,11 @@ sub _initialize
             "SELECT article_idx, subject, date, frm FROM articles WHERE (group_idx = ?) AND (parent = ?)"
         );
 
+    $self->{'sths'}->{'get_art_info'} =
+        $dbh->prepare_cached(
+            "SELECT subject, date, frm FROM articles WHERE (group_idx = ?) AND (article_idx = ?)"
+        );
+
     return 0;
 }
 
@@ -293,9 +298,20 @@ sub get_thread
         }
         $thread_head = $parent;
     }
+    
+    # Make sure we retrieve information for the top-most node.
+    my $sth = $self->{sths}->{get_art_info};
+    $sth->execute($self->{group_idx}, $thread_head);
+    my $info = $sth->fetchrow_arrayref();
+    my $thread_struct = 
+    { 
+        'idx' => $thread_head, 
+        'subject' => $info->[0],
+        'date' => $info->[1],
+        'from' => $info->[2],
+    };
+    
     my $coords;
-    # TODO : Make sure we retrieve information for the top-most node.
-    my $thread_struct = { 'idx' => $thread_head, };
     $self->_get_sub_thread($thread_struct, $index, \$coords, []);
     return ($thread_struct, $coords);
 }

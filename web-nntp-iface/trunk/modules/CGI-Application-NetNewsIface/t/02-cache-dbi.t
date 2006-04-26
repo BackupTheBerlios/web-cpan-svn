@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -129,30 +129,39 @@ sub normalize_thread
             0,
             "_get_parent() - 3",
         );
-        # TEST
-        is_deeply (normalize_thread($cache->get_thread(2)),
-            [
-                # The thread
-                {
-                    'idx' => 1,
-                    'subs' =>
-                    [
-                        {
-                            'idx' => 2,
-                            'subs' =>
-                            [
-                                {
-                                    'idx' => 3,
-                                }
-                            ],
-                        },
-                    ],
-                },
-                # The coords
-                [0],
-            ],
-            "get_thread() - Try 1",
-        );
+        
+        {
+            my ($thread, $coords) = $cache->get_thread(2);
+            # TEST
+            is_deeply (normalize_thread($thread, $coords),
+                [
+                    # The thread
+                    {
+                        'idx' => 1,
+                        'subs' =>
+                        [
+                            {
+                                'idx' => 2,
+                                'subs' =>
+                                [
+                                    {
+                                        'idx' => 3,
+                                    }
+                                ],
+                            },
+                        ],
+                    },
+                    # The coords
+                    [0],
+                ],
+                "get_thread() - Try 1",
+            );
+            # TEST
+            is ($thread->{'subject'},
+               "Generator for Modules-Installing Makefiles",
+               "Top-level thread item has data",
+            );
+        }
     }
 }
 1;
