@@ -89,6 +89,11 @@ sub _initialize
             "SELECT article_idx FROM articles WHERE (group_idx = ?) AND (msg_id = ?)"
         );
 
+    $self->{'sths'}->{'get_parent'} = 
+        $dbh->prepare_cached(
+            "SELECT parent FROM articles WHERE (group_idx = ?) AND (article_idx = ?)"
+        );
+
     return 0;
 }
 
@@ -180,7 +185,7 @@ sub _update_group
             {
                 $msg_id = $1;
             }
-            elsif ($header =~ m{In-reply-to: <(.*?)>$})
+            elsif ($header =~ m{In-reply-to: <(.*?)>$}i)
             {
                 $parent = $self->get_index_of_id($1);
             }
@@ -221,6 +226,15 @@ sub get_index_of_id
     $sth->execute($self->{'group_idx'}, $msg_id);
     my $ret = $sth->fetchrow_arrayref();
     return (defined($ret) ? $ret->[0] : 0);
+}
+
+sub _get_parent
+{
+    my ($self, $index) = @_;
+    my $sth = $self->{sths}->{get_parent};
+    $sth->execute($self->{'group_idx'}, $index);
+    my $ret = $sth->fetchrow_arrayref();
+    return (defined($ret) ? $ret->[0] : undef);
 }
 
 =head1 AUTHOR
