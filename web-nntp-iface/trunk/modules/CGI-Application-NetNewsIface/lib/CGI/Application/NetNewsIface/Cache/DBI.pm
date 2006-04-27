@@ -174,7 +174,7 @@ sub _update_group
     }
 
     my $ins_sth = $self->{sths}->{insert_art};
-    for (my $art_idx=$start_art; $art_idx < $last_article;$art_idx++)
+    for (my $art_idx=$start_art; $art_idx <= $last_article;$art_idx++)
     {
         my $head = $nntp->head($art_idx);
         if (!defined($head))
@@ -214,7 +214,7 @@ sub _update_group
         );
     }
 
-    if ($start_art < $last_article)
+    if ($start_art <= $last_article)
     {
         $self->{sths}->{update_last_art}
              ->execute($last_article, $group_idx);

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 15;
 
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "t", "lib");
@@ -93,6 +93,13 @@ sub normalize_thread
             ),
             16,
             "get_index_of_id() - 2"
+        );
+        # TEST
+        is ($cache->get_index_of_id(
+            "20060418073833.GB1833\@klangraum"
+            ),
+            25,
+            "Existence of the article with the last index"
         );
         # TEST
         is ($cache->select("perl.advocacy"), 0, 

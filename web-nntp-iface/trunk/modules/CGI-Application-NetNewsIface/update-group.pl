@@ -5,7 +5,7 @@ use warnings;
 
 use MyWebNntp;
 
-MyWebNntp::get_app()->run();
+MyWebNntp::get_app()->update_group(shift(@ARGV));
 
 1;
 

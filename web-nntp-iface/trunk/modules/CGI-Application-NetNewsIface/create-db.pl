@@ -5,7 +5,7 @@ use warnings;
 
 use MyWebNntp;
 
-MyWebNntp::get_app()->run();
+MyWebNntp::create_db();
 
 1;
 

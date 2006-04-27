@@ -34,6 +34,8 @@ use Net::NNTP;
 
 use CGI::Application::NetNewsIface::ConfigData;
 
+use CGI::Application::NetNewsIface::Cache::DBI;
+
 use vars qw($VERSION);
 
 $VERSION = "0.0100_01";
@@ -85,6 +87,10 @@ The Server to which to connect using NNTP.
 =head2 articles_per_page
 
 The number of articles to display per page of listing of a newsgroup.
+
+=head2 dsn
+
+The DBI 'dsn' for the cache.
 
 =head1 FUNCTIONS
 
@@ -518,6 +524,28 @@ sub _css
 }
 EOF
 }
+
+=head2 $cgiapp->update_group($group)
+
+Updates the cache records for the group C<$group>. This method is used
+for maintenance, to make sure a script loads promptly.
+
+=cut
+
+sub update_group
+{
+    my $self = shift;
+    my $group = shift;
+
+    my $cache = CGI::Application::NetNewsIface::Cache::DBI->new(
+        {
+            'nntp' => $self->_get_nntp(),
+            'dsn' => $self->param('dsn'),
+        },
+    );
+    $cache->select($group);
+}
+
 1;
 
 =head1 AUTHOR
