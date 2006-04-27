@@ -96,7 +96,12 @@ sub _initialize
 
     $self->{'sths'}->{'get_sub_thread'} = 
         $dbh->prepare_cached(
-            "SELECT article_idx, subject, date, frm FROM articles WHERE (group_idx = ?) AND (parent = ?)"
+            "SELECT article_idx, subject, date, frm" . 
+            " FROM articles" . 
+            " WHERE (group_idx = ?) AND (parent = ?)" .
+            # We're ordering on (group_idx, article_idx) because that's what
+            # the relevant index on the table is wired to.
+            " ORDER BY group_idx, article_idx"
         );
 
     $self->{'sths'}->{'get_art_info'} =
