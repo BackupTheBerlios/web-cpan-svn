@@ -10,4 +10,6 @@
 <pre>
 [% text %]
 </pre>
+<hr />
+[% thread %]
 [% INCLUDE "footer.tt" %]

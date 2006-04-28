@@ -498,9 +498,46 @@ sub _article_display_page
             'show_headers' => $self->_get_show_headers(),
             'first_art' => $first_article,
             'last_art' => $last_article,
+            'thread' => $self->_get_thread($nntp),
         },
     );
-        
+}
+
+# TODO :
+# 1. Put $render in a separate function - not closure.
+# 2. Make the current article non-linked and bold.
+# 3. Add the date (?).
+sub _get_thread
+{
+    my ($self, $nntp) = @_;
+    my $article = $self->param('article');
+
+    my $cache = CGI::Application::NetNewsIface::Cache::DBI->new(
+        {
+            'nntp' => $nntp,
+            'dsn' => $self->param('dsn'),
+        },
+    );
+    $cache->select($self->param('group'));
+
+    my ($thread, $coords) = $cache->get_thread($article);
+
+    my $render;
+
+    $render = sub {
+        my $node = shift;
+        return "<li>" . "<a href=\"" . $node->{idx} . "\">" .
+            CGI::escapeHTML($node->{subject}) . "</a> " .
+            CGI::escapeHTML($node->{from}) .
+            (exists($node->{subs}) ?
+                ("<br /><ul>" .
+                join("", map {$render->($_) } @{$node->{subs}}) .
+                "</ul>") :
+                ""
+            ) .
+            "</li>";
+    };
+    return "<ul>" . $render->($thread) . "</ul>";
 }
 
 sub _css
