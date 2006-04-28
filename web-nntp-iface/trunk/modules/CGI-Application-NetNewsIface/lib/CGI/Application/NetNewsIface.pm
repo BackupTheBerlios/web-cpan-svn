@@ -503,8 +503,23 @@ sub _article_display_page
     );
 }
 
+sub _thread_render_node
+{
+    my $self = shift;
+    my $node = shift;
+    return "<li>" . "<a href=\"" . $node->{idx} . "\">" .
+        CGI::escapeHTML($node->{subject}) . "</a> " .
+        CGI::escapeHTML($node->{from}) .
+        (exists($node->{subs}) ?
+            ("<br /><ul>" .
+            join("", map {$self->_thread_render_node($_) } @{$node->{subs}}) .
+            "</ul>") :
+            ""
+        ) .
+        "</li>";
+}
+
 # TODO :
-# 1. Put $render in a separate function - not closure.
 # 2. Make the current article non-linked and bold.
 # 3. Add the date (?).
 sub _get_thread
@@ -522,22 +537,7 @@ sub _get_thread
 
     my ($thread, $coords) = $cache->get_thread($article);
 
-    my $render;
-
-    $render = sub {
-        my $node = shift;
-        return "<li>" . "<a href=\"" . $node->{idx} . "\">" .
-            CGI::escapeHTML($node->{subject}) . "</a> " .
-            CGI::escapeHTML($node->{from}) .
-            (exists($node->{subs}) ?
-                ("<br /><ul>" .
-                join("", map {$render->($_) } @{$node->{subs}}) .
-                "</ul>") :
-                ""
-            ) .
-            "</li>";
-    };
-    return "<ul>" . $render->($thread) . "</ul>";
+    return "<ul>" . $self->_thread_render_node($thread) . "</ul>";
 }
 
 sub _css
