@@ -505,14 +505,23 @@ sub _article_display_page
 
 sub _thread_render_node
 {
-    my $self = shift;
-    my $node = shift;
-    return "<li>" . "<a href=\"" . $node->{idx} . "\">" .
-        CGI::escapeHTML($node->{subject}) . "</a> " .
+    my ($self, $node, $current) = @_;
+    my $subj = CGI::escapeHTML($node->{subject});
+    my $node_text = 
+        ($node->{idx} == $current) ?
+            "<b>$subj</b>" :
+            qq|<a href="$node->{idx}">$subj</a>|
+        ;
+
+    return "<li>$node_text " .
         CGI::escapeHTML($node->{from}) .
         (exists($node->{subs}) ?
             ("<br /><ul>" .
-            join("", map {$self->_thread_render_node($_) } @{$node->{subs}}) .
+            join("",
+                map 
+                    {$self->_thread_render_node($_, $current) } 
+                @{$node->{subs}}
+            ) .
             "</ul>") :
             ""
         ) .
@@ -537,7 +546,7 @@ sub _get_thread
 
     my ($thread, $coords) = $cache->get_thread($article);
 
-    return "<ul>" . $self->_thread_render_node($thread) . "</ul>";
+    return "<ul>" . $self->_thread_render_node($thread, $article) . "</ul>";
 }
 
 sub _css
