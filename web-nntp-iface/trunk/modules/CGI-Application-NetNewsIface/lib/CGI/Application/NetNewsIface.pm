@@ -35,6 +35,7 @@ use Net::NNTP;
 use CGI::Application::NetNewsIface::ConfigData;
 
 use CGI::Application::NetNewsIface::Cache::DBI;
+use DBI;
 
 use vars qw($VERSION);
 
@@ -590,6 +591,24 @@ sub update_group
         },
     );
     $cache->select($group);
+}
+
+=head2 $cgiapp->init_cache__sqlite()
+
+Initializes the SQLite cache that is pointed by the DBI DSN given as
+a parameter to the CGI script. This should be called before any use of the
+CGI Application itself, because otherwise there will be no tables to operate
+on.
+
+=cut
+
+sub init_cache__sqlite
+{
+    my $self = shift;
+
+    my $dbh = DBI->connect($self->param('dsn'), "", "");
+    $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
+    $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
 }
 
 1;

@@ -14,6 +14,7 @@ use CGI::Application::NetNewsIface::Test::Data1;
 use DBI;
 
 use CGI::Application::NetNewsIface::Cache::DBI;
+use CGI::Application::NetNewsIface;
 
 my $db_file = File::Spec->catfile("t", "data", "testdb.sqlite");
 my $dsn = "dbi:SQLite:dbname=$db_file";
@@ -21,9 +22,15 @@ my $dsn = "dbi:SQLite:dbname=$db_file";
 sub create_db
 {
     unlink($db_file);
-    my $dbh = DBI->connect($dsn, "", "");
-    $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
-    $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
+    
+    my $app = CGI::Application::NetNewsIface->new(
+        PARAMS => {
+            'nntp_server' => "nntp.shlomifish.org",
+            'articles_per_page' => 10,
+            'dsn' => $dsn,
+        },
+    );
+    $app->init_cache__sqlite();
 }
 
 sub normalize_thread
