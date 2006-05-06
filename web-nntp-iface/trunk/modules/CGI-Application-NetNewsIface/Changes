@@ -1,5 +1,10 @@
 Revision history for CGI-Application-NetNewsIface
 
+0.0100_02    Sat May  6 20:50:08 IDT 2006
+    - Added the cache for making the threads' lookup faster.
+        - Currently DBI and DBD::SQLite only.
+    - Added a thread display to the individual article view. 
+
 0.0100_01    Sun Apr 16 23:16:54 IDT 2006
     - Now installing the templates.
         - Added the configured templates' directory to the tt_include_path.
