@@ -10,16 +10,28 @@ for Usenet (NNTP) news.
 
 =head1 SYNOPSIS
 
+In a common module:
+
     use CGI::Application::NetNewsIface;
 
-    my $app = CGI::Application::NetNewsIface->new(
-        PARAMS => {
-            'nntp_server' => "nntp.perl.org",
-            'articles_per_page' => 10,
-        },
-    );
+    sub get_app
+    {
+        return CGI::Application::NetNewsIface->new(
+            PARAMS => {
+                'nntp_server' => "nntp.perl.org",
+                'articles_per_page' => 10,
+                'dsn' => "dbi:SQLite:dbname=./data/mynntp.sqlite",
+            }
+        );
+    }
 
-    $app->run();
+To set up:
+
+    get_app()->init_cache__sqlite();
+
+To run
+
+    get_app()->run();
 
 =cut
 
@@ -573,7 +585,7 @@ EOF
 
 =head2 $cgiapp->update_group($group)
 
-Updates the cache records for the group C<$group>. This method is used
+Updates the cache records for the NNTP group C<$group>. This method is used
 for maintenance, to make sure a script loads promptly.
 
 =cut
