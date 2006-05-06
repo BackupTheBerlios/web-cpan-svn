@@ -25,10 +25,7 @@ sub get_app
 
 sub create_db
 {
-    require DBI;
-    my $dbh = DBI->connect(get_dsn(), "", "");
-    $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
-    $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
+    get_app()->init_cache__sqlite();
 }
 
 1;
