@@ -35,7 +35,6 @@ use Net::NNTP;
 use CGI::Application::NetNewsIface::ConfigData;
 
 use CGI::Application::NetNewsIface::Cache::DBI;
-use DBI;
 
 use vars qw($VERSION);
 
@@ -605,6 +604,8 @@ on.
 sub init_cache__sqlite
 {
     my $self = shift;
+
+    require DBI;
 
     my $dbh = DBI->connect($self->param('dsn'), "", "");
     $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
