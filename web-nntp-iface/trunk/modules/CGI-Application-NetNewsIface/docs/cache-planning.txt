@@ -2,8 +2,11 @@ The cache will contain the following tables:
 
 groups:
 
-    name = STRING (Primary key)
+    name = STRING 
+        - uniquely indexed.
     idx = INTEGER (unique - incremented for every group)
+        - changed to primary key due to the limitations of
+        SQLite and possibly other database connections.
     last_art = INTEGER (last article updated in the cache)
 
 articles:
@@ -13,6 +16,8 @@ articles:
         - Primary Key on (group_idx,article_idx)
     msg_id - STRING
         - Unique index on (group_idx,msg_id)
+            - needs to be non-unique due to SQLite constraints
+            and the fact group_idx participates in another unique index. 
     parent - INTEGER
         - Non-unique Index on (group_idx,parent)
     subject - STRING

@@ -609,6 +609,10 @@ sub init_cache__sqlite
     my $dbh = DBI->connect($self->param('dsn'), "", "");
     $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
     $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
+    $dbh->do("CREATE UNIQUE INDEX idx_groups_name ON groups (name)");
+    $dbh->do("CREATE UNIQUE INDEX idx_articles_primary ON articles (group_idx, article_idx)");
+    $dbh->do("CREATE INDEX idx_articles_msg_id ON articles (group_idx, msg_id)");
+    $dbh->do("CREATE INDEX idx_articles_parent ON articles (group_idx, parent)");
 }
 
 1;
