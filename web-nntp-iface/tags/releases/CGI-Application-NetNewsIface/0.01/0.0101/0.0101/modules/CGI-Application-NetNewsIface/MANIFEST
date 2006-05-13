@@ -1,0 +1,23 @@
+Build.PL
+Changes
+lib/CGI/Application/NetNewsIface/Cache/DBI.pm
+lib/CGI/Application/NetNewsIface.pm
+Makefile.PL
+MANIFEST
+META.yml # Will be created by "make dist"
+README
+Serve.pl
+t/00-load.t
+t/01-mock-nntp.t
+t/02-cache-dbi.t
+t/data/PLACEHOLDER
+templates/article_display_page.tt
+templates/footer.tt
+templates/group_display_page.tt
+templates/groups_list_page.tt
+templates/header.tt
+t/lib/CGI/Application/NetNewsIface/Test/Data1.pm
+t/lib/CGI/Application/NetNewsIface/Test/MockNNTP.pm
+TODO
+t/pod-coverage.t
+t/pod.t
