@@ -50,7 +50,7 @@ use CGI::Application::NetNewsIface::Cache::DBI;
 
 use vars qw($VERSION);
 
-$VERSION = "0.0100_02";
+$VERSION = "0.0101";
 
 use CGI;
 

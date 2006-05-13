@@ -1,5 +1,9 @@
 Revision history for CGI-Application-NetNewsIface
 
+0.0101       Sat May 13 17:52:16 IDT 2006
+    - Bumped version to 0.0101
+    - First stable release.
+
 0.0100_02    Sat May  6 20:50:08 IDT 2006
     - Added the cache for making the threads' lookup faster.
         - Currently DBI and DBD::SQLite only.
