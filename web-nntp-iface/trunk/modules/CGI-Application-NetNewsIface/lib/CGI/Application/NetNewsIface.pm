@@ -616,11 +616,35 @@ on.
 sub init_cache__sqlite
 {
     my $self = shift;
+    return $self->_init_cache({'auto_inc' => "PRIMARY KEY AUTOINCREMENT"});
+}
+
+=head2 $cgiapp->init_cache__mysql()
+
+Initializes the MySQL cache that is pointed by the DBI DSN given as
+a parameter to the CGI script. This should be called before any use of the
+CGI Application itself, because otherwise there will be no tables to operate
+on.
+
+=cut
+
+sub init_cache__mysql
+{
+    my $self = shift;
+    return $self->_init_cache({'auto_inc' => "PRIMARY KEY NOT NULL AUTO_INCREMENT"});
+}
+
+sub _init_cache
+{
+    my $self = shift;
+    my $args = shift;
+
+    my $auto_inc = $args->{'auto_inc'};
 
     require DBI;
 
     my $dbh = DBI->connect($self->param('dsn'), "", "");
-    $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER PRIMARY KEY AUTOINCREMENT, last_art INTEGER)");
+    $dbh->do("CREATE TABLE groups (name varchar(255), idx INTEGER $auto_inc, last_art INTEGER)");
     $dbh->do("CREATE TABLE articles (group_idx INTEGER, article_idx INTEGER, msg_id varchar(255), parent INTEGER, subject varchar(255), frm varchar(255), date varchar(255))");
     $dbh->do("CREATE UNIQUE INDEX idx_groups_name ON groups (name)");
     $dbh->do("CREATE UNIQUE INDEX idx_articles_primary ON articles (group_idx, article_idx)");
