@@ -11,11 +11,13 @@ t/00-load.t
 t/01-mock-nntp.t
 t/02-cache-dbi.t
 t/data/PLACEHOLDER
+templates/about_app_page.tt
 templates/article_display_page.tt
 templates/footer.tt
 templates/group_display_page.tt
 templates/groups_list_page.tt
 templates/header.tt
+templates/main_page.tt
 t/lib/CGI/Application/NetNewsIface/Test/Data1.pm
 t/lib/CGI/Application/NetNewsIface/Test/MockNNTP.pm
 TODO

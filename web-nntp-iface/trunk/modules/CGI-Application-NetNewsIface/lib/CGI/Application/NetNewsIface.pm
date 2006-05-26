@@ -81,6 +81,11 @@ my %modes =
         'url' => "/style.css",
         'func' => "_css",
     },
+    'about_app' =>
+    {
+        'url' => "/cgi-app-nni/",
+        'func' => "_about_app_page",
+    }
 );
 
 my %urls_to_modes = (map { $modes{$_}->{'url'} => $_ } keys(%modes));
@@ -225,6 +230,10 @@ sub _determine_mode
     {
         return "css";
     }
+    elsif ($path eq "/cgi-app-nni/")
+    {
+        return "about_app";
+    }
     elsif ($path =~ s{^/group/}{})
     {
         if ($path eq "")
@@ -310,7 +319,27 @@ sub _main_page
 {
     my $self = shift;
 
-    return "<html><body><h1>Hello</h1></body></html>";
+    return $self->tt_process(
+        'main_page.tt',
+        {
+            'path_to_root' => $self->_get_path_to_root(),
+            'title' => "Web Interface to the News Server",
+            'nntp_server' => $self->param('nntp_server'),
+        },
+    );
+}
+
+sub _about_app_page
+{
+    my $self = shift;
+
+    return $self->tt_process(
+        'about_app_page.tt',
+        {
+            'title' => "About CGI-Application-NetNewsIface",
+            'path_to_root' => $self->_get_path_to_root(),
+        },
+    );
 }
 
 sub _get_nntp
