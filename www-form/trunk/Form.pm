@@ -1181,13 +1181,23 @@ sub getTrAttrString
     return $self->_render_attributes($self->getTrAttributes($fieldName));
 }
 
+sub _getHiddenFieldHTMLRow
+{
+    my $self = shift;
+    my $fieldName = shift;
+    return "<tr style=\"display:none\">\n" .
+        "<td></td>\n" .
+        "<td>" . $self->_getInputHTML($fieldName, "") ."</td>\n" .
+        "</tr>\n";
+}
+
 sub getFieldHTMLRow {
     my $self = shift;
     my $fieldName = shift;
 
     if ($self->_getFieldType($fieldName) eq "hidden")
     {
-        return "";
+        return $self->_getHiddenFieldHTMLRow($fieldName);
     }
 
     my %func_args = (@_);
@@ -1226,6 +1236,32 @@ sub getFieldHTMLRow {
 }
 *get_field_HTML_row = \&getFieldHTMLRow;
 
+=head2 getFieldHTMLRowWhileSkippingHidden
+
+This method is identical to C<getFieldHTMLRow()> except that it returns
+an empty string if the field type is "hidden". This is so, if you are 
+rendering the hidden elements outside the main form table, they won't be
+inside it.
+
+=cut
+
+sub getFieldHTMLRowWhileSkippingHidden
+{
+    my $self = shift;
+    my $fieldName = shift;
+
+    if ($self->_getFieldType($fieldName) eq "hidden")
+    {
+        return "";
+    }
+    else
+    {
+        return $self->getFieldHTMLRow($fieldName);
+    }
+}
+
+*get_field_HTML_row_while_skipping_hidden = 
+    \&getFieldHTMLRowWhileSkippingHidden;
 
 =head2 getFieldFeedbackHTML
 
@@ -1428,7 +1464,7 @@ sub getFormHTML {
     # Go through all of our form fields and build an HTML input for each field
     for my $fieldName (@{$self->getFieldsOrder()}) {
         #warn("field name is: $fieldName");
-        $html .= $self->getFieldHTMLRow(
+        $html .= $self->getFieldHTMLRowWhileSkippingHidden(
             $fieldName,
             'form_args' => \%args,
         );
