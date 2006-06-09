@@ -112,6 +112,7 @@ sub getFeedback {
 *get_feedback = \&getFeedback;
 
 # Checks to see if input is a well formed email address.
+# TODO: Maybe use Email::Valid for this?
 sub _validateEmail {
     my $self  = shift;
     my $input = shift || '';
@@ -314,5 +315,11 @@ get_feedback().
 =head1 SEE ALSO
 
 WWW::Form
+
+=head1 TODO
+
+Update email validation to use Email:Valid module under-the-hood.  (Note that
+this can be done with the current version of FieldValidator via the use of
+a user-defined validation type.)
 
 =cut
