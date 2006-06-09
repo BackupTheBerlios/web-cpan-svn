@@ -355,6 +355,7 @@ display your form inputs by hand.
   my $form = WWW::Form->new($fieldsData, $params, $fieldsOrder);
 
 =cut
+
 sub new {
     my $class = shift;
 
@@ -411,6 +412,7 @@ can just use your hash ref of HTTP $params, i.e. $r->param()).
   }
 
 =cut
+
 sub validateFields {
     my $self   = shift;
 
@@ -489,6 +491,7 @@ Returns hash ref of fields data.
   my $fields = $form->getFields();
 
 =cut
+
 sub getFields {
     my $self = shift;
     return $self->{fields};
@@ -505,6 +508,7 @@ Resets values and default values for all fields
   $form->resetFields(include_defaults => 1);
 
 =cut
+
 sub resetFields {
     my ($self, %args) = @_;
     my $fields = $self->getFields();
@@ -530,6 +534,7 @@ $fieldsData hash ref you used to construct your WWW::Form instance).
   my $field = $form->getField('address');
 
 =cut
+
 sub getField {
     my $self      = shift;
     my $fieldName = shift;
@@ -548,6 +553,7 @@ $fieldName.
   my $name_feedback = $form->getFieldErrorFeedback('fullName');
 
 =cut
+
 sub getFieldErrorFeedback {
     my $self      = shift;
     my $fieldName = shift;
@@ -573,6 +579,7 @@ Returns array ref of field names in the order that they will be displayed.
   $form->getFieldsOrder();
 
 =cut
+
 sub getFieldsOrder {
     my $self = shift;
     return $self->{fieldsOrder};
@@ -589,6 +596,7 @@ Returns the current value of the specified $fieldName.
   $form->getFieldValue('comments');
 
 =cut
+
 sub getFieldValue {
     my $self      = shift;
     my $fieldName = shift;
@@ -606,6 +614,7 @@ Returns 1 or 0 depending on whether or not the specified field name is valid.
   $form->isFieldValid('zip_code');
 
 =cut
+
 sub isFieldValid {
     my $self      = shift;
     my $fieldName = shift;
@@ -624,6 +633,7 @@ Returns array ref of validators for the passed field name.
   $validators = $form->getFieldValidators($fieldName);
 
 =cut
+
 sub getFieldValidators {
     my ($self, $fieldName) = @_;
     return $self->getField($fieldName)->{validators};
@@ -640,6 +650,7 @@ Example:
   my $input_type = $form->getFieldType('favoriteColor');
 
 =cut
+
 sub getFieldType {
     my $self      = shift;
     my $fieldName = shift;
@@ -657,6 +668,7 @@ Returns the label associated with the specified $fieldName.
   my $ui_label = $form->getFieldLabel('favoriteBand');
 
 =cut
+
 sub getFieldLabel {
     my $self  = shift;
     my $fieldName = shift;
@@ -683,6 +695,7 @@ does not exist.
   my $hint = $form->getFieldHint('favoriteBand');
 
 =cut
+
 sub getFieldHint {
     my $self  = shift;
     my $fieldName = shift;
@@ -704,6 +717,7 @@ you need to convert a user entered value to some other value.
   $form->setFieldValue('fullName', uc($form->getFieldValue('fullName')));
 
 =cut
+
 sub setFieldValue {
     my $self      = shift;
     my $fieldName = shift;
@@ -738,6 +752,7 @@ Returns true if all form fields are valid or false otherwise.
   }
 
 =cut
+
 sub isValid {
     my $self = shift;
     return $self->{isValid};
@@ -760,6 +775,7 @@ to override this method in a subclass.
   }
 
 =cut
+
 sub isSubmitted {
     my $self = shift;
 
@@ -952,6 +968,7 @@ Returns a string representation of the current instance.
   &LOG->debug("WWW::Form instance: " . $form->asString());
 
 =cut
+
 sub asString {
     my $self = shift;
     return Data::Dumper::Dumper($self);
@@ -989,6 +1006,7 @@ onclick='someJSFunction()', and so forth.
   );
 
 =cut
+
 sub getFieldFormInputHTML {
     my $self = shift;
 
@@ -1064,6 +1082,7 @@ sub getFieldInputTdHTML
 This function renders the field HTML row and returns the HTML.
 
 =cut
+
 sub renderFieldHTMLRow
 {
     my $self = shift;
@@ -1100,6 +1119,7 @@ This function renders the hint HTML row of the specified field and returns the
 HTML.
 
 =cut
+
 sub renderHintHTMLRow
 {
     my $self = shift;
@@ -1205,6 +1225,7 @@ The only caveat for using this method is that it must be called between
   </tr>
 
 =cut
+
 sub getFieldHTMLRow {
     my $self = shift;
     my $fieldName = shift;
@@ -1302,6 +1323,7 @@ styles your error messages appropriately.
   $html .= $form->getFieldFeedbackHTML('emailAddress');
 
 =cut
+
 sub getFieldFeedbackHTML {
     my $self      = shift;
     my $fieldName = shift;
@@ -1352,6 +1374,7 @@ Returns HTML similar to:
         class='MyFormClass'>
 
 =cut
+
 sub startForm {
     my ($self, %args) = @_;
 
@@ -1393,6 +1416,7 @@ Returns HTML to close form.
   $html .= $form->endForm();
 
 =cut
+
 sub endForm {
     my $self = shift;
     return '</form>';
@@ -1499,6 +1523,7 @@ sub getFormHTML {
 Returns HTML to render all hidden inputs in the form.
 
 =cut
+
 sub getHiddenFieldsHTML
 {
     my $self = shift;
@@ -1575,6 +1600,7 @@ You can use this parameter if you want your form to have multiple submit
 buttons.
 
 =cut
+
 sub getSubmitButtonHTML {
     my ($class, %args) = @_;
 
