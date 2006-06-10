@@ -1,0 +1,10 @@
+The table will contain the following fields:
+
+1. Newsgroup ID. INT.
+
+2. FeedType. STRING.
+
+3. Contents. BLOB.
+
+4. last_article_idx. INT.
+
