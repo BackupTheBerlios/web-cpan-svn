@@ -193,6 +193,18 @@ sub getFormFields {
             ],
             validators   => []
         },
+        breakfastBreads => {
+            label        => 'What Breakfast Breads Do You Like?',
+            defaultValue => '',
+            type         => 'select',
+            optionsGroup => [
+                {label => 'Bagel', value => 'bagel'},
+                {label => 'Muffin',   value => 'muffin'},
+                {label => 'Toast',  value => 'toast'}
+            ],
+            extraAttributes => " multiple='multiple' size='3' ",
+            validators   => []
+        },
         elvisOrBeatles => {
             label        => 'Do you like Elvis or the Beatles',
             # uncomment to leave group unchecked by default
@@ -226,6 +238,7 @@ sub getFieldsOrder {
         uploadFile
 		comments
         favoriteColor
+        breakfastBreads
         elvisOrBeatles
         spam
     );
