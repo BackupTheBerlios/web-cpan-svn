@@ -48,8 +48,8 @@ HTML
     print "<p>WWW::Form version: $WWW::Form::VERSION<br />";
     print "WWW::FieldValidator version: $WWW::FieldValidator::VERSION</p>";
 
-    print "HTTP POST Variables\n<pre>" . Data::Dumper::Dumper($params) .
-		"</pre>";
+    print "HTTP POST Variables<pre>" . Data::Dumper::Dumper($params) .
+        "</pre>";
 
     # uncomment the following Data::Dummper line if you
     # want to look at the internal structure of the Form module
@@ -58,9 +58,9 @@ HTML
     print "\n<h2>" . getFormStatusMessage() . "</h2>\n";
 
     print $form->getFormHTML(
-		action => 'form_test.pl',
-		is_file_upload => 1,
-	);
+        action => 'form_test.pl',
+        is_file_upload => 1,
+    );
 
 print <<HTML;
 </body>
@@ -78,47 +78,48 @@ sub getFormStatusMessage() {
     if ($form->isSubmitted($ENV{REQUEST_METHOD})) {
 
         # the form was POSTed so validate the user entered input
-		$form->validateFields();
+        $form->validateFields();
 
         # update our status message depending on whether or not the form data
-		# was good if the form data is good then do some stuff
-		if ($form->isValid()) {
-			$formStatusMessage = 'Form was submitted and the data is good';
-		}
-		else {
-			$formStatusMessage = 'Form was submitted and the data is bad';
-		}
+        # was good if the form data is good then do some stuff
+        if ($form->isValid()) {
+            $formStatusMessage = 'Form was submitted and the data is good';
+        }
+        else {
+            $formStatusMessage = 'Form was submitted and the data is bad';
+        }
     }
     return $formStatusMessage;
 }
 
-# returns data structure suitable for passing to WWW::Form object constructor
+# Returns data structure suitable for passing to WWW::Form object constructor
 # this example covers how to handle all of the various types of form inputs
 # with WWW::Form
 sub getFormFields {
+    my $pass = $params->{password} || "";
     my %fields = (
         emailAddress => {
             label        => 'Email address',
             defaultValue => '',
-			type         => 'text',
+            type         => 'text',
             validators   => [
-				WWW::FieldValidator->new(
+                WWW::FieldValidator->new(
                     WWW::FieldValidator::WELL_FORMED_EMAIL,
                     'Make sure email address is well formed'
-				)
-			]
+                )
+            ]
         },
-		name => {
+        name => {
             label        => 'Full name',
-			defaultValue => '',
-			type         => 'text',
+            defaultValue => '',
+            type         => 'text',
             validators   => [
-				WWW::FieldValidator->new(
+                WWW::FieldValidator->new(
                     WWW::FieldValidator::MIN_STR_LENGTH,
                     'Please enter your name (at least 3 characters)',
-					3
-				)
-			]
+                    3
+                )
+            ]
         },
         aHiddenInput => {
             label        => '',
@@ -150,16 +151,16 @@ sub getFormFields {
                 ),
                 WWW::FieldValidator->new(
                     WWW::FieldValidator::REGEX_MATCH,
-                    'Passwords must match', '^' . $params->{password} . '$'
+                    'Passwords must match', '^' . $pass . '$'
                 )
             ]
         },
-		uploadFile => {
-			label => 'Select a file to upload',
-			defaultValue => '',
-			type => 'file',
-			validators => []
-		},
+        uploadFile => {
+            label => 'Select a file to upload',
+            defaultValue => '',
+            type => 'file',
+            validators => []
+        },
         spam => {
             label          => 'Do we have your permission to send you spam?',
             defaultValue   => 'Yes, spam me.',
@@ -236,7 +237,7 @@ sub getFieldsOrder {
         password
         passwordConfirm
         uploadFile
-		comments
+        comments
         favoriteColor
         breakfastBreads
         elvisOrBeatles
