@@ -1768,13 +1768,32 @@ sub _getSelectBoxHTML {
 
             # If the current user value is equal to the current option value
             # then the current option should be selected in the form
-            my $isSelected;
-
-            if ($value eq $self->getField($fieldName)->{value}) {
-                $isSelected = " selected='selected'";
+            my $isSelected = '';
+            
+            # Multiple options available?
+            if (
+                $self->getField($fieldName)->{extraAttributes} =~ /multiple/
+            ) {
+                my @selectedOptions;
+                if ($ENV{MOD_PERL}) {
+	                @selectedOptions
+	                    = @{$self->getField($fieldName)->{value}};
+                } else {
+                    # Running as CGI, so split value on null char to get
+                    # selected options
+                    @selectedOptions = split(
+                        /\0/, $self->getField($fieldName)->{value}
+                    );
+                }
+                if (grep($value eq $_, @selectedOptions)) {
+                    $isSelected = " selected='selected'";
+                }
             }
             else {
-                $isSelected = "";
+                # a single option selected
+                if ($value eq $self->getField($fieldName)->{value}) {
+                    $isSelected = " selected='selected'";
+                }
             }
             $html .= "<option value=\"" . $self->_escapeValue($value)
 				. "\"${isSelected}>$label</option>\n";
