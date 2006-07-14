@@ -5,7 +5,7 @@ ALL_DEST_BASE = dest
 
 DOCS_COMMON_DEPS = template.wml lib/MyNavData.pm lib/MyManageNews.pm
 
-WML_FLAGS = -DLATEMP_THEME=better-scm-1
+WML_FLAGS = -DLATEMP_THEME=better-scm
 
 LATEMP_WML_FLAGS =$(shell latemp-config --wml-flags)
 
