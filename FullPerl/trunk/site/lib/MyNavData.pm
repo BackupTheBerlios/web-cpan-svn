@@ -53,6 +53,19 @@ my $tree_contents =
         },
         get_news_category(),
         {
+            'text' => "Documents",
+            'url' => "docs/",
+            'expand' => { 'bool' => 1, },
+            'subs' =>
+            [
+                {
+                    'url' => "docs/spec/",
+                    'text' => "Spec",
+                    'title' => "Specifications",
+                },
+            ],
+        },
+        {
             'text' => "Links",
             'url' => "links.html",
         },

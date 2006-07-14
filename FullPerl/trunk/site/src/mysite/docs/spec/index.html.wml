@@ -1,0 +1,12 @@
+#include "template.wml"
+
+<latemp_subject "Fullperl Spec" />
+<latemp_version_control_id "$Id$" />
+
+<h2>Latest Version</h2>
+
+<ul>
+<li>
+<a href="version-0.1.x.html">Spec 0.1.x</a>
+</li>
+</ul>

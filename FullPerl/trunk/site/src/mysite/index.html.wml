@@ -1,17 +1,18 @@
 #include "template.wml"
 
-<latemp_subject "Fullperl - a Fully-Functional Perl Distribution" />
+<latemp_subject "Fullperl - a Fully-Functional Perl 5 Distribution" />
 <latemp_version_control_id "$Id$" />
 
 <h2>What is Fullperl?</h2>
 
 <p>
-The Perl core distribution is very minimalistic and contains only mostly
-bare modules. One thing PHP, Java and to a lesser extent Python got right
-is making the core distribution fully functional, which allows for people
+The <a href="http://www.cpan.org/src/README.html">Perl core distribution</a> 
+is very minimalistic and contains only mostly absolutely essential modules. 
+One thing PHP, Java and to a lesser extent Python got right
+is making the core distribution fully functional(<b>"Batteries
+included"</b>), which allows for people
 to easily write sophisticated applications that require only the core 
-functionality. <b>Fullperl</b> aims to provide a fully functional (<b>"Batteries
-included"</b>) perl 5 distribution.
+functionality. <b>Fullperl</b> aims to provide a fully functional  perl 5 distribution.
 </p>
 
 <h2>The Fullperl Mission</h2>
@@ -47,6 +48,8 @@ All of this while maintaining a very liberal end-user license agreement (EULA) a
 Fullperl will at first direct UNIX clones and distributions (Linux, the BSDs,
 Solaris, etc.), where most of the serious deployment of Perl takes place, but
 in the future it may extend to also covering Win32 (on top of the planned
-"Chocolate Perl" or "Strawberry Perl" distributions). 
+<a href="http://win32.perl.org/wiki/index.php?title=Win32_Distributions#Chocolate_Perl">"Chocolate Perl"</a>
+or <a href="http://win32.perl.org/wiki/index.php?title=Win32_Distributions#Strawberry_Perl">"Strawberry Perl"</a> distributions). 
 </p>
+
 

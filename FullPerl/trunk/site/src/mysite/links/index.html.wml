@@ -1,0 +1,17 @@
+#include "../template.wml"
+
+<latemp_subject "Links" />
+
+<h2>Perl-related Links</h2>
+
+<ul>
+<li>
+<a href="http://www.perl.org/">The Perl Homepage</a>.
+</li>
+<li>
+<a href="http://www.cpan.org/">CPAN - The Comprehensive Perl 
+Archive Network</a>. Also see 
+<a href="http://search.cpan.org/">search.cpan.org</a> and 
+<a href="http://kobesearch.cpan.org/">kobesearch.cpan.org</a>.
+</li>
+</ul>

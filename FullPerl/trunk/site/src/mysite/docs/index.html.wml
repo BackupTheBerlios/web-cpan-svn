@@ -1,0 +1,12 @@
+#include "template.wml"
+
+<latemp_subject "Fullperl Documents" />
+<latemp_version_control_id "$Id$" />
+
+<h2>Available Documents</h2>
+
+<ul>
+<li>
+<a href="./spec/">Various Versions of the Specs</a>
+</li>
+</ul>

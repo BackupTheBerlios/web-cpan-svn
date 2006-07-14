@@ -5,13 +5,15 @@ ALL_DEST_BASE = dest
 
 DOCS_COMMON_DEPS = template.wml lib/MyNavData.pm lib/MyManageNews.pm
 
-WML_FLAGS = -DLATEMP_THEME=better-scm
+COMMON_PREPROC_FLAGS = -I $$HOME/conf/wml/Latemp/lib -I lib
+WML_FLAGS += -DLATEMP_THEME=better-scm
+WML_FLAGS += $(COMMON_PREPROC_FLAGS)
+TTML_FLAGS += $(COMMON_PREPROC_FLAGS)
 
 LATEMP_WML_FLAGS =$(shell latemp-config --wml-flags)
 
 WML_FLAGS += --passoption=2,-X3074 --passoption=3,-I../../lib/ \
-	--passoption=3,-w $(LATEMP_WML_FLAGS) -I../../ -DROOT~. \
-    -I../../lib/
+	--passoption=3,-w -I../lib/ -I../../lib -I../../ -DROOT~. $(LATEMP_WML_FLAGS)
 
 all: dummy
 
@@ -35,4 +37,4 @@ $(RSS_FEED): gen-feeds.pl lib/MyManageNews.pm
 
 upload: all
 	cd $(ALL_DEST_BASE)/mysite && \
-	$(RSYNC) -r * shlomif@shell.berlios.de:/home/projects/web-cpan/htdocs/Fullperl/
+	$(RSYNC) -r * shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/Fullperl

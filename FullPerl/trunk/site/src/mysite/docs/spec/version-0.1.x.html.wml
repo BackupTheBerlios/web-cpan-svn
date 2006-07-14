@@ -1,0 +1,21 @@
+#include "../template.wml"
+
+<latemp_subject "Fullperl: Version 0.1.x" />
+
+<h2>Some Common Parameteres</h2>
+
+<p>
+Fullperl will be installed on all systems under <tt>/opt/fullperl</tt> (with 
+the <tt>bin/</tt>, <tt>lib/</tt> etc. sub-directories). This is done in order 
+to not interfere with <tt>/usr/bin/perl</tt> or <tt>/usr/local/bin/perl</tt>
+or a different system-installed perl.
+</p>
+
+<h2>How it will be done</h2>
+
+<p>
+Fullperl will be implemented on top of an existing distribution using binary
+and architecture-independent system packages.
+</p>
+
+
