@@ -67,7 +67,7 @@ my $tree_contents =
         },
         {
             'text' => "Links",
-            'url' => "links.html",
+            'url' => "links/",
         },
     ],
 };
