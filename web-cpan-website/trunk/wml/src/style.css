@@ -83,12 +83,6 @@ h2 a,h3 a
     text-decoration : none
 }
 
-h1 a, h2 a, h3 a 
-{
-    font-family : sans-serif;
-}
-
-
 div.bookinfo h3
 {
     border : none;
@@ -123,4 +117,16 @@ tt { color : #8A2BE2 /* The BlueViolet Color */ }
     border-width : thick;
     border-style : double;
 }
-
+.notice > h2
+{
+    border: none;
+    background-color:transparent;
+}
+.notice
+{
+    border: #08F medium solid;
+    margin-left:2em;
+    margin-right: 2em;
+    padding: 0.3em;
+    background-color:#EEF;
+}

@@ -2,6 +2,15 @@
 
 <subject "Web-CPAN" />
 
+<div class="notice">
+<h2>Enhance a Web-CPAN Project and Get an 
+<a href="http://www.ozyandmillie.org/">Ozy and Millie</a> T-Shirt!</h2>
+
+<p>
+<a href="$(ROOT)/offers/o-and-m-2006-08/"><b>See our offer.</b></a>
+</p>
+</div>
+
 <p>
 Welcome to web-cpan.berlios.de - a 
 <a href="http://developer.berlios.de/">BerliOS</a> hub for development of 
