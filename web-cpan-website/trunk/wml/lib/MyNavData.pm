@@ -44,6 +44,12 @@ my $tree_contents =
                     @{MyModulesList::get_module_list()}),
             ],
         },
+        {
+            'text' => "Get T-Shirts!",
+            'url' => "offers/o-and-m-2006-08/",
+            'title' => ("Hack on Web-CPAN and get " . 
+                "an &quot;Ozy and Millie&quot; T-Shirt"),
+        },
     ],
 };
 

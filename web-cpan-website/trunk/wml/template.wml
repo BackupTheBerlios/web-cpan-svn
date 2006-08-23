@@ -4,7 +4,7 @@
 use MyNavData;
 use HTML::Widgets::NavMenu;
 
-my $filename = "$(FILENAME)";
+my $filename = "$(LATEMP_FILENAME)";
 $filename =~ s!index\.html$!!;
 $filename = "/$filename";
 
@@ -101,7 +101,7 @@ http://web-cpan.berlios.de/<get-var url />
          /></a>
 </p>
 <p>
- <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%%3A//web-cpan.berlios.de/$(FILENAME)"><img style="border:0"
+ <a href="http://jigsaw.w3.org/css-validator/validator?uri=http%%3A//web-cpan.berlios.de/$(LATEMP_FILENAME)"><img style="border:0"
        src="$(ROOT)/images/vcss.gif" 
        alt="Valid CSS!" /></a>
 </p>
@@ -111,8 +111,6 @@ title="Make a Donation to support the project."><img
 style="border:0" src="$(ROOT)/images/paypal.gif" alt="PayPal Donate" /></a>
 </p>
 </define-tag>
-
-# <ifeq "$(FILENAME)" "index.html" "<validhtml />" "" />
 
 <validhtml />
 
