@@ -1,67 +1,40 @@
 
-TARGET = dest
+RSYNC = rsync --progress --verbose --rsh=ssh
 
-# PAGES = about articles/index books/index core-doc/index index irc/index mailing-lists/index links/index site-resources/index tutorials/index web-forums/index
+ALL_DEST_BASE = dest
 
-# SUBDIRS = articles books core-doc irc links mailing-lists tutorials site-resources source source/arcs web-forums
+DOCS_COMMON_DEPS = template.wml
 
-include defs.mak
+WML_FLAGS = -DLATEMP_THEME=better-scm-1
 
+LATEMP_WML_FLAGS =$(shell latemp-config --wml-flags)
 
-SOURCES = $(addprefix src/,$(addsuffix .html.wml,$(PAGES)))
+WML_FLAGS += --passoption=2,-X3074 --passoption=3,-I../lib/ \
+	--passoption=3,-w $(LATEMP_WML_FLAGS) -I../ -DROOT~. \
+    -I../lib/
 
-DESTS = $(patsubst src/%.html.wml,$(TARGET)/%.html,$(SOURCES))
+all: dummy
 
-RAW_FILES = $(IMAGES)
-RAW_FILES_SOURCES = $(addprefix src/,$(RAW_FILES))
-RAW_FILES_DEST = $(addprefix $(TARGET)/,$(RAW_FILES))
+%.show:
+	@echo "$* = $($*)"
 
-PODS = $(addprefix docs/,roadmap spec whitepaper version-0.2-spec)
-PODS_DESTS_HTMLS = $(patsubst %,$(TARGET)/%.html,$(PODS))
-PODS_DESTS_PODS = $(patsubst %,$(TARGET)/%.pod,$(PODS))
+include include.mak
+include rules.mak
 
-# PACKAGES_DIR = $(TARGET)/download/arcs
-# PACKAGES = $(shell cd temp && cd lk-module-compiler-final && ls)
-# PACKAGES_DESTS = $(addprefix $(PACKAGES_DIR)/,$(PACKAGES))
+# Add news_feeds to this target if you want to generate an RSS feed.
+dummy : latemp_targets
 
-SUBDIRS_DEST = $(addprefix $(TARGET)/,$(SUBDIRS))
+RSS_FEED = $(MYSITE_DEST)/rss.xml
 
-WML_FLAGS += --passoption=2,-X --passoption=3,-I../lib/ --passoption=7,"-S imgsize" -DROOT~.
+news_feeds: $(RSS_FEED)
 
-RSYNC = rsync --progress --verbose --rsh=ssh 
-
-DEST_ARC_PAGE = $(TARGET)/source/index.html
-
-LIBRARY_FILES = template.wml
-
-all: dest $(SUBDIRS_DEST) $(DESTS) $(RAW_FILES_DEST)
-
-dest:
-	if [ ! -e $@ ] ; then mkdir $@ ; fi
-	
-$(DESTS) :: $(TARGET)/% : src/%.wml $(LIBRARY_FILES)
-	(cd src && wml $(WML_FLAGS) -DFILENAME=$(patsubst src/%.wml,%,$<) $(patsubst src/%,%,$<)) > $@
-
-$(RAW_FILES_DEST) :: $(TARGET)/% : src/%
-	cp -f $< $@
-
-$(SUBDIRS_DEST) :: % : unchanged
-	if [ ! -e $@ ] ; then mkdir $@ ; fi
-	touch $@
-
-$(PODS_DESTS) :: $(TARGET)/% : src/%
-	cp -f $< $@
-
-$(PODS_DESTS_HTMLS) :: $(TARGET)/%.html : src/%.pod
-	pod2html $< > $@
-
-# $(PACKAGES_DESTS) :: $(PACKAGES_DIR)/% : ./temp/lk-module-compiler-final/%
-# 	cp -f $< $@
+$(RSS_FEED): gen-feeds.pl lib/MyManageNews.pm
+	perl -Ilib gen-feeds.pl --rss2-out="$@"
 
 upload: upload_berlios
 
 upload_berlios: all
 	(cd dest && $(RSYNC) -r * shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/)
 
-.PHONY: 
+.PHONY:
 
