@@ -1,6 +1,7 @@
 package HTML::Widgets::NavMenu::Test::Util;
 
 use strict;
+use warnings;
 
 use Exporter;
 use vars qw(@ISA);

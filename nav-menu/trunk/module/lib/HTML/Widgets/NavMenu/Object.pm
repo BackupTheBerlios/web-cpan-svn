@@ -1,6 +1,7 @@
 package HTML::Widgets::NavMenu::Object;
 
 use strict;
+use warnings;
 
 sub new
 {
