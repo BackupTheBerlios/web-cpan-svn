@@ -1,0 +1,181 @@
+package HTML::Widgets::NavMenu::Tree::Node;
+
+use strict;
+use warnings;
+
+use base 'HTML::Widgets::NavMenu::Object';
+
+use base 'Class::Accessor';
+
+__PACKAGE__->mk_accessors(
+    qw(CurrentlyActive expanded hide host role rec_url_type),
+    qw(separator show_always skip subs text title url url_is_abs url_type),
+    );
+
+=head1 NAME
+
+HTML::Widgets::NavMenu::Tree::Node - an iterator for HTML.
+
+=head1 SYNOPSIS
+
+For internal use only.
+
+=head1 METHODS
+=cut
+
+sub _init
+{
+    my $self = shift;
+
+    $self->set("subs", []);
+
+    return $self;
+}
+
+=head2 $self->expand()
+
+Expands the node.
+
+=cut
+
+sub expand
+{
+    my $self = shift;
+    $self->expanded(1);
+    return 0;
+}
+
+=head2 $self->mark_as_current()
+
+Marks the node as the current node.
+
+=cut
+
+sub mark_as_current
+{
+    my $self = shift;
+    $self->expand();
+    $self->CurrentlyActive(1);
+    return 0;
+}
+
+sub _process_new_sub
+{
+    my $self = shift;
+    my $sub = shift;
+    $self->update_based_on_sub($sub);    
+}
+
+=head2 $self->update_based_on_sub
+
+Propagate changes.
+
+=cut
+
+sub update_based_on_sub
+{
+    my $self = shift;
+    my $sub = shift;
+    if ($sub->expanded())
+    {
+        $self->expand();
+    }    
+}
+
+=head2 $self->add_sub()
+
+Adds a new subroutine.
+
+=cut
+
+sub add_sub
+{
+    my $self = shift;
+    my $sub = shift;
+    push (@{$self->subs}, $sub);
+    $self->_process_new_sub($sub);
+    return 0;
+}
+
+=head2 $self->get_nth_sub($idx)
+
+Get the $idx sub.
+
+=cut
+
+sub get_nth_sub
+{
+    my $self = shift;
+    my $idx = shift;
+    return $self->subs()->[$idx];
+}
+
+sub _num_subs
+{
+    my $self = shift;
+    return scalar(@{$self->{'subs'}});
+}
+
+=head2 $self->list_regular_keys()
+
+Customisation to list the regular keys.
+
+=cut
+
+sub list_regular_keys
+{
+    my $self = shift;
+
+    return (qw(host rec_url_type role show_always text title url url_type));
+}
+
+=head2 $self->list_boolean_keys()
+
+Customisation to list the boolean keys.
+
+=cut
+
+sub list_boolean_keys
+{
+    my $self = shift;
+
+    return (qw(hide separator skip url_is_abs));
+}
+
+=head2 $self->set_values_from_hash_ref($hash)
+
+Set the values from the hash ref.
+
+=cut
+
+sub set_values_from_hash_ref
+{
+    my $self = shift;
+    my $sub_contents = shift;
+
+    foreach my $key ($self->list_regular_keys())
+    {
+        if (exists($sub_contents->{$key}))
+        {
+            $self->set($key, $sub_contents->{$key});
+        }
+    }
+
+    foreach my $key ($self->list_boolean_keys())
+    {
+        if ($sub_contents->{$key})
+        {
+            $self->set($key, 1);
+        }
+    }
+}
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2006 Shlomi Fish, all rights reserved.
+
+This program is released under the following license: MIT X11.
+
+=cut
+
+1;
