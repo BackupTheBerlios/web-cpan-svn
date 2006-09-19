@@ -1,0 +1,13 @@
+# http://module-build.sourceforge.net/META-spec.html
+#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
+name:         XML-RSS
+version:      1.10
+version_from: lib/XML/RSS.pm
+installdirs:  site
+requires:
+    Test::Manifest:                0.9
+    Test::More:                    0
+    XML::Parser:                   2.23
+
+distribution_type: module
+generated_by: ExtUtils::MakeMaker version 6.30
