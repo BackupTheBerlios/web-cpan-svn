@@ -1,5 +1,9 @@
 Revision history for Perl extension XML::RSS
 
+       (Unofficial changes by Shlomi Fish)
+       - Fixed bug https://rt.cpan.org/Ticket/Display.html?id=19420 - added
+       a regression test.
+
 1.10 - March 11, 2006
        - Module (for now) maintained by Ask Bjoern Hansen
        - Fixed category output in RSS 2.0 (RT#17303, Yasuhiro Onishi)
