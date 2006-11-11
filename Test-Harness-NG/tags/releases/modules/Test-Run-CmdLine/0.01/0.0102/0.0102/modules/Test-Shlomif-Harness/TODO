@@ -1,0 +1,7 @@
+* Test the plug-in system in T::R::CL.
+
+* Update the documentation - currently it's mostly updated only to 
+Test::Harness.
+
+Bugs:
+-----
