@@ -7,9 +7,9 @@ Makefile.PL
 MANIFEST
 META.yml                                 Module meta-data (added by MakeMaker)
 README
+t/00-load.t
 t/distro_integrity.t
 t/dummy.t
-test.pl
 t/get_field.t
 t/hidden-elements.t
 t/html-gen.t
