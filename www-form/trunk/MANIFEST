@@ -1,5 +1,5 @@
 Changes
-form_test.pl
+examples/form_test.pl
 lib/WWW/FieldValidator.pm
 lib/WWW/Form.pm
 Makefile.PL
