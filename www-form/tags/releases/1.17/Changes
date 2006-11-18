@@ -1,0 +1,6 @@
+Revision history for Perl extension WWW::Form.
+
+0.01  Tue Apr 22 21:27:06 2003
+	- original version; created by h2xs 1.2 with options
+		-X -n WWW::Form
+
