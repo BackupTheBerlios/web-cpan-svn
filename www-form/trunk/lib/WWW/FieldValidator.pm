@@ -322,4 +322,9 @@ Update email validation to use Email:Valid module under-the-hood.  (Note that
 this can be done with the current version of FieldValidator via the use of
 a user-defined validation type.)
 
+=head1 LICENSE
+
+This program is free software.  You may copy or redistribute it under the same
+terms as Perl itself.
+
 =cut

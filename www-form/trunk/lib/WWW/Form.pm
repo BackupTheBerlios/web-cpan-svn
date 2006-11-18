@@ -1918,7 +1918,7 @@ WWW::Form source code can be obtained via anonymous svn access at:
 
 http://svn.berlios.de/wsvn/web-cpan/www-form
 
-=head1 COPYRIGHT
+=head1 LICENSE
 
 This program is free software.  You may copy or redistribute it under the same
 terms as Perl itself.
