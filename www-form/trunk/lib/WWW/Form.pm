@@ -2058,6 +2058,27 @@ Updates docs.
 
 Adds new methods for dealing with hidden form inputs.
 
+November 18, 2006 - WWW::Form 1.17
+
+Adds support for select boxes with 'multiple' attribute set.  Note that this 
+needs to be tested in a mod_perl environment.
+
+Fixed CondTestMore to adapt it to the new Test::More.
+
+Removed test.pl in favor of t/00-load.t.
+
+Moved the modules under lib/ to improve the kwalitee.
+
+Moved CondTestMore under t/lib (kwalitee).
+
+Moved form_test.pl to the examples/ directory (kwalitee.)
+
+Added a LICENSE section to the PODs.
+
+Added t/pod.t (kwalitee).
+
+Added t/pod-coverage.t and made the POD have full coverage (for the kwalitee.)
+
 =head1 TODO
 
 Add more helpful error logging.
