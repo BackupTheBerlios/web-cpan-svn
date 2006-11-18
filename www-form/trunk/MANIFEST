@@ -1,8 +1,8 @@
 Changes
 CondTestMore.pm
-FieldValidator.pm
-Form.pm
 form_test.pl
+lib/WWW/FieldValidator.pm
+lib/WWW/Form.pm
 Makefile.PL
 MANIFEST
 META.yml                                 Module meta-data (added by MakeMaker)

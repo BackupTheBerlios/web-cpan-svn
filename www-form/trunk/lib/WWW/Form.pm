@@ -382,7 +382,7 @@ sub new {
 
     bless($self, $class);
 
-    # Set up a fields hash ref for the fields, so we will not need
+    # Set up a fields hash ref for the fields, so we will not need 
     # autovivificatiopn later
     $self->{fields} = {};
 
@@ -811,7 +811,7 @@ sub _setFields {
 
     foreach my $fieldName (keys %{$fieldsData}) {
         $self->_setField(
-            'name' => $fieldName,
+            'name' => $fieldName, 
             'params' => $fieldsData->{$fieldName},
             'value' => $fieldValues->{$fieldName}
         );
@@ -821,16 +821,16 @@ sub _setFields {
 sub _getFieldInitParams
 {
     my $self = shift;
-
+    
     my %args = (@_);
-
+    
     my $fieldName = $args{name};
     my $params = $args{params};
     my $user_given_field_value = $args{value};
 
     # This is the output parameters that we eventually place under
     # $out_params->. It is declared it so it can later be filled
-    # in by a different function other
+    # in by a different function other 
     my $out_params = {};
 
     # Use the supplied field value if one is given. Generally the supplied
@@ -953,7 +953,7 @@ sub _setField
     my %args = (@_);
 
     my $params = $self->_getFieldInitParams(%args);
-
+    
     $self->{fields}{$args{name}} = $params;
 
     return $self;
@@ -1072,7 +1072,7 @@ sub getFieldInputTdHTML
 
 =head2 renderFieldHTMLRow
 
-    $html .=
+    $html .= 
         $self->renderFieldHTMLRow(
             'fieldName' => "name",
             'attributesString' => " class=\"hello\"",
@@ -1086,11 +1086,11 @@ This function renders the field HTML row and returns the HTML.
 sub renderFieldHTMLRow
 {
     my $self = shift;
-    my (%args) = (@_);
+    my (%args) = (@_);    
     my $fieldName = $args{'fieldName'};
     my $attributesString = $args{'attributesString'};
     my $tr_attr_string = $args{'trAttrString'};
-    return
+    return 
         "<tr${tr_attr_string}>" . $self->getFieldLabelTdHTML($fieldName) .
         $self->getFieldLabel($fieldName) . "</td>" .
         $self->getFieldInputTdHTML($fieldName) . $self->getFieldFormInputHTML(
@@ -1105,7 +1105,7 @@ sub renderFieldHTMLRow
     $html .= $self->renderHintHTMLRow('name');
 
     or
-
+    
     $html .= $self->renderHintHTMLRow(
         'name',
         form_args => {
@@ -1113,9 +1113,9 @@ sub renderFieldHTMLRow
                 class => 'FormBlueBackground'
             }
         }
-    );
+    );    
 
-This function renders the hint HTML row of the specified field and returns the
+This function renders the hint HTML row of the specified field and returns the 
 HTML.
 
 =cut
@@ -1131,7 +1131,7 @@ sub renderHintHTMLRow
     my $tr_attributes = $self->getTrAttributes($fieldName);
 
     my $form_args = $func_args{'form_args'};
-
+    
     my $hint = $self->getFieldHint($fieldName);
 
     if (defined($hint)) {
@@ -1161,7 +1161,7 @@ sub getTrAttributes
 {
     my $self = shift;
     my $fieldName = shift;
-
+    
     my %tr_attributes = ();
 
     my $field = $self->getField($fieldName);
@@ -1248,7 +1248,7 @@ sub getFieldHTMLRow {
     my $html = "";
 
     my $tr_attr_string = $self->getTrAttrString($fieldName);
-
+    
     foreach my $error (@feedback) {
         $html .= "<tr${tr_attr_string}><td colspan='2'>"
             . "<span style='color: #ff3300'>$error</span>"
@@ -1261,7 +1261,7 @@ sub getFieldHTMLRow {
         'trAttrString' => $tr_attr_string,
         );
 
-    $html .=
+    $html .= 
         $self->renderHintHTMLRow(
             $fieldName,
             'form_args' => $form_args,
@@ -1295,7 +1295,7 @@ sub getFieldHTMLRowNoHidden
     }
 }
 
-*get_field_HTML_row_no_hidden =
+*get_field_HTML_row_no_hidden = 
     \&getFieldHTMLRowNoHidden;
 
 =head2 getFieldFeedbackHTML
@@ -1528,8 +1528,8 @@ sub getHiddenFieldsHTML
 {
     my $self = shift;
 
-    return
-        join("",
+    return 
+        join("", 
             (map { $self->_getInputHTML($_, "") . "\n" }
             grep { $self->_getFieldType($_) eq "hidden" }
             (@{$self->getFieldsOrder()}))
@@ -1560,7 +1560,7 @@ sub _getInputHTML {
     my $field = $self->getField($fieldName);
 
     my $inputHTML = "<input type='$field->{type}'"
-        . " name='$fieldName' id='$fieldName' value=\"";
+		. " name='$fieldName' id='$fieldName' value=\"";
 
     my $value_to_put;
     if ($field->{type} eq 'checkbox') {
@@ -1630,7 +1630,7 @@ sub getSubmitButtonHTML {
             warn(
                 "Won't be able to display image submit button properly" .
                 " because src for image was not specified"
-            );
+	        );
         }
 
         $xhtml .= " src='$img_src'";
@@ -1715,11 +1715,11 @@ sub _getRadioButtonHTML {
                 $isChecked = " checked='checked'";
             }
 
-        $inputHTML .= "<input type='$field->{type}'"
-            . " name='$fieldName'";
+	    $inputHTML .= "<input type='$field->{type}'"
+	        . " name='$fieldName'";
 
         $inputHTML .= " value=\"". $self->_escapeValue($value) . "\" ";
-        $inputHTML .= $attributesString
+	    $inputHTML .= $attributesString
             . $isChecked
             . " /> $label</label><br />";
         }
@@ -1741,7 +1741,7 @@ sub _getTextAreaHTML {
     my $field = $self->getField($fieldName);
 
     my $textarea = "<textarea name='" . $fieldName . "'"
-        . $attributesString;
+		. $attributesString;
 
     $textarea .= ">";
     $textarea .= $self->_escapeValue($field->{value});
@@ -1768,35 +1768,16 @@ sub _getSelectBoxHTML {
 
             # If the current user value is equal to the current option value
             # then the current option should be selected in the form
-            my $isSelected = '';
+            my $isSelected;
 
-            # Multiple options available?
-            if (
-                $self->getField($fieldName)->{extraAttributes} =~ /multiple/
-            ) {
-                my @selectedOptions;
-                if ($ENV{MOD_PERL}) {
-                    @selectedOptions
-                        = @{$self->getField($fieldName)->{value}};
-                } else {
-                    # Running as CGI, so split value on null char to get
-                    # selected options
-                    @selectedOptions = split(
-                        /\0/, $self->getField($fieldName)->{value}
-                    );
-                }
-                if (grep($value eq $_, @selectedOptions)) {
-                    $isSelected = " selected='selected'";
-                }
+            if ($value eq $self->getField($fieldName)->{value}) {
+                $isSelected = " selected='selected'";
             }
             else {
-                # a single option selected
-                if ($value eq $self->getField($fieldName)->{value}) {
-                    $isSelected = " selected='selected'";
-                }
+                $isSelected = "";
             }
             $html .= "<option value=\"" . $self->_escapeValue($value)
-                . "\"${isSelected}>$label</option>\n";
+				. "\"${isSelected}>$label</option>\n";
         }
     }
     else {
