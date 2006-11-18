@@ -2,6 +2,8 @@
 
 use strict;
 
+use File::Spec;
+use lib File::Spec->catfile("t", "lib");
 use CondTestMore tests => 3;
 
 use WWW::Form;

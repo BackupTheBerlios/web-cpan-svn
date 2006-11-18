@@ -1,5 +1,4 @@
 Changes
-CondTestMore.pm
 form_test.pl
 lib/WWW/FieldValidator.pm
 lib/WWW/Form.pm
@@ -13,5 +12,6 @@ t/dummy.t
 t/get_field.t
 t/hidden-elements.t
 t/html-gen.t
+t/lib/CondTestMore.pm
 t/render_attributes.t
 t/set_fields.t
