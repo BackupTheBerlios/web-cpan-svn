@@ -8,4 +8,5 @@ WriteMakefile(
     { 
         "Test::More" => 0,
     }, # e.g., Module::Name => 1.1
+    'LICENSE' => "perl",
 );
