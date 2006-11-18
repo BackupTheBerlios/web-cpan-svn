@@ -15,3 +15,4 @@ t/html-gen.t
 t/lib/CondTestMore.pm
 t/render_attributes.t
 t/set_fields.t
+t/pod.t
