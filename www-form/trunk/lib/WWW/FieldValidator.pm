@@ -160,13 +160,9 @@ object.  In this case, the only thing you need to know how to do is to
 instantiate WWW::FieldValidators properly.  All the validation is handled
 internally by WWW::Form.
 
-=head2 Function Reference
+=head1 USAGE
 
-new(
-  $validatorType,
-  $errorFeedback,
-  [$minLength, $maxLength, $regex], [$isOptional]
-)
+=head2 my $validator = WWW::FieldValidator->new($validatorType,$errorFeedback, [$minLength, $maxLength, $regex], [$isOptional])
 
 Creates a FieldValidator object.  $validatorType is used to determine what
 type of validation will be performed on the input.  The following validator
@@ -184,7 +180,7 @@ to be one of the following values):
   # Input must pass a user defined subroutine's validation
   WWW::FieldValidator::USER_DEFINED_SUB
 
-  Examples:
+Examples:
 
   # Create a validator that checks to see if input is a well formed email
   # address
@@ -271,7 +267,7 @@ to be one of the following values):
 
   # If you use the validator type: USER_DEFINED_SUB, your subroutine will have
   # access to the value of the form input that your validator is assigned to
-  Example:
+
   sub is_name_unique {
       # gets passed in to this sub for you by way of Form module
       my $name = shift;
@@ -287,11 +283,11 @@ to be one of the following values):
 If you want to use WWW::FieldValidator outside of WWW::Form it's easy to do.
 The only method you need to use is validate.
 
-validate($input)
+=head2 $validator->validate($input)
 
 Returns true if $input passes validation or false otherwise.
 
-  Example:
+Example:
 
   my $email_validator = WWW::FieldValidator->new(
       WWW::FieldValidator::WELL_FORMED_EMAIL,
@@ -307,10 +303,14 @@ Returns true if $input passes validation or false otherwise.
       }
   }
 
-getFeedback()
+=head2 $validator->getFeedback()
 
 Returns error feedback for a FieldValidator.  This can also be called as
 get_feedback().
+
+=head2 $validator->get_feedback()
+
+An alias for get_feedback().
 
 =head1 SEE ALSO
 

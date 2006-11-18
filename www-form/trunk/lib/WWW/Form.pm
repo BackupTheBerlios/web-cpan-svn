@@ -479,6 +479,13 @@ sub validateFields {
     # Return hash ref of valid fields
     return \%validFields;
 }
+
+=head2 validate_fields
+
+An alias for validateFields.
+
+=cut
+
 *validate_fields = \&validateFields;
 
 
@@ -496,6 +503,13 @@ sub getFields {
     my $self = shift;
     return $self->{fields};
 }
+
+=head2 get_fields
+
+An alias for getFields.
+
+=cut
+
 *get_fields = \&getFields;
 
 
@@ -520,6 +534,13 @@ sub resetFields {
             if ($args{include_defaults});
     }
 }
+
+=head2 reset_fields
+
+An alias for resetFields.
+
+=cut
+
 *reset_fields = \&resetFields;
 
 
@@ -540,6 +561,13 @@ sub getField {
     my $fieldName = shift;
     return $self->{fields}{$fieldName};
 }
+
+=head2 get_field
+
+An alias for getField.
+
+=cut
+
 *get_field = \&getField;
 
 
@@ -567,6 +595,13 @@ sub getFieldErrorFeedback {
         return ();
     }
 }
+
+=head2 get_field_error_feedback
+
+An alias for getFieldErrorFeedback.
+
+=cut
+
 *get_field_error_feedback = \&getFieldErrorFeedback;
 
 
@@ -584,6 +619,13 @@ sub getFieldsOrder {
     my $self = shift;
     return $self->{fieldsOrder};
 }
+
+=head2 get_fields_order
+
+An alias for getFieldsOrder.
+
+=cut
+
 *get_fields_order = \&getFieldsOrder;
 
 
@@ -602,6 +644,13 @@ sub getFieldValue {
     my $fieldName = shift;
     return $self->getField($fieldName)->{value};
 }
+
+=head2 get_field_value
+
+An alias for getFieldValue.
+
+=cut
+
 *get_field_value = \&getFieldValue;
 
 
@@ -621,6 +670,13 @@ sub isFieldValid {
 
     return $self->getField($fieldName)->{isValid};
 }
+
+=head2 is_field_valid
+
+An alias for isFieldValid.
+
+=cut
+
 *is_field_valid = \&isFieldValid;
 
 
@@ -638,6 +694,13 @@ sub getFieldValidators {
     my ($self, $fieldName) = @_;
     return $self->getField($fieldName)->{validators};
 }
+
+=head2 get_field_validators
+
+An alias for getFieldValidators.
+
+=cut
+
 *get_field_validators = \&getFieldValidators;
 
 
@@ -656,6 +719,13 @@ sub getFieldType {
     my $fieldName = shift;
     return $self->getField($fieldName)->{type};
 }
+
+=head2 get_field_type
+
+An alias for getFieldType.
+
+=cut
+
 *get_field_type = \&getFieldType;
 
 
@@ -682,6 +752,13 @@ sub getFieldLabel {
         return $field->{label};
     }
 }
+
+=head2 get_field_label
+
+An alias for getFieldLabel.
+
+=cut
+
 *get_field_label = \&getFieldLabel;
 
 
@@ -704,6 +781,13 @@ sub getFieldHint {
 
     return $field->{hint};
 }
+
+=head2 get_field_hint
+
+An alias for getFieldHint.
+
+=cut
+
 *get_field_hint = \&getFieldHint;
 
 
@@ -731,6 +815,13 @@ sub setFieldValue {
         #warn("could not find field for field name: '$fieldName'");
     }
 }
+
+=head2 set_field_value
+
+An alias for setFieldValue.
+
+=cut
+
 *set_field_value = \&setFieldValue;
 
 
@@ -757,6 +848,13 @@ sub isValid {
     my $self = shift;
     return $self->{isValid};
 }
+
+=head2 is_valid
+
+An alias for isValid.
+
+=cut
+
 *is_valid = \&isValid;
 
 
@@ -792,6 +890,13 @@ sub isSubmitted {
         return 0;
     }
 }
+
+=head2 is_submitted
+
+An alias for isSubmitted.
+
+=cut
+
 *is_submitted = \&isSubmitted;
 
 
@@ -973,6 +1078,13 @@ sub asString {
     my $self = shift;
     return Data::Dumper::Dumper($self);
 }
+
+=head2 as_string
+
+An alias for asString.
+
+=cut
+
 *as_string = \&asString;
 
 sub _getFieldType
@@ -1045,6 +1157,13 @@ sub getFieldFormInputHTML {
         return $self->_getTextAreaHTML($fieldName, $attributesString);
     }
 }
+
+=head2 get_field_form_input_HTML
+
+An alias for getFieldFormInputHTML.
+
+=cut
+
 *get_field_form_input_HTML = \&getFieldFormInputHTML;
 
 
@@ -1128,7 +1247,7 @@ sub renderHintHTMLRow
 
     my $field = $self->getField($fieldName);
 
-    my $tr_attributes = $self->getTrAttributes($fieldName);
+    my $tr_attributes = $self->_getTrAttributes($fieldName);
 
     my $form_args = $func_args{'form_args'};
     
@@ -1157,7 +1276,7 @@ sub renderHintHTMLRow
     }
 }
 
-sub getTrAttributes
+sub _getTrAttributes
 {
     my $self = shift;
     my $fieldName = shift;
@@ -1184,11 +1303,11 @@ sub _render_attributes {
             );
 }
 
-sub getTrAttrString
+sub _getTrAttrString
 {
     my $self = shift;
     my $fieldName = shift;
-    return $self->_render_attributes($self->getTrAttributes($fieldName));
+    return $self->_render_attributes($self->_getTrAttributes($fieldName));
 }
 
 =head2 getFieldHTMLRow
@@ -1247,7 +1366,7 @@ sub getFieldHTMLRow {
 
     my $html = "";
 
-    my $tr_attr_string = $self->getTrAttrString($fieldName);
+    my $tr_attr_string = $self->_getTrAttrString($fieldName);
     
     foreach my $error (@feedback) {
         $html .= "<tr${tr_attr_string}><td colspan='2'>"
@@ -1269,6 +1388,13 @@ sub getFieldHTMLRow {
 
     return $html;
 }
+
+=head2 get_field_HTML_row
+
+An alias for getFieldHTMLRow.
+
+=cut
+
 *get_field_HTML_row = \&getFieldHTMLRow;
 
 =head2 getFieldHTMLRowNoHidden
@@ -1295,8 +1421,13 @@ sub getFieldHTMLRowNoHidden
     }
 }
 
-*get_field_HTML_row_no_hidden = 
-    \&getFieldHTMLRowNoHidden;
+=head2 get_field_HTML_row_no_hidden
+
+An alias for getFieldHTMLRowNoHidden.
+
+=cut
+
+*get_field_HTML_row_no_hidden = \&getFieldHTMLRowNoHidden;
 
 =head2 getFieldFeedbackHTML
 
@@ -1339,6 +1470,13 @@ sub getFieldFeedbackHTML {
 
     return $feedbackHTML;
 }
+
+=head2 get_field_feedback_HTML
+
+An alias for getFieldFeedbackHTML.
+
+=cut
+
 *get_field_feedback_HTML = \&getFieldFeedbackHTML;
 
 
@@ -1404,6 +1542,13 @@ sub startForm {
 
     return $html . '>';
 }
+
+=head2 start_form
+
+An alias for startForm.
+
+=cut
+
 *start_form = \&startForm;
 
 
@@ -1421,6 +1566,13 @@ sub endForm {
     my $self = shift;
     return '</form>';
 }
+
+=head2 end_form
+
+An alias for endForm.
+
+=cut
+
 *end_form = \&endForm;
 
 
@@ -1516,6 +1668,13 @@ sub getFormHTML {
 
     return $html . $self->endForm() . "\n";
 }
+
+=head2 get_form_HTML
+
+An alias for getFormHTML.
+
+=cut
+
 *get_form_HTML = \&getFormHTML;
 
 =head2 getHiddenFieldsHTML
@@ -1535,6 +1694,13 @@ sub getHiddenFieldsHTML
             (@{$self->getFieldsOrder()}))
         );
 }
+
+=head2 get_hidden_fields_HTML
+
+An alias for getHiddenFieldsHTML.
+
+=cut
+
 *get_hidden_fields_HTML = \&getHiddenFieldsHTML;
 
 sub _getHiddenFieldHTMLRow
@@ -1669,6 +1835,13 @@ sub getSubmitButtonHTML {
 # We have lots of names for this method.  It used to be private, but now it's
 # public.
 *_get_submit_button_HTML = \&getSubmitButtonHTML;
+
+=head2 get_submit_button_HTML
+
+An alias for getSubmitButtonHTML.
+
+=cut
+
 *get_submit_button_HTML = \&getSubmitButtonHTML;
 *_getSubmitButtonHTML = \&getSubmitButtonHTML;
 

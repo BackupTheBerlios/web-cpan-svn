@@ -16,3 +16,4 @@ t/lib/CondTestMore.pm
 t/render_attributes.t
 t/set_fields.t
 t/pod.t
+t/pod-coverage.t
