@@ -10,21 +10,6 @@
 [% IF with_rss %]<link rel="alternate" title="Better SCM RSS Feed" href="./[% path_to_root %]index.rss" type="application/rss+xml" />[% END %]
 </head>
 <body>
-<p>
-<a href="/" title="Back to the IGLU Homepage"><img 
-    src="/images/IGLU-banner.jpg" 
-    width="499" height="86" 
-    alt="IGLU - Israeli Group of Linux Users" 
-    style="border : 0" /></a>
-</p>
-<p style="margin-bottom : 2em">[<a href="/">Home</a> |
-<a href="/IGLU/">News</a> |
-<a href="/about.shtml">About</a> |
-<a href="/faq/">FAQ</a> |
-<a href="/mailing-lists/">Mailing Lists</a> |
-<a href="/events/">Events</a> |
-<a href="/faq/cache/52.html">Help!</a> |
-<a href="/faq/cache/8.html">Hebrew</a>]</p>
-
+[% INCLUDE "nav_top.tt" %]
 [% IF header %]<h1>[% header %]</h1>[% END %]
 
