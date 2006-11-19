@@ -106,7 +106,7 @@ sub cgiapp_prerun
     # TODO : There may be a more efficient/faster way to do it, but I'm 
     # anxious to get it to work. -- Shlomi Fish
     $self->tt_include_path(
-        [ './templates' ],
+        [ './templates', './templates-custom' ],
     );
 
     # This is so the CGI header won't print a character set.
