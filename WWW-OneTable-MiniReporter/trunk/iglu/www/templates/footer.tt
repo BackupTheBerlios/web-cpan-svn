@@ -1,16 +1,3 @@
-<hr />
-<div class="footer">
-<p>For more info or
-for website remarks mail the 
-<a href="mailto:webmaster@iglu.org.il"><em>webmasters</em></a>.
-</p>
-<p>
-All Trademarks and copyrights are owned by their respective owners, Linux is a Tradmark of Linus Torvalds.
-</p>
-<p>
-The information contained herein is CopyLeft IGLU, you are granted permission to
-copy it and distribute it.
-</p>
-</div>
+[% INCLUDE "footer_custom.tt" %]
 </body>
 </html>
