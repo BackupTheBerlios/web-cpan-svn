@@ -32,6 +32,7 @@ $config =
     'admin_password' => get_admin_pass(),
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'jobs2',
+    'encoding' => "iso-8859-1",
     'rss_table_name' => 'jobs2_feeds',
     'areas' => [ "Tel Aviv", "Haifa", "Jerusalem", "North", "South" ],
     'order_by' => "post_date DESC, id DESC",

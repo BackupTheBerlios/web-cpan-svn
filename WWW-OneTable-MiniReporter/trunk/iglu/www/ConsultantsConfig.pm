@@ -21,6 +21,7 @@ $config =
     },
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'consultants2',
+    'encoding' => "iso-8859-1",
     'areas' => [ "Tel Aviv", "Haifa", "Jerusalem", "North", "South" ],
     'order_by' => "id DESC",
     'fields' =>
