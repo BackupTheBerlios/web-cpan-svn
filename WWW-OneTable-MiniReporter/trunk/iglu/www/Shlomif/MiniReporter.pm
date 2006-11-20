@@ -1221,7 +1221,7 @@ sub get_add_form_titles
         return
         [
             'title' => $self->main()->get_string('add_form_title'),
-            'header' => "Add a job"
+            'header' => $self->main()->get_string('add_form_header'),
         ];
     }
     elsif ($self->is_valid())

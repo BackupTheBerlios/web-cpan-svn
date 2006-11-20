@@ -29,6 +29,7 @@ $config =
         'area_hint' => "The area in Israel of the employing firm.<br />" . 
                 "If the work is from home, select the area of the office.",
         'add_form_title' => "Add a job to the Linux-IL jobs' list", 
+        'add_form_header' => "Add a job",
     },
     'admin_password' => get_admin_pass(),
     'dsn' => 'dbi:mysql:test_jobs',
