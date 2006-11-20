@@ -1174,6 +1174,7 @@ package Shlomif::MiniReporter::FormFieldsGen;
 use base 'Shlomif::MiniReporter::HelperObj';
 
 __PACKAGE__->mk_accessors(qw(
+    _dbh
     f
     field_idx
     fields
@@ -1363,6 +1364,63 @@ sub get_hint
     }
 }
 
+sub _get_dbh
+{
+    my $self = shift;
+
+    if (! $self->_dbh())
+    {
+        $self->_dbh($self->main()->dbi_connect());
+    }
+
+    return $self->_dbh();
+}
+
+sub _get_select_control_options
+{
+    my $self = shift;
+    my $f = $self->f();
+
+    my $params = $f->{'values'};
+
+    if ($params->{from} ne "sql")
+    {
+        die "Unknown ->{values}->{from} value. Should be SQL.";
+    }
+
+    my $dbh = $self->_get_dbh();
+
+    my $sth = $dbh->prepare(
+        "SELECT $params->{id_field}, $params->{display_field} " . 
+        "FROM $params->{table}"
+    );
+
+    $sth->execute();
+    
+    my @ret;
+
+    while (my $values = $sth->fetchrow_arrayref())
+    {
+        push @ret, +{ label => $values->[1], value => $values->[0] };
+    }
+
+    undef($sth);
+
+    return \@ret;
+}
+
+sub _get_select_control_attrs
+{
+    my $self = shift;
+    my $f = $self->f();
+
+    return
+    [
+        type => "select",
+        optionsGroup => $self->_get_select_control_options(),
+    ];
+}
+
 sub get_f_field_struct
 {
     my $self = shift;
@@ -1379,6 +1437,10 @@ sub get_f_field_struct
         $self->get_hint(),
         # Highlight the odd numbered fields
         $self->get_attribs(),
+        ((($f->{control_type} || "") eq "select") ?
+            (@{$self->_get_select_control_attrs()}) :
+            ()
+        ),
     };
 }
 
@@ -1416,6 +1478,21 @@ sub get_form_fields
     }
 
     return $self->fields();
+}
+
+sub detach
+{
+    my $self = shift;
+
+    if ($self->_dbh())
+    {
+        $self->_dbh()->disconnect();
+        $self->_dbh(undef);
+    }
+
+    $self->SUPER::detach();
+
+    return;
 }
 
 1;
