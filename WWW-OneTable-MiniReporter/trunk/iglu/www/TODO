@@ -9,6 +9,8 @@ values that are not in the valid list of values.
 * Convert Area to a regular "select" control instead of the special
 handling at the moment.
 
+* Move the rest of the DBI handling to the _get_dbh() method.
+
 Long-term:
 ----------
 
@@ -23,3 +25,4 @@ Long-term:
 
 * Create an administration page.
 
+* Add error checking for the database calls.

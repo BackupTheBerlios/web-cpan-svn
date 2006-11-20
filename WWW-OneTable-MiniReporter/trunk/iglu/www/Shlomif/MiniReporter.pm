@@ -70,7 +70,9 @@ my %urls_to_modes = (map { $modes{$_}->{'url'} => $_ } keys(%modes));
 
 __PACKAGE__->mk_accessors(qw(
     config
+    _dbh
     record_tt
+    _sql_to_field
 ));
 
 sub setup
@@ -112,6 +114,30 @@ sub cgiapp_prerun
 
     # This is so the CGI header won't print a character set.
     $self->query()->charset('');
+}
+
+sub cgiapp_postrun
+{
+    my $self = shift;
+
+    if ($self->_dbh())
+    {
+        $self->_dbh()->disconnect();
+
+        $self->_dbh(undef);
+    }
+}
+
+sub _get_dbh
+{
+    my $self = shift;
+
+    if (! $self->_dbh())
+    {
+        $self->_dbh($self->dbi_connect());
+    }
+
+    return $self->_dbh();
 }
 
 sub redirect_to_main
@@ -335,8 +361,12 @@ sub render_record
     my $values = $args{'values'};
     my $fields = $args{'fields'};
 
-    my $vars = { map { $fields->[$_] => htmlize($values->[$_]) } (0 .. $#$values)};
-
+    my $mapping =
+        $self->_lookup_values (
+            {map { $fields->[$_] => $values->[$_] } (0 .. $#$values)}
+        );
+   
+    my $vars = { map { $_ => htmlize($mapping->{$_}) } keys(%$mapping) };
     foreach my $flag (qw(for_rss toolbox))
     {
         if ($args{$flag})
@@ -352,11 +382,74 @@ sub render_record
     return $ret;
 }
 
+sub _lookup_values
+{
+    my ($self, $mapping) = @_;
+
+    my $ret = {};
+
+    while (my ($field, $init_val) = each(%$mapping))
+    {
+        my $record = $self->_get_field_by_name($field);
+
+        $ret->{$field} = 
+            (defined($record) && ($record->{control_type} eq "select")) ?
+                $self->_lookup_select_value($field, $record, $init_val) :
+                $init_val
+                ;
+    }
+
+    return $ret;
+}
+
+sub _lookup_select_value
+{
+    my ($self, $field, $record, $value) = @_;
+   
+    my $params = $record->{'values'};
+
+    my $dbh = $self->_get_dbh();
+
+    my $sth = $dbh->prepare(
+        "SELECT $params->{display_field} " .
+        "FROM $params->{table} " .
+        "WHERE $params->{id_field} = ?"
+    );
+
+    $sth->execute($value);
+
+    my $db_vals = $sth->fetchrow_arrayref();
+
+    my $ret = $db_vals->[0];
+
+    undef($sth);
+
+    return $ret;
+}
+
 sub get_fields
 {
     my $self = shift;
 
     return @{$self->config()->{'fields'}};
+}
+
+sub _get_field_by_name
+{
+    my ($self, $name) = @_;
+
+    my @fields = $self->get_fields();
+
+    if (! $self->_sql_to_field())
+    {    
+        $self->_sql_to_field(
+            { map { $fields[$_]->{'sql'} => $_ } (0 .. $#fields) }
+        );
+    }
+
+    return exists($self->_sql_to_field()->{$name}) ?
+        $fields[$self->_sql_to_field()->{$name}] :
+        undef;
 }
 
 sub get_field_names
@@ -1370,17 +1463,7 @@ sub get_hint
     }
 }
 
-sub _get_dbh
-{
-    my $self = shift;
 
-    if (! $self->_dbh())
-    {
-        $self->_dbh($self->main()->dbi_connect());
-    }
-
-    return $self->_dbh();
-}
 
 sub _get_select_control_options
 {
@@ -1394,7 +1477,7 @@ sub _get_select_control_options
         die "Unknown ->{values}->{from} value. Should be SQL.";
     }
 
-    my $dbh = $self->_get_dbh();
+    my $dbh = $self->main()->_get_dbh();
 
     my $sth = $dbh->prepare(
         "SELECT $params->{id_field}, $params->{display_field} " . 
@@ -1506,12 +1589,6 @@ sub get_form_fields
 sub detach
 {
     my $self = shift;
-
-    if ($self->_dbh())
-    {
-        $self->_dbh()->disconnect();
-        $self->_dbh(undef);
-    }
 
     $self->SUPER::detach();
 
