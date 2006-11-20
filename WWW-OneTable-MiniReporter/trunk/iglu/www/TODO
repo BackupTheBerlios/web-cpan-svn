@@ -3,6 +3,15 @@ Pressing:
 
 * Change the date to something more user friendly.
 
+* Investigate whether a control eq "select" could be injected with
+values that are not in the valid list of values.
+
+* Convert Area to a regular "select" control instead of the special
+handling at the moment.
+
+* Eliminate 'sameline' and convert it to control eq "line" or control
+eq "textarea".
+
 Long-term:
 ----------
 
