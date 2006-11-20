@@ -134,7 +134,7 @@ sub _get_dbh
 
     if (! $self->_dbh())
     {
-        $self->_dbh($self->dbi_connect());
+        $self->_dbh($self->_dbi_connect());
     }
 
     return $self->_dbh();
@@ -292,7 +292,7 @@ sub get_dsn
     return $self->config()->{'dsn'};
 }
 
-sub dbi_connect
+sub _dbi_connect
 {
     my $self = shift;
     return DBI->connect($self->get_dsn());
@@ -552,16 +552,16 @@ sub get_display_records_query
 {
     my $self = shift;
     my $args = shift;
-    my $conn = $self->dbi_connect();
+
+    my $dbh = $self->_get_dbh();
+
     my $query = $self->construct_fetch_query($args);
 
-    my $sth = $conn->prepare($query->{'query'});
+    my $sth = $dbh->prepare($query->{'query'});
 
     $sth->execute();
 
     $query->{'rows'} = $sth->fetchall_arrayref();
-
-    $conn->disconnect();
 
     return $query;
 }
@@ -753,16 +753,14 @@ sub perform_insert
 {
     my ($self, $field_names, $values) = @_;
 
-    my $conn = $self->dbi_connect();
+    my $dbh = $self->_get_dbh();
     my $query_str = "INSERT INTO " . $self->config()->{'table_name'} .
         " (" . join(",", "id", "status", "area", @$field_names) . ") " .
-        " VALUES (0, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $conn->quote($_); } @$values)) . ")";
+        " VALUES (0, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $dbh->quote($_); } @$values)) . ")";
 
-    $conn->do($query_str);
+    $dbh->do($query_str);
 
-    $self->update_rss_feed($conn);
-
-    $conn->disconnect();
+    $self->update_rss_feed();
 
     return $self->tt_process(
         'perform_insert_page.tt',
@@ -842,7 +840,7 @@ sub update_rss_feed
         return;
     }
 
-    my $conn = shift;
+    my $dbh = $self->_get_dbh();
 
     my $query = 
         $self->construct_fetch_query(
@@ -852,7 +850,7 @@ sub update_rss_feed
             }
         );
 
-    my $sth = $conn->prepare($query->{'query'});
+    my $sth = $dbh->prepare($query->{'query'});
 
     $sth->execute();
 
@@ -909,7 +907,7 @@ sub update_rss_feed
 
     undef($rss_feed);
 
-    $sth = $conn->prepare(
+    $sth = $dbh->prepare(
         "UPDATE " . $self->get_rss_table_name() . 
         " SET xmltext = ? WHERE relevance = 'all' AND format = 'rss'"
         );
@@ -954,9 +952,9 @@ sub rss_feed
         return "";
     }
 
-    my $conn = $self->dbi_connect();
+    my $dbh = $self->_get_dbh();
 
-    my $sth = $conn->prepare("SELECT xmltext FROM jobs2_feeds " . 
+    my $sth = $dbh->prepare("SELECT xmltext FROM jobs2_feeds " . 
         "WHERE relevance = 'all' AND format = 'rss'");
 
     $sth->execute();
@@ -968,8 +966,6 @@ sub rss_feed
     undef($sth);
 
     $self->header_props(-type => "text/rss");
-
-    $conn->disconnect();
 
     return $values->[0];
 }
@@ -984,7 +980,7 @@ sub update_rss
     {
         return "<p>You are unauthorized to do this. Either the password is wrong or you should go away.</p>";
     }
-    $self->update_rss_feed($self->dbi_connect());
+    $self->update_rss_feed();
     return "<p>RSS Feed Updated.</p>";
 }
 
@@ -1007,9 +1003,9 @@ sub get_record_fields
 
     my $query = $self->construct_fetch_query({'id' => $record_id});
 
-    my $conn = $self->dbi_connect();
+    my $dbh = $self->_get_dbh();
 
-    my $sth = $conn->prepare($query->{'query'});
+    my $sth = $dbh->prepare($query->{'query'});
 
     $sth->execute();
 
