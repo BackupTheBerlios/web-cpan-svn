@@ -18,6 +18,7 @@ $config =
         'remove_result_title' => "How to Remove an Entry",
         'service' => "consultants list",
         'area_hint' => "The area in Israel where you live.", 
+        'add_form_title' => "Add yourself to the list",
     },
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'consultants2',

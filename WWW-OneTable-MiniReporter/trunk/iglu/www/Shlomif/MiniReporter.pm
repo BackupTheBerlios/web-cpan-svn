@@ -1220,7 +1220,7 @@ sub get_add_form_titles
     {
         return
         [
-            'title' => "Add a job to the Linux-IL jobs' list", 
+            'title' => $self->main()->get_string('add_form_title'),
             'header' => "Add a job"
         ];
     }
