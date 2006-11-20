@@ -1254,10 +1254,16 @@ sub set_f_auto_field
 {
 }
 
+sub _is_sameline
+{
+    my $self = shift;
+    return ($self->f()->{control_type} ne "textarea");
+}
+
 sub get_sameline_validator
 {
     my $self = shift;
-    if ($self->f()->{sameline})
+    if ($self->_is_sameline())
     {
         return
             WWW::FieldValidator->new(WWW::FieldValidator::REGEX_MATCH,
@@ -1339,7 +1345,7 @@ sub get_validators
 sub get_extra_attributes
 {
     my $self = shift;
-    if ($self->f()->{sameline})
+    if ($self->f()->{control_type} eq "text")
     {
         return " size=\"" . $self->input_length() . "\" ";
     }
@@ -1414,11 +1420,31 @@ sub _get_select_control_attrs
     my $self = shift;
     my $f = $self->f();
 
+    if ($f->{control_type} ne "select")
+    {
+        return [];
+    }
+
     return
     [
-        type => "select",
         optionsGroup => $self->_get_select_control_options(),
     ];
+}
+
+sub _get_control_type
+{
+    my $self = shift;
+
+    my $control_type = $self->f()->{control_type};
+
+    if ($control_type =~ /^(text|textarea|select)$/)
+    {
+        return $control_type;
+    }
+    else
+    {
+        die "Unknown control type \"$control_type\"!";
+    }
 }
 
 sub get_f_field_struct
@@ -1430,17 +1456,14 @@ sub get_f_field_struct
     {
         label => $f->{'pres'},
         defaultValue => ($self->query()->param($f->{sql}) || ""),
-        type => ($f->{sameline} ? "text" : "textarea"),
+        type => $self->_get_control_type(),
         validators => $self->get_validators(),
         extraAttributes => $self->get_extra_attributes(),
         # Give the hint if it exists
         $self->get_hint(),
         # Highlight the odd numbered fields
         $self->get_attribs(),
-        ((($f->{control_type} || "") eq "select") ?
-            (@{$self->_get_select_control_attrs()}) :
-            ()
-        ),
+        @{$self->_get_select_control_attrs()},
     };
 }
 

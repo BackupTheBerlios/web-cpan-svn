@@ -41,7 +41,7 @@ $config =
         {
             'sql' => "post_date",
             'pres' => "Post Date",
-            'sameline' => 1,
+            'control_type' => "text",
             'gen' => 
                 {
                     'auto' => 1,
@@ -54,7 +54,7 @@ $config =
         {
             'sql' => "title",
             'pres' => "Job Title",
-            'sameline' => 1,
+            'control_type' => "text",
             'hint' => qq{A short title describing the job. Examples: <br />
             "Perl Programmer"<br />
             "System Administrator"<br />
@@ -63,7 +63,9 @@ $config =
             'len' => 40,
         },
         {
-            qw(sql workplace pres Workplace sameline 1),
+            'sql' => "workplace",
+            'pres' => "Workplace",
+            'control_type' => "text",
             'hint' => qq{The name of the company which will employ the 
             nominee. <br />
             <b>Bad entries:</b> "Work from home", <br />
@@ -75,7 +77,7 @@ $config =
         {
             sql => 'description',
             pres => "Description",
-            sameline => 0,
+            'control_type' => "textarea",
             hint => qq{
                 Describe the job in detail. What it involves, <br/>
                 what will the employee do, etc.
@@ -83,7 +85,9 @@ $config =
             len => 65000,
         },
         {
-            qw(sql requirements pres Requirements sameline 0),
+            'sql' => "requirements",
+            'pres' => "Requirements",
+            'control_type' => "textarea",
             hint => qq{
                 Requirements that the nominee would have to fullfill to<br />
                 get the the Job. Examples: "2 years of experience<br />
@@ -93,7 +97,9 @@ $config =
             len => 65000,
         },
         {
-            qw(sql address pres Address sameline 0),
+            'sql' => "address",
+            'pres' => "Address",
+            'control_type' => "textarea",
             hint => qq{
                 The address of the company (in the real world). <br />
                 Street,City, Zip-code. Optional
@@ -101,7 +107,9 @@ $config =
             len => 65000,
         },
         {
-            qw(sql phone pres Phone sameline 1),
+            sql => "phone",
+            pres => "Phone",
+            control_type => "text",
             hint => qq{ 
                 The telephone number in which you can be reached.
             },
@@ -110,7 +118,7 @@ $config =
         {
             'sql' => "cellphone",
             'pres' => "Cell Phone",
-            'sameline' => 1,
+            'control_type' => "text",
             hint => qq{
                 Cellular (mobile) Phone number in which you can be
                 reached.
@@ -118,14 +126,18 @@ $config =
             len => 30,
         },
         {
-            qw(sql fax pres Fax sameline 1),
+            'sql' => "fax",
+            'pres' => "Fax",
+            'control_type' => "text",
             hint => qq{
                 Fax number where resumes can be sent.
             },
             len => 30,
         },
         {
-            qw(sql email pres E-mail sameline 1),
+            'sql' => "email",
+            'pres' => "E-mail",
+            'control_type' => "text",
             flags =>
             {
                 'email' => 1,
@@ -136,7 +148,9 @@ $config =
             len => 255,
         },
         {
-            qw(sql homepage pres Homepage sameline 1),
+            'sql' => "homepage",
+            'pres' => "Homepage",
+            'control_type' => "text",
             flags =>
             {
                 'url' => 1,
@@ -150,7 +164,7 @@ $config =
         {
             'sql' => 'contact_person',
             'pres' => 'Contact Person',
-            'sameline' => 1,
+            'control_type' => "text",
             hint => qq{
                 Name of the contact person in the company which the <br />
                 nomineee should contact.

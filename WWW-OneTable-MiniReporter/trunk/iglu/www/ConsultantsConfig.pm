@@ -29,7 +29,7 @@ $config =
         {
             'sql' => "name",
             'pres' => "Name",
-            'sameline' => 1,
+            'control_type' => "text",
             'hint' => qq{Your name. Examples: <br />
             "Yossef Cohen"<br />
             "Shlomi Fish"<br />
@@ -39,7 +39,7 @@ $config =
         {
             'sql' => "knowledge_area",
             'pres' => "Knowledge Areas",
-            'sameline' => 0,
+            'control_type' => "textarea",
             'len' => 65535,
             'hint' => qq{Areas of Knowledge. <br/> Examples:<br />
                 "Perl Programming"<br />
@@ -49,14 +49,16 @@ $config =
         {
             sql => 'other_os',
             pres => "Other Operating Systems",
-            sameline => 1,
+            'control_type' => "text",
             hint => qq{
                 Which other operating systems do you know?
             },
             len => 255,
         },
         {
-            qw(sql address pres Address sameline 0),
+            'sql' => "address",
+            'pres' => "Address",
+            'control_type' => "textarea",
             hint => qq{
                 Your address (in the real world). <br />
                 Street,City, Zip-code. Optional
@@ -64,7 +66,9 @@ $config =
             len => 65535,
         },
         {
-            qw(sql phone pres Phone sameline 1),
+            'sql' => "phone",
+            'pres' => "Phone",
+            'control_type' => "text",
             hint => qq{ 
                 The telephone number in which you can be reached.
             },
@@ -73,7 +77,7 @@ $config =
         {
             'sql' => "cellphone",
             'pres' => "Cell Phone",
-            'sameline' => 1,
+            'control_type' => "text",
             hint => qq{
                 Cellular (mobile) Phone number in which you can be
                 reached.
@@ -81,14 +85,18 @@ $config =
             len => 30,
         },
         {
-            qw(sql fax pres Fax sameline 1),
+            'sql' => "fax",
+            'pres' => "Fax",
+            'control_type' => "text",
             hint => qq{
                 Fax number.
             },
             len => 30,
         },
         {    
-            qw(sql email pres E-mail sameline 1),
+            'sql' => "email",
+            'pres' => "E-mail",
+            'control_type' => "text",
             flags =>
             {
                 'email' => 1,
@@ -99,8 +107,9 @@ $config =
             len => 255,
         },
         {    
-            qw(sql website sameline 1),
+            'sql' => "website",
             'pres' => "Web site",
+            'control_type' => "text",
             hint => qq{
                 Your personal web-site.
             },
