@@ -756,7 +756,7 @@ sub perform_insert
     my $dbh = $self->_get_dbh();
     my $query_str = "INSERT INTO " . $self->config()->{'table_name'} .
         " (" . join(",", "id", "status", "area", @$field_names) . ") " .
-        " VALUES (0, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $dbh->quote($_); } @$values)) . ")";
+        " VALUES (null, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $dbh->quote($_); } @$values)) . ")";
 
     $dbh->do($query_str);
 
