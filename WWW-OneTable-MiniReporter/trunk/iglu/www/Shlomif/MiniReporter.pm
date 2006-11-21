@@ -321,30 +321,7 @@ sub htmlize
 {
 	my $string = shift || "";
 	
-	my $char_convert = 
-	sub {
-		my $char = shift;
-        my $ascii = ord($char);
-		
-		if ($char eq '&')
-		{
-			return "&amp;";
-		}
-		elsif ($char eq '>')
-		{
-			return "&gt;";
-		}
-		elsif ($char eq '<')
-		{
-			return "&lt;";
-        }
-        elsif ($ascii > 127)
-        {
-            return sprintf("&#x%.4x;", $ascii);
-        }
-	};
-
-	$string =~ s/([&<>\x80-\xFF])/$char_convert->($1)/ge;
+    $string = CGI::escapeHTML($string);
 	
 	$string =~ s/\n\r?/<br \/>\n/g;
 	
