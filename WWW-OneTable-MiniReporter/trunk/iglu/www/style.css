@@ -81,3 +81,15 @@ h2
     clear : both;
 }
 
+/*
+ * For the admin_select tables
+ * */
+.admin_select
+{
+    border:solid;
+}
+.admin_select td
+{
+    border:solid thin;
+    padding: 0.2em;
+}

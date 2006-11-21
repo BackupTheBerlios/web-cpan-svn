@@ -1,0 +1,31 @@
+[% INCLUDE "header.tt" %]
+[% USE HTML %]
+
+<h2>Add New</h2>
+
+<form action="" method="get">
+<input type="hidden" name="op" value="add" />
+<b>Name:</b> <input type="text" name="name" />
+<input type="submit" value="Submit" />
+</form>
+
+[% FOREACH r_type = records %]
+
+<h2>[% HTML.escape(r_type.label) %]</h2>
+
+<table class="admin_select">
+[% FOREACH r = r_type.records %]
+<tr>
+<td>[% HTML.escape(r.name) %]</td>
+<td><a href="./?op=rename;id=[% r.id %]">Rename</a></td>
+<td>
+<a href="./?op=[% IF r_type.en %]disable[% ELSE %]enable[% END %];id=[% r.id %]">[% IF r_type.en %]Disable[% ELSE %]Enable[% END %]</a>
+</td>
+</tr>
+[% END %]
+</table>
+
+[% END # Record type loop.
+%]
+
+[% INCLUDE "footer.tt" %]

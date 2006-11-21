@@ -898,15 +898,23 @@ sub _admin_screen
 {
     my $self = shift;
 
-    return $self->tt_process(
-        'admin_main_page.tt',
-        {
-            'title' => "Admin Page",
-            'header' => "Admin Page",
-            'select_fields' => $self->_get_editable_select_fields(),
-        },
-    );
-    
+    my $path = $self->get_path();
+
+    if ($path eq "/admin/")
+    {
+        return $self->tt_process(
+            'admin_main_page.tt',
+            {
+                'title' => "Admin Page",
+                'header' => "Admin Page",
+                'select_fields' => $self->_get_editable_select_fields(),
+            },
+        );
+    }
+    elsif ($path =~ m{^/admin/resource-list/([^/]+)/$})
+    {
+        return $self->_admin_select({'field' => $1});
+    }
 }
 
 sub _get_editable_select_fields
@@ -918,6 +926,52 @@ sub _get_editable_select_fields
         grep { $_->{control_type} eq "select" } 
         ($self->get_fields())
     ];
+}
+
+sub _admin_select
+{
+    my ($self, $args) = @_;
+
+    my $name = $args->{field};
+
+    my $field = $self->_get_field_by_name($name);
+
+    if (!defined($field))
+    {
+        return "Unknown Resource List " . CGI::escapeHTML($field) . "!";
+    }
+
+    my $table = $field->{'values'};
+
+    my $dbh = $self->_get_dbh();
+
+    my $sth = $dbh->prepare(
+        "SELECT $table->{id_field}, $table->{display_field}, status " .
+        "FROM $table->{table}"
+    );
+
+    $sth->execute();
+
+    my @records = (
+        {label => "Enabled", records => [], 'en' => 1,}, 
+        {label => "Disabled", records => [], 'en' => 0,},
+    );
+
+    while (my $row = $sth->fetchrow_arrayref())
+    {
+        push @{$records[($row->[2] eq 0) ? 0 : 1]->{records}},
+            { 'id' => $row->[0], 'name' => $row->[1] };
+    }
+
+    return $self->tt_process(
+        'admin_select_page.tt',
+        {
+            (map { $_ => 
+                "Administrate Resource List for " . htmlize($field->{pres}),
+            } (qw(header title))),
+            records => \@records,
+        },
+    );
 }
 
 sub admin_records
