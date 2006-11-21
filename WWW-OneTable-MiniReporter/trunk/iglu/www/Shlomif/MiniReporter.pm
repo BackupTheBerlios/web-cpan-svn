@@ -985,6 +985,56 @@ sub _admin_select
 
         return "";
     }
+    elsif ($op eq "rename")
+    {
+        my $id = $self->query()->param("id");
+
+        if (!defined($id) || ($id !~ /^(\d+)$/))
+        {
+            return "You've reached a wrong URL.";
+        }
+
+        my $sth = $self->_get_dbh()->prepare(
+            "SELECT $table->{display_field} " .
+            "FROM $table->{table} WHERE $table->{id_field} = ?"
+        );
+
+        $sth->execute($id);
+
+        my $values = $sth->fetchrow_arrayref();
+
+        if (!defined($values))
+        {
+            return "You've reached a wrong URL.";
+        }
+
+        my $name = $values->[0];
+
+        # Display the rename form.
+        return $self->tt_process(
+            'admin_select_rename_form_page.tt',
+            {
+                (map { $_ => "Rename Project" } qw(header title)),
+                name => $name,
+                id => $id,
+            },
+        );
+    }
+    elsif ($op eq "rename_commit")
+    {
+        my $id = $self->query()->param("id");
+
+        if (!defined($id) || ($id !~ /^(\d+)$/))
+        {
+            return "You've reached a wrong URL.";
+        }
+
+        my $sth = $self->_get_dbh()->prepare(
+            "UPDATE $table->{table} SET name = ? WHERE id = ?"
+        );
+
+        $sth->execute($self->query()->param("name"), $id);
+    }
 
     my $sth = $self->_get_dbh()->prepare(
         "SELECT $table->{id_field}, $table->{display_field}, status " .

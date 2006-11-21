@@ -1,0 +1,11 @@
+[% INCLUDE "header.tt" %]
+[% USE HTML %]
+
+<form action="" method="get">
+<input type="hidden" name="op" value="rename_commit" />
+<input type="hidden" name="id" value="[% id %]" />
+<b>Name:</b> <input type="text" name="name" value="[% HTML.escape(name) %]" />
+<input type="submit" value="Rename" />
+</form>
+
+[% INCLUDE "footer.tt" %]
