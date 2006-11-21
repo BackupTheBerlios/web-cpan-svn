@@ -941,9 +941,30 @@ sub _admin_select
         return "Unknown Resource List " . CGI::escapeHTML($field) . "!";
     }
 
+    my $op = $self->query()->param("op") || "";
+
+    # TODO : $dbh may not be used - eliminate its declaration here.
+    my $dbh = $self->_get_dbh();
+
     my $table = $field->{'values'};
 
-    my $dbh = $self->_get_dbh();
+    if (($op eq "enable") || ($op eq "disable"))
+    {
+        my $new_status = $op eq "enable" ? 0 : 1;
+
+        my $id = $self->query()->param("id");
+
+        if (!defined($id) || ($id !~ /^(\d+)$/))
+        {
+            return "You've reached a wrong URL.";
+        }
+
+        my $sth = $dbh->prepare(
+            "UPDATE $table->{table} SET status = ? WHERE id = ?"
+        );
+
+        $sth->execute($new_status, $id);
+    }
 
     my $sth = $dbh->prepare(
         "SELECT $table->{id_field}, $table->{display_field}, status " .
