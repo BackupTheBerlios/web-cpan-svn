@@ -47,7 +47,7 @@ my %modes =
     'admin' =>
     {
         'url' => "/admin/",
-        'func' => "admin_screen",
+        'func' => "_admin_screen",
     },
     'rss' =>
     {
@@ -894,7 +894,33 @@ sub update_rss_feed
     return 0;
 }
 
-sub admin_screen
+sub _admin_screen
+{
+    my $self = shift;
+
+    return $self->tt_process(
+        'admin_main_page.tt',
+        {
+            'title' => "Admin Page",
+            'header' => "Admin Page",
+            'select_fields' => $self->_get_editable_select_fields(),
+        },
+    );
+    
+}
+
+sub _get_editable_select_fields
+{
+    my $self = shift;
+
+    return 
+    [ 
+        grep { $_->{control_type} eq "select" } 
+        ($self->get_fields())
+    ];
+}
+
+sub admin_records
 {
     my $self = shift;
 

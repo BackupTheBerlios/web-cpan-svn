@@ -1,0 +1,11 @@
+[% INCLUDE "header.tt" %]
+[% USE HTML %]
+<h2>Resource Lists' Admin</h2>
+
+<ul>
+[% FOREACH f = select_fields %]
+<li><a href="resource-list/[% HTML.escape(f.sql) %]/">[% HTML.escape(f.pres) %]</a></li>
+[% END %]
+</ul>
+
+[% INCLUDE "footer.tt" %]
