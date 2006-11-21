@@ -962,6 +962,22 @@ sub _admin_select
 
         $sth->execute($new_status, $id);
     }
+    elsif ($op eq "add")
+    {
+        my $name = $self->query->param("name");
+
+        # To make sure name is not empty which probably means the form was
+        # submitted by mistake.
+        if ($name =~ /\S/)
+        {
+            my $sth = $self->_get_dbh->prepare(
+                "INSERT INTO $table->{table} (id, name, status) ". 
+                "VALUES (null, ?, 0)"
+            );
+
+            $sth->execute($name);
+        }
+    }
 
     my $sth = $self->_get_dbh()->prepare(
         "SELECT $table->{id_field}, $table->{display_field}, status " .
