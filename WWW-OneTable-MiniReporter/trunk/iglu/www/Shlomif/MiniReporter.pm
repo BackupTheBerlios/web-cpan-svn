@@ -977,6 +977,13 @@ sub _admin_select
 
             $sth->execute($name);
         }
+
+        # This redirect is done so upon reload the record won't be
+        # submitted again.
+        $self->header_type('redirect');
+        $self->header_props(-url => "./");
+
+        return "";
     }
 
     my $sth = $self->_get_dbh()->prepare(
@@ -1001,7 +1008,7 @@ sub _admin_select
         'admin_select_page.tt',
         {
             (map { $_ => 
-                "Administrate Resource List for " . htmlize($field->{pres}),
+                "Administer Resource List for " . htmlize($field->{pres}),
             } (qw(header title))),
             records => \@records,
         },
