@@ -1625,7 +1625,10 @@ sub _get_select_control_options
 
     my $sth = $dbh->prepare(
         "SELECT $params->{id_field}, $params->{display_field} " . 
-        "FROM $params->{table}"
+        "FROM $params->{table} " .
+        "WHERE status = 0 " .
+        "ORDER BY $params->{display_field} " .
+        ""
     );
 
     $sth->execute();
