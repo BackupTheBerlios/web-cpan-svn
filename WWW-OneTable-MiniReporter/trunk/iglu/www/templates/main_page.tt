@@ -22,4 +22,7 @@ Keyword from description: <input name="keyword" />
 <li><a href="./remove/">[% remove_a_record_text %]</a></li>
 [% IF with_rss %]<li><a href="./index.rss">Subscribe to our RSS Feed</a></li>
 [% END %]</ul>
+
+<h2><a href="./admin/">Admin Interface</a> (Requires Login)</h2>
+
 [% INCLUDE "footer.tt" %]
