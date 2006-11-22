@@ -1038,7 +1038,8 @@ sub _admin_select
 
     my $sth = $self->_get_dbh()->prepare(
         "SELECT $table->{id_field}, $table->{display_field}, status " .
-        "FROM $table->{table}"
+        "FROM $table->{table} " .
+        "ORDER BY $table->{display_field} "
     );
 
     $sth->execute();
