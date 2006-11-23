@@ -1,0 +1,17 @@
+[% INCLUDE "header.tt" %]
+
+<form method="post" action="[% path_to_root %]admin/login/">
+<p>
+<b>Name:</b> <input name="username" value="admin" />
+</p>
+
+<p>
+<b>Password:</b> <input name="password" type="password" />
+</p>
+
+<p>
+<input type="Submit" value="Login" />
+</p>
+</form>
+
+[% INCLUDE "footer.tt" %]

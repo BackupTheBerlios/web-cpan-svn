@@ -1,0 +1,7 @@
+[% INCLUDE "header.tt" %]
+
+<p>
+Proceeed to the <a href="[% path_to_root %]admin/">admin screen</a>.
+</p>
+
+[% INCLUDE "footer.tt" %]

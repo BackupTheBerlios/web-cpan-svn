@@ -5,11 +5,13 @@ use warnings;
 use DBI;
 use POSIX qw();
 use Template;
+use File::Spec ();
 # Inherit from CGI::Application.
 use base 'CGI::Application';
 use base 'Class::Accessor';
 
 use CGI::Application::Plugin::TT;
+use CGI::Application::Plugin::Session;
 
 use XML::RSS;
 
@@ -92,6 +94,32 @@ sub setup
         # "add_form" => "add_form",
         'redirect_to_main' => "redirect_to_main",
         'correct_path' => "correct_path",
+    );
+}
+
+sub cgiapp_init
+{
+    my $self = shift;
+
+    my $dir = File::Spec->rel2abs("./data/session");
+
+    print STDERR "\$dir=$dir\n";
+
+    $self->session_config(
+        CGI_SESSION_OPTIONS =>
+        [ 
+            "driver:File",
+            $self->query, 
+            {
+                Directory => $dir,
+            } 
+        ],
+        COOKIE_PARAMS => 
+        {
+            -path  => ($self->query->script_name()."/"),
+            -expires => '+7d',
+        },
+        SEND_COOKIE         => 1,
     );
 }
 
@@ -899,6 +927,38 @@ sub _admin_screen
     my $self = shift;
 
     my $path = $self->get_path();
+
+    if ($path eq "/admin/login/")
+    {
+        my $username = $self->query->param('username');
+        my $password = $self->query->param('password');
+
+        if (($username eq "admin") && ($password eq $self->config()->{'admin_password'}))
+        {
+            $self->session->param('username', 'admin');
+            return $self->tt_process(
+                'admin_logged_in_page.tt',
+                {
+                    'title' => "You are now Logged In",
+                    'header' => "You are now Logged In",
+                }
+            );
+        }
+        else
+        {
+            return "Login failed. Press the back button and try again.";
+        }
+    }
+    if (!defined($self->session->param("username")))
+    {
+        return $self->tt_process(
+            'admin_login_page.tt',
+            {
+                'title' => "Login to the Admin Page",
+                'header' => "Login to the Admin Page",
+            },
+        );
+    }
 
     if ($path eq "/admin/")
     {
