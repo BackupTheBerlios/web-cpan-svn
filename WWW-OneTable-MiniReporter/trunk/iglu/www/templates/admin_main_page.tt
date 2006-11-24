@@ -8,4 +8,10 @@
 [% END %]
 </ul>
 
+<hr />
+
+<p>
+<a href="[% path_to_root %]">Back to the Main Application.</a>
+</p>
+
 [% INCLUDE "footer.tt" %]
