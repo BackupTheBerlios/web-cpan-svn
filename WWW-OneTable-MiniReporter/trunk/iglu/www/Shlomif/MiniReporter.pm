@@ -473,9 +473,16 @@ sub sanitize_areas
     return [grep { exists($map{$_}) } @$areas];
 }
 
+sub _get_active_status_value
+{
+    return 1;
+}
+
 sub _get_active_status_cond
 {
-    return "status=1";
+    my $self = shift;
+
+    return "status=".$self->_get_active_status_value();
 }
 
 sub _get_where_clause
@@ -797,12 +804,24 @@ sub get_add_form_fields
 
 sub perform_insert
 {
-    my ($self, $field_names, $values) = @_;
+    my ($self, $names, $values) = @_;
 
     my $dbh = $self->_get_dbh();
+
+    my @map;
+
+    push @map, ['id', "null"];
+    push @map, ['status', $self->_get_active_status_value()];
+    # area may have a legal value that contains single quotes ("'"s).
+    push @map, ['area', $dbh->quote($self->query()->param("area"))];
+    push @map,
+        (map { [$names->[$_], $dbh->quote($values->[$_])] } 
+            (0 .. $#$names)
+        );
+    
     my $query_str = "INSERT INTO " . $self->config()->{'table_name'} .
-        " (" . join(",", "id", "status", "area", @$field_names) . ") " .
-        " VALUES (null, 1, '" . $self->query()->param("area") . "'," .  join(",", (map { $dbh->quote($_); } @$values)) . ")";
+        " (" . join(",", map { $_->[0] } @map) . ") " .
+        " VALUES (" . join(",", map { $_->[1] } @map) . ")";
 
     $dbh->do($query_str);
 
