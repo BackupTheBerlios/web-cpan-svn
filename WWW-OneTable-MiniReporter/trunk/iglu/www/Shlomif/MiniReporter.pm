@@ -496,23 +496,22 @@ sub _calc_fetch_where_clause
     my $keyword_param = $args->{'keyword'} || "";
     my $area_param = $args->{'area_choice'} || "";
 
-    my ($where_clause, @areas);
+    my ($conds, @areas);
 
     if (defined($id_param))
     {
         # $id_param is guaranteed to be numeric so no need for quote() here.
-        $where_clause = $self->_get_where_clause(["id=$id_param"]);
+        $conds = ["id=$id_param"];
     }
     elsif ($args->{'all_records'} eq "1")
     {
-        $where_clause = $self->_get_where_clause();
-    	
+        $conds = [];
     	@areas = $self->get_area_list();
     }
     else
     {
     	if ($keyword_param =~ /^\s*$/) {
-            $where_clause = $self->_get_where_clause();
+            $conds = [];
     	}
     	else
     	{
@@ -526,9 +525,7 @@ sub _calc_fetch_where_clause
     			. "%')";
     		}
 
-            $where_clause = $self->_get_where_clause(
-                [ "(" . join(" OR ", @search_clauses) . ")" ]
-            );
+            $conds = [ "(" . join(" OR ", @search_clauses) . ")" ]
     	}
 
     	if ($area_param eq 'All')
@@ -541,7 +538,11 @@ sub _calc_fetch_where_clause
     	}
     }
 
-    return {where_clause => $where_clause, areas => \@areas};
+    return
+    {
+        where_clause => $self->_get_where_clause($conds),
+        areas => \@areas,
+    };
 }
 
 sub construct_fetch_query
