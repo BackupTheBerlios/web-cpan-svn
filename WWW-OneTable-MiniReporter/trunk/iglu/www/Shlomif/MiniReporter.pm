@@ -519,44 +519,58 @@ sub _get_search_conds
     }
 }
 
+sub _get_fetch_where_clause_conds
+{
+    my ($self, $args) = @_;
+
+    if (defined($args->{id}))
+    {
+        return ["id=$args->{id}"]
+    }
+    elsif ($args->{'all_records'} eq "1")
+    {
+        return [];
+    }
+    else
+    {
+        return $self->_get_search_conds($args);
+    }
+}
+
+sub _get_fetch_areas
+{
+    my ($self, $args) = @_;
+
+    my $area = $args->{'area_choice'} || "";
+
+    my $all_areas = sub { return [ $self->get_area_list() ]; };
+
+    if (defined($args->{id}))
+    {
+        # Doesn't matter much.
+        return [];
+    }
+    elsif ($args->{'all_records'} eq "1")
+    {
+        return $all_areas->();
+    }
+    else
+    {
+        return +($area eq "All") ? $all_areas->() : [ $area ];
+    }
+}
+
 sub _calc_fetch_where_clause
 {
     my ($self, $args) = @_;
 
-    my $id_param = $args->{'id'};
-    
-    my $area_param = $args->{'area_choice'} || "";
-
-    my ($conds, @areas);
-
-    if (defined($id_param))
-    {
-        # $id_param is guaranteed to be numeric so no need for quote() here.
-        $conds = ["id=$id_param"];
-    }
-    elsif ($args->{'all_records'} eq "1")
-    {
-        $conds = [];
-        @areas = $self->get_area_list();
-    }
-    else
-    {
-        $conds = $self->_get_search_conds($args);
-
-        if ($area_param eq 'All')
-        {
-            @areas = $self->get_area_list();
-        }
-        else
-        {
-            @areas = ($area_param);
-        }
-    }
-
     return
     {
-        where_clause => $self->_get_where_clause($conds),
-        areas => \@areas,
+        where_clause =>
+            $self->_get_where_clause(
+                $self->_get_fetch_where_clause_conds($args)
+            ),
+        areas => $self->_get_fetch_areas($args),
     };
 }
 
