@@ -560,34 +560,18 @@ sub _get_fetch_areas
     }
 }
 
-sub _calc_fetch_where_clause
-{
-    my ($self, $args) = @_;
-
-    return
-    {
-        where_clause =>
-            $self->_get_where_clause(
-                $self->_get_fetch_where_clause_conds($args)
-            ),
-        areas => $self->_get_fetch_areas($args),
-    };
-}
-
 sub construct_fetch_query
 {
     my $self = shift;
     my $args = shift;
 
-
-    my $calc_ret = $self->_calc_fetch_where_clause($args);
-
-    my $where_clause = $calc_ret->{where_clause};
-    my $areas = $calc_ret->{areas};
-
     my $field_names = $self->get_field_names();
-
     push @$field_names, ('status');
+
+    my $where_clause = 
+        $self->_get_where_clause(
+            $self->_get_fetch_where_clause_conds($args)
+        );
 
     my $limit_clause = exists($args->{'max_num_records'}) ? 
         " LIMIT " . $args->{'max_num_records'} :
@@ -596,14 +580,17 @@ sub construct_fetch_query
     my $query_str = "SELECT " . join(", ", @$field_names) .
                     " FROM " . $self->config()->{'table_name'} .
     		" " . $where_clause .
-    		(" ORDER BY " . ($self->config()->{'order_by'} || "id DESC")) .
+    		" ORDER BY " . ($self->config()->{'order_by'} || "id DESC") .
             $limit_clause;
 
     return
         {
             'field_names' => $field_names,
             'query' => $query_str,
-            'areas' => $self->sanitize_areas($areas),
+            'areas' =>
+                $self->sanitize_areas(
+                    $self->_get_fetch_areas($args)
+                ),
         };
 }
 
