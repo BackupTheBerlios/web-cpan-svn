@@ -475,6 +475,21 @@ sub sanitize_areas
     return [grep { exists($map{$_}) } @$areas];
 }
 
+sub _get_active_status_cond
+{
+    return "status=1";
+}
+
+sub _get_where_clause
+{
+    my $self = shift;
+    my $extra_conds = shift || [];
+
+    my @conds = ($self->_get_active_status_cond(), @$extra_conds);
+
+    return "WHERE " . join(" AND ", @conds);
+}
+
 sub construct_fetch_query
 {
     my $self = shift;
@@ -486,25 +501,25 @@ sub construct_fetch_query
 
     my $id_param = $args->{'id'};
 
-    my ($where_clause_template, @areas);
+    my ($where_clause, @areas);
 
     my @area_list = $self->get_area_list();
 
     if (defined($id_param))
     {
         # $id_param is guaranteed to be numeric so no need for quote() here.
-        $where_clause_template = "WHERE status=1 AND id=$id_param";
+        $where_clause = $self->_get_where_clause(["id=$id_param"]);
     }
     elsif ($args->{'all_records'} eq "1")
     {
-    	$where_clause_template = "WHERE status=1";
+        $where_clause = $self->_get_where_clause();
     	
     	@areas = @area_list;
     }
     else
     {
     	if ($keyword_param =~ /^\s*$/) {
-    		$where_clause_template = "WHERE status=1";
+            $where_clause = $self->_get_where_clause();
     	}
     	else
     	{
@@ -518,7 +533,9 @@ sub construct_fetch_query
     			. "%')";
     		}
 
-    		$where_clause_template = "WHERE status=1 AND (" . join(" OR ", @search_clauses) . ")";
+            $where_clause = $self->_get_where_clause(
+                [ "(" . join(" OR ", @search_clauses) . ")" ]
+            );
     	}
 
     	if ($area_param eq 'All')
@@ -541,7 +558,7 @@ sub construct_fetch_query
 
     my $query_str = "SELECT " . join(", ", @$field_names) .
                     " FROM " . $self->config()->{'table_name'} .
-    		" " . $where_clause_template .
+    		" " . $where_clause .
     		(" ORDER BY " . ($self->config()->{'order_by'} || "id DESC")) .
             $limit_clause;
 
