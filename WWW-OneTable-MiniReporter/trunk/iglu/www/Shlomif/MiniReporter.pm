@@ -488,12 +488,43 @@ sub _get_where_clause
     return "WHERE " . join(" AND ", @conds);
 }
 
+sub _get_search_clauses
+{
+    my ($self, $keyword) = @_;
+
+    # Avoid %'s because the keyword is used in a LIKE query in which
+    # it can cause wildcard complexity attacks
+    $keyword =~ tr/%//d;
+
+    my $query = $self->_get_dbh()->quote("%${keyword}%");
+
+    return [map {"($_->{sql} LIKE $query)" } $self->get_fields()];
+}
+
+sub _get_search_conds
+{
+    my ($self, $args) = @_;
+
+    my $keyword = $args->{'keyword'} || "";
+
+    if ($keyword =~ /^\s*$/)
+    {
+        return [];
+    }
+    else
+    {
+        return [ "(" . 
+            join(" OR ", @{$self->_get_search_clauses($keyword)}).  ")" 
+        ];
+    }
+}
+
 sub _calc_fetch_where_clause
 {
     my ($self, $args) = @_;
 
     my $id_param = $args->{'id'};
-    my $keyword_param = $args->{'keyword'} || "";
+    
     my $area_param = $args->{'area_choice'} || "";
 
     my ($conds, @areas);
@@ -506,36 +537,20 @@ sub _calc_fetch_where_clause
     elsif ($args->{'all_records'} eq "1")
     {
         $conds = [];
-    	@areas = $self->get_area_list();
+        @areas = $self->get_area_list();
     }
     else
     {
-    	if ($keyword_param =~ /^\s*$/) {
-            $conds = [];
-    	}
-    	else
-    	{
-    		$keyword_param =~ s/['%]/ /g;
+        $conds = $self->_get_search_conds($args);
 
-    		my (@search_clauses);
-
-    		foreach my $field ($self->get_fields())
-    		{
-    			push @search_clauses, "(" . $field->{'sql'} . " LIKE '%" . $keyword_param
-    			. "%')";
-    		}
-
-            $conds = [ "(" . join(" OR ", @search_clauses) . ")" ]
-    	}
-
-    	if ($area_param eq 'All')
-    	{
-    		@areas = $self->get_area_list();
-    	}
-    	else
-    	{
-    		@areas = ($area_param);
-    	}
+        if ($area_param eq 'All')
+        {
+            @areas = $self->get_area_list();
+        }
+        else
+        {
+            @areas = ($area_param);
+        }
     }
 
     return
