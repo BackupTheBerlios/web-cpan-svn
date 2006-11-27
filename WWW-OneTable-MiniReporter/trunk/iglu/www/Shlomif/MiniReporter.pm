@@ -103,8 +103,6 @@ sub cgiapp_init
 
     my $dir = File::Spec->rel2abs("./data/session");
 
-    print STDERR "\$dir=$dir\n";
-
     $self->session_config(
         CGI_SESSION_OPTIONS =>
         [ 
