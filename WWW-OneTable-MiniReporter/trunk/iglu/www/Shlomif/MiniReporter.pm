@@ -490,20 +490,15 @@ sub _get_where_clause
     return "WHERE " . join(" AND ", @conds);
 }
 
-sub construct_fetch_query
+sub _calc_fetch_where_clause
 {
-    my $self = shift;
-    my $args = shift;
-
-    my $keyword_param = $args->{'keyword'} || "";
-
-    my $area_param = $args->{'area_choice'} || "";
+    my ($self, $args) = @_;
 
     my $id_param = $args->{'id'};
+    my $keyword_param = $args->{'keyword'} || "";
+    my $area_param = $args->{'area_choice'} || "";
 
     my ($where_clause, @areas);
-
-    my @area_list = $self->get_area_list();
 
     if (defined($id_param))
     {
@@ -514,7 +509,7 @@ sub construct_fetch_query
     {
         $where_clause = $self->_get_where_clause();
     	
-    	@areas = @area_list;
+    	@areas = $self->get_area_list();
     }
     else
     {
@@ -540,13 +535,27 @@ sub construct_fetch_query
 
     	if ($area_param eq 'All')
     	{
-    		@areas = @area_list;
+    		@areas = $self->get_area_list();
     	}
     	else
     	{
     		@areas = ($area_param);
     	}
     }
+
+    return {where_clause => $where_clause, areas => \@areas};
+}
+
+sub construct_fetch_query
+{
+    my $self = shift;
+    my $args = shift;
+
+
+    my $calc_ret = $self->_calc_fetch_where_clause($args);
+
+    my $where_clause = $calc_ret->{where_clause};
+    my $areas = $calc_ret->{areas};
 
     my $field_names = $self->get_field_names();
 
@@ -566,7 +575,7 @@ sub construct_fetch_query
         {
             'field_names' => $field_names,
             'query' => $query_str,
-            'areas' => $self->sanitize_areas(\@areas),
+            'areas' => $self->sanitize_areas($areas),
         };
 }
 
