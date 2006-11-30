@@ -1,7 +1,9 @@
 [% INCLUDE "header.tt" %]
+[% wrapper_start %]
 [% FOREACH area = jobs_by_area 
 %]<h2>[% area.name %]</h2>
 
 [% area.records.join('') 
 %][% END %]
+[% wrapper_end %]
 [% INCLUDE "footer.tt" %]

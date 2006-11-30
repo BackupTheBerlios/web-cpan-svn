@@ -668,14 +668,16 @@ Accepts the following optional parameters:
 
 sub display_records
 {
-    my $self = shift;
+    my ($self, $args) = @_;
 
     return $self->tt_process(
         'display_records_page.tt',
         {
-            'header' => "Search Results",
-            'title' => "Search Results",
-            'jobs_by_area' => $self->get_jobs_by_area(@_),
+            'header' => ($args->{header} || "Search Results"),
+            'title' => ($args->{title} || "Search Results"),
+            'jobs_by_area' => $self->get_jobs_by_area($args),
+            wrapper_start => ($args->{wrapper_start} || ""),
+            wrapper_end => ($args->{wrapper_end} || ""),
         },
     );
 }
@@ -1199,10 +1201,25 @@ sub _admin_set_status
 {
     my $self = shift;
 
+    my $mode = htmlize($self->query()->param("mode"));
+
     return $self->display_records(
         {
             'all_records' => 1,
             'toolbox' => 1,
+            'header' => "Set the Status for the Records",
+            'title' => "Set the Status for the Records",
+            wrapper_start => <<"EOF",
+<form method="post" action=".">
+<input type="hidden" name="mode" value="$mode" />
+<input type="hidden" name="commit" value="1" />
+EOF
+            wrapper_end => <<"EOF",
+<p>
+<input type="submit" value="Submit" />
+</p>
+</form>
+EOF
         }
     );
 }
