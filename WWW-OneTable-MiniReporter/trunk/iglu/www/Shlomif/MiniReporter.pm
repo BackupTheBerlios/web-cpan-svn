@@ -483,6 +483,11 @@ sub _get_active_status_value
     return 0;
 }
 
+sub _get_disabled_status_value
+{
+    return 1;
+}
+
 sub _get_active_status_cond
 {
     my $self = shift;
@@ -1201,6 +1206,11 @@ sub _admin_set_status
 {
     my $self = shift;
 
+    if ($self->query()->param("commit"))
+    {
+        return $self->_admin_set_status_commit();
+    }
+
     my $mode = htmlize($self->query()->param("mode"));
 
     return $self->display_records(
@@ -1221,6 +1231,44 @@ EOF
 </form>
 EOF
         }
+    );
+}
+
+sub _admin_set_status_commit
+{
+    my $self = shift;
+
+    my $cgi = $self->query();
+
+    my $mode = $cgi->param("mode");
+
+    my $new_status =
+        ($mode eq "disable") ?
+            $self->_get_disabled_status_value() :
+            $self->_get_active_status_value()
+            ;
+
+    my $prefix = "toggle_";
+    
+    my (@ids) =
+    (
+        grep { $cgi->param("$prefix$_") }
+        map { /^${prefix}(\d+)$/ ? ($1) : () }
+        $cgi->param()
+    );
+
+    $self->_get_dbh()->do(
+        "UPDATE " . $self->config()->{'table_name'} .
+        " SET status = $new_status" .
+        " WHERE id IN (" . join(",", @ids) . ")"
+    );
+
+    return $self->tt_process(
+        "admin_set_status_done.tt",
+        {
+            'title' => "Operation was Succesful",
+            'header' => "Operation was Succesful",
+        },
     );
 }
 

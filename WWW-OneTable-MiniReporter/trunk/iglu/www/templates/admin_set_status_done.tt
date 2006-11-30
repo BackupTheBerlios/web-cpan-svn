@@ -1,0 +1,13 @@
+[% INCLUDE "header.tt" %]
+
+<p>
+Operation was successful.
+</p>
+
+<hr />
+
+<p>
+<a href="[% path_to_root %]admin/">Back to the admin screen</a>.
+</p>
+
+[% INCLUDE "footer.tt" %]
