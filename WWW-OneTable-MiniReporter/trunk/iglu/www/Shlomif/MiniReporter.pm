@@ -475,7 +475,7 @@ sub sanitize_areas
 
 sub _get_active_status_value
 {
-    return 1;
+    return 0;
 }
 
 sub _get_active_status_cond
