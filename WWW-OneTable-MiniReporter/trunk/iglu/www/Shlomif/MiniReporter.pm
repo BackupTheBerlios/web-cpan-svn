@@ -488,19 +488,26 @@ sub _get_disabled_status_value
     return 1;
 }
 
-sub _get_active_status_cond
+sub _get_status_cond
 {
-    my $self = shift;
+    my ($self, $args) = @_;
 
-    return "status=".$self->_get_active_status_value();
+    my $status_val =
+        +(exists($args->{status_value})) ?
+            $args->{status_value} :
+            $self->_get_active_status_value()
+            ;
+
+    return "status=$status_val";
 }
 
 sub _get_where_clause
 {
     my $self = shift;
+    my $args = shift;
     my $extra_conds = shift || [];
 
-    my @conds = ($self->_get_active_status_cond(), @$extra_conds);
+    my @conds = ($self->_get_status_cond($args), @$extra_conds);
 
     return "WHERE " . join(" AND ", @conds);
 }
@@ -587,6 +594,7 @@ sub construct_fetch_query
 
     my $where_clause = 
         $self->_get_where_clause(
+            $args,
             $self->_get_fetch_where_clause_conds($args)
         );
 
@@ -1211,17 +1219,23 @@ sub _admin_set_status
         return $self->_admin_set_status_commit();
     }
 
-    my $mode = htmlize($self->query()->param("mode"));
+    my $mode = $self->query()->param("mode");
+    my $esc_mode = htmlize($mode);
 
     return $self->display_records(
         {
             'all_records' => 1,
             'toolbox' => 1,
+            'status_value' => 
+                ($mode eq "disable" ?
+                    $self->_get_active_status_value() :
+                    $self->_get_disabled_status_value()
+                ),
             'header' => "Set the Status for the Records",
             'title' => "Set the Status for the Records",
             wrapper_start => <<"EOF",
 <form method="post" action=".">
-<input type="hidden" name="mode" value="$mode" />
+<input type="hidden" name="mode" value="$esc_mode" />
 <input type="hidden" name="commit" value="1" />
 EOF
             wrapper_end => <<"EOF",
