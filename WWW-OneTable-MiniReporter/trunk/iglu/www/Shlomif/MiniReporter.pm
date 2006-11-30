@@ -345,13 +345,18 @@ sub main_page
 
 sub htmlize
 {
-	my $string = shift || "";
-	
+    my $string = shift;
+
+    if (!defined($string))
+    {
+        $string = "";
+    }
+
     $string = CGI::escapeHTML($string);
-	
-	$string =~ s/\n\r?/<br \/>\n/g;
-	
-	return $string;
+
+    $string =~ s/\n\r?/<br \/>\n/g;
+
+    return $string;
 }
 
 sub render_record
@@ -1031,6 +1036,10 @@ sub _admin_screen
             },
         );
     }
+    elsif ($path eq "/admin/main-table/set-status/")
+    {
+        return $self->_admin_set_status();
+    }
     elsif ($path =~ m{^/admin/resource-list/([^/]+)/$})
     {
         return $self->_admin_select({'field' => $1});
@@ -1186,7 +1195,7 @@ sub _admin_select
     );
 }
 
-sub admin_records
+sub _admin_set_status
 {
     my $self = shift;
 
