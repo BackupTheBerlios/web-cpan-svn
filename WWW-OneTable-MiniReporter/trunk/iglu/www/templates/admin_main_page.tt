@@ -8,4 +8,11 @@
 [% END %]
 </ul>
 
+<h2>Disable/Re-enable Records in the Main Table</h2>
+
+<ul>
+<li><a href="main-table/set-status/?mode=disable">Disable Records</a></li>
+<li><a href="main-table/set-status/?mode=reenable">Re-enable Records</a></li>
+</ul>
+
 [% INCLUDE "footer.tt" %]
