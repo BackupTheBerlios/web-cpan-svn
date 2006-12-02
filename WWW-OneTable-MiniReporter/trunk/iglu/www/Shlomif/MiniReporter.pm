@@ -126,6 +126,7 @@ sub cgiapp_prerun
     my $self = shift;
 
     $self->tt_params(
+        'path_info' => $self->get_path(),
         'path_to_root' => $self->get_path_to_root(),
         'with_rss' => $self->get_rss_table_name(),
         'show_all_records_url' => "search/?all=1",
