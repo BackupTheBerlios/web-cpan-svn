@@ -1262,20 +1262,20 @@ sub _admin_set_status_commit
             $self->_get_active_status_value()
             ;
 
-    my $prefix = "toggle_";
-    
-    my (@ids) =
-    (
-        grep { $cgi->param("$prefix$_") }
-        map { /^${prefix}(\d+)$/ ? ($1) : () }
-        $cgi->param()
+    my @ids = $cgi->param("toggle");
+
+    my $sth = $self->_get_dbh()->prepare(
+        "UPDATE " . $self->config()->{'table_name'} .
+        " SET status = ?" .
+        " WHERE id = ?"
     );
 
-    $self->_get_dbh()->do(
-        "UPDATE " . $self->config()->{'table_name'} .
-        " SET status = $new_status" .
-        " WHERE id IN (" . join(",", @ids) . ")"
-    );
+    foreach my $id (@ids)
+    {
+        $sth->execute($new_status, $id);
+    }
+
+    undef($sth);
 
     return $self->tt_process(
         "admin_set_status_done.tt",
