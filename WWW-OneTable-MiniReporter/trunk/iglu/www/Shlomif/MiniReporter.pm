@@ -893,9 +893,7 @@ sub get_url_to_main
     # SCRIPT_URI requires Apache 1.3.x's mod_rewrite
     my $script_uri = $ENV{'SCRIPT_URI'};
 
-    my $path_info = $self->query()->path_info();
-
-    my $url = substr($script_uri, 0, - length($path_info));
+    my $url = substr($script_uri, 0, - length($self->get_path()));
 
     return $url.'/';
 }
