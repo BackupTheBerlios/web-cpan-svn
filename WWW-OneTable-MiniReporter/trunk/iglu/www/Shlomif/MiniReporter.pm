@@ -213,11 +213,7 @@ sub get_path
 {
     my $self = shift;
 
-    my $q = $self->query();
-
-    my $path = $q->path_info();
-
-    return $path;
+    return $self->query()->path_info();
 }
 
 sub determine_mode
