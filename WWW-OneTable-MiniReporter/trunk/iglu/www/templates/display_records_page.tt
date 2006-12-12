@@ -1,9 +1,9 @@
-[% INCLUDE "header.tt" %]
+[% USE HTML %][% INCLUDE "header.tt" %]
 [% wrapper_start %]
-[% FOREACH area = jobs_by_area 
-%]<h2>[% area.name %]</h2>
+[% FOREACH group = jobs_by_group
+%]<h2>[% HTML.escape(group.name) %]</h2>
 
-[% area.records.join('') 
+[% group.records.join('') 
 %][% END %]
 [% wrapper_end %]
 [% INCLUDE "footer.tt" %]

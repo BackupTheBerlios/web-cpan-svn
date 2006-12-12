@@ -1,14 +1,16 @@
-[% INCLUDE "header.tt" %]
+[% USE HTML %][% INCLUDE "header.tt" %]
 <h3>Search the Database</h3>
 
 <form action="./search/" method="post">
 
-<p>Area: 
-<select name="area">
+[% IF group_by_field %]
+<p>[% HTML.escape(group_by_field_record.pres) %]:
+<select name="[% group_by_field %]">
 <option selected="selected">All</option>
-[% FOREACH a = areas %]<option>[% a %]</option>
+[% FOREACH g = groups %]<option value="[% HTML.escape(g.id) %]">[% HTML.escape(g.display) %]</option>
 [% END %]</select>
 </p>
+[% END %]
 <p>
 Keyword from description: <input name="keyword" />
 </p>

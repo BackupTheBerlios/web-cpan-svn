@@ -6,6 +6,8 @@ use DBI;
 use POSIX qw();
 use Template;
 use File::Spec ();
+use List::Util;
+
 # Inherit from CGI::Application.
 use base 'CGI::Application';
 use base 'Class::Accessor';
@@ -73,6 +75,7 @@ my %urls_to_modes = (map { $modes{$_}->{'url'} => $_ } keys(%modes));
 __PACKAGE__->mk_accessors(qw(
     config
     _dbh
+    _group_by_field
     record_tt
     _sql_to_field
 ));
@@ -174,12 +177,6 @@ sub redirect_to_main
     return "<html><body><h1>URL Not Found</h1></body></html>";
 }
 
-sub get_area_list
-{
-    my $self = shift;
-    return @{$self->config()->{'areas'}};
-}
-
 sub correct_path
 {
     my $self = shift;
@@ -258,6 +255,12 @@ sub initialize
     my $config = shift;
 	$self->config($config); 
 
+    $self->_group_by_field(
+        exists($self->config()->{group_by}) ?
+            $self->config()->{group_by}->[0] :
+            undef
+        );
+
     my $tt = Template->new(
         {
             'BLOCKS' => 
@@ -326,16 +329,37 @@ sub main_page
     my $self = shift;
 
     my $title = $self->get_string('main_title');
+
+    my @group_params;
+
+    if (defined($self->_group_by_field()))
+    {
+        @group_params = 
+        (
+            'group_by_field' => $self->_group_by_field(),
+            'groups' => $self->_get_group_list(),
+            'group_by_field_record' =>
+                $self->_get_field_by_name($self->_group_by_field()),
+        );
+    }
+    else
+    {
+        @group_params =
+        (
+            'group_by_field' => undef,
+        )
+    }
+
     return $self->tt_process(
         'main_page.tt',
         {
             'title' => $title,
             'header' => $title,
-            'areas' => [ $self->get_area_list() ],
             (
                 map { $_ => $self->get_string($_) } 
                 (qw(show_all_records_text add_a_record_text remove_a_record_text))
             ),
+            @group_params,
         }
     );
 }
@@ -409,10 +433,34 @@ sub _lookup_values
 
 sub _lookup_select_value
 {
-    my ($self, $field, $record, $value) = @_;
+    my $self = shift;
+
+    my ($field, $record, $value) = @_;
    
     my $params = $record->{'values'};
 
+    if ($params->{'from'} eq "sql")
+    {
+        return $self->_lookup_sql_select_value(@_);
+    }
+    elsif ($params->{'from'} eq "list")
+    {
+        return $self->_lookup_list_select_value(@_);
+    }
+    else
+    {
+        die "Unknown ->{values}->{from} value in field \"$field\"";
+    }
+}
+
+sub _lookup_sql_select_value
+{
+    my $self = shift;
+
+    my ($field, $record, $value) = @_;
+
+    my $params = $record->{'values'};
+    
     my $dbh = $self->_get_dbh();
 
     my $sth = $dbh->prepare(
@@ -431,6 +479,27 @@ sub _lookup_select_value
 
     return $ret;
 }
+
+sub _lookup_list_select_value
+{
+    my $self = shift;
+
+    my ($field, $record, $value) = @_;
+
+    my $params = $record->{'values'};
+    
+    # TODO : Optimize - it's currently a linear scan.
+    foreach my $entry (@{$params->{'list'}})
+    {
+        if ($entry->{id} eq $value)
+        {
+            return $entry->{display};
+        }
+    }
+
+    return undef;
+}
+
 
 sub get_fields
 {
@@ -461,18 +530,37 @@ sub get_field_names
 {
     my $self = shift;
 
-    my @field_names = ("area", "id", (map { $_->{'sql'} } $self->get_fields()));
+    my @field_names = ("id", (map { $_->{'sql'} } $self->get_fields()));
 
     return \@field_names;
 }
 
-sub sanitize_areas
+sub _get_group_list
 {
-    my ($self, $areas) = @_;
+    my $self = shift;
 
-    my %map = (map { $_ => 1} $self->get_area_list());
+    my $group_by_field = $self->_group_by_field();
 
-    return [grep { exists($map{$_}) } @$areas];
+    my $record = $self->_get_field_by_name($group_by_field);
+
+    if (exists($record->{values}) &&
+        ($record->{values}->{from} eq "list"))
+    {
+        return [ @{$record->{values}->{list}} ];
+    }
+    else
+    {
+        return [];
+    }
+}
+
+sub _sanitize_groups
+{
+    my ($self, $groups) = @_;
+
+    my %map = (map { $_->{id} => 1} @{$self->_get_group_list()});
+
+    return [grep { exists($map{$_->{id}}) } @$groups];
 }
 
 sub _get_active_status_value
@@ -558,13 +646,13 @@ sub _get_fetch_where_clause_conds
     }
 }
 
-sub _get_fetch_areas
+sub _get_fetch_groups
 {
     my ($self, $args) = @_;
 
-    my $area = $args->{'area_choice'} || "";
+    my $group = $args->{'group_choice'} || "";
 
-    my $all_areas = sub { return [ $self->get_area_list() ]; };
+    my $all_groups = sub { return $self->_get_group_list() };
 
     if (defined($args->{id}))
     {
@@ -573,11 +661,11 @@ sub _get_fetch_areas
     }
     elsif ($args->{'all_records'} eq "1")
     {
-        return $all_areas->();
+        return $all_groups->();
     }
     else
     {
-        return +($area eq "All") ? $all_areas->() : [ $area ];
+        return +($group eq "All") ? $all_groups->() : [ $group ];
     }
 }
 
@@ -609,10 +697,14 @@ sub construct_fetch_query
         {
             'field_names' => $field_names,
             'query' => $query_str,
-            'areas' =>
-                $self->sanitize_areas(
-                    $self->_get_fetch_areas($args)
-                ),
+            (defined($self->_group_by_field()) ?
+                ('groups' =>
+                    $self->_sanitize_groups(
+                        $self->_get_fetch_groups($args)
+                    ),
+                ) :
+                ()
+            ),
         };
 }
 
@@ -634,20 +726,32 @@ sub get_display_records_query
     return $query;
 }
 
-sub get_jobs_by_area
+sub _get_jobs_by_group
 {
     my $self = shift;
     my $args = shift;
 
     my $display_toolbox = $args->{'toolbox'} || 0;
 
-    my %jobs_by_area;
+    my %jobs_by_group;
+
+    # Currently we support only one level of grouping
+    my $group_by_field = $self->_group_by_field();
+
+    my $fields_seq = $self->get_field_names();
+
+    my $index;
+
+    if (defined($group_by_field))
+    {
+        $index = (List::Util::first { $fields_seq->[$_] eq $group_by_field } (0 .. $#$fields_seq));
+    }
 
     my $query = $self->get_display_records_query($args);
 
     foreach my $values (@{$query->{'rows'}})
     {
-        push @{$jobs_by_area{$values->[0]}},
+        push @{$jobs_by_group{defined($index) ? $values->[$index] : "All"}},
             $self->render_record(
                 'values' => $values,
                 'fields' => $query->{'field_names'},
@@ -655,11 +759,19 @@ sub get_jobs_by_area
             );
     }
 
-    return
+    my $ret =
     [
-        map { +{ 'name' => $_, 'records' => ($jobs_by_area{$_} || []), } }
-        @{$query->{'areas'}},
+        map
+        {
+            +{
+                'name' => $_->{display},
+                'records' => ($jobs_by_group{$_->{id}} || []), 
+            } 
+        }
+        @{$query->{'groups'}},
     ];
+
+    return $ret;
 }
 
 
@@ -669,7 +781,8 @@ Accepts the following optional parameters:
 
     all_records - if set, display all records (by default only active ones)
     keyword - a keyword to search for.
-    area_choice - an area to choose for (or All for all areas)
+    group_choice - a group to choose for (or All for all groups). 
+      If _group_by_field is undef should be undef.
     toolbox - display the toolbox of admining a record (defaults to 0)
     show_disabled - show disabled records as well.
     show_enabled - show enabled records as well.
@@ -685,7 +798,7 @@ sub display_records
         {
             'header' => ($args->{header} || "Search Results"),
             'title' => ($args->{title} || "Search Results"),
-            'jobs_by_area' => $self->get_jobs_by_area($args),
+            'jobs_by_group' => $self->_get_jobs_by_group($args),
             wrapper_start => ($args->{wrapper_start} || ""),
             wrapper_end => ($args->{wrapper_end} || ""),
         },
@@ -702,13 +815,16 @@ sub search_results
 
     my $keyword_param = $q->param("keyword") || "";
 
-    my $area_param = $q->param("area") || "";
+    my $group_param =
+        defined($self->_group_by_field()) ?
+            ($q->param($self->_group_by_field()) || "") :
+            undef;
 
     return $self->display_records(
         {
             'all_records' => $all_param,
             'keyword' => $keyword_param,
-            'area_choice' => $area_param,
+            'group_choice' => $group_param,
         }
     );
 }
@@ -745,9 +861,6 @@ sub get_form_fields_sequence
 
     my @ret;
 
-    # Don't forget to put the area - otherwise WWW::Form won't display it.
-    push @ret, 'area';
-    
     foreach my $f ($self->get_fields())
     {
         if ($self->_is_field_auto($f))
@@ -829,8 +942,6 @@ sub perform_insert
 
     push @map, ['id', "null"];
     push @map, ['status', $self->_get_active_status_value()];
-    # area may have a legal value that contains single quotes ("'"s).
-    push @map, ['area', $dbh->quote($self->query()->param("area"))];
     push @map,
         (map { [$names->[$_], $dbh->quote($values->[$_])] } 
             (0 .. $#$names)
@@ -1667,24 +1778,6 @@ sub set_field
     $self->fields()->{$name} = $value;
 }
 
-sub get_area
-{
-    my $self = shift;
-
-    return
-    {
-        label => "Area",
-        defaultValue => ($self->query()->param("area") || "Tel Aviv"),
-        type => 'select',
-        optionsGroup => [
-            map { +{ 'label' => $_, 'value' => $_, }, } @{$self->main()->config()->{'areas'}},
-        ],
-        validators => [],
-        $self->get_attribs(),
-        hint => $self->main()->get_string('area_hint'),
-    }
-}
-
 sub shift_f
 {
     my $self = shift;
@@ -1811,19 +1904,54 @@ sub get_hint
     }
 }
 
-
-
 sub _get_select_control_options
 {
     my $self = shift;
+    
     my $f = $self->f();
 
     my $params = $f->{'values'};
 
-    if ($params->{from} ne "sql")
+    my $from = $params->{from};
+
+    if ($from eq "sql")
+    {
+        return $self->_get_sql_select_control_options();
+    }
+    elsif ($from eq "list")
+    {
+        return $self->_get_list_select_control_options();
+    }
+    else
     {
         die "Unknown ->{values}->{from} value. Should be SQL.";
     }
+}
+
+sub _get_list_select_control_options
+{
+    my $self = shift;
+
+    my $f = $self->f();
+
+    my $params = $f->{'values'};
+
+    my @ret;
+    foreach my $entry (@{$params->{list}})
+    {
+        push @ret, { label => $entry->{display}, value => $entry->{id} };
+    }
+
+    return \@ret;
+}
+
+sub _get_sql_select_control_options
+{
+    my $self = shift;
+
+    my $f = $self->f();
+
+    my $params = $f->{'values'};
 
     my $dbh = $self->main()->_get_dbh();
 
@@ -1849,6 +1977,22 @@ sub _get_select_control_options
     return \@ret;
 }
 
+sub _get_select_control_default
+{
+    my $self = shift;
+    my $f = $self->f();
+
+    my $params = $f->{values};
+    if (exists($params->{default_value}))
+    {
+        return [ defaultValue => $params->{default_value} ];
+    }
+    else
+    {
+        return [];
+    }
+}
+
 sub _get_select_control_attrs
 {
     my $self = shift;
@@ -1862,6 +2006,7 @@ sub _get_select_control_attrs
     return
     [
         optionsGroup => $self->_get_select_control_options(),
+        @{$self->_get_select_control_default()}
     ];
 }
 
@@ -1926,8 +2071,6 @@ sub set_f_field
 sub get_form_fields
 {
     my $self = shift;
-
-    $self->set_field('area', $self->get_area());
 
     while ($self->shift_f())
     {

@@ -17,17 +17,33 @@ $config =
         'remove_a_record_text' => "Remove an entry from the list",
         'remove_result_title' => "How to Remove an Entry",
         'service' => "consultants list",
-        'area_hint' => "The area in Israel where you live.", 
         'add_form_title' => "Add yourself to the list",
         'add_form_header' => "Add yourself to the list",
     },
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'consultants2',
     'encoding' => "iso-8859-1",
-    'areas' => [ "Tel Aviv", "Haifa", "Jerusalem", "North", "South" ],
     'order_by' => "id DESC",
+    'group_by' => ["area"],
     'fields' =>
     [
+        {
+            'sql' => "area",
+            'pres' => "Area",
+            'control_type' => "select",
+            'hint' => "The area in Israel where you live.",
+            'len' => 10,
+            'values' =>
+            {
+                'from' => "list",
+                'list' =>
+                [
+                    map { +{ id => $_, display => $_, } } 
+                    ("Tel Aviv", "Haifa", "Jerusalem", "North", "South")
+                ],
+                'default_value' => "Tel Aviv",
+            },
+        },
         {
             'sql' => "name",
             'pres' => "Name",

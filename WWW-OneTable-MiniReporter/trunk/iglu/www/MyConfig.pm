@@ -26,8 +26,6 @@ $config =
         'remove_a_record_text' => "Remove a Job from the database",
         'remove_result_title' => "Howto Remove a Job",
         'service' => "jobs tracker",
-        'area_hint' => "The area in Israel of the employing firm.<br />" . 
-                "If the work is from home, select the area of the office.",
         'add_form_title' => "Add a job to the Linux-IL jobs' list", 
         'add_form_header' => "Add a job",
     },
@@ -36,8 +34,8 @@ $config =
     'table_name' => 'jobs2',
     'encoding' => "iso-8859-1",
     'rss_table_name' => 'jobs2_feeds',
-    'areas' => [ "Tel Aviv", "Haifa", "Jerusalem", "North", "South" ],
     'order_by' => "post_date DESC, id DESC",
+    'group_by' => ["area"],
     'fields' =>
     [
         {
@@ -52,6 +50,24 @@ $config =
                             return POSIX::strftime("%Y-%m-%d",localtime(time()));
                         },      
                 },
+        },
+        {
+            'sql' => "area",
+            'pres' => "Area",
+            'control_type' => "select",
+            'hint' => "The area in Israel of the employing firm.<br />" . 
+                "If the work is from home, select the area of the office.",
+            'len' => 10,
+            'values' =>
+            {
+                'from' => "list",
+                'list' =>
+                [
+                    map { +{ id => $_, display => $_, } } 
+                    ("Tel Aviv", "Haifa", "Jerusalem", "North", "South")
+                ],
+                'default_value' => "Tel Aviv",
+            },
         },
         {
             'sql' => "title",
