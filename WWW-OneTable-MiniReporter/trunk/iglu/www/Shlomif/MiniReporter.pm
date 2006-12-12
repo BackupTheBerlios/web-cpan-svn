@@ -697,14 +697,13 @@ sub construct_fetch_query
         {
             'field_names' => $field_names,
             'query' => $query_str,
-            (defined($self->_group_by_field()) ?
-                ('groups' =>
+            'groups' => 
+                (defined($self->_group_by_field()) ?
                     $self->_sanitize_groups(
                         $self->_get_fetch_groups($args)
-                    ),
-                ) :
-                ()
-            ),
+                    ) :
+                    [{id => "All", display => "All"},],
+                ),
         };
 }
 
