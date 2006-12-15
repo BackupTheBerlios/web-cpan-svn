@@ -41,7 +41,7 @@ sub _initialize
         $self->set("_$attr", $args->{$attr});
     }
 
-    $self->_construct_query($args);
+    $self->_construct_query();
 
     # my $sth = $self->main()->_get_dbh()->prepare($self->query());
 
@@ -73,11 +73,10 @@ sub _get_status_cond
 sub _get_where_clause
 {
     my $self = shift;
-    my $args = shift;
     my $extra_conds = shift || [];
 
     # TODO - check if main->_get_status_cond is used elsewhere.
-    my @conds = ($self->_get_status_cond($args), @$extra_conds);
+    my @conds = ($self->_get_status_cond(), @$extra_conds);
 
     return "WHERE " . join(" AND ", @conds);
 }
@@ -93,15 +92,14 @@ sub _get_limit_clause
 
 sub _construct_query
 {
-    my ($self, $args) = @_;
+    my ($self) = @_;
 
     my $field_names = $self->main->get_field_names();
     push @$field_names, ('status');
 
     my $where_clause = 
         $self->_get_where_clause(
-            $args,
-            $self->_get_fetch_where_clause_conds($args)
+            $self->_get_fetch_where_clause_conds()
         );
 
 
@@ -116,7 +114,7 @@ sub _construct_query
     $self->groups(
         defined($self->main->_group_by_field()) ?
             $self->_sanitize_groups(
-                $self->_get_fetch_groups($args)
+                $self->_get_fetch_groups()
             ) :
             [{id => "All", display => "All"},]
         );
@@ -126,7 +124,7 @@ sub _construct_query
 
 sub _get_fetch_where_clause_conds
 {
-    my ($self, $args) = @_;
+    my ($self) = @_;
 
     if (defined($self->_id))
     {
@@ -138,7 +136,7 @@ sub _get_fetch_where_clause_conds
     }
     else
     {
-        return $self->_get_search_conds($args);
+        return $self->_get_search_conds();
     }
 }
 
@@ -175,7 +173,7 @@ sub _get_search_clauses
 
 sub _get_fetch_groups
 {
-    my ($self, $args) = @_;
+    my ($self) = @_;
 
     my $group = $self->_group_choice() || "";
 
