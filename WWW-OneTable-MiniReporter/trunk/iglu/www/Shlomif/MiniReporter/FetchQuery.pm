@@ -6,6 +6,7 @@ use warnings;
 use base 'Shlomif::MiniReporter::HelperObj';
 
 __PACKAGE__->mk_accessors(qw(
+    _all_records
     field_names
     groups
     _id
@@ -23,6 +24,7 @@ sub _initialize
     $self->_status_value($args->{status_value});
     $self->_max_num_records($args->{max_num_records});
     $self->_id($args->{id});
+    $self->_all_records($args->{all_records});
 
     $self->_construct_query($args);
 
@@ -115,7 +117,7 @@ sub _get_fetch_where_clause_conds
     {
         return ["id=" . $self->_id]
     }
-    elsif ($args->{'all_records'} eq "1")
+    elsif ($self->_all_records())
     {
         return [];
     }
@@ -169,7 +171,7 @@ sub _get_fetch_groups
         # Doesn't matter much.
         return [];
     }
-    elsif ($args->{'all_records'} eq "1")
+    elsif ($self->_all_records())
     {
         return $all_groups->();
     }
