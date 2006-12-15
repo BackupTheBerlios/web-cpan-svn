@@ -12,6 +12,8 @@ handling at the moment.
 Long-term:
 ----------
 
+* Create a direct accessor to the 'table_name' in the config.
+
 * Hyperlink E-mail addresses and URLs (with rel="nofollow").
     - validate emails.
 
