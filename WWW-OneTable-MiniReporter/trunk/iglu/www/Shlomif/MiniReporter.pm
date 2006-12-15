@@ -320,6 +320,13 @@ sub get_dsn
     return $self->config()->{'dsn'};
 }
 
+sub _table_name
+{
+    my $self = shift;
+
+    return $self->config()->{'table_name'};
+}
+
 sub _dbi_connect
 {
     my $self = shift;
@@ -803,7 +810,7 @@ sub perform_insert
             (0 .. $#$names)
         );
     
-    my $query_str = "INSERT INTO " . $self->config()->{'table_name'} .
+    my $query_str = "INSERT INTO " . $self->_table_name() .
         " (" . join(",", map { $_->[0] } @map) . ") " .
         " VALUES (" . join(",", map { $_->[1] } @map) . ")";
 
@@ -1223,7 +1230,7 @@ sub _admin_set_status_commit
     my @ids = $cgi->param("toggle");
 
     my $sth = $self->_get_dbh()->prepare(
-        "UPDATE " . $self->config()->{'table_name'} .
+        "UPDATE " . $self->_table_name() .
         " SET status = ?" .
         " WHERE id = ?"
     );

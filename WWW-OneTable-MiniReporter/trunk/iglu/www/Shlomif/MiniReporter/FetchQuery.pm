@@ -99,7 +99,7 @@ sub _construct_query
 
 
     my $query_str = "SELECT " . join(", ", @$field_names) .
-                    " FROM " . $self->main->config()->{'table_name'} .
+                    " FROM " . $self->main->_table_name() .
     		" " . $where_clause .
     		" ORDER BY " . ($self->main->config()->{'order_by'} || "id DESC") .
             $self->_get_limit_clause();
@@ -226,4 +226,5 @@ sub detach
 
     $self->_sth(undef);
 }
+
 1;
