@@ -8,6 +8,8 @@ use base 'Shlomif::MiniReporter::HelperObj';
 __PACKAGE__->mk_accessors(qw(
     field_names
     groups
+    _id
+    _max_num_records
     query
     rows
     _status_value
@@ -19,6 +21,8 @@ sub _initialize
     $self->SUPER::_initialize($args);
 
     $self->_status_value($args->{status_value});
+    $self->_max_num_records($args->{max_num_records});
+    $self->_id($args->{id});
 
     $self->_construct_query($args);
 
@@ -61,6 +65,15 @@ sub _get_where_clause
     return "WHERE " . join(" AND ", @conds);
 }
 
+sub _get_limit_clause
+{
+    my $self = shift;
+
+    my $num = $self->_max_num_records();
+
+    return ( defined($num) ? " LIMIT $num " : "" );
+}
+
 sub _construct_query
 {
     my ($self, $args) = @_;
@@ -74,15 +87,12 @@ sub _construct_query
             $self->_get_fetch_where_clause_conds($args)
         );
 
-    my $limit_clause = exists($args->{'max_num_records'}) ? 
-        " LIMIT " . $args->{'max_num_records'} :
-        "";
 
     my $query_str = "SELECT " . join(", ", @$field_names) .
                     " FROM " . $self->main->config()->{'table_name'} .
     		" " . $where_clause .
     		" ORDER BY " . ($self->main->config()->{'order_by'} || "id DESC") .
-            $limit_clause;
+            $self->_get_limit_clause();
 
     $self->query($query_str);
     $self->field_names($field_names);
@@ -101,9 +111,9 @@ sub _get_fetch_where_clause_conds
 {
     my ($self, $args) = @_;
 
-    if (defined($args->{id}))
+    if (defined($self->_id))
     {
-        return ["id=$args->{id}"]
+        return ["id=" . $self->_id]
     }
     elsif ($args->{'all_records'} eq "1")
     {
@@ -154,7 +164,7 @@ sub _get_fetch_groups
 
     my $all_groups = sub { return $self->main->_get_group_list() };
 
-    if (defined($args->{id}))
+    if (defined($self->_id))
     {
         # Doesn't matter much.
         return [];
