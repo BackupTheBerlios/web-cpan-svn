@@ -6,23 +6,11 @@ Pressing:
 * Investigate whether a control eq "select" could be injected with
 values that are not in the valid list of values.
 
-* Convert Area to a regular "select" control instead of the special
-handling at the moment.
-
 Long-term:
 ----------
-
-* Create a direct accessor to the 'table_name' in the config.
-
-* Hyperlink E-mail addresses and URLs (with rel="nofollow").
-    - validate emails.
-
-* Add a link to a homepage of the company for the jobs DB.
 
 * Research Hebrew Integration.
 
 * Put on CPAN.
-
-* Create an administration page.
 
 * Add error checking for the database calls.
