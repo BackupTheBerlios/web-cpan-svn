@@ -10,12 +10,15 @@ __PACKAGE__->mk_accessors(qw(
     groups
     query
     rows
+    _status_value
 ));
 
 sub _initialize
 {
     my ($self, $args) = @_;
     $self->SUPER::_initialize($args);
+
+    $self->_status_value($args->{status_value});
 
     $self->_construct_query($args);
 
@@ -28,17 +31,22 @@ sub _initialize
     return 0;
 }
 
-sub _get_status_cond
+sub _get_status_val
 {
-    my ($self, $args) = @_;
+    my $self = shift;
 
-    my $status_val =
-        +(exists($args->{status_value})) ?
-            $args->{status_value} :
+    return
+        defined($self->_status_value()) ?
+            $self->_status_value() :
             $self->main->_get_active_status_value()
             ;
+}
 
-    return "status=$status_val";
+sub _get_status_cond
+{
+    my ($self) = @_;
+
+    return "status=" . $self->_get_status_val();
 }
 
 sub _get_where_clause
