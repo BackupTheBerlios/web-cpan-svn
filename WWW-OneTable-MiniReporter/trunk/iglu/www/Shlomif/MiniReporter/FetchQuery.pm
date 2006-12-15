@@ -16,6 +16,7 @@ __PACKAGE__->mk_accessors(qw(
     query
     rows
     _status_value
+    _sth
 ));
 
 sub _attrs_to_assign
@@ -201,5 +202,34 @@ sub _sanitize_groups
     my %map = (map { $_->{id} => 1} @{$self->main->_get_group_list()});
 
     return [grep { exists($map{$_->{id}}) } @$groups];
+}
+
+sub prepare_sth
+{
+    my $self = shift;
+
+    my $sth = $self->main->_get_dbh()->prepare($self->query());
+
+    $sth->execute();
+    
+    $self->_sth($sth);
+
+    return;
+}
+
+sub fetch_row
+{
+    my $self = shift;
+
+    return $self->_sth->fetchrow_arrayref;
+}
+
+sub detach
+{
+    my $self = shift;
+
+    $self->SUPER::detach();
+
+    $self->_sth(undef);
 }
 1;

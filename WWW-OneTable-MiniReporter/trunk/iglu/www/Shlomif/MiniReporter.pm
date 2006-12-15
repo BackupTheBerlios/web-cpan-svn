@@ -20,6 +20,7 @@ use XML::RSS;
 use WWW::Form;
 
 use WWW::FieldValidator;
+
 use Shlomif::MiniReporter::FetchQuery;
 
 my %modes =
@@ -571,25 +572,10 @@ sub construct_fetch_query
 {
     my ($self, $args) = @_;
 
-    $args->{main} = $self;
+    my $query =
+        Shlomif::MiniReporter::FetchQuery->new({%$args, main => $self});
 
-    return Shlomif::MiniReporter::FetchQuery->new($args);
-}
-
-sub get_display_records_query
-{
-    my $self = shift;
-    my $args = shift;
-
-    my $dbh = $self->_get_dbh();
-
-    my $query = $self->construct_fetch_query($args);
-
-    my $sth = $dbh->prepare($query->{'query'});
-
-    $sth->execute();
-
-    $query->{'rows'} = $sth->fetchall_arrayref();
+    $query->prepare_sth();
 
     return $query;
 }
@@ -615,14 +601,14 @@ sub _get_jobs_by_group
         $index = (List::Util::first { $fields_seq->[$_] eq $group_by_field } (0 .. $#$fields_seq));
     }
 
-    my $query = $self->get_display_records_query($args);
+    my $query = $self->construct_fetch_query($args);
 
-    foreach my $values (@{$query->{'rows'}})
+    while (my $values = $query->fetch_row())
     {
         push @{$jobs_by_group{defined($index) ? $values->[$index] : "All"}},
             $self->render_record(
                 'values' => $values,
-                'fields' => $query->{'field_names'},
+                'fields' => $query->field_names(),
                 'toolbox' => $display_toolbox,
             );
     }
@@ -634,10 +620,12 @@ sub _get_jobs_by_group
             +{
                 'name' => $_->{display},
                 'records' => ($jobs_by_group{$_->{id}} || []), 
-            } 
+            }
         }
-        @{$query->{'groups'}},
+        @{$query->groups()},
     ];
+
+    $query->detach();
 
     return $ret;
 }
@@ -899,8 +887,6 @@ sub update_rss_feed
         return;
     }
 
-    my $dbh = $self->_get_dbh();
-
     my $query = 
         $self->construct_fetch_query(
             {
@@ -908,10 +894,6 @@ sub update_rss_feed
                 'max_num_records' => 15
             }
         );
-
-    my $sth = $dbh->prepare($query->{'query'});
-
-    $sth->execute();
 
     my $rss_feed = XML::RSS->new('version' => "2.0");
 
@@ -931,11 +913,11 @@ sub update_rss_feed
 
     my $values;
 
-    while ($values = $sth->fetchrow_arrayref())
+    while ($values = $query->fetch_row())
     {
         my %fields = 
             (map 
-                { $query->{'field_names'}->[$_] => $values->[$_] } 
+                { $query->field_names()->[$_] => $values->[$_] } 
                 (0 .. $#$values)
             );
 
@@ -953,7 +935,7 @@ sub update_rss_feed
             'description' => 
                 htmlize($self->render_record(
                     'values' => $values,
-                    'fields' => $query->{'field_names'},
+                    'fields' => $query->field_names(),
                     'for_rss' => 1,
                 )),
             'author' => "Unknown",
@@ -962,12 +944,14 @@ sub update_rss_feed
         );
     }
 
+    $query->detach();
+
     my $rss_data = $rss_feed->as_string();
 
     undef($rss_feed);
 
-    $sth = $dbh->prepare(
-        "UPDATE " . $self->get_rss_table_name() . 
+    my $sth = $self->_get_dbh()->prepare(
+        "UPDATE " . $self->get_rss_table_name() .
         " SET xmltext = ? WHERE relevance = 'all' AND format = 'rss'"
         );
 
@@ -1334,15 +1318,11 @@ sub get_record_fields
 
     my $query = $self->construct_fetch_query({'id' => $record_id});
 
-    my $dbh = $self->_get_dbh();
+    my @ret = ($query->field_names(), $query->fetch_row());
 
-    my $sth = $dbh->prepare($query->{'query'});
+    $query->detach();
 
-    $sth->execute();
-
-    my $values = $sth->fetchrow_arrayref();
-
-    return ($query->{'field_names'}, $values);
+    return @ret;
 }
 
 sub get_show_record_params
@@ -1946,15 +1926,6 @@ sub get_form_fields
     }
 
     return $self->fields();
-}
-
-sub detach
-{
-    my $self = shift;
-
-    $self->SUPER::detach();
-
-    return;
 }
 
 1;
