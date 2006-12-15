@@ -44,12 +44,6 @@ sub _initialize
 
     $self->_construct_query();
 
-    # my $sth = $self->main()->_get_dbh()->prepare($self->query());
-
-    # $sth->execute();
-
-    # $self->rows($sth->fetchall_arrayref());
-
     return 0;
 }
 
@@ -167,7 +161,7 @@ sub _get_search_clauses
     # it can cause wildcard complexity attacks
     $keyword =~ tr/%//d;
 
-    my $query = $self->main->_get_dbh()->quote("%${keyword}%");
+    my $query = $self->_get_dbh()->quote("%${keyword}%");
 
     return [map {"($_->{sql} LIKE $query)" } $self->main->get_fields()];
 }
@@ -208,7 +202,7 @@ sub prepare_sth
 {
     my $self = shift;
 
-    my $sth = $self->main->_get_dbh()->prepare($self->query());
+    my $sth = $self->_get_dbh()->prepare($self->query());
 
     $sth->execute();
     

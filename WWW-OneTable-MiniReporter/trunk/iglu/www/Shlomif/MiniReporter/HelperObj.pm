@@ -32,6 +32,12 @@ sub query
     return $self->main()->query();
 }
 
+sub _get_dbh
+{
+    my $self = shift;
+    return $self->main()->_get_dbh();
+}
+
 sub detach
 {
     my $self = shift;

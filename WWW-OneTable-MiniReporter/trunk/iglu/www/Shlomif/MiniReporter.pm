@@ -1801,7 +1801,7 @@ sub _get_sql_select_control_options
 
     my $params = $f->{'values'};
 
-    my $dbh = $self->main()->_get_dbh();
+    my $dbh = $self->_get_dbh();
 
     my $sth = $dbh->prepare(
         "SELECT $params->{id_field}, $params->{display_field} " . 
