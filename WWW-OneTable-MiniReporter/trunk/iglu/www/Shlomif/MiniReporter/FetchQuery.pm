@@ -8,23 +8,38 @@ use base 'Shlomif::MiniReporter::HelperObj';
 __PACKAGE__->mk_accessors(qw(
     _all_records
     field_names
+    _group_choice
     groups
     _id
+    _keyword
     _max_num_records
     query
     rows
     _status_value
 ));
 
+sub _attrs_to_assign
+{
+    return 
+    [qw(
+        all_records
+        group_choice
+        id
+        keyword
+        max_num_records
+        status_value
+    )];
+}
+
 sub _initialize
 {
     my ($self, $args) = @_;
     $self->SUPER::_initialize($args);
 
-    $self->_status_value($args->{status_value});
-    $self->_max_num_records($args->{max_num_records});
-    $self->_id($args->{id});
-    $self->_all_records($args->{all_records});
+    foreach my $attr (@{$self->_attrs_to_assign()})
+    {
+        $self->set("_$attr", $args->{$attr});
+    }
 
     $self->_construct_query($args);
 
@@ -129,9 +144,9 @@ sub _get_fetch_where_clause_conds
 
 sub _get_search_conds
 {
-    my ($self, $args) = @_;
+    my $self = shift;
 
-    my $keyword = $args->{'keyword'} || "";
+    my $keyword = $self->_keyword() || "";
 
     if ($keyword =~ /^\s*$/)
     {
@@ -162,7 +177,7 @@ sub _get_fetch_groups
 {
     my ($self, $args) = @_;
 
-    my $group = $args->{'group_choice'} || "";
+    my $group = $self->_group_choice() || "";
 
     my $all_groups = sub { return $self->main->_get_group_list() };
 
