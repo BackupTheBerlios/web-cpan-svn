@@ -430,7 +430,7 @@ sub _lookup_values
     {
         my $record = $self->_get_field_by_name($field);
 
-        $ret->{$field} = 
+        $ret->{$field} =
             (defined($record) && ($record->{control_type} eq "select")) ?
                 $self->_lookup_select_value($field, $record, $init_val) :
                 $init_val
@@ -795,6 +795,91 @@ sub get_add_form_fields
         );
 }
 
+sub _get_text_delimiter
+{
+    return " ; "
+}
+
+sub _update_text_for_record
+{
+    my ($self, $id, $names) = @_;
+
+    my $table_name = $self->_table_name;
+
+    my $query = "SELECT " . join(",", @$names) . " FROM $table_name WHERE id = ?";
+
+    my $dbh = $self->_get_dbh();
+
+    my $sth = $dbh->prepare($query);
+
+    $sth->execute($id);
+
+    my @sql_values = $sth->fetchrow_array();
+
+    my $text_values =
+        $self->_lookup_values(
+            { map { $names->[$_] => $sql_values[$_] } (0 .. $#sql_values) }
+        );
+
+    my $text_table = $self->config()->{text_table_name};
+
+    my $check_sth = $dbh->prepare(
+        "SELECT id FROM $text_table WHERE id = ?"
+    );
+
+    $check_sth->execute($id);
+
+    if (my @fetched_id = $check_sth->fetchrow_array())
+    {
+        # Do Nothing - there is such a row
+    }
+    else
+    {
+        # We execute this so the record with this ID will be present so we can
+        # later safely UPDATE it.        
+        my $insert_dummy_sth = $dbh->prepare(
+            "INSERT INTO $text_table (id, mytext) VALUES (?, '')"
+        );
+        $insert_dummy_sth->execute($id);
+    }
+
+    my $text = join($self->_get_text_delimiter(), 
+        map { my $s = $text_values->{$_}; defined($s) ? $s : "" } @$names
+    );
+    my $update_text_sth = $dbh->prepare(
+        "UPDATE $text_table SET mytext = ? WHERE id = ?"
+    );
+    $update_text_sth->execute($text, $id);
+
+    return;
+}
+
+sub update_texts_for_all_records
+{
+    my $self = shift;
+
+    my $dbh = $self->_get_dbh();
+
+    my $sth = $dbh->prepare("SELECT id FROM " . $self->_table_name());
+
+    $sth->execute();
+
+    my @ids;
+    while (my @row = $sth->fetchrow_array())
+    {
+        push @ids, $row[0];
+    }
+
+    my $fields = [ map { $_->{sql} } $self->get_fields() ];
+
+    foreach my $id (@ids)
+    {
+        $self->_update_text_for_record($id, $fields);
+    }
+
+    return;
+}
+
 sub perform_insert
 {
     my ($self, $names, $values) = @_;
@@ -815,6 +900,11 @@ sub perform_insert
         " VALUES (" . join(",", map { $_->[1] } @map) . ")";
 
     $dbh->do($query_str);
+
+    my $inserted_id =
+        $dbh->last_insert_id(undef, undef, $self->_table_name(), 'id');
+
+    $self->_update_text_for_record($inserted_id, $names);
 
     $self->update_rss_feed();
 
