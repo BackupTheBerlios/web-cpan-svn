@@ -62,7 +62,14 @@ sub _get_status_cond
 {
     my ($self) = @_;
 
-    return "status=" . $self->_get_status_val();
+    return $self->_tmap("status") . "=" . $self->_get_status_val();
+}
+
+sub _get_text_table_cond
+{
+    my $self = shift;
+
+    return $self->_tmap("id") . "=" . $self->_text_table() . ".id";
 }
 
 sub _get_where_clause
@@ -70,8 +77,12 @@ sub _get_where_clause
     my $self = shift;
     my $extra_conds = shift || [];
 
-    # TODO - check if main->_get_status_cond is used elsewhere.
-    my @conds = ($self->_get_status_cond(), @$extra_conds);
+    my @conds = 
+    (
+        $self->_get_status_cond(), 
+        $self->_get_text_table_cond(), 
+        @$extra_conds
+    );
 
     return "WHERE " . join(" AND ", @conds);
 }
@@ -83,6 +94,29 @@ sub _get_limit_clause
     my $num = $self->_max_num_records();
 
     return ( defined($num) ? " LIMIT $num " : "" );
+}
+
+sub _table_name
+{
+    my $self = shift;
+
+    return $self->main->_table_name;
+}
+
+sub _tmap_list
+{
+    my ($self, $list) = @_;
+
+    my $table_name = $self->_table_name;
+
+    return [map { "${table_name}.$_" } @$list];
+}
+
+sub _tmap
+{
+    my ($self, $v) = @_;
+
+    return $self->_tmap_list([$v])->[0];
 }
 
 sub _construct_query
@@ -97,11 +131,13 @@ sub _construct_query
             $self->_get_fetch_where_clause_conds()
         );
 
+    my $table_name = $self->_table_name;
 
-    my $query_str = "SELECT " . join(", ", @$field_names) .
-                    " FROM " . $self->main->_table_name() .
-    		" " . $where_clause .
-    		" ORDER BY " . ($self->main->config()->{'order_by'} || "id DESC") .
+    my $query_str = "SELECT " . 
+            join(", ", @{$self->_tmap_list($field_names)}) .
+            " FROM $table_name, " . $self->_text_table() .
+            " " . $where_clause .
+    		" ORDER BY " . ($self->main->config()->{'order_by'} || $self->_tmap("id") . "DESC") .
             $self->_get_limit_clause();
 
     $self->query($query_str);
@@ -123,7 +159,7 @@ sub _get_fetch_where_clause_conds
 
     if (defined($self->_id))
     {
-        return ["id=" . $self->_id]
+        return [$self->_table_name() . ".id=" . $self->_id]
     }
     elsif ($self->_all_records())
     {
@@ -153,6 +189,13 @@ sub _get_search_conds
     }
 }
 
+sub _text_table
+{
+    my $self = shift;
+
+    return $self->main()->config()->{text_table_name};
+}
+
 sub _get_search_clauses
 {
     my ($self, $keyword) = @_;
@@ -161,9 +204,18 @@ sub _get_search_clauses
     # it can cause wildcard complexity attacks
     $keyword =~ tr/%//d;
 
-    my $query = $self->_get_dbh()->quote("%${keyword}%");
+    my @words = split(/\s+/, $keyword);
 
-    return [map {"($_->{sql} LIKE $query)" } $self->main->get_fields()];
+    my $text_table = $self->_text_table();
+
+    return [
+        map 
+        {
+            "${text_table}.mytext LIKE " .
+            $self->_get_dbh()->quote('%'.$_.'%')
+        }
+        @words
+    ];
 }
 
 sub _get_fetch_groups
