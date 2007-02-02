@@ -80,7 +80,15 @@ __PACKAGE__->mk_accessors(qw(
     _group_by_field
     record_tt
     _sql_to_field
+    _captcha_value
 ));
+
+sub _set_captcha_value
+{
+    my $self = shift;
+    my $v = shift;
+    $self->_captcha_value($v);
+}
 
 sub setup
 {
@@ -157,6 +165,11 @@ sub cgiapp_postrun
         $self->_dbh()->disconnect();
 
         $self->_dbh(undef);
+    }
+
+    if (defined($self->_captcha_value()))
+    {
+        $self->session()->param("captcha1", $self->_captcha_value());
     }
 }
 
@@ -732,7 +745,12 @@ sub get_form_fields_sequence
         }
         push @ret, $f->{sql};
     }
-    
+
+    if ($self->config->{captcha})
+    {
+        push @ret, "f65Yoower";
+    }
+
     return \@ret;
 }
 
@@ -744,7 +762,7 @@ sub get_form
     my $form = 
         WWW::Form->new(
             $self->get_form_fields(),
-            $q->{Vars},
+            scalar($q->Vars()),
             $self->get_form_fields_sequence(),
         );
 
@@ -1809,6 +1827,46 @@ sub get_email_validator
     }
 }
 
+sub return_false
+{
+    return 0;
+}
+
+sub get_captcha_validator
+{
+    my $self = shift;
+
+    my $main = $self->main();
+
+    # We don't have to validate if it's just a preview
+    if ($self->query()->param('preview'))
+    {
+        return ();
+    }
+
+    # If the captcha1 session value does not exist - it's wrong.
+    if (!defined($self->main->session->param('captcha1')))
+    {
+        return WWW::FieldValidator->new(
+            WWW::FieldValidator::USER_DEFINED_SUB(),
+            "Go away spammer!",
+            \&return_false,
+        );
+    }
+
+    return WWW::FieldValidator->new(
+        WWW::FieldValidator::USER_DEFINED_SUB,
+        "You should answer the security question correctly.",
+        sub {
+            print STDERR "\@_ = ", join(",",@_), "\n";
+            my $value = shift;
+            print STDERR "Value = ", $value, "\n";
+            print STDERR "capt1 = ", $main->session->param("captcha1"), "\n";
+            return ($main->session->param("captcha1") eq $value);
+        }
+    );
+}
+
 sub get_validators
 {
     my $self = shift;
@@ -2013,6 +2071,39 @@ sub set_f_field
     }
 }
 
+sub set_captcha_field
+{
+    my $self = shift;
+
+    if (!$self->main()->config->{captcha})
+    {
+        return;
+    }
+
+    open RAND, "<", "/dev/urandom";
+    my $buf;
+    read(RAND, $buf, 10);
+    close(RAND);
+
+    my $n1 = ord(substr($buf,0,1))%10;
+    my $n2 = ord(substr($buf,1,1))%10;
+
+    $self->set_field("f65Yoower",
+        {
+            label => "$n1 + $n2 = ",
+            defaultValue => "",
+            type => "text",
+            validators => [$self->get_captcha_validator()],
+            hint => q{Please answer the security question.},
+            $self->get_attribs(),
+        },
+    );
+
+    $self->main()->_set_captcha_value($n1+$n2);
+
+    return;
+}
+
 sub get_form_fields
 {
     my $self = shift;
@@ -2021,6 +2112,8 @@ sub get_form_fields
     {
         $self->set_f_field();
     }
+
+    $self->set_captcha_field();
 
     return $self->fields();
 }

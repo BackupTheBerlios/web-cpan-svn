@@ -37,6 +37,10 @@ $config =
     'rss_table_name' => 'jobs2_feeds',
     'order_by' => "post_date DESC, id DESC",
     'group_by' => ["area"],
+    'captcha' => 
+    {
+        'type' => "text",
+    },
     'fields' =>
     [
         {
