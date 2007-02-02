@@ -11,7 +11,7 @@ chmod 755 App.pl
 rsync -v --progress --rsh=ssh --relative \
     App.pl invalidate-records.pl populate-new-table.pl \
     MyConfig.pm style.css Shlomif/MiniReporter.pm \
-    Shlomif/MiniReporter/HelperObj.pm \
+    Shlomif/MiniReporter/HelperObj.pm Shlomif/MiniReporter/FetchQuery.pm \
     Consultants.pl ConsultantsConfig.pm update-rss-feed.pl \
     admin-password.txt \
     templates/*.tt \
