@@ -18,9 +18,9 @@ various World-Wide-Web-related CPAN modules.
 </p>
 
 <p>
-Our <a href="svn://svn.berlios.de/web-cpan/">Subversion repository</a> 
-maintains the code for the modules, and this web-site provides links, and
-some information besides what is available on 
+Our <a href="http://svn.berlios.de/svnroot/repos/web-cpan/">Subversion 
+repository</a>  maintains the code for the modules, and this web-site provides 
+links, and some information besides what is available on 
 <a href="http://search.cpan.org/">search.cpan.org</a>.
 </p>
 
