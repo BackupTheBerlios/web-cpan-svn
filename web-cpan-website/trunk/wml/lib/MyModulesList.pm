@@ -131,6 +131,21 @@ Test::Run is a new and improved test harness. It is based on
 but incoroporates many internals improvement, a separation of the code
 to a backend and frontend, etc.
 </p>
+
+<h2>Links</h2>
+
+<ul>
+
+<li>
+<a href="http://www.shlomifish.org/lecture/Perl/Lightning/Test-Run/">Lightning
+Talk about Test::Run</a>.
+</li>
+
+<li>
+<a href="http://www.shlomifish.org/lecture/Perl/Lightning/Test-Run/updates/2006-05-09/">Test::Run update for 9-May-2006</a>
+</li>
+</ul>
+
 EOF
     },
     {
