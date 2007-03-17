@@ -1,0 +1,68 @@
+---
+name: Test-Run
+version: 0.0108
+author:
+  - 'Shlomi Fish C<< <shlomif@iglu.org.il> >>'
+abstract: Run Perl standard test scripts with statistics
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
+requires:
+  Class::Accessor: 0
+  File::Spec: 0.6
+  List::Util: 0
+  NEXT: 0
+  Scalar::Util: 0
+  TAP::Parser: 0.51
+  Test::Harness: 2.53
+provides:
+  Test::Run::Assert:
+    file: lib/Test/Run/Assert.pm
+    version: 0.02
+  Test::Run::Base:
+    file: lib/Test/Run/Base.pm
+  Test::Run::Base::Struct:
+    file: lib/Test/Run/Base/Struct.pm
+  Test::Run::Core:
+    file: lib/Test/Run/Core.pm
+    version: 0.0108
+  Test::Run::Iface:
+    file: lib/Test/Run/Iface.pm
+  Test::Run::Obj:
+    file: lib/Test/Run/Obj.pm
+    version: 0.0101
+  Test::Run::Obj::CanonFailedObj:
+    file: lib/Test/Run/Obj/CanonFailedObj.pm
+  Test::Run::Obj::Error:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::Error::TestsFail:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::Error::TestsFail::Bailout:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::Error::TestsFail::NoOutput:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::Error::TestsFail::NoTestsRun:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::Error::TestsFail::Other:
+    file: lib/Test/Run/Obj/Error.pm
+  Test::Run::Obj::FailedObj:
+    file: lib/Test/Run/Obj/FailedObj.pm
+  Test::Run::Obj::TestObj:
+    file: lib/Test/Run/Obj/TestObj.pm
+  Test::Run::Obj::TotObj:
+    file: lib/Test/Run/Obj/TotObj.pm
+  Test::Run::Output:
+    file: lib/Test/Run/Output.pm
+  Test::Run::Plugin::CmdLine::Output:
+    file: lib/Test/Run/Plugin/CmdLine/Output.pm
+  Test::Run::Straps:
+    file: lib/Test/Run/Straps.pm
+    version: 0.25
+  Test::Run::Straps::StrapsDetailsObj:
+    file: lib/Test/Run/Straps/StrapsDetailsObj.pm
+  Test::Run::Straps::StrapsTotalsObj:
+    file: lib/Test/Run/Straps/StrapsTotalsObj.pm
+generated_by: Module::Build version 0.2805
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
