@@ -146,6 +146,54 @@ Talk about Test::Run</a>.
 </li>
 </ul>
 
+<h3>Blog Entries about Test::Run</h3>
+
+<h4>By Shlomi Fish</h4>
+
+<ul>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/27467">Test::Shlomif::Harness - 
+Giving Test::Harness a Face Life</a> (6 November, 2005)
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/27887">"Test::Run (formerly Test::Shlomif::Harness) Developments (7 December, 2005)</a> 
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/30953">"CPAN Modules Hacktivity" (10 September, 2006)</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/31076">Test::Run work (22 September, 2006</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/31651">First non-Developer 
+Release of Test::Run</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/32493">Test::Run Update from 
+24 February, 2007</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/32725">Oh no, 
+it's Another Test::Run Update!</a>
+</li>
+
+</ul>
+
+<h4>By Ovid</h4>
+
+<ul>
+<li>
+<a href="http://use.perl.org/~Ovid/journal/31009">TAPx::Parser tools</a> (15 September, 2006)
+</li>
+</ul>
+
 EOF
     },
     {
