@@ -132,6 +132,16 @@ but incoroporates many internals improvement, a separation of the code
 to a backend and frontend, etc.
 </p>
 
+<h2>Project Resources</h2>
+
+<ul>
+
+<li>
+<a href="http://freshmeat.net/projects/test-run/">Freshmeat Record</a>
+</li>
+
+</ul>
+
 <h2>Links</h2>
 
 <ul>
