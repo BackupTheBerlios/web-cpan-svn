@@ -126,10 +126,17 @@ EOF
         'svn_dir' => "Test-Harness-NG",
         'desc' => <<"EOF",
 <p>
-Test::Run is a new and improved test harness. It is based on 
+Test::Run is a new and improved test harness for processing 
+<a href="http://testanything.org/">TAP (Test Anything Protocol)</a>-based
+test files. It is based on 
 <a href="http://search.cpan.org/dist/Test-Harness/">Test-Harness</a>,
-but incoroporates many internals improvement, a separation of the code
+but incorporates many internals improvement, a separation of the code
 to a backend and frontend, etc.
+</p>
+
+<p>
+To get started with Test::Run <a href="http://search.cpan.org/dist/Task-Test-Run-AllPlugins/lib/Task/Test/Run/AllPlugins.pm">see the instructions on its 
+CPAN "AllPlugins" Task</a>.
 </p>
 
 <h2>Project Resources</h2>
@@ -145,6 +152,15 @@ to a backend and frontend, etc.
 <h2>Links</h2>
 
 <ul>
+
+<li>
+<a href="http://testanything.org/">TAP - The Test Anything Protocol</a>
+</li>
+
+<li>
+<a href="http://perl-qa.yi.org/">The Perl Quality Assurance and Testing
+Wiki</a>
+</li>
 
 <li>
 <a href="http://www.shlomifish.org/lecture/Perl/Lightning/Test-Run/">Lightning
