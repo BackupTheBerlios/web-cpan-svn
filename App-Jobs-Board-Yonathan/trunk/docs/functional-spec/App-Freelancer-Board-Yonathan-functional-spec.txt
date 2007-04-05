@@ -25,7 +25,12 @@ he registers, waits for the confirmation email and gets it.
 He then goes to the "Post a new Offer" task, fills in the text (in HTML), and
 previews it, and fills in his credit card details. He submits the job.
 
-Moses will receive the offers that the freelancers post to his job via email.
+Moses will receive the offers that the freelancers post to his job entry
+via email. In the email and offers he'll find a link to their 
+http://www.yonathan.tld/~vashti/ page (see below), with testimonials,
+and other information such as homesite, and email. He can use that to
+decide what to do.
+
 Once he finds a freelancer or gets tired of the useless offers that he sees,
 he can close and archive the thread, while leaving a message why that was that
 case.
