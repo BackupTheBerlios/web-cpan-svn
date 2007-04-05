@@ -1,0 +1,33 @@
+This a functional spec for a freelancer-finding board. It is similar to 
+getafreelancer.com / rentacoder.com except for the following key differences:
+
+1. The prospective freelancers will be able to reveal their true 
+identities, and link to their web sites, portfolios, email addresses, etc.
+This way there will be something better to offer besides just wage.
+
+2. People will be able to comment on the offers of the freelancers - for
+example, to ask questions or make remarks. One can also comment on other
+people's comment (Slashdot-like nested comments).
+
+The revenue from the site will be based on people paying to post task offers.
+
+------------------------
+
+Case studies:
+
+1. Posting an offer:
+--------------------
+
+Moses is the leader of Bney-Yisra'el and he's looking for someone to build
+a site to announce the Exodus from Egypt. He goes to www.yonathan.tld. There 
+he registers, waits for the confirmation email and gets it.
+
+He then goes to the "Post a new Offer" task, fills in the text (in HTML), and
+previews it, and fills in his credit card details. He submits the job.
+
+Moses will receive the offers that the freelancers post to his job via email.
+Once he finds a freelancer or gets tired of the useless offers that he sees,
+he can close and archive the thread, while leaving a message why that was that
+case.
+
+If that doesn't happen, the offer will close automatically after 2 months.
