@@ -31,3 +31,71 @@ he can close and archive the thread, while leaving a message why that was that
 case.
 
 If that doesn't happen, the offer will close automatically after 2 months.
+
+2. Finding jobs:
+----------------
+
+Vashti has just been fired from her permanent job as queen of the Persian
+Empire. She decides to try her luck working on jobs. She goes to 
+www.yonathan.tld, opens an account, and feels in her details:
+
+1. Personal web site. (optional but recommended)
+
+2. Email. (required - could be hidden)
+
+3. IM accounts.
+
+4. Portfolio.
+
+5. Resume - link or text.
+
+6. Bio - short text (up to 4000 Unicode chars)
+
+7. Phone number (international, etc.)
+
+8. Others - FILL IN.
+
+Then she waits for the confirmation email. Once it arrives and she finishes
+registering, she goes on looking for jobs.
+
+Jobs in yonathan.tld are organised according to tags - like perl, python, php,
+web, etc. 
+
+Vashti subscribes to a tag query (composed of several OR's of several AND'ed
+tags) and can view the RSS query. Or optionally receive an RSS feed for it.
+
+She can also serialise the query to XML for later perusal and for sharing
+among her fired queens friends.
+
+Once she finds a job she likes, she posts a comment saying:
+
+<<<<<<<<<<<<<
+Hi!
+
+My name is Vashti. I have 25 years of experience doing PHP+MySQL, and
+I'm very professional. If you want, look at 
+<a href="http://www.vashti-portfolio.tld/">my portfolio</a>.
+
+I'll get the jobs done in two weeks, and charge 1000 USD.
+>>>>>>>>>>>>>
+
+After posting a few jobs like that, she gets a gig.
+
+3. Writing a Testimonial
+------------------------
+
+Moses is incredibly happy with Vashti's execution of the Exodus site.
+As such he decides to write a testimonial in her favour. He fires up his
+web browser surfs to Vashti's page, writes a testimonial and submits it.
+
+Vashti sees that, but has a comment, so she posts a comment on Moses'
+testimonials fixing an inaccuracy. 
+
+Moses recieves a notification by email about Vashti's comment and writes a
+reply (via the Email's comment link) to her comment, acknowledging that there
+was a problem with his testimonial.
+
+That way, both Moses and Vashti are happy.
+
+3.b: there will be a meta-user for testimonials on the entire site.
+
