@@ -17,7 +17,7 @@ if ($time[4] < 0)
     $time[5]--;
 }
 my $date = POSIX::strftime("%Y-%m-%d", @time);
-my $query = "UPDATE jobs2 SET status=0 WHERE post_date < '$date'";
+my $query = "UPDATE jobs2 SET status=1 WHERE post_date < '$date'";
 # print $query;
 $dbh->do($query);
 
