@@ -72,9 +72,11 @@ tags) and can view the RSS query. Or optionally receive an RSS feed for it.
 She can also serialise the query to XML for later perusal and for sharing
 among her fired queens friends.
 
-Once she finds a job she likes, she posts a comment saying:
+Once she finds a job she likes, she posts an application saying:
 
 <<<<<<<<<<<<<
+Price offered: $1000.
+
 Hi!
 
 My name is Vashti. I have 25 years of experience doing PHP+MySQL, and
@@ -84,14 +86,35 @@ I'm very professional. If you want, look at
 I'll get the jobs done in two weeks, and charge 1000 USD.
 >>>>>>>>>>>>>
 
-After posting a few jobs like that, she gets a gig.
+After posting a few application like that, she gets a gig working for Moses.
 
-3. Writing a Testimonial
+3. Accepting an Application
+---------------------------
+
+Moses decides to give the job of developing the Exodus site to Vashti as well
+as her long time collaborator Esther, who also posted that. As such, he
+closes the job, and selects the user-IDs of Vashti and Esther from the list.
+After a few confirmations, the job is closed, and Moses contacts Vashti and
+Esther (via email or IM) about how to pay.
+
+4. Writing a Testimonial
 ------------------------
 
 Moses is incredibly happy with Vashti's execution of the Exodus site.
 As such he decides to write a testimonial in her favour. He fires up his
 web browser surfs to Vashti's page, writes a testimonial and submits it.
+
+Note that one can post a testimonial if and only if:
+
+    1. He has worked for a person with an offer (i.e: Vashti working for 
+       Moses).
+
+        or:
+
+    2. He offered a job to a person (i.e: Moses contracting Vashti)
+
+(Anyone can post comments to any node, including that of a person, but they
+are hidden by default.)
 
 Vashti sees that, but has a comment, so she posts a comment on Moses'
 testimonials fixing an inaccuracy. 
