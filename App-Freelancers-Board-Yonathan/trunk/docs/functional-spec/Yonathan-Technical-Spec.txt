@@ -5,6 +5,15 @@ Some SQL tables:
         - has-many other comments.
         - has-a-possibly parent comment or discussion.
 
+        Fields:
+        -------
+
+        # Subject - up to ~255 unicode chars
+        # Body
+            - up to ~4000 unicode chars.
+            - with markup
+        # 
+
     # Discussions
         - has-many comments
         - has-a parent
@@ -15,17 +24,68 @@ Some SQL tables:
                 # offer
         - has-many tags
 
+        Fields:
+        -------
+
+        # Subject
+        # 
+
     # Tags
         - has-a
 
     # Persons
 
     # Forums
-        - Currently one - only with one tag.
+        - Currently one - only with many tag.
+        - has-many discussions.
 
     # Openings
 
     # Offers
         - has-a discussion.
 
-    # 
+    # Comments Query
+        - a query to query the posts for stuff.
+            - using boolean ops - AND/OR/NOT
+            - as a text (up to 4000 unicode chars).
+
+        - parsed and queried.
+
+Person fields:
+--------------
+
+# numeric id.
+    - primary key.
+    - used internally
+# Idenifier
+    - up to 30 characters 
+    - case insensitive, 
+    - but case preserving,
+    - No spaces.
+    - a-z, A-Z, 0-9, q{-_[]:,.}
+    - unique
+# Real name
+    - should it be separate "private name",
+    "family name", "middle names/initial", etc.
+# Gender
+    - male
+    - female
+    - unknown / don't want to tell.
+# Homepage
+    - URL - up to ~400 Unicode chars.
+# Email address
+    - up to ~400 Unicode chars.
+# Affiliations.
+    - Sub-table.
+        - Web-site title
+        - Web-site
+            - some common presets for it (LiveJournal, Slashdot, Flickr, 
+            Frappr, etc.).
+            - Some can be user-defined 
+        - URL of affiliation.
+# Bio.
+    - HTML
+    - up to 4000 chars
+# Link to online resumé
+# Short Resumé as HTML text
+    - up to 4000 chars.
