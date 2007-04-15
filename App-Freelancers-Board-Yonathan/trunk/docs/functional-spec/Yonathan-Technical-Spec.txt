@@ -1,0 +1,31 @@
+Some SQL tables:
+----------------
+
+    # Comments
+        - has-many other comments.
+        - has-a-possibly parent comment or discussion.
+
+    # Discussions
+        - has-many comments
+        - has-a parent
+            - Either:
+                # person
+                # forum
+                # opening
+                # offer
+        - has-many tags
+
+    # Tags
+        - has-a
+
+    # Persons
+
+    # Forums
+        - Currently one - only with one tag.
+
+    # Openings
+
+    # Offers
+        - has-a discussion.
+
+    # 
