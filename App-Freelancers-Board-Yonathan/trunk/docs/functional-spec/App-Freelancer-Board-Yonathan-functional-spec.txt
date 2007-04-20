@@ -9,7 +9,11 @@ This way there will be something better to offer besides just wage.
 example, to ask questions or make remarks. One can also comment on other
 people's comment (Slashdot-like nested comments).
 
-The revenue from the site will be based on people paying to post task offers.
+The revenue from the site will be based on people paying to post task offers,
+and also on Ads.
+
+As a way to gain momentum and grow a community, the site will also offer a
+public tags-based forum for discussing freelancer-related topics.
 
 ------------------------
 
