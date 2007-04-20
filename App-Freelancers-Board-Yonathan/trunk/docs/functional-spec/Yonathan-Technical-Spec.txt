@@ -51,6 +51,14 @@ Some SQL tables:
 
         - parsed and queried.
 
+    # Testimonial Points table.
+        - fields:
+            # Giver
+            # Taker
+        - Primary Key on {Giver,Taker}
+        - Indexes on:
+            # Giver
+
 Person fields:
 --------------
 
@@ -89,3 +97,17 @@ Person fields:
 # Link to online resumé
 # Short Resumé as HTML text
     - up to 4000 chars.
+
+Testimonial Points:
+--------------------
+
+When Moses signs a contract with {Vashti, Esther} then Moses gets one
+testimonial for Vashti and for Esther, while Vashti and Esther get
+one testimonial for Moses each. They can each spend it on writing
+a testimonial for them.
+
+This is maintained in the testimonial points table. If Moses hires
+Joshua again without having written a testimonial for him again, then
+he can still only write one testimonial for him for both cases.
+
+
