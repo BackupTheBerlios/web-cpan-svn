@@ -1,0 +1,13 @@
+Build.PL
+Changes
+lib/Text/Sprintf/Named.pm
+MANIFEST
+META.yml # Will be created by "make dist"
+README
+t/00-load.t
+t/01-use.t
+t/02-override-param-retrieval.t
+t/boilerplate.t
+TODO
+t/pod-coverage.t
+t/pod.t
