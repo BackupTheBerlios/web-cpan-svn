@@ -1,15 +1,10 @@
 XML-Grammar-Screeplay
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+This is a module implementing an XML grammar for screenplays. It contains:
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it get an idea of the modules uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+1. A converter from a well-formed plain text format to its custom XML format.
+
+2. A converter from its custom XML format to DocBook/XML.
 
 INSTALLATION
 
@@ -45,4 +40,5 @@ COPYRIGHT AND LICENCE
 
 Copyright (C) 2007 Shlomi Fish
 
-This program is released under the following license: bsd
+This program is released under the following license: MIT X11.
+

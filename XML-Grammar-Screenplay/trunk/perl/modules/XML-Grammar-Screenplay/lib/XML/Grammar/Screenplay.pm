@@ -3,9 +3,11 @@ package XML::Grammar::Screenplay;
 use warnings;
 use strict;
 
+use base 'Class::Accessor';
+
 =head1 NAME
 
-XML::Grammar::Screenplay - The great new XML::Grammar::Screenplay!
+XML::Grammar::Screenplay - module implementing an XML grammar for screenplays.
 
 =head1 VERSION
 
@@ -17,39 +19,44 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use XML::Grammar::Screenplay;
 
-    my $foo = XML::Grammar::Screenplay->new();
-    ...
+    my $grammar = XML::Grammar::Screenplay->new(
+        {
+            filename => "my-screenplay.xml",    
+        }
+    );
 
-=head1 EXPORT
+    $grammer->output_docbook({dest => "my-screenplay-docbook.xml"});
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+=head1 METHODS
 
-=head1 FUNCTIONS
-
-=head2 function1
+=head2 new
 
 =cut
 
-sub function1 {
+sub new
+{
+    my $class = shift;
+    my $self = {};
+
+    bless $self, $class;
+
+    $self->_init(@_);
+
+    return $self;
 }
 
-=head2 function2
+sub _init
+{
+    my ($self, $args) = @_;
 
-=cut
-
-sub function2 {
+    return 0;
 }
 
 =head1 AUTHOR
 
-Shlomi Fish, C<< <shlomif at cpan.org> >>
+Shlomi Fish, L<http://www.shlomifish.org/>.
 
 =head1 BUGS
 
@@ -93,8 +100,9 @@ L<http://search.cpan.org/dist/XML-Grammar-Screeplay>
 
 Copyright 2007 Shlomi Fish, all rights reserved.
 
-This program is released under the following license: bsd
+This program is released under the following license: MIT X11.
 
 =cut
 
-1; # End of XML::Grammar::Screenplay
+1;
+
