@@ -3,8 +3,6 @@ package XML::Grammar::Screenplay;
 use warnings;
 use strict;
 
-use base 'Class::Accessor';
-
 =head1 NAME
 
 XML::Grammar::Screenplay - module implementing an XML grammar for screenplays.
@@ -35,17 +33,6 @@ our $VERSION = '0.01';
 
 =cut
 
-sub new
-{
-    my $class = shift;
-    my $self = {};
-
-    bless $self, $class;
-
-    $self->_init(@_);
-
-    return $self;
-}
 
 sub _init
 {

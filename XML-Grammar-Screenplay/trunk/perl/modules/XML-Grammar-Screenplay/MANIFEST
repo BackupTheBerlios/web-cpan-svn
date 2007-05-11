@@ -1,10 +1,15 @@
 Build.PL
 Changes
+lib/XML/Grammar/Screenplay/Base.pm
+lib/XML/Grammar/Screenplay/FromProto.pm
+lib/XML/Grammar/Screenplay.pm
 MANIFEST
 META.yml # Will be created by "make dist"
 README
-lib/XML/Grammar/Screenplay.pm
 t/00-load.t
 t/boilerplate.t
+t/data/proto-text/nested-s.txt
+t/data/xml/nested-s.xml
 t/pod-coverage.t
 t/pod.t
+t/proto-text-to-xml.t

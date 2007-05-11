@@ -9,6 +9,8 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/XML/Grammar/Screenplay.pm',
     build_requires => {
         'Test::More' => 0,
+        'Class::Accessor' => 0,
+        'XML::Writer' => 0,
     },
     add_to_cleanup      => [ 'XML-Grammar-Screeplay-*' ],
 );
