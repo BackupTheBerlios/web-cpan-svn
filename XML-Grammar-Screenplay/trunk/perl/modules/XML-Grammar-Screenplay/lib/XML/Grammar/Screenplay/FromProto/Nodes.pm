@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use List::Util ();
+
 package XML::Grammar::Screenplay::FromProto::Node;
 
 use Moose;
@@ -15,6 +17,22 @@ has 'children' => (
     is => 'rw'
 );
 has 'attrs' => (isa => 'ArrayRef', is => 'rw');
+
+sub lookup_attr
+{
+    my ($self, $attr_name) = @_;
+
+    my $pair = List::Util::first { $_->{key} eq $attr_name } (@{$self->attrs()});
+
+    if (!defined($pair))
+    {
+        return undef;
+    }
+    else
+    {
+        return $pair->{value};
+    }
+}
 
 package XML::Grammar::Screenplay::FromProto::Node::List;
 

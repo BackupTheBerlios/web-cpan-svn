@@ -103,13 +103,13 @@ sub _write_scene
     
     if (($tag eq "s") || ($tag eq "scene"))
     {
-        my ($id) = (grep { $_->{key} eq "id" } @{$scene->attrs()});
+        my $id = $scene->lookup_attr("id");
 
         if (!defined($id))
         {
             confess "Unspecified id for scene!";
         }
-        $self->_writer->startTag("scene", id => $id->{value});
+        $self->_writer->startTag("scene", id => $id);
         
         foreach my $child (@{$scene->children->contents()})
         {
