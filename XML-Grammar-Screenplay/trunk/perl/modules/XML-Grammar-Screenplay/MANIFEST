@@ -9,7 +9,9 @@ README
 t/00-load.t
 t/boilerplate.t
 t/data/proto-text/nested-s.txt
+t/data/proto-text/two-nested-s.txt
 t/data/xml/nested-s.xml
+t/data/xml/two-nested-s.xml
 t/pod-coverage.t
 t/pod.t
 t/proto-text-to-xml.t

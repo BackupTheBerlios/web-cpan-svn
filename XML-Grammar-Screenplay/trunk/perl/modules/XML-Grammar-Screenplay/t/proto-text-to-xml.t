@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::XML tests => 1;
+use Test::XML tests => 2;
 
 use XML::Grammar::Screenplay::FromProto;
 
@@ -23,9 +23,10 @@ sub load_xml
 
 my @tests = (qw(
         nested-s
+        two-nested-s
     ));
 
-# TEST:$num_tests=1
+# TEST:$num_tests=2
 
 foreach my $fn (@tests)
 {

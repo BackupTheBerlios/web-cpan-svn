@@ -51,7 +51,7 @@ sub _calc_grammar
 
 start : text  {$thisparser->{ret} = $item[1]; }
 
-text: tag { $item[0] = $item[1]; }
+text: tag(s) { +{ type => "multi-tags", 'list' => $item[1],}  }
       | space { +{ 'empty' => 1} }
 
 tag: space openingtag space text space closingtag space
@@ -88,6 +88,21 @@ sub _write_scene
     my ($self, $args) = @_;
 
     my $scene = $args->{scene};
+
+    my $type = $scene->{type} || "tag";
+
+    if ($type eq "multi-tags")
+    {
+        foreach my $tag (@{$scene->{list}})
+        {
+            $self->_write_scene(
+                {
+                    scene => $tag,
+                }
+            );
+        }
+        return;
+    }
 
     my $tag = $scene->{tag};
     
