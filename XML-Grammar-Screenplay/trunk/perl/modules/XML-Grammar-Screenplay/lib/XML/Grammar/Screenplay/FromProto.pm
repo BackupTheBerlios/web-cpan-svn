@@ -11,6 +11,8 @@ use XML::Writer;
 use Parse::RecDescent;
 use HTML::Entities ();
 
+use XML::Grammar::Screenplay::FromProto::Nodes;
+
 __PACKAGE__->mk_accessors(qw(
     _filename
     _writer
@@ -49,10 +51,14 @@ sub _calc_grammar
 
     return <<'EOF';
 
-start : text  {$thisparser->{ret} = $item[1]; }
+start : tag  {$thisparser->{ret} = $item[1]; }
 
-text: tag(s) { +{ type => "multi-tags", 'list' => $item[1],}  }
-      | space { +{ 'empty' => 1} }
+text: tag(s) { XML::Grammar::Screenplay::FromProto::Node::List->new(
+        contents => $item[1]
+        ) }
+      | space { XML::Grammar::Screenplay::FromProto::Node::List->new(
+        contents => []
+        ) }
 
 tag: space openingtag space text space closingtag space
      {
@@ -61,7 +67,11 @@ tag: space openingtag space text space closingtag space
         {
             Carp::confess("Tags do not match: $open->{name} and $close->{name}");
         }
-        $item[0] = { 'tag' => $open->{name}, 'attrs' => $open->{attrs}, 'inside' => $inside };
+        XML::Grammar::Screenplay::FromProto::Node::Element->new(
+            name => $open->{name},
+            children => $inside,
+            attrs => $open->{attrs},
+            );
      }
 
 openingtag: '<' id attribute(s) '>'
@@ -89,26 +99,11 @@ sub _write_scene
 
     my $scene = $args->{scene};
 
-    my $type = $scene->{type} || "tag";
-
-    if ($type eq "multi-tags")
-    {
-        foreach my $tag (@{$scene->{list}})
-        {
-            $self->_write_scene(
-                {
-                    scene => $tag,
-                }
-            );
-        }
-        return;
-    }
-
-    my $tag = $scene->{tag};
+    my $tag = $scene->name;
     
     if (($tag eq "s") || ($tag eq "scene"))
     {
-        my ($id) = (grep { $_->{key} eq "id" } @{$scene->{attrs}});
+        my ($id) = (grep { $_->{key} eq "id" } @{$scene->attrs()});
 
         if (!defined($id))
         {
@@ -116,15 +111,9 @@ sub _write_scene
         }
         $self->_writer->startTag("scene", id => $id->{value});
         
-        my $inside = $scene->{inside};
-
-        if ($inside->{empty})
+        foreach my $child (@{$scene->children->contents()})
         {
-            # Do nothing;
-        }
-        else
-        {
-            $self->_write_scene({scene => $inside});
+            $self->_write_scene({scene => $child,});
         }
 
         $self->_writer->endTag();

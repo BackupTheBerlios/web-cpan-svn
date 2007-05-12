@@ -2,6 +2,7 @@ Build.PL
 Changes
 inc/Test/Run/Builder.pm
 lib/XML/Grammar/Screenplay/Base.pm
+lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
 lib/XML/Grammar/Screenplay/FromProto.pm
 lib/XML/Grammar/Screenplay.pm
 MANIFEST
