@@ -57,15 +57,34 @@ text_unit:   tag { $item[1] }
            | speech_unit { $item[1] }
            | tag speech_unit { [$item[1], $item[2]] }
 
-speech_unit: /^(\w+):((?:(?:[^\n]+\n)+))\n/ms {
+saying_first_para: /^(\w+): ((?:(?:\S[^\n]+\n)+))\n+/ms {
             my ($sayer, $what) = ($1, $2);
-        XML::Grammar::Screenplay::FromProto::Node::Saying->new(
-            character => $sayer,
-            content => 
-            [XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+            +{
+             character => $sayer,
+             para => XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
                 content => $what,
-                )],
-        ) }
+                ),
+            }
+            }
+
+saying_other_para: /(?ms-:((?:^[ \t]+\S[^\n]+\n)+)\n+)/ {
+        my $content = $1;
+        print "This line == $thisline\n";
+        $content =~ s{^(\s+)}{}gms;
+        XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+            content => $content,
+        )
+    }
+
+speech_unit:  saying_first_para saying_other_para(s?)
+    {
+    my $first = $item[1];
+    my $others = $item[3] || [];
+        XML::Grammar::Screenplay::FromProto::Node::Saying->new(
+            character => $first->{character},
+            content => [ $first->{para}, @{$others} ],
+        )
+    }
 
 text: text_unit(s) { XML::Grammar::Screenplay::FromProto::Node::List->new(
         contents => $item[1]
@@ -88,7 +107,7 @@ tag: space openingtag space text space closingtag space
             );
      }
 
-openingtag: '<' id attribute(s) '>'
+openingtag: '<' id attribute(s?) '>'
     { $item[0] = { 'name' => $item[2], 'attrs' => $item[3] }; }
 
 closingtag: '</' id '>'
@@ -169,6 +188,13 @@ sub convert
 {
     my $self = shift;
 
+    # local $::RD_HINT = 1;
+    # local $::RD_TRACE = 1;
+    
+    # We need this so P::RD won't skip leading whitespace at lines
+    # which are siginificant.
+    local $Parse::RecDescent::skip = "";
+
     my $parser = Parse::RecDescent->new($self->_calc_grammar());
 
     open my $in, "<", $self->_filename();
@@ -183,6 +209,11 @@ sub convert
     $parser->start($contents);
 
     my $tree = $parser->{ret};
+
+    if (!defined($tree))
+    {
+        Carp::confess("Parsing failed.");
+    }
 
     my $buffer = "";
     my $writer = XML::Writer->new(OUTPUT => \$buffer, ENCODING => "utf-8",);

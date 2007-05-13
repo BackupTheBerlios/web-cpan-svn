@@ -10,9 +10,11 @@ META.yml # Will be created by "make dist"
 README
 t/00-load.t
 t/boilerplate.t
+t/data/proto-text/dialogue-with-several-paragraphs.txt
 t/data/proto-text/nested-s.txt
 t/data/proto-text/two-nested-s.txt
 t/data/proto-text/with-dialogue.txt
+t/data/xml/dialogue-with-several-paragraphs.xml
 t/data/xml/nested-s.xml
 t/data/xml/two-nested-s.xml
 t/data/xml/with-dialogue.xml
