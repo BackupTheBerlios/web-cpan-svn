@@ -40,15 +40,27 @@ use Moose;
 
 has 'contents' => (isa => "ArrayRef", is => "rw");
 
-package XML::Grammar::Screenplay::FromProto::Node::Saying;
+package XML::Grammar::Screenplay::FromProto::Node::Text;
 
 use Moose;
 
 extends("XML::Grammar::Screenplay::FromProto::Node");
 
+has 'content' => (isa => "ArrayRef", is => "rw");
+
+package XML::Grammar::Screenplay::FromProto::Node::Saying;
+
+use Moose;
+
+extends("XML::Grammar::Screenplay::FromProto::Node::Text");
+
 has 'character' => (isa => "Str", is => "rw");
 
-has 'content' => (isa => "ArrayRef", is => "rw");
+package XML::Grammar::Screenplay::FromProto::Node::Description;
+
+use Moose;
+
+extends("XML::Grammar::Screenplay::FromProto::Node::Text");
 
 package XML::Grammar::Screenplay::FromProto::Node::Paragraph;
 

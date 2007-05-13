@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::XML tests => 4;
+use Test::XML tests => 5;
 
 use XML::Grammar::Screenplay::FromProto;
 
@@ -26,9 +26,10 @@ my @tests = (qw(
         two-nested-s
         with-dialogue
         dialogue-with-several-paragraphs
+        with-description
     ));
 
-# TEST:$num_tests=4
+# TEST:$num_tests=5
 
 foreach my $fn (@tests)
 {

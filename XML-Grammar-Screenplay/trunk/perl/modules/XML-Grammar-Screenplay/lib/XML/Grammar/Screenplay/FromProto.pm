@@ -54,8 +54,11 @@ sub _calc_grammar
 start : tag  {$thisparser->{ret} = $item[1]; }
 
 text_unit:   tag { $item[1] }
-           | speech_unit { $item[1] }
-           | tag speech_unit { [$item[1], $item[2]] }
+           | speech_or_desc { $item[1] }
+           | tag speech_or_desc{ [$item[1], $item[2]] }
+
+speech_or_desc:   speech_unit  
+                | desc_unit
 
 saying_first_para: /^(\w+): ((?:(?:\S[^\n]+\n)+))\n+/ms {
             my ($sayer, $what) = ($1, $2);
@@ -83,6 +86,17 @@ speech_unit:  saying_first_para saying_other_para(s?)
         XML::Grammar::Screenplay::FromProto::Node::Saying->new(
             character => $first->{character},
             content => [ $first->{para}, @{$others} ],
+        )
+    }
+
+desc_unit: /^\[([^\]]+)\]\s*\n{2,}/ms {
+        my $text = $1;
+
+        my @paragraphs = split(/\n{2,}/, $text);
+
+        XML::Grammar::Screenplay::FromProto::Node::Description->new(
+            content => 
+            [ map { XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(content => $_) } @paragraphs ]
         )
     }
 
@@ -136,9 +150,20 @@ sub _write_elem
     {
         return $self->_write_scene({scene => $elem});
     }
-    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Text"))
     {
-        $self->_writer->startTag("saying", 'character' => $elem->character());
+        if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
+        {
+            $self->_writer->startTag("saying", 'character' => $elem->character());
+        }
+        elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Description"))
+        {
+            $self->_writer->startTag("description");
+        }
+        else
+        {
+            Carp::confess ("Unknown element class - " . ref($elem) . "!");
+        }
         foreach my $para (@{$elem->content()})
         {
             $self->_writer->startTag("para");
