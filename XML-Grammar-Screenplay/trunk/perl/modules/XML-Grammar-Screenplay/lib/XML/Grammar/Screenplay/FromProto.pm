@@ -53,7 +53,21 @@ sub _calc_grammar
 
 start : tag  {$thisparser->{ret} = $item[1]; }
 
-text: tag(s) { XML::Grammar::Screenplay::FromProto::Node::List->new(
+text_unit:   tag { $item[1] }
+           | speech_unit { $item[1] }
+           | tag speech_unit { [$item[1], $item[2]] }
+
+speech_unit: /^(\w+):((?:(?:[^\n]+\n)+))\n/ms {
+            my ($sayer, $what) = ($1, $2);
+        XML::Grammar::Screenplay::FromProto::Node::Saying->new(
+            character => $sayer,
+            content => 
+            [XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+                content => $what,
+                )],
+        ) }
+
+text: text_unit(s) { XML::Grammar::Screenplay::FromProto::Node::List->new(
         contents => $item[1]
         ) }
       | space { XML::Grammar::Screenplay::FromProto::Node::List->new(
@@ -93,6 +107,31 @@ id: /[a-zA-Z_\-]+/
 EOF
 }
 
+sub _write_elem
+{
+    my ($self, $args) = @_;
+
+    my $elem = $args->{elem};
+
+    if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Element"))
+    {
+        return $self->_write_scene({scene => $elem});
+    }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
+    {
+        $self->_writer->startTag("saying", 'character' => $elem->character());
+        foreach my $para (@{$elem->content()})
+        {
+            $self->_writer->startTag("para");
+
+            $self->_writer->characters($para->content());
+
+            $self->_writer->endTag();
+        }
+        $self->_writer->endTag();
+    }
+}
+
 sub _write_scene
 {
     my ($self, $args) = @_;
@@ -113,7 +152,7 @@ sub _write_scene
         
         foreach my $child (@{$scene->children->contents()})
         {
-            $self->_write_scene({scene => $child,});
+            $self->_write_elem({elem => $child,});
         }
 
         $self->_writer->endTag();
