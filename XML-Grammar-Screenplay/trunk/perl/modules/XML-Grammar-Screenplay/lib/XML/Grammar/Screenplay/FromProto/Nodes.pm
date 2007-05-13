@@ -68,7 +68,7 @@ use Moose;
 
 extends("XML::Grammar::Screenplay::FromProto::Node");
 
-has 'content' => (isa => "Str", is => "rw");
+has 'content' => (isa => "ArrayRef", is => "rw");
 
 1;
 

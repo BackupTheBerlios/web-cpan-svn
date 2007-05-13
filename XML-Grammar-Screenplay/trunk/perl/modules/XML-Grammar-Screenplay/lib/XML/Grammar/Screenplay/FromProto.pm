@@ -57,11 +57,40 @@ text_unit:   tag { $item[1] }
            | speech_or_desc { $item[1] }
            | tag speech_or_desc{ [$item[1], $item[2]] }
 
+para_sep:      /(\n\s*)+/
+
 speech_or_desc:   speech_unit  
                 | desc_unit
 
-saying_first_para: /^(\w+): ((?:(?:\S[^\n]+\n)+))\n+/ms {
-            my ($sayer, $what) = ($1, $2);
+plain_inner_text:  /([^\n<\[\]]+\n?)*/ { $item[1] }
+
+inner_tag:         opening_tag  inner_text closing_tag {
+        my ($open, $inside, $close) = @item[1..$#item];
+        if ($open->{name} ne $close->{name})
+        {
+            Carp::confess("Tags do not match: $open->{name} and $close->{name}");
+        }
+        XML::Grammar::Screenplay::FromProto::Node::Element->new(
+            name => $open->{name},
+            children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => $inside
+                ),
+            attrs => $open->{attrs},
+            )
+    }
+
+inner_text_unit:    plain_inner_text inner_tag(?) {
+                        [ $item[1], defined($item[2]) ? @{$item[2]} : () ]
+                    }
+
+inner_text:       inner_text_unit(s) {
+        [ map { @{$_} } @{$item[1]} ]
+        }
+
+addressing: /^(\w+): /ms { $1 }
+
+saying_first_para: addressing inner_text para_sep {
+            my ($sayer, $what) = ($item[1], $item[2]);
             +{
              character => $sayer,
              para => XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
@@ -70,33 +99,31 @@ saying_first_para: /^(\w+): ((?:(?:\S[^\n]+\n)+))\n+/ms {
             }
             }
 
-saying_other_para: /(?ms-:((?:^[ \t]+\S[^\n]+\n)+)\n+)/ {
-        my $content = $1;
-        print "This line == $thisline\n";
-        $content =~ s{^(\s+)}{}gms;
+saying_other_para: /^\++: /ms inner_text para_sep {
         XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-            content => $content,
+            content => $item[2],
         )
     }
 
 speech_unit:  saying_first_para saying_other_para(s?)
     {
     my $first = $item[1];
-    my $others = $item[3] || [];
+    my $others = $item[2] || [];
         XML::Grammar::Screenplay::FromProto::Node::Saying->new(
             character => $first->{character},
             content => [ $first->{para}, @{$others} ],
         )
     }
 
-desc_unit: /^\[([^\]]+)\]\s*\n{2,}/ms {
-        my $text = $1;
-
-        my @paragraphs = split(/\n{2,}/, $text);
+desc_unit: /^\[/ms inner_text /\]\s*$/ms para_sep {
+        my $text = $item[2];
 
         XML::Grammar::Screenplay::FromProto::Node::Description->new(
-            content => 
-            [ map { XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(content => $_) } @paragraphs ]
+            content => [
+                XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+                    content => $text,
+                ),
+            ],
         )
     }
 
@@ -107,7 +134,7 @@ text: text_unit(s) { XML::Grammar::Screenplay::FromProto::Node::List->new(
         contents => []
         ) }
 
-tag: space openingtag space text space closingtag space
+tag: space opening_tag space text space closing_tag space
      {
         my (undef, $open, undef, $inside, undef, $close) = @item[1..$#item];
         if ($open->{name} ne $close->{name})
@@ -121,10 +148,10 @@ tag: space openingtag space text space closingtag space
             );
      }
 
-openingtag: '<' id attribute(s?) '>'
+opening_tag: '<' id attribute(s?) '>'
     { $item[0] = { 'name' => $item[2], 'attrs' => $item[3] }; }
 
-closingtag: '</' id '>'
+closing_tag: '</' id '>'
     { $item[0] = { 'name' => $item[2], }; }
 
 attribute: space id '="' attributevalue '"' space
@@ -140,15 +167,57 @@ id: /[a-zA-Z_\-]+/
 EOF
 }
 
+use Data::Dumper;
+
 sub _write_elem
 {
     my ($self, $args) = @_;
 
     my $elem = $args->{elem};
 
-    if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Element"))
+    if (ref($elem) eq "")
     {
-        return $self->_write_scene({scene => $elem});
+        $self->_writer->characters($elem);
+    }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Paragraph"))
+    {
+        $self->_writer->startTag("para");
+
+        foreach my $child_elem (@{$elem->content()})
+        {
+            $self->_write_elem({elem => $child_elem});
+        }
+
+        $self->_writer->endTag();
+    }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Element"))
+    {
+        if (($elem->name() eq "s") || ($elem->name() eq "section"))
+        {
+            $self->_write_scene({scene => $elem});
+        }
+        elsif ($elem->name() eq "a")
+        {
+            $self->_writer->startTag("ulink", "url" => $elem->lookup_attr("href"));
+            
+            foreach my $child (@{$elem->children->contents()})
+            {
+                $self->_write_elem({elem => $child,});
+            }
+
+            $self->_writer->endTag();
+        }
+        elsif ($elem->name() eq "b")
+        {
+            $self->_writer->startTag("bold");
+            
+            foreach my $child (@{$elem->children->contents()})
+            {
+                $self->_write_elem({elem => $child,});
+            }
+
+            $self->_writer->endTag();
+        }
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Text"))
     {
@@ -164,13 +233,9 @@ sub _write_elem
         {
             Carp::confess ("Unknown element class - " . ref($elem) . "!");
         }
-        foreach my $para (@{$elem->content()})
+        foreach my $child_elem (@{$elem->content()})
         {
-            $self->_writer->startTag("para");
-
-            $self->_writer->characters($para->content());
-
-            $self->_writer->endTag();
+            $self->_write_elem({elem => $child_elem});
         }
         $self->_writer->endTag();
     }
@@ -241,6 +306,7 @@ sub convert
     }
 
     my $buffer = "";
+    $self->{foo} = \$buffer;
     my $writer = XML::Writer->new(OUTPUT => \$buffer, ENCODING => "utf-8",);
 
     $writer->xmlDecl("utf-8");
