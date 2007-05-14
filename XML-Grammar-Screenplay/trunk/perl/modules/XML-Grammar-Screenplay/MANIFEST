@@ -17,6 +17,7 @@ t/data/proto-text/with-comments.txt
 t/data/proto-text/with-description.txt
 t/data/proto-text/with-dialogue.txt
 t/data/proto-text/with-internal-description.txt
+t/data/proto-text/with-multi-para-desc.txt
 t/data/proto-text/with-tags-inside-paragraphs.txt
 t/data/xml/dialogue-with-several-paragraphs.xml
 t/data/xml/nested-s.xml
@@ -25,6 +26,7 @@ t/data/xml/with-comments.xml
 t/data/xml/with-description.xml
 t/data/xml/with-dialogue.xml
 t/data/xml/with-internal-description.xml
+t/data/xml/with-multi-para-desc.xml
 t/data/xml/with-tags-inside-paragraphs.xml
 t/pod-coverage.t
 t/pod.t

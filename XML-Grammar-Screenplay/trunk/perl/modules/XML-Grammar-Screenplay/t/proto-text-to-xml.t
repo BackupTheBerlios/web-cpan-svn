@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::XML tests => 8;
+use Test::XML tests => 9;
 
 use XML::Grammar::Screenplay::FromProto;
 
@@ -30,9 +30,10 @@ my @tests = (qw(
         with-tags-inside-paragraphs
         with-internal-description
         with-comments
+        with-multi-para-desc
     ));
 
-# TEST:$num_tests=8
+# TEST:$num_tests=9
 
 foreach my $fn (@tests)
 {

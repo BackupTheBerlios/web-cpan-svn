@@ -70,7 +70,7 @@ para_sep:      /(\n\s*)+/
 speech_or_desc:   speech_unit  
                 | desc_unit
 
-plain_inner_text:  /([^\n<\[\]]+\n?)*/ { $item[1] }
+plain_inner_text:  /([^\n<\[\]]+\n?)+/ { $item[1] }
 
 inner_tag:         opening_tag  inner_text closing_tag {
         my ($open, $inside, $close) = @item[1..$#item];
@@ -107,7 +107,7 @@ inner_text:       inner_text_unit(s) {
         [ map { @{$_} } @{$item[1]} ]
         }
 
-addressing: /^(\w+): /ms { $1 }
+addressing: /^([^:\n\+]+): /ms { $1 }
 
 saying_first_para: addressing inner_text para_sep {
             my ($sayer, $what) = ($item[1], $item[2]);
@@ -143,22 +143,28 @@ speech_unit:  saying_first_para saying_other_para(s?)
         )
     }
 
-desc_unit: /^\[/ms inner_text /\]\s*$/ms para_sep {
-        my $text = $item[2];
+desc_para:  inner_text para_sep { $item[1] }
+
+desc_unit_inner: desc_para(s?) inner_text { [ @{$item[1]}, $item[2] ] }
+
+desc_unit: /^\[/ms desc_unit_inner /\]\s*$/ms para_sep {
+        my $paragraphs = $item[2];
 
         XML::Grammar::Screenplay::FromProto::Node::Description->new(
             children => 
                 XML::Grammar::Screenplay::FromProto::Node::List->new(
                     contents =>
                 [
+                map { 
                 XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
                     children =>
                         XML::Grammar::Screenplay::FromProto::Node::List->new(
-                            contents => $text,
+                            contents => $_,
                             ),
-                ),
-            ],
-        )
+                        )
+                } @$paragraphs
+                ],
+            ),
         )
     }
 
