@@ -11,6 +11,8 @@ package XML::Grammar::Screenplay::FromProto::Node::WithContent;
 
 use Moose;
 
+extends("XML::Grammar::Screenplay::FromProto::Node");
+
 has 'children' => (
     isa => 'XML::Grammar::Screenplay::FromProto::Node::List', 
     is => 'rw'
@@ -93,8 +95,15 @@ sub name
     return "inlinedesc";
 }
 
-1;
+package XML::Grammar::Screenplay::FromProto::Node::Comment;
 
+use Moose;
+
+extends("XML::Grammar::Screenplay::FromProto::Node");
+
+has "text" => (isa => "Str", is => "rw");
+
+1;
 
 =head1 NAME
 

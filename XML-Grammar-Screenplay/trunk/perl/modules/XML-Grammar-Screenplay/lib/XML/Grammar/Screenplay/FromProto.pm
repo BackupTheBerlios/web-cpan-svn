@@ -53,9 +53,17 @@ sub _calc_grammar
 
 start : tag  {$thisparser->{ret} = $item[1]; }
 
-text_unit:   tag { $item[1] }
+text_unit:   tag_or_comment { $item[1] }
            | speech_or_desc { $item[1] }
-           | tag speech_or_desc{ [$item[1], $item[2]] }
+
+tag_or_comment:   tag
+                | comment
+
+comment:    /<!--(.*?)-->/ para_sep {
+    XML::Grammar::Screenplay::FromProto::Node::Comment->new(
+        text => $1
+    )
+    }
 
 para_sep:      /(\n\s*)+/
 
@@ -303,6 +311,10 @@ sub _write_elem
             },
         );
     }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Comment"))
+    {
+        $self->_writer->comment($elem->text());
+    }
 }
 
 sub _write_scene
@@ -340,7 +352,7 @@ sub convert
 {
     my $self = shift;
 
-    local $::RD_HINT = 1;
+    # local $::RD_HINT = 1;
     # local $::RD_TRACE = 1;
     
     # We need this so P::RD won't skip leading whitespace at lines
