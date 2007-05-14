@@ -99,9 +99,8 @@ inner_desc:      /\[/ inner_text /\]/ {
 inner_tag_or_desc:    inner_tag
                    |  inner_desc
 
-inner_text_unit:    plain_inner_text inner_tag_or_desc(?) {
-                        [ $item[1], defined($item[2]) ? @{$item[2]} : () ]
-                    }
+inner_text_unit:    plain_inner_text  { [ $item[1] ] }
+                 |  inner_tag_or_desc { [ $item[1] ] }
 
 inner_text:       inner_text_unit(s) {
         [ map { @{$_} } @{$item[1]} ]
