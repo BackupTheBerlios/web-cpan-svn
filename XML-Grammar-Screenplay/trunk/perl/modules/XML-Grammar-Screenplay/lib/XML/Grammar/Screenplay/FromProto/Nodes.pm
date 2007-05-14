@@ -82,6 +82,17 @@ use Moose;
 
 extends("XML::Grammar::Screenplay::FromProto::Node::Element");
 
+package XML::Grammar::Screenplay::FromProto::Node::InnerDesc;
+
+use Moose;
+
+extends("XML::Grammar::Screenplay::FromProto::Node::Element");
+
+sub name
+{
+    return "inlinedesc";
+}
+
 1;
 
 

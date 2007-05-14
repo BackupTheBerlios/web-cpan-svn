@@ -79,7 +79,19 @@ inner_tag:         opening_tag  inner_text closing_tag {
             )
     }
 
-inner_text_unit:    plain_inner_text inner_tag(?) {
+inner_desc:      /\[/ inner_text /\]/ {
+        my $inside = $item[2];
+        XML::Grammar::Screenplay::FromProto::Node::InnerDesc->new(
+            children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => $inside
+                ),
+            )
+    }
+
+inner_tag_or_desc:    inner_tag
+                   |  inner_desc
+
+inner_text_unit:    plain_inner_text inner_tag_or_desc(?) {
                         [ $item[1], defined($item[2]) ? @{$item[2]} : () ]
                     }
 
@@ -268,6 +280,15 @@ sub _write_elem
             $self->_output_tag_with_childs(
                 {
                     start => ["bold"],
+                    elem => $elem,
+                }
+            );
+        }
+        elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::InnerDesc"))
+        {
+            $self->_output_tag_with_childs(
+                {
+                    start => ["inlinedesc"],
                     elem => $elem,
                 }
             );
