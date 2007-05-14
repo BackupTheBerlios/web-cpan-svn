@@ -211,6 +211,24 @@ sub _output_tag_with_childs
         });
 }
 
+sub _get_text_start
+{
+    my ($self, $elem) = @_;
+
+    if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
+    {
+        return ["saying", 'character' => $elem->character()];
+    }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Description"))
+    {
+        return ["description"];
+    }
+    else
+    {
+        Carp::confess ("Unknown element class - " . ref($elem) . "!");
+    }
+}
+
 sub _write_elem
 {
     my ($self, $args) = @_;
@@ -247,35 +265,22 @@ sub _write_elem
         }
         elsif ($elem->name() eq "b")
         {
-            $self->_writer->startTag("bold");
-            
-            foreach my $child (@{$elem->_get_childs()})
-            {
-                $self->_write_elem({elem => $child,});
-            }
-
-            $self->_writer->endTag();
+            $self->_output_tag_with_childs(
+                {
+                    start => ["bold"],
+                    elem => $elem,
+                }
+            );
         }
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Text"))
     {
-        if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
-        {
-            $self->_writer->startTag("saying", 'character' => $elem->character());
-        }
-        elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Description"))
-        {
-            $self->_writer->startTag("description");
-        }
-        else
-        {
-            Carp::confess ("Unknown element class - " . ref($elem) . "!");
-        }
-        foreach my $child_elem (@{$elem->_get_childs()})
-        {
-            $self->_write_elem({elem => $child_elem});
-        }
-        $self->_writer->endTag();
+        $self->_output_tag_with_childs(
+            {
+                start => $self->_get_text_start($elem),
+                elem => $elem,
+            },
+        );
     }
 }
 
@@ -293,16 +298,14 @@ sub _write_scene
 
         if (!defined($id))
         {
-            confess "Unspecified id for scene!";
+            Carp::confess("Unspecified id for scene!");
         }
-        $self->_writer->startTag("scene", id => $id);
-        
-        foreach my $child (@{$scene->_get_childs()})
-        {
-            $self->_write_elem({elem => $child,});
-        }
-
-        $self->_writer->endTag();
+        $self->_output_tag_with_childs(
+            {
+                'start' => ["scene", id => $id],
+                elem => $scene,
+            }
+        );
     }
     else
     {
