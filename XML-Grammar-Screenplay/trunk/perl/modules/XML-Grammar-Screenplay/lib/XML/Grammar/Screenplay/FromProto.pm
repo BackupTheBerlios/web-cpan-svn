@@ -195,6 +195,22 @@ sub _output_tag
     $self->_writer->endTag();
 }
 
+sub _output_tag_with_childs
+{
+    my ($self, $args) = @_;
+
+    return 
+        $self->_output_tag({
+            %$args,
+            'in' => sub {
+                foreach my $child (@{$args->{elem}->_get_childs()})
+                {
+                    $self->_write_elem({elem => $child,});
+                }
+            },
+        });
+}
+
 sub _write_elem
 {
     my ($self, $args) = @_;
@@ -207,16 +223,11 @@ sub _write_elem
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Paragraph"))
     {
-        $self->_output_tag(
+        $self->_output_tag_with_childs(
             {
-                start => ["para"],
-                in => sub {
-                    foreach my $child_elem (@{$elem->_get_childs()})
-                    {
-                        $self->_write_elem({elem => $child_elem});
-                    }
-                },
-            }
+               start => ["para"],
+                elem => $elem,
+            },
         );
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Element"))
@@ -227,14 +238,12 @@ sub _write_elem
         }
         elsif ($elem->name() eq "a")
         {
-            $self->_writer->startTag("ulink", "url" => $elem->lookup_attr("href"));
-            
-            foreach my $child (@{$elem->_get_childs()})
-            {
-                $self->_write_elem({elem => $child,});
-            }
-
-            $self->_writer->endTag();
+            $self->_output_tag_with_childs(
+                {
+                    start => ["ulink", "url" => $elem->lookup_attr("href")],
+                    elem => $elem,
+                }
+            );
         }
         elsif ($elem->name() eq "b")
         {
