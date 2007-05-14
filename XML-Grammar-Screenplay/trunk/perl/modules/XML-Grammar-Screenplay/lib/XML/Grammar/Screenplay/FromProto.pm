@@ -94,14 +94,20 @@ saying_first_para: addressing inner_text para_sep {
             +{
              character => $sayer,
              para => XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-                content => $what,
+                children =>
+                XML::Grammar::Screenplay::FromProto::Node::List->new(
+                    contents => $what,
+                    )
                 ),
             }
             }
 
 saying_other_para: /^\++: /ms inner_text para_sep {
         XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-            content => $item[2],
+            children =>
+                XML::Grammar::Screenplay::FromProto::Node::List->new(
+                    contents => $item[2],
+                    ),
         )
     }
 
@@ -111,7 +117,9 @@ speech_unit:  saying_first_para saying_other_para(s?)
     my $others = $item[2] || [];
         XML::Grammar::Screenplay::FromProto::Node::Saying->new(
             character => $first->{character},
-            content => [ $first->{para}, @{$others} ],
+            children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => [ $first->{para}, @{$others} ],
+                ),
         )
     }
 
@@ -119,11 +127,18 @@ desc_unit: /^\[/ms inner_text /\]\s*$/ms para_sep {
         my $text = $item[2];
 
         XML::Grammar::Screenplay::FromProto::Node::Description->new(
-            content => [
+            children => 
+                XML::Grammar::Screenplay::FromProto::Node::List->new(
+                    contents =>
+                [
                 XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-                    content => $text,
+                    children =>
+                        XML::Grammar::Screenplay::FromProto::Node::List->new(
+                            contents => $text,
+                            ),
                 ),
             ],
+        )
         )
     }
 
@@ -169,6 +184,17 @@ EOF
 
 use Data::Dumper;
 
+sub _output_tag
+{
+    my ($self, $args) = @_;
+
+    $self->_writer->startTag(@{$args->{start}});
+
+    $args->{in}->($self, $args);
+
+    $self->_writer->endTag();
+}
+
 sub _write_elem
 {
     my ($self, $args) = @_;
@@ -181,14 +207,17 @@ sub _write_elem
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Paragraph"))
     {
-        $self->_writer->startTag("para");
-
-        foreach my $child_elem (@{$elem->content()})
-        {
-            $self->_write_elem({elem => $child_elem});
-        }
-
-        $self->_writer->endTag();
+        $self->_output_tag(
+            {
+                start => ["para"],
+                in => sub {
+                    foreach my $child_elem (@{$elem->_get_childs()})
+                    {
+                        $self->_write_elem({elem => $child_elem});
+                    }
+                },
+            }
+        );
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Element"))
     {
@@ -200,7 +229,7 @@ sub _write_elem
         {
             $self->_writer->startTag("ulink", "url" => $elem->lookup_attr("href"));
             
-            foreach my $child (@{$elem->children->contents()})
+            foreach my $child (@{$elem->_get_childs()})
             {
                 $self->_write_elem({elem => $child,});
             }
@@ -211,7 +240,7 @@ sub _write_elem
         {
             $self->_writer->startTag("bold");
             
-            foreach my $child (@{$elem->children->contents()})
+            foreach my $child (@{$elem->_get_childs()})
             {
                 $self->_write_elem({elem => $child,});
             }
@@ -233,7 +262,7 @@ sub _write_elem
         {
             Carp::confess ("Unknown element class - " . ref($elem) . "!");
         }
-        foreach my $child_elem (@{$elem->content()})
+        foreach my $child_elem (@{$elem->_get_childs()})
         {
             $self->_write_elem({elem => $child_elem});
         }
@@ -259,7 +288,7 @@ sub _write_scene
         }
         $self->_writer->startTag("scene", id => $id);
         
-        foreach my $child (@{$scene->children->contents()})
+        foreach my $child (@{$scene->_get_childs()})
         {
             $self->_write_elem({elem => $child,});
         }
@@ -278,7 +307,7 @@ sub convert
 {
     my $self = shift;
 
-    # local $::RD_HINT = 1;
+    local $::RD_HINT = 1;
     # local $::RD_TRACE = 1;
     
     # We need this so P::RD won't skip leading whitespace at lines

@@ -7,15 +7,31 @@ package XML::Grammar::Screenplay::FromProto::Node;
 
 use Moose;
 
-package XML::Grammar::Screenplay::FromProto::Node::Element;
+package XML::Grammar::Screenplay::FromProto::Node::WithContent;
 
 use Moose;
 
-has 'name' => (isa => 'Str', is => 'rw');
 has 'children' => (
     isa => 'XML::Grammar::Screenplay::FromProto::Node::List', 
     is => 'rw'
 );
+
+sub _get_childs
+{
+    my $self = shift;
+
+    my $childs = $self->children->contents();
+
+    return $childs || [];
+}
+
+package XML::Grammar::Screenplay::FromProto::Node::Element;
+
+use Moose;
+
+extends("XML::Grammar::Screenplay::FromProto::Node::WithContent");
+
+has 'name' => (isa => 'Str', is => 'rw');
 has 'attrs' => (isa => 'ArrayRef', is => 'rw');
 
 sub lookup_attr
@@ -44,9 +60,7 @@ package XML::Grammar::Screenplay::FromProto::Node::Text;
 
 use Moose;
 
-extends("XML::Grammar::Screenplay::FromProto::Node");
-
-has 'content' => (isa => "ArrayRef", is => "rw");
+extends("XML::Grammar::Screenplay::FromProto::Node::WithContent");
 
 package XML::Grammar::Screenplay::FromProto::Node::Saying;
 
@@ -66,9 +80,7 @@ package XML::Grammar::Screenplay::FromProto::Node::Paragraph;
 
 use Moose;
 
-extends("XML::Grammar::Screenplay::FromProto::Node");
-
-has 'content' => (isa => "ArrayRef", is => "rw");
+extends("XML::Grammar::Screenplay::FromProto::Node::Element");
 
 1;
 
