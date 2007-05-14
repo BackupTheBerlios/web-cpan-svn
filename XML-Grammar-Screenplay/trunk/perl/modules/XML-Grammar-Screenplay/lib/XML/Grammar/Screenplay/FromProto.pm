@@ -59,7 +59,7 @@ text_unit:   tag_or_comment { $item[1] }
 tag_or_comment:   tag
                 | comment
 
-comment:    /<!--(.*?)-->/ para_sep {
+comment:    /<!--(.*?)-->/ms para_sep {
     XML::Grammar::Screenplay::FromProto::Node::Comment->new(
         text => $1
     )
