@@ -23,7 +23,7 @@ __PACKAGE__->mk_accessors(qw(
 =head1 NAME
 
 XML::Grammar::Screenplay::FromProto - module that converts well-formed
-text representing a Screenplay to an XML format.
+text representing a screenplay to an XML format.
 
 =head1 VERSION
 
@@ -32,6 +32,13 @@ Version 0.01
 =cut
 
 our $VERSION = '0.01';
+
+=head2 new()
+
+Accepts no arguments so far. May take some time as the grammar is compiled
+at that point.
+
+=cut
 
 sub _init
 {
@@ -48,9 +55,9 @@ sub _init
     return 0;
 }
 
-=head2 $self->convert()
+=head2 $self->convert({ source => { file => $path_to_file } })
 
-Converts to XML and returns it.
+Converts the file $path_to_file to XML and returns it.
 
 =cut
 
