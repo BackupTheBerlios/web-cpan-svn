@@ -11,8 +11,6 @@ use XML::Writer;
 use Parse::RecDescent;
 use HTML::Entities ();
 
-use Fatal (qw(open));
-
 use XML::Grammar::Screenplay::FromProto::Nodes;
 
 __PACKAGE__->mk_accessors(qw(
@@ -373,7 +371,8 @@ sub _read_file
 {
     my ($self, $filename) = @_;
 
-    open my $in, "<", $filename;
+    open my $in, "<", $filename or
+        confess "Could not open the file \"$filename\" for slurping.";
     my $contents;
     {
         local $/;
