@@ -11,10 +11,12 @@ use XML::Writer;
 use Parse::RecDescent;
 use HTML::Entities ();
 
+use Fatal (qw(open));
+
 use XML::Grammar::Screenplay::FromProto::Nodes;
 
 __PACKAGE__->mk_accessors(qw(
-    _filename
+    _parser
     _writer
 ));
 
@@ -35,8 +37,15 @@ sub _init
 {
     my ($self, $args) = @_;
 
-    $self->_filename($args->{source}->{file}) or
-        confess "Wrong filename given.";
+    local $Parse::RecDescent::skip = "";
+
+    $self->_parser(
+        Parse::RecDescent->new(
+            $self->_calc_grammar()
+        )
+    );
+
+    return 0;
 }
 
 =head2 $self->convert()
@@ -51,7 +60,7 @@ sub _calc_grammar
 
     return <<'EOF';
 
-start : tag  {$thisparser->{ret} = $item[1]; }
+start : tag  {$thisparser->{ret} = $item[1]; 1 }
 
 text_unit:   tag_or_comment { $item[1] }
            | speech_or_desc { $item[1] }
@@ -353,39 +362,44 @@ sub _write_scene
     return;
 }
 
-sub convert
+sub _read_file
 {
-    my $self = shift;
+    my ($self, $filename) = @_;
 
-    # local $::RD_HINT = 1;
-    # local $::RD_TRACE = 1;
-    
-    # We need this so P::RD won't skip leading whitespace at lines
-    # which are siginificant.
-    local $Parse::RecDescent::skip = "";
-
-    my $parser = Parse::RecDescent->new($self->_calc_grammar());
-
-    open my $in, "<", $self->_filename();
+    open my $in, "<", $filename;
     my $contents;
-
     {
         local $/;
         $contents = <$in>;
     }
     close($in);
+    
+    return $contents;
+}
 
-    $parser->start($contents);
+sub convert
+{
+    my ($self, $args) = @_;
 
-    my $tree = $parser->{ret};
+    # These should be un-commented for debugging.
+    # local $::RD_HINT = 1;
+    # local $::RD_TRACE = 1;
+    
+    # We need this so P::RD won't skip leading whitespace at lines
+    # which are siginificant.  
 
-    if (!defined($tree))
+    my $filename = $args->{source}->{file} or
+        confess "Wrong filename given.";
+    my $ret = $self->_parser->start($self->_read_file($filename));
+
+    my $tree = $self->_parser->{ret};
+
+    if (!defined($ret))
     {
         Carp::confess("Parsing failed.");
     }
 
     my $buffer = "";
-    $self->{foo} = \$buffer;
     my $writer = XML::Writer->new(OUTPUT => \$buffer, ENCODING => "utf-8",);
 
     $writer->xmlDecl("utf-8");

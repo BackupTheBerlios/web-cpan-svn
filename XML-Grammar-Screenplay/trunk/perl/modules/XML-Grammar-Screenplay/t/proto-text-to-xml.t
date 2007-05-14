@@ -36,9 +36,11 @@ my @tests = (qw(
 
 # TEST:$num_tests=10
 
+my $grammar = XML::Grammar::Screenplay::FromProto->new();
+
 foreach my $fn (@tests)
 {
-    my $grammar = XML::Grammar::Screenplay::FromProto->new(
+    my $got_xml = $grammar->convert(
         {
             source =>
             {
@@ -47,14 +49,11 @@ foreach my $fn (@tests)
         }
     );
 
-    my $got_xml = $grammar->convert();
-
     # TEST*$num_tests
     is_xml ($got_xml, load_xml("t/data/xml/$fn.xml"),
         "Output of the Proto Text \"$fn\""
     );
 }
-
 
 1;
 
