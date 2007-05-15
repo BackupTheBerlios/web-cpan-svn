@@ -3,8 +3,8 @@
 <document>
     <head>
     </head>
-    <body>
-<scene id="index">
+    <body id="index">
+<scene id="top">
     <scene id="david_and_goliath">
         <description>
             <para>

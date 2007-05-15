@@ -9,5 +9,6 @@
 <!ELEMENT ulink (#PCDATA|bold)*>
 <!ELEMENT bold (#PCDATA)>
 <!ATTLIST scene id ID #REQUIRED>
+<!ATTLIST body id ID #REQUIRED>
 <!ATTLIST saying character CDATA #REQUIRED>
 <!ATTLIST ulink url CDATA #REQUIRED>

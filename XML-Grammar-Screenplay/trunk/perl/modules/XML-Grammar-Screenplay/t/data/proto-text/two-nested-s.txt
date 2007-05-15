@@ -1,4 +1,4 @@
-<s id="index">
+<s id="top">
 
 <s id="a-better-scene">
 </s>

@@ -3,8 +3,8 @@
 <document>
     <head>
     </head>
-    <body>
-        <scene id="index">
+    <body id="index">
+        <scene id="top">
             <scene id="a-better-scene">
             </scene>
             <scene id="another-scene">

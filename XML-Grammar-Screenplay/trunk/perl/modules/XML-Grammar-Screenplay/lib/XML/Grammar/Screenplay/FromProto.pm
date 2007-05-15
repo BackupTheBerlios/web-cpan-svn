@@ -413,7 +413,7 @@ sub convert
     $writer->startTag("document");
     $writer->startTag("head");
     $writer->endTag();
-    $writer->startTag("body");
+    $writer->startTag("body", "id" => "index",);
 
     # Now we're inside the body.
     $self->_writer($writer);
