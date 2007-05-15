@@ -1,5 +1,6 @@
 Build.PL
 Changes
+extradata/screenplay-xml.dtd
 inc/Test/Run/Builder.pm
 lib/XML/Grammar/Screenplay/Base.pm
 lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
@@ -33,3 +34,4 @@ t/data/xml/with-tags-inside-paragraphs.xml
 t/pod-coverage.t
 t/pod.t
 t/proto-text-to-xml.t
+Makefile.PL

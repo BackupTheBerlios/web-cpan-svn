@@ -3,7 +3,11 @@
 use strict;
 use warnings;
 
-use Test::XML tests => 10;
+use Test::More;
+
+use Test::XML tests => 20;
+
+use XML::LibXML;
 
 use XML::Grammar::Screenplay::FromProto;
 
@@ -34,9 +38,20 @@ my @tests = (qw(
         with-multi-line-comments
     ));
 
-# TEST:$num_tests=10
+# TEST:$num_texts=10
 
 my $grammar = XML::Grammar::Screenplay::FromProto->new();
+
+my $dtd = 
+    XML::LibXML::Dtd->new(
+        "Screenplay XML 0.1.0",
+        File::Spec->catfile(
+            "extradata", "screenplay-xml.dtd",
+        ),
+    );
+
+my $xml_parser = XML::LibXML->new();
+$xml_parser->validation(0);
 
 foreach my $fn (@tests)
 {
@@ -49,9 +64,16 @@ foreach my $fn (@tests)
         }
     );
 
-    # TEST*$num_tests
+    # TEST*$num_texts
     is_xml ($got_xml, load_xml("t/data/xml/$fn.xml"),
         "Output of the Proto Text \"$fn\""
+    );
+
+    my $dom = $xml_parser->parse_string($got_xml);
+
+    # TEST*$num_texts
+    ok ($dom->validate($dtd), 
+        "Checking for validity of '$fn'"
     );
 }
 
