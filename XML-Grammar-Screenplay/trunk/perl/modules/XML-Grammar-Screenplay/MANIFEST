@@ -1,6 +1,7 @@
 Build.PL
 Changes
 extradata/screenplay-xml.dtd
+extradata/screenplay-xml-to-docbook.xslt
 inc/Test/Run/Builder.pm
 lib/XML/Grammar/Screenplay/Base.pm
 lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
