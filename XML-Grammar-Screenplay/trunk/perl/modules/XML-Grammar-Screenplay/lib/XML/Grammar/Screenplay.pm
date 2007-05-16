@@ -53,6 +53,18 @@ L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=XML-Grammar-Screeplay>.
 I will be notified, and then you'll automatically be notified of progress on
 your bug as I make changes.
 
+=head1 TODO
+
+=over 4
+
+=item * Implement SGML-like escapes - &lt; &gt; &amp; etc.
+
+=item * Implement a direct ScreenplayXML-to-HTML backend.
+
+=item * Document the proto-text format.
+
+=back
+
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
