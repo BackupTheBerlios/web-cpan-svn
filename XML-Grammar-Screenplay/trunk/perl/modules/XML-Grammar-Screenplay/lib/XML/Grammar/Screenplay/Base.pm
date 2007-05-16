@@ -3,8 +3,6 @@ package XML::Grammar::Screenplay::Base;
 use strict;
 use warnings;
 
-use base 'Class::Accessor';
-
 =head1 NAME
 
 XML::Grammar::Screenplay::Base - base class for XML::Grammar::Screenplay

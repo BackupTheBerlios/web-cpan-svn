@@ -50,7 +50,7 @@ my $builder = Test::Run::Builder->new(
 
 
 $builder->add_build_element('extradata');
-$builder->install_path->{'extradata'} = $builder->prefix() . "/data/modules/XML-Grammar-Screenplay/data";
+$builder->install_path->{'extradata'} = ($builder->prefix() || "/usr") . "/data/modules/XML-Grammar-Screenplay/data";
 
 $builder->config_data('extradata_install_path' => [$builder->install_path->{'extradata'}]);
 

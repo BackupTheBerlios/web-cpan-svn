@@ -13,10 +13,10 @@ use HTML::Entities ();
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
 
-__PACKAGE__->mk_accessors(qw(
-    _parser
-    _writer
-));
+use Moose;
+
+has "_parser" => ('isa' => "Parse::RecDescent", 'is' => "rw");
+has "_writer" => ('isa' => "XML::Writer", 'is' => "rw");
 
 =head1 NAME
 
@@ -35,6 +35,10 @@ our $VERSION = '0.01';
 
 Accepts no arguments so far. May take some time as the grammar is compiled
 at that point.
+
+=head2 meta()
+
+Internal - (to settle pod-coverage.).
 
 =cut
 

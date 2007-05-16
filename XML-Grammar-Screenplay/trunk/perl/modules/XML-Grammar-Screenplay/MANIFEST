@@ -7,11 +7,14 @@ lib/XML/Grammar/Screenplay/Base.pm
 lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
 lib/XML/Grammar/Screenplay/FromProto.pm
 lib/XML/Grammar/Screenplay.pm
+lib/XML/Grammar/Screenplay/ToDocBook.pm
+Makefile.PL
 MANIFEST
 META.yml # Will be created by "make dist"
 README
 t/00-load.t
 t/boilerplate.t
+t/data/docbook/with-internal-description.docbook.xml
 t/data/proto-text/dialogue-with-several-paragraphs.txt
 t/data/proto-text/nested-s.txt
 t/data/proto-text/two-nested-s.txt
@@ -35,4 +38,4 @@ t/data/xml/with-tags-inside-paragraphs.xml
 t/pod-coverage.t
 t/pod.t
 t/proto-text-to-xml.t
-Makefile.PL
+t/to-docbook.t
