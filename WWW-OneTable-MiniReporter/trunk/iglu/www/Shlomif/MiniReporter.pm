@@ -1839,7 +1839,11 @@ sub get_captcha_validator
     my $main = $self->main();
 
     # We don't have to validate if it's just a preview
-    if ($self->query()->param('preview'))
+    if ($self->query()->param('preview') 
+        || (     (!defined($self->query->param('preview')))
+              && (!defined($self->query->param('submit' )))
+           )
+       )
     {
         return ();
     }
