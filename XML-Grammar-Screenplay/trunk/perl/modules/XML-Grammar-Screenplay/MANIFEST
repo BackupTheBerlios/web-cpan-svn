@@ -24,6 +24,7 @@ t/data/proto-text/two-nested-s.txt
 t/data/proto-text/with-comments.txt
 t/data/proto-text/with-description.txt
 t/data/proto-text/with-dialogue.txt
+t/data/proto-text/with-entities.txt
 t/data/proto-text/with-internal-description.txt
 t/data/proto-text/with-multi-line-comments.txt
 t/data/proto-text/with-multi-para-desc.txt
@@ -35,6 +36,7 @@ t/data/xml/two-nested-s.xml
 t/data/xml/with-comments.xml
 t/data/xml/with-description.xml
 t/data/xml/with-dialogue.xml
+t/data/xml/with-entities.xml
 t/data/xml/with-internal-description.xml
 t/data/xml/with-multi-line-comments.xml
 t/data/xml/with-multi-para-desc.xml
