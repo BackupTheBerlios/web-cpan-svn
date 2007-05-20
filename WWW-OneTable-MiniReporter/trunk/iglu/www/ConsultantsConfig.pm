@@ -22,9 +22,15 @@ $config =
     },
     'dsn' => 'dbi:mysql:test_jobs',
     'table_name' => 'consultants2',
+    'text_table_name' => 'consultants2_texts',
     'encoding' => "iso-8859-1",
+    'rss_table_name' => "consultants2_feeds",
     'order_by' => "id DESC",
     'group_by' => ["area"],
+    'captcha' => 
+    {
+        'type' => "text",
+    },
     'fields' =>
     [
         {
