@@ -19,6 +19,7 @@ t/boilerplate.t
 t/data/docbook/with-internal-description.docbook.xml
 t/data/proto-text/dialogue-with-several-paragraphs.txt
 t/data/proto-text/nested-s.txt
+t/data/proto-text/scenes-with-titles.txt
 t/data/proto-text/two-nested-s.txt
 t/data/proto-text/with-comments.txt
 t/data/proto-text/with-description.txt
@@ -29,6 +30,7 @@ t/data/proto-text/with-multi-para-desc.txt
 t/data/proto-text/with-tags-inside-paragraphs.txt
 t/data/xml/dialogue-with-several-paragraphs.xml
 t/data/xml/nested-s.xml
+t/data/xml/scenes-with-titles.xml
 t/data/xml/two-nested-s.xml
 t/data/xml/with-comments.xml
 t/data/xml/with-description.xml

@@ -356,9 +356,13 @@ sub _write_scene
         {
             Carp::confess("Unspecified id for scene!");
         }
+
+        my $title = $scene->lookup_attr("title");
+        my @t = (defined($title) ? (title => $title) : ());
+
         $self->_output_tag_with_childs(
             {
-                'start' => ["scene", id => $id],
+                'start' => ["scene", id => $id, @t],
                 elem => $scene,
             }
         );
