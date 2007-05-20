@@ -6,11 +6,13 @@ extradata/screenplay-xml-to-html.xslt
 inc/Test/Run/Builder.pm
 lib/XML/Grammar/Screenplay/App/FromProto.pm
 lib/XML/Grammar/Screenplay/App/ToDocBook.pm
+lib/XML/Grammar/Screenplay/App/ToHTML.pm
 lib/XML/Grammar/Screenplay/Base.pm
 lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
 lib/XML/Grammar/Screenplay/FromProto.pm
 lib/XML/Grammar/Screenplay.pm
 lib/XML/Grammar/Screenplay/ToDocBook.pm
+lib/XML/Grammar/Screenplay/ToHTML.pm
 Makefile.PL
 MANIFEST
 META.yml # Will be created by "make dist"
