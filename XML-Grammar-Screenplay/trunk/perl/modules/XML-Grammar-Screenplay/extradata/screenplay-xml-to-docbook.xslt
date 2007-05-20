@@ -25,8 +25,16 @@
         <xsl:attribute name="id">
             <xsl:value-of select="@id" />
         </xsl:attribute>
+        <!-- Make the title the title attribute or "ID" if does not exist. -->
         <title>
-            <xsl:value-of select="@id" />
+            <xsl:choose>
+                <xsl:when test="@title">
+                    <xsl:value-of select="@title" />
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@id" />
+                </xsl:otherwise>
+            </xsl:choose> 
         </title>
         <xsl:apply-templates select="scene|description|saying" />
     </section>
