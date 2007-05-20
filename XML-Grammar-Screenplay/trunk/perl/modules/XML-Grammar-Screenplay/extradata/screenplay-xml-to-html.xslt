@@ -42,7 +42,6 @@
                     <xsl:value-of select="@id" />
                 </xsl:otherwise>
             </xsl:choose>
-            </xsl:attribute>
         </xsl:element>
         <xsl:apply-templates select="scene|description|saying" />
     </div>
