@@ -5,7 +5,7 @@ use strict;
 use DBI;
 use MyConfig;
 use POSIX;
-my $dbh = DBI->connect($config{'dsn'});
+my $dbh = DBI->connect($MyConfig::config->{'dsn'});
 
 # Probably better done with one of them date modules
 my @time = localtime(time());
