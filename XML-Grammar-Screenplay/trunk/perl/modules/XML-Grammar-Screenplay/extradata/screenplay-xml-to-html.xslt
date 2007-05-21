@@ -62,7 +62,7 @@
 <xsl:template match="para">
     <p>
         <xsl:if test="local-name(..) = 'saying'">
-            <strong class="sayer"><xsl:value-of select="../@character" />: </strong>
+            <strong class="sayer"><xsl:value-of select="../@character" />:</strong> 
         </xsl:if>
         <xsl:if test="local-name(..) = 'description' and ../child::para[position()=1] = .">
             [
