@@ -60,7 +60,7 @@ implement them using HTML-Widgets-NavMenu.
 (<a href="http://stalker.iguide.co.il:8080/svn/shlomif-homepage/homepage/trunk/">Code</a>)
 </li>
 <li>
-<a href="http://perl-begin.berlios.de/">The Perl Beginners' Site</a>
+<a href="http://perl-begin.org/">The Perl Beginners' Site</a>
 (<a href="http://opensvn.csie.org/perlbegin/perl-begin/trunk/">Code</a>)
 </li>
 <li>
