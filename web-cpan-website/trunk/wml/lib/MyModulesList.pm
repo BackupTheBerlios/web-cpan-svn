@@ -269,6 +269,43 @@ for transforming the XML markup into HTML.
 </p>
 EOF
     },
+    {
+        'perl_name' => "XML-Grammar-Screenplay",
+        'text' => "XML-Grammar-Screenplay",
+        'title' => "An XML Grammar for Rendering Screenplays",
+        'svn_dir' => "XML-Grammar-Screenplay",
+        'desc' => <<"EOF",
+<p>
+XML-Grammar-Screenplay is a processor for well-formed plain text represnting
+Screenplays. This in turn is rendered into a specialized XML format, and
+that in turn can be converted to HTML or DocBook/XML.
+</p>
+
+<h2>Project Resources</h2>
+
+<h3>Examples</h3>
+
+<ul>
+<li>
+<a href="http://www.shlomifish.org/humour/TOWTF/">The One with the 
+Fountainhead</a> - original text, but fan fiction of the T.V. show 
+"Friends".
+</li>
+<li>
+<a href="http://www.shlomifish.org/humour/humanity/">Humanity - The 
+Movie</a> - all original text and concept. Under the CC-by-sa license.
+</li>
+<li>
+<a href="http://www.shlomifish.org/humour/Star-Trek/We-the-Living-Dead/">Star
+Trek - "We The Living Dead"</a> - all original text, but fan fiction of
+Star Trek.
+</li>
+<li>
+Some shorter and sillier examples can be found <a href="http://svn.berlios.de/svnroot/repos/web-cpan/XML-Grammar-Screenplay/trunk/perl/modules/XML-Grammar-Screenplay/t/data/">in the test data directory</a>. 
+</li>
+</ul>
+EOF
+    }
     
 );
 
