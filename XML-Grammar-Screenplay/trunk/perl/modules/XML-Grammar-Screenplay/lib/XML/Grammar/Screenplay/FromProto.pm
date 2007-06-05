@@ -415,6 +415,25 @@ sub _read_file
     return $contents;
 }
 
+sub _calc_tree
+{
+    my ($self, $args) = @_;
+
+    my $filename = $args->{source}->{file} or
+        confess "Wrong filename given.";
+
+    my $ret = $self->_parser->start($self->_read_file($filename));
+
+    if (!defined($ret))
+    {
+        return;
+    }
+    else
+    {
+        return $self->_parser->{ret};
+    }
+}
+
 sub convert
 {
     my ($self, $args) = @_;
@@ -426,13 +445,9 @@ sub convert
     # We need this so P::RD won't skip leading whitespace at lines
     # which are siginificant.  
 
-    my $filename = $args->{source}->{file} or
-        confess "Wrong filename given.";
-    my $ret = $self->_parser->start($self->_read_file($filename));
+    my $tree = $self->_calc_tree($args);
 
-    my $tree = $self->_parser->{ret};
-
-    if (!defined($ret))
+    if (!defined($tree))
     {
         Carp::confess("Parsing failed.");
     }
