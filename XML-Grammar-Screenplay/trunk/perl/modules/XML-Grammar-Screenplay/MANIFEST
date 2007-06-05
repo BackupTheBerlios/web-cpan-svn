@@ -9,6 +9,8 @@ lib/XML/Grammar/Screenplay/App/ToDocBook.pm
 lib/XML/Grammar/Screenplay/App/ToHTML.pm
 lib/XML/Grammar/Screenplay/Base.pm
 lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
+lib/XML/Grammar/Screenplay/FromProto/Parser.pm
+lib/XML/Grammar/Screenplay/FromProto/Parser/PRD.pm
 lib/XML/Grammar/Screenplay/FromProto.pm
 lib/XML/Grammar/Screenplay.pm
 lib/XML/Grammar/Screenplay/ToDocBook.pm
