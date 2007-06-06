@@ -48,8 +48,11 @@ sub _init
 
     local $Parse::RecDescent::skip = "";
 
+    my $parser_class = 
+        ($args->{parser_class} || "XML::Grammar::Screenplay::FromProto::Parser::PRD");
+
     $self->_parser(
-        XML::Grammar::Screenplay::FromProto::Parser::PRD->new()
+        $parser_class->new()
     );
 
     return 0;
@@ -239,7 +242,7 @@ sub _calc_tree
     my $filename = $args->{source}->{file} or
         confess "Wrong filename given.";
 
-    return $self->_parser->parse_text($self->_read_file($filename));
+    return $self->_parser->process_text($self->_read_file($filename));
 }
 
 sub convert

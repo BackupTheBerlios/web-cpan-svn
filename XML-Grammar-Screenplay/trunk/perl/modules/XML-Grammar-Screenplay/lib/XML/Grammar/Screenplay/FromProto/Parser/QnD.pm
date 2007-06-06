@@ -1,0 +1,304 @@
+package XML::Grammar::Screenplay::FromProto::Parser::QnD;
+
+use strict;
+use warnings;
+
+use base 'XML::Grammar::Screenplay::FromProto::Parser';
+
+use Moose;
+
+has "_curr_line_idx" => (isa => "Int", is => "rw");
+has "_lines" => (isa => "ArrayRef", is => "rw");
+
+sub _curr_line :lvalue
+{
+    my $self = shift;
+
+    return $self->_lines()->[$self->_curr_line_idx()];
+}
+
+sub _curr_line_ref
+{
+    my $self = shift;
+
+    return \($self->_lines()->[$self->_curr_line_idx()]);
+}
+
+sub _with_curr_line
+{
+    my ($self, $sub_ref) = @_;
+
+    return $sub_ref->(\($self->_lines()->[$self->_curr_line_idx()]));
+}
+
+sub _next_line
+{
+    my $self = shift;
+
+    $self->_curr_line_idx($self->_curr_line_idx()+1);
+
+    $self->_curr_line =~ m{\A}g;
+
+    return $self->_curr_line();
+}
+
+sub _init
+{
+    my $self = shift;
+
+    return 0;
+}
+
+sub _start
+{
+    my $self = shift;
+
+    return $self->_parse_top_level_tag();
+}
+
+# Skip the whitespace.
+sub _skip_space
+{
+    my $self = shift;
+
+    $self->_consume(qr{\s});
+}
+
+my $id_regex = '[a-zA-Z_\-]+';
+
+sub _opening_tag
+{
+    my $self = shift;
+
+    # Now Lisp got nothing on us.
+    return $self->_with_curr_line(
+        sub {
+            # $l is a reference to the string of the current
+            # line
+            my $l = shift;
+
+            if ($$l !~ m{\G<($id_regex)}g)
+            {
+                Carp::confess("Cannot match opening tag at line " . $self->_get_line_num());
+            }
+            my $id = $1;
+
+            my @attrs;
+
+            while ($$l =~ m{\G\s*($id_regex)="([^"]+)"\s*}cg)
+            {
+                push @attrs, { 'key' => $1, 'value' => $2, };
+            }
+
+            if ($$l !~ m{\G>}g)
+            {
+                Carp::confess (
+                    "Cannot match the \">\" of the opening tag at line" . 
+                        $self->_get_line_num()
+                );
+            }
+            
+            return
+            {
+                name => $id,
+                line => $self->_get_line_num(),
+                attrs => \@attrs,
+            };
+        }
+    );
+}
+
+sub _get_line_num
+{
+    my $self = shift;
+
+    return $self->_curr_line_idx()+1;
+}
+
+sub _closing_tag
+{
+    my $self = shift;
+
+    if ($self->_curr_line !~ m{\G</($id_regex)>})
+    {
+        Carp::confess("Cannot match closing tag at line ". $self->_get_line_num());
+    }
+
+    return
+    {
+        name => $1,
+    };
+}
+
+sub _parse_text
+{
+    my $self = shift;
+
+    my @ret;
+    while (defined(my $unit = $self->_parse_text_unit()))
+    {
+        push @ret, $unit;
+    }
+
+    # If it's whitespace - return an empty list.
+    if ((scalar(@ret) == 1) && (ref($ret[0]) eq "") && ($ret[0] !~ m{\S}))
+    {
+        return 
+            XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => []
+            );
+    }
+
+    return XML::Grammar::Screenplay::FromProto::Node::List->new(
+        contents => \@ret,
+        );
+}
+
+sub _parse_text_unit
+{
+    my $self = shift;
+    my $text1 = $self->_consume(qr{[^<]});
+
+    if (length($text1) > 0)
+    {
+        return $text1;
+    }
+    else
+    {
+        # TODO : implement the comment handling.
+        # We have a tag.
+
+        # If it's a closing tag - then backtrack.
+        if ($self->_curr_line() =~ m{\G</})
+        {
+            return undef;
+        }
+        else
+        {
+            return $self->_parse_top_level_tag();
+        }
+    }
+
+
+}
+
+sub _parse_top_level_tag
+{
+    my $self = shift;
+
+    $self->_skip_space();
+
+    my $open = $self->_opening_tag();
+
+    $self->_skip_space();
+
+    my $inside = $self->_parse_text();
+
+    $self->_skip_space();
+
+    my $close = $self->_closing_tag();
+
+    $self->_skip_space();
+
+    if ($open->{name} ne $close->{name})
+    {
+        Carp::confess("Tags do not match: " 
+            . "$open->{name} on line $open->{line} "
+            . "and $close->{name} on line $close->{line}"
+        );
+    }
+    return XML::Grammar::Screenplay::FromProto::Node::Element->new(
+        name => $open->{name},
+        children => $inside,
+        attrs => $open->{attrs},
+        );
+}
+
+sub _consume
+{
+    my ($self, $match_regex) = @_;
+
+    my $return_value = "";
+    my $l = $self->_curr_line_ref();
+
+    while ($$l =~ m[\G(${match_regex}*)\z]cgms)
+    {
+        $return_value .= $$l;
+        $self->_next_line();
+
+        $l = $self->_curr_line_ref();
+    }
+
+    if ($$l =~ m[\G(${match_regex}*)]cg)
+    {
+        $return_value .= $1;
+    }
+
+    return $return_value;
+}
+
+sub _setup_text
+{
+    my ($self, $text) = @_;
+
+    # We include the lines trailing newlines for safety.
+    # $self->_lines([$text =~ m{\A([^\n]*\n?)*\z}ms]);
+    $self->_lines([split(/^/, $text)]);
+
+    $self->_curr_line_idx(0);
+
+    $self->_curr_line() =~ m{\A}g;
+
+    return;
+}
+
+sub process_text
+{   
+    my ($self, $text) = @_;
+
+    $self->_setup_text($text);
+
+    return $self->_start();
+}
+
+=head1 NAME
+
+XML::Grammar::Screenplay::FromProto::Parser::QnD - Quick and Dirty parser
+for the Screenplay-XML proto-text.
+
+B<For internal use only>.
+
+=head1 METHODS
+
+=head2 $self->process_text($string)
+
+Processes the text and returns the parse tree.
+
+=head2 $self->meta()
+
+Leftover from Moose.
+
+=head1 AUTHOR
+
+Shlomi Fish, L<http://www.shlomifish.org/>.
+
+=head1 BUGS
+
+Please report any bugs or feature requests to
+C<bug-xml-grammar-screenplay at rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=XML-Grammar-Screeplay>.
+I will be notified, and then you'll automatically be notified of progress on
+your bug as I make changes.
+
+=head1 ACKNOWLEDGEMENTS
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2007 Shlomi Fish, all rights reserved.
+
+This program is released under the following license: MIT X11.
+
+=cut
+
+1;
+

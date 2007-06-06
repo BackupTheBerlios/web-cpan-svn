@@ -203,7 +203,7 @@ id: /[a-zA-Z_\-]+/
 EOF
 }
 
-sub parse_text
+sub process_text
 {   
     my ($self, $text) = @_;
 
@@ -231,9 +231,9 @@ B<For internal use only>.
 
 =head1 METHODS
 
-=head2 $self->parse_text($string)
+=head2 $self->process_text($string)
 
-Parses the text.
+Processes the text and returns it.
 
 =head1 AUTHOR
 
