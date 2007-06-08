@@ -157,29 +157,16 @@ sub _parse_text
         );
 }
 
-sub _parse_saying_first_para
+sub _parse_inner_text
 {
     my $self = shift;
 
-    my ($sayer, $what);
-    
-    ($sayer, $what) = $self->_with_curr_line(
-        sub {
-            my $l = shift;
-
-            if ($$l !~ /\G([^:\n\+]+): (.*)/cgms)
-            {
-                Carp::confess("Cannot match addressing at line " . $self->_get_line_num());
-            }
-
-            return ($1, $2);
-        }
-    );
+    my $inner_text = "";
 
     while ($self->_curr_line() ne "\n")
     {
         # We need this to avoid appending the rest of the first line 
-        $what .= $self->_with_curr_line(
+        $inner_text .= $self->_with_curr_line(
             sub {
                 my $l = shift;
 
@@ -197,7 +184,35 @@ sub _parse_saying_first_para
         }
     }
 
-    $what = [$what];
+    # Temporary workaround to make the syntax tree happy.
+    # TODO : Fixx it.
+    $inner_text = [$inner_text];
+
+    return $inner_text;
+}
+
+# TODO : _parse_saying_first_para and _parse_saying_other_para are
+# very similar - abstract them into one function.
+sub _parse_saying_first_para
+{
+    my $self = shift;
+
+    my ($sayer, $what);
+    
+    ($sayer) = $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            if ($$l !~ /\G([^:\n\+]+): /cgms)
+            {
+                Carp::confess("Cannot match addressing at line " . $self->_get_line_num());
+            }
+
+            return ($1, $2);
+        }
+    );
+
+    $what = $self->_parse_inner_text();
 
     return
     +{
@@ -215,7 +230,37 @@ sub _parse_saying_other_para
 {
     my $self = shift;
 
-    return undef;
+    $self->_skip_space();
+
+    my $verdict = $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            if ($$l !~ /\G\++: /cgms)
+            {
+                return;
+            }
+            else
+            {
+                return 1;
+            }
+        }
+    );
+
+    if (!defined($verdict))
+    {
+        return;
+    }
+
+    my $what = $self->_parse_inner_text();
+
+    return
+        XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+            children =>
+            XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => $what,
+                )
+        );
 }
 
 sub _parse_text_unit
