@@ -157,11 +157,22 @@ sub _parse_text
         );
 }
 
+sub _consume_paragraph
+{
+    my $self = shift;
+
+    $self->_skip_space();
+
+    return $self->_parse_inner_text();
+}
+
 sub _parse_inner_text
 {
     my $self = shift;
 
     my $inner_text = "";
+
+    my $start_line = $self->_curr_line_idx();
 
     while ($self->_curr_line() ne "\n")
     {
@@ -180,7 +191,7 @@ sub _parse_inner_text
     {
         if (!defined(${$self->_next_line_ref()}))
         {
-            Carp::confess "End of file in an addressing paragraph";
+            Carp::confess "End of file in an addressing paragraph starting at $start_line";
         }
     }
 
@@ -263,6 +274,110 @@ sub _parse_saying_other_para
         );
 }
 
+sub _parse_speech_unit
+{
+    my $self = shift;
+
+    my $first = $self->_parse_saying_first_para();
+
+    my @others;
+    while (defined(my $other_para = $self->_parse_saying_other_para()))
+    {
+        push @others, $other_para;
+    }
+
+    return
+        XML::Grammar::Screenplay::FromProto::Node::Saying->new(
+            character => $first->{character},
+            children => 
+                XML::Grammar::Screenplay::FromProto::Node::List->new(
+                    contents => [ $first->{para}, @others ],
+                ),
+        );
+}
+
+sub _parse_desc_unit
+{
+    my $self = shift;
+
+    my $start_line = $self->_curr_line_idx();
+
+    # Skip the [
+    $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            $$l =~ m{^\[}g;
+        }
+    );
+
+    my @paragraphs;
+
+    my $is_end = 1;
+    my $para;
+    PARAS_LOOP:
+    while ($is_end && ($para = $self->_consume_paragraph()))
+    {
+        my $terminator = \$para->[-1];
+        if (   (ref($$terminator) eq "") 
+            && ($$terminator =~ s{\][\s\n]*\z}{}ms))
+        {
+            $is_end = 0;
+        }
+        push @paragraphs, $para;
+    }
+
+    if ($is_end)
+    {
+        Carp::confess (qq{Description ("[ ... ]") that started on line $start_line does not terminate anywhere.});
+    }
+
+    return XML::Grammar::Screenplay::FromProto::Node::Description->new(
+        children => 
+            XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents =>
+            [
+            map { 
+            XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+                children =>
+                    XML::Grammar::Screenplay::FromProto::Node::List->new(
+                        contents => $_,
+                        ),
+                    )
+            } @paragraphs
+            ],
+        ),
+    );
+}
+
+sub _parse_non_tag_text_unit
+{
+    my $self = shift;
+
+    if (pos(${$self->_curr_line_ref()}) == 0)
+    {
+        return $self->_with_curr_line(
+            sub {
+                my $l = shift;
+                if (substr($$l, 0, 1) eq "[")
+                {
+                    return $self->_parse_desc_unit();
+                }
+                elsif ($$l =~ m{\A[^:]+:})
+                {
+                    return $self->_parse_speech_unit();
+                }
+            }
+        );
+    }
+    else
+    {
+        Carp::confess ("Line " . $self->_curr_line_idx() . 
+            " has leading whitespace."
+            );
+    }
+}
+
 sub _parse_text_unit
 {
     my $self = shift;
@@ -287,25 +402,7 @@ sub _parse_text_unit
     }
     else
     {
-        if (pos(${$self->_curr_line_ref()}) == 0)
-        {
-            my $first = $self->_parse_saying_first_para();
-
-            my @others;
-            while (defined(my $other_para = $self->_parse_saying_other_para()))
-            {
-                push @others, $other_para;
-            }
-
-            return
-                XML::Grammar::Screenplay::FromProto::Node::Saying->new(
-                    character => $first->{character},
-                    children => 
-                        XML::Grammar::Screenplay::FromProto::Node::List->new(
-                            contents => [ $first->{para}, @others ],
-                        ),
-                );
-        }
+        return $self->_parse_non_tag_text_unit();
     }
 }
 
