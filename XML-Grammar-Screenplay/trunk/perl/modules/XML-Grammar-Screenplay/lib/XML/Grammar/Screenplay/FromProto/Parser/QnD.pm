@@ -64,7 +64,7 @@ sub _skip_space
 
 my $id_regex = '[a-zA-Z_\-]+';
 
-sub _opening_tag
+sub _parse_opening_tag
 {
     my $self = shift;
 
@@ -113,7 +113,7 @@ sub _get_line_num
     return $self->_curr_line_idx()+1;
 }
 
-sub _closing_tag
+sub _parse_closing_tag
 {
     my $self = shift;
 
@@ -166,26 +166,88 @@ sub _consume_paragraph
     return $self->_parse_inner_text();
 }
 
+sub _parse_inner_tag
+{
+    my $self = shift;
+
+    my $open = $self->_parse_opening_tag();
+
+    my $inside = $self->_parse_inner_text();
+
+    my $close = $self->_parse_closing_tag();
+
+    if ($open->{name} ne $close->{name})
+    {
+        Carp::confess("Opening and closing tags do not match: " 
+            . "$open->{name} and $close->{name} on element starting at "
+            . "line $open->{line}"
+        );
+    }
+    return XML::Grammar::Screenplay::FromProto::Node::Element->new(
+        name => $open->{name},
+        children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+            contents => $inside
+            ),
+        attrs => $open->{attrs},
+        );
+}
+
 sub _parse_inner_text
 {
     my $self = shift;
 
-    my $inner_text = "";
+    my @contents;
 
     my $start_line = $self->_curr_line_idx();
 
+    my $curr_text = "";
+
+    CONTENTS_LOOP:
     while ($self->_curr_line() ne "\n")
     {
+        my $which_tag;
         # We need this to avoid appending the rest of the first line 
-        $inner_text .= $self->_with_curr_line(
+        $self->_with_curr_line(
             sub {
                 my $l = shift;
 
-                $$l =~ m{\G(.*)\z}gms;
+                $$l =~ m{\G([^\<]*)}gms;
 
-                return $1;
+                $curr_text .= $1;
+
+                if ($$l =~ m{\G</})
+                {
+                    $which_tag = "close";
+                }
+                elsif ($$l =~ m{\G<})
+                {
+                    $which_tag = "open";
+                }
             }
         );
+
+        push @contents, $curr_text;
+
+        $curr_text = "";
+
+        if (!defined($which_tag))
+        {
+            # Do nothing - a tag was not detected.
+        }
+        else
+        {
+            if ($which_tag eq "open")
+            {
+                push @contents, $self->_parse_inner_tag();
+                # Avoid skipping to the next line.
+                # Gotta love teh Perl!
+                redo CONTENTS_LOOP;
+            }
+            elsif ($which_tag eq "close")
+            {
+                last CONTENTS_LOOP;
+            }
+        }
     }
     continue
     {
@@ -195,11 +257,12 @@ sub _parse_inner_text
         }
     }
 
-    # Temporary workaround to make the syntax tree happy.
-    # TODO : Fixx it.
-    $inner_text = [$inner_text];
+    if (length($curr_text) > 0)
+    {
+        push @contents, $curr_text;
+    }
 
-    return $inner_text;
+    return \@contents;
 }
 
 # TODO : _parse_saying_first_para and _parse_saying_other_para are
@@ -412,7 +475,7 @@ sub _parse_top_level_tag
 
     $self->_skip_space();
 
-    my $open = $self->_opening_tag();
+    my $open = $self->_parse_opening_tag();
 
     $self->_skip_space();
 
@@ -420,7 +483,7 @@ sub _parse_top_level_tag
 
     $self->_skip_space();
 
-    my $close = $self->_closing_tag();
+    my $close = $self->_parse_closing_tag();
 
     $self->_skip_space();
 

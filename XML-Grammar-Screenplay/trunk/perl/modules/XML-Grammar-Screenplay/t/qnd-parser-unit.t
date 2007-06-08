@@ -62,7 +62,7 @@ EOF
 
     $parser->_setup_text($text);
 
-    my $ret = $parser->_opening_tag();
+    my $ret = $parser->_parse_opening_tag();
 
     # TEST
     is_deeply ($ret, 
@@ -71,7 +71,7 @@ EOF
             line => 1,
             attrs => [ { key => "id", value => "top"}],
         },
-        "Checking _opening_tag() - #1",
+        "Checking _parse_opening_tag() - #1",
     );
 }
 
