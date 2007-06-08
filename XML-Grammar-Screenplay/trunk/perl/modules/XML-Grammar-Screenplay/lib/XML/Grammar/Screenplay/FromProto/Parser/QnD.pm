@@ -31,15 +31,13 @@ sub _with_curr_line
     return $sub_ref->(\($self->_lines()->[$self->_curr_line_idx()]));
 }
 
-sub _next_line
+sub _next_line_ref
 {
     my $self = shift;
 
     $self->_curr_line_idx($self->_curr_line_idx()+1);
 
-    $self->_curr_line =~ m{\A}g;
-
-    return $self->_curr_line();
+    return $self->_curr_line_ref();
 }
 
 sub _init
@@ -119,15 +117,20 @@ sub _closing_tag
 {
     my $self = shift;
 
-    if ($self->_curr_line !~ m{\G</($id_regex)>})
-    {
-        Carp::confess("Cannot match closing tag at line ". $self->_get_line_num());
-    }
+    return $self->_with_curr_line(
+        sub {
+            my $l = shift;
+            if ($$l !~ m{\G</($id_regex)>}g)
+            {
+                Carp::confess("Cannot match closing tag at line ". $self->_get_line_num());
+            }
 
-    return
-    {
-        name => $1,
-    };
+            return
+            {
+                name => $1,
+            };
+        }
+    );
 }
 
 sub _parse_text
@@ -178,8 +181,6 @@ sub _parse_text_unit
             return $self->_parse_top_level_tag();
         }
     }
-
-
 }
 
 sub _parse_top_level_tag
@@ -221,15 +222,17 @@ sub _consume
     my $return_value = "";
     my $l = $self->_curr_line_ref();
 
-    while ($$l =~ m[\G(${match_regex}*)\z]cgms)
+    while (defined($$l) && ($$l =~ m[\G(${match_regex}*)\z]cgms))
     {
         $return_value .= $$l;
-        $self->_next_line();
-
+    }
+    continue
+    {
+        $self->_next_line_ref();
         $l = $self->_curr_line_ref();
     }
 
-    if ($$l =~ m[\G(${match_regex}*)]cg)
+    if (defined($$l) && ($$l =~ m[\G(${match_regex}*)]cg))
     {
         $return_value .= $1;
     }
