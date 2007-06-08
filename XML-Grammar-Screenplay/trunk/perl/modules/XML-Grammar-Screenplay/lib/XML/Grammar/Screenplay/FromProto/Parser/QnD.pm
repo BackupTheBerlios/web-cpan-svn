@@ -157,17 +157,76 @@ sub _parse_text
         );
 }
 
+sub _parse_saying_first_para
+{
+    my $self = shift;
+
+    my ($sayer, $what);
+    
+    ($sayer, $what) = $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            if ($$l !~ /\G([^:\n\+]+): (.*)/cgms)
+            {
+                Carp::confess("Cannot match addressing at line " . $self->_get_line_num());
+            }
+
+            return ($1, $2);
+        }
+    );
+
+    while ($self->_curr_line() ne "\n")
+    {
+        # We need this to avoid appending the rest of the first line 
+        $what .= $self->_with_curr_line(
+            sub {
+                my $l = shift;
+
+                $$l =~ m{\G(.*)\z}gms;
+
+                return $1;
+            }
+        );
+    }
+    continue
+    {
+        if (!defined(${$self->_next_line_ref()}))
+        {
+            Carp::confess "End of file in an addressing paragraph";
+        }
+    }
+
+    $what = [$what];
+
+    return
+    +{
+         character => $sayer,
+         para => XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
+            children =>
+            XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => $what,
+                )
+            ),
+    };
+}
+
+sub _parse_saying_other_para
+{
+    my $self = shift;
+
+    return undef;
+}
+
 sub _parse_text_unit
 {
     my $self = shift;
-    my $text1 = $self->_consume(qr{[^<]});
+    my $space = $self->_consume(qr{\s});
 
-    if (length($text1) > 0)
+    if ($self->_curr_line() =~ m{\G<})
     {
-        return $text1;
-    }
-    else
-    {
+        # If it's a tag.
+
         # TODO : implement the comment handling.
         # We have a tag.
 
@@ -179,6 +238,28 @@ sub _parse_text_unit
         else
         {
             return $self->_parse_top_level_tag();
+        }
+    }
+    else
+    {
+        if (pos(${$self->_curr_line_ref()}) == 0)
+        {
+            my $first = $self->_parse_saying_first_para();
+
+            my @others;
+            while (defined(my $other_para = $self->_parse_saying_other_para()))
+            {
+                push @others, $other_para;
+            }
+
+            return
+                XML::Grammar::Screenplay::FromProto::Node::Saying->new(
+                    character => $first->{character},
+                    children => 
+                        XML::Grammar::Screenplay::FromProto::Node::List->new(
+                            contents => [ $first->{para}, @others ],
+                        ),
+                );
         }
     }
 }
