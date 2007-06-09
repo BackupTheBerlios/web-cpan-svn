@@ -525,11 +525,31 @@ sub _parse_text_unit
     }
 }
 
+sub _curr_line_matches
+{
+    my $self = shift;
+    my $re = shift;
+
+    my $l = $self->_curr_line_ref();
+
+    return ($$l =~ $re);
+}
+
 sub _parse_top_level_tag
 {
     my $self = shift;
 
     $self->_skip_space();
+
+    if ($self->_with_curr_line(sub { my $l = shift; return $$l =~ m{\G<!--}cg}))
+    {
+        my $text = $self->_consume_up_to(qr{-->});
+
+        return
+            XML::Grammar::Screenplay::FromProto::Node::Comment->new(
+                text => $text
+            );
+    }
 
     my $open = $self->_parse_opening_tag();
 
@@ -577,6 +597,35 @@ sub _consume
     if (defined($$l) && ($$l =~ m[\G(${match_regex}*)]cg))
     {
         $return_value .= $1;
+    }
+
+    return $return_value;
+}
+
+# TODO : copied and pasted from _consume - abstract
+sub _consume_up_to
+{
+    my ($self, $match_regex) = @_;
+
+    my $return_value = "";
+    my $l = $self->_curr_line_ref();
+
+    LINE_LOOP:
+    while (defined($$l))
+    {
+        my $verdict = ($$l =~ m[\G(.*?)((?:${match_regex})|\z)]cgms);
+        $return_value .= $1;
+        
+        # Find if it matched the regex.
+        if (length($2) > 0)
+        {
+            last LINE_LOOP;
+        }
+    }
+    continue
+    {
+        $self->_next_line_ref();
+        $l = $self->_curr_line_ref();
     }
 
     return $return_value;
