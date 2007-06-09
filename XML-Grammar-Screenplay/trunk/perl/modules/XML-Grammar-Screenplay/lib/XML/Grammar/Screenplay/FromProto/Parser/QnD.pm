@@ -166,6 +166,47 @@ sub _consume_paragraph
     return $self->_parse_inner_text();
 }
 
+sub _parse_inner_desc
+{
+    my $self = shift;
+
+    my $start_line = $self->_get_line_num();
+
+    # Skip the [
+    $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            $$l =~ m{\G\[}g;
+        }
+    );
+
+    my $inside = $self->_parse_inner_text();
+
+    $self->_with_curr_line(
+        sub {
+            my $l = shift;
+
+            if ($$l !~ m{\G\]}g)
+            {
+                Carp::confess (
+                      "Inner description that started at line $start_line did "
+                    . "not terminate with a \"]\"!"
+                );
+            }
+        }
+    );
+
+    return
+        XML::Grammar::Screenplay::FromProto::Node::InnerDesc->new(
+            start => $start_line,
+            children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+                contents => $inside
+            ),
+        );
+ 
+}
+
 sub _parse_inner_tag
 {
     my $self = shift;
@@ -210,18 +251,25 @@ sub _parse_inner_text
         $self->_with_curr_line(
             sub {
                 my $l = shift;
-
-                $$l =~ m{\G([^\<]*)}gms;
+                
+                if ($$l !~ m{\G([^\<\[\]]*)}gms)
+                {
+                    Carp::confess ("Cannot match at line $start_line");
+                }
 
                 $curr_text .= $1;
 
-                if ($$l =~ m{\G</})
+                if ($$l =~ m{\G\[})
+                {
+                    $which_tag = "open_desc";
+                }
+                elsif ($$l =~ m{\G(?:</|\])})
                 {
                     $which_tag = "close";
                 }
                 elsif ($$l =~ m{\G<})
                 {
-                    $which_tag = "open";
+                    $which_tag = "open_tag";
                 }
             }
         );
@@ -236,9 +284,13 @@ sub _parse_inner_text
         }
         else
         {
-            if ($which_tag eq "open")
+            if (($which_tag eq "open_desc") || ($which_tag eq "open_tag"))
             {
-                push @contents, $self->_parse_inner_tag();
+                push @contents, 
+                    (($which_tag eq "open_tag")
+                        ? $self->_parse_inner_tag()
+                        : $self->_parse_inner_desc()
+                    );
                 # Avoid skipping to the next line.
                 # Gotta love teh Perl!
                 redo CONTENTS_LOOP;
@@ -381,12 +433,16 @@ sub _parse_desc_unit
     PARAS_LOOP:
     while ($is_end && ($para = $self->_consume_paragraph()))
     {
-        my $terminator = \$para->[-1];
-        if (   (ref($$terminator) eq "") 
-            && ($$terminator =~ s{\][\s\n]*\z}{}ms))
-        {
-            $is_end = 0;
-        }
+        $self->_with_curr_line(
+            sub {
+                my $l = shift;
+
+                if ($$l =~ m{\G\]}cg)
+                {
+                    $is_end = 0;
+                }
+            }
+        );
         push @paragraphs, $para;
     }
 
