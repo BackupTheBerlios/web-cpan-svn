@@ -196,7 +196,7 @@ sub _parse_inner_desc
             if ($$l !~ m{\G\]}g)
             {
                 Carp::confess (
-                      "Inner description that started at line $start_line did "
+                      "Inner description that started on line $start_line did "
                     . "not terminate with a \"]\"!"
                 );
             }
@@ -274,7 +274,7 @@ sub _parse_inner_text
                 
                 # Apparently, perl does not always returns true in this
                 # case, so we need the defined($1) ? $1 : "" workaround.
-                $$l =~ m{\G([^\<\[\]\&]*)}gms;
+                $$l =~ m{\G([^\<\[\]\&]*)}cgms;
 
                 $curr_text .= (defined($1) ? $1 : "");
 
