@@ -235,6 +235,10 @@ B<For internal use only>.
 
 Processes the text and returns it.
 
+=head2 $self->meta()
+
+Something that L<Moose> adds.
+
 =head1 AUTHOR
 
 Shlomi Fish, L<http://www.shlomifish.org/>.
