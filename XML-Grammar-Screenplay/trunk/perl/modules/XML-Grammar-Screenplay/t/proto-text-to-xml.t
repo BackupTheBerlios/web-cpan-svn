@@ -10,6 +10,7 @@ use Test::XML tests => 26;
 use XML::LibXML;
 
 use XML::Grammar::Screenplay::FromProto;
+use XML::Grammar::Screenplay::FromProto::Parser::PRD;
 
 sub load_xml
 {

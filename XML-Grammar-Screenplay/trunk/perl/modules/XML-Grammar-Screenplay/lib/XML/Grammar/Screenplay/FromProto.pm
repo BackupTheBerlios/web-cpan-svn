@@ -11,7 +11,6 @@ use XML::Writer;
 use HTML::Entities ();
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
-use XML::Grammar::Screenplay::FromProto::Parser::PRD;
 
 use Moose;
 
