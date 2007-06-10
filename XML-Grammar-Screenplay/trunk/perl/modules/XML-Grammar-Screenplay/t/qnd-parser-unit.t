@@ -68,6 +68,7 @@ EOF
     is_deeply ($ret, 
         {
             name => "s",
+            is_standalone => 0,
             line => 1,
             attrs => [ { key => "id", value => "top"}],
         },

@@ -88,17 +88,23 @@ sub _parse_opening_tag
                 push @attrs, { 'key' => $1, 'value' => $2, };
             }
 
-            if ($$l !~ m{\G>}g)
+            my $is_standalone = 0;
+            if ($$l =~ m{\G\s*/\s*>}cg)
+            {
+                $is_standalone = 1;
+            }
+            elsif ($$l !~ m{\G>}g)
             {
                 Carp::confess (
-                    "Cannot match the \">\" of the opening tag at line" . 
-                        $self->_get_line_num()
+                    "Cannot match the \">\" of the opening tag at line " 
+                        . $self->_get_line_num()
                 );
             }
             
             return
             {
                 name => $id,
+                is_standalone => $is_standalone,
                 line => $self->_get_line_num(),
                 attrs => \@attrs,
             };
@@ -212,6 +218,20 @@ sub _parse_inner_tag
     my $self = shift;
 
     my $open = $self->_parse_opening_tag();
+
+    if ($open->{is_standalone})
+    {
+        $self->_skip_space();
+
+        return        
+            XML::Grammar::Screenplay::FromProto::Node::Element->new(
+                name => $open->{name},
+                children => XML::Grammar::Screenplay::FromProto::Node::List->new(
+                    contents => []
+                ),
+                attrs => $open->{attrs},
+            );
+    }
 
     my $inside = $self->_parse_inner_text();
 

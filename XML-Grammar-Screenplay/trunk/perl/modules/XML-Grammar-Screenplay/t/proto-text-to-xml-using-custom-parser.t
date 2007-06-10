@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More;
 
-use Test::XML tests => 18;
+use Test::XML tests => 26;
 
 use XML::LibXML;
 
@@ -43,9 +43,7 @@ my @tests = (qw(
         with-brs
     ));
 
-# TEST:$num_texts=9
-@tests = splice(@tests, 0, 9);
-
+# TEST:$num_texts=13
 
 my $grammar = XML::Grammar::Screenplay::FromProto->new({
         parser_class => "XML::Grammar::Screenplay::FromProto::Parser::QnD",
