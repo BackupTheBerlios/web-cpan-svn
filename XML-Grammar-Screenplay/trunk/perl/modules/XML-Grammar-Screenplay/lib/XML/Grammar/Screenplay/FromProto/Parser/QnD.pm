@@ -272,12 +272,9 @@ sub _parse_inner_text
             sub {
                 my $l = shift;
                 
-                if ($$l !~ m{\G([^\<\[\]\&]*)}gms)
-                {
-                    Carp::confess ("Cannot match at line $start_line");
-                }
+                $$l =~ m{\G([^\<\[\]\&]*)}gms;
 
-                $curr_text .= $1;
+                $curr_text .= defined($1) ? $1 : "";
 
                 if ($$l =~ m{\G\[})
                 {
