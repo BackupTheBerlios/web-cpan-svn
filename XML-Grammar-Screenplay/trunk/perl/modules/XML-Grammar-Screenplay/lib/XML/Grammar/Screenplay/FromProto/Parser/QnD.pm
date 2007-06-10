@@ -272,7 +272,7 @@ sub _parse_inner_text
             sub {
                 my $l = shift;
                 
-                if ($$l !~ m{\G([^\<\[\]]*)}gms)
+                if ($$l !~ m{\G([^\<\[\]\&]*)}gms)
                 {
                     Carp::confess ("Cannot match at line $start_line");
                 }
@@ -283,6 +283,10 @@ sub _parse_inner_text
                 {
                     $which_tag = "open_desc";
                 }
+                elsif ($$l =~ m{\G\&})
+                {
+                    $which_tag = "entity";
+                }                
                 elsif ($$l =~ m{\G(?:</|\])})
                 {
                     $which_tag = "close";
@@ -318,6 +322,22 @@ sub _parse_inner_text
             elsif ($which_tag eq "close")
             {
                 last CONTENTS_LOOP;
+            }
+            elsif ($which_tag eq "entity")
+            {
+                $self->_with_curr_line(
+                    sub {
+                        my $l = shift;
+                        if ($$l !~ m{\G(\&\w+;)}g)
+                        {
+                            Carp::confess("Cannot match entity (e.g: \"&quot;\") at line " .
+                                $self->_get_line_num()
+                            );
+                        }
+                        push @contents, HTML::Entities::decode_entities($1);
+                    }
+                );
+                redo CONTENTS_LOOP;
             }
         }
     }
