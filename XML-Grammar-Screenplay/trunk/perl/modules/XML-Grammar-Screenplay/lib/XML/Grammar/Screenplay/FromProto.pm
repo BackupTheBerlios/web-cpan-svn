@@ -48,7 +48,7 @@ sub _init
     local $Parse::RecDescent::skip = "";
 
     my $parser_class = 
-        ($args->{parser_class} || "XML::Grammar::Screenplay::FromProto::Parser::PRD");
+        ($args->{parser_class} || "XML::Grammar::Screenplay::FromProto::Parser::QnD");
 
     $self->_parser(
         $parser_class->new()
