@@ -44,7 +44,9 @@ my @tests = (qw(
 
 # TEST:$num_texts=13
 
-my $grammar = XML::Grammar::Screenplay::FromProto->new();
+my $grammar = XML::Grammar::Screenplay::FromProto->new({
+        parser_class => "XML::Grammar::Screenplay::FromProto::Parser::PRD",
+    });
 
 my $dtd = 
     XML::LibXML::Dtd->new(
