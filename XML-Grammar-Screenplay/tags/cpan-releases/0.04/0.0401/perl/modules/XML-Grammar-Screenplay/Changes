@@ -1,0 +1,32 @@
+Revision history for XML-Grammar-Screenplay
+
+0.0401  Sat Jul 14 10:43:57 IDT 2007
+        - Converted the "Screeplay" strings that were a leftover from
+        the wrong module-starter invocation into "Screenplay".
+
+0.04    Mon Jun 11 21:26:48 IDT 2007
+        - Added the Quick-and-Dirty FromProto parser, which is slightly faster,
+        than the Parse::RecDescent one and with much better diagnostics. 
+        - More parsers can be added later.
+        - Broke some compatibility - now require "use"-ing the parser class.
+
+0.03    Tue May 22 07:46:18 IDT 2007
+        - Added the <br /> tag.
+        - Added a description of the proto-text format in the POD and
+        other POD.
+        - Fixed the space being part of the saying issue in the generated
+        HTML.
+
+0.02    Mon May 21 00:26:35 IDT 2007
+        - Added the title="" attribute to the scene tag.
+        - Added support for SGML-like entities
+        - Added the direct ScreenplayXML -> HTML processor.
+        
+0.0101  Thu May 17 19:14:01 IDT 2007
+        - BUG FIX: Changed to open the filename in 
+        XML::Grammar::Screenplay::FromProto in ":utf8" mode. 
+        - BUG FIX: added more dependencies to the Build.PL.
+
+0.01    
+        First version, released on an unsuspecting world.
+
