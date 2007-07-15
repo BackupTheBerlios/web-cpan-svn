@@ -1,11 +1,12 @@
 Build.PL
 Changes
+inc/Test/Run/Builder.pm
+lib/MediaWiki/Parser.pm
+Makefile.PL
 MANIFEST
 META.yml # Will be created by "make dist"
 README
-lib/MediaWiki/Parser.pm
 t/00-load.t
 t/boilerplate.t
 t/pod-coverage.t
 t/pod.t
-Makefile.PL
