@@ -1,5 +1,12 @@
 package MediaWiki::Parser::LineMan;
 
+use Exception::Class
+    (
+        'MediaWiki::Parser::LineMan::Exception',
+        'MediaWiki::Parser::LineMan::Exception::End' =>
+        { isa => 'MediaWiki::Parser::LineMan::Exception',}
+    );
+
 =head1 NAME
 
 MediaWiki::Parser::LineMan - Line manager for MediaWiki parser.
@@ -41,6 +48,7 @@ use warnings;
 use Moose;
 
 has "_lines" => (isa => "ArrayRef", is => "ro", init_arg => "lines");
+has "_curr_line_idx" => (isa => "Int", is => "rw", default => 0);
 
 =head2 $manager->curr_line()
 
@@ -59,7 +67,45 @@ sub curr_line
 {
     my $self = shift;
 
-    return \($self->_lines()->[0]);
+    return \($self->_lines()->[$self->_curr_line_idx()]);
+}
+
+sub _check_for_end_of_lines
+{
+    my $self = shift;
+
+    if ($self->_curr_line_idx() == $#{$self->_lines()})
+    {
+        MediaWiki::Parser::LineMan::Exception::End->throw(
+            'error' => "Trying to seek past the last line."
+        );
+    }
+}
+
+sub _increment_line_idx
+{
+    my $self = shift;
+
+    $self->_check_for_end_of_lines();
+
+    $self->_curr_line_idx($self->_curr_line_idx()+1);
+
+    return;
+}
+
+=head2 $line_ref = $manager->next_line()
+
+Advances the line pointer and returns the new line.
+
+=cut
+
+sub next_line
+{
+    my $self = shift;
+
+    $self->_increment_line_idx();
+
+    return $self->curr_line();
 }
 
 1;

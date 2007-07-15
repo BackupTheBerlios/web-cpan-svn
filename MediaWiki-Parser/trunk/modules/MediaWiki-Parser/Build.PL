@@ -14,6 +14,7 @@ my $builder = Test::Run::Builder->new(
     build_requires => {
         'Test::More' => 0,
         'Moose' => 0,
+        'Exception::Class' => 0,
     },
     add_to_cleanup      => [ 'MediaWiki-Parser-*' ],
     create_makefile_pl => 'traditional',
