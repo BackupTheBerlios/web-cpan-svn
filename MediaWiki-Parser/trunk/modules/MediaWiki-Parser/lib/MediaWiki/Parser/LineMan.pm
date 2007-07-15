@@ -108,6 +108,20 @@ sub next_line
     return $self->curr_line();
 }
 
+=head2 $manager->with_curr_line(sub { my $line_ref = shift; })
+
+Calls the callback which accepts the current line as a reference and returns
+the value of the callback.
+
+=cut
+
+sub with_curr_line
+{
+    my ($self, $sub_ref) = @_;
+
+    return $sub_ref->($self->curr_line());
+}
+
 1;
 
 =head1 AUTHOR
