@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 # Tests for the line manager.
 
@@ -20,4 +20,11 @@ EOF
 
     # TEST
     ok ($manager, "Calling the constructor");
+
+    # TEST
+    is_deeply(
+        $manager->curr_line(),
+        \"Hello world!\n",
+        "->curr_line() works"
+    );
 }

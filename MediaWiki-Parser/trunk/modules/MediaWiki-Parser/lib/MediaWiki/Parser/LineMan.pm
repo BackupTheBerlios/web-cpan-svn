@@ -17,7 +17,7 @@ lines of the text being parsed.
 
 =head1 METHODS
 
-=head2 new(%args)
+=head2 $manager = MediaWiki::Parser::LineMan->new(%args)
 
 Accepts the following named arguments:
 
@@ -39,6 +39,28 @@ use strict;
 use warnings;
 
 use Moose;
+
+has "_lines" => (isa => "ArrayRef", is => "ro", init_arg => "lines");
+
+=head2 $manager->curr_line()
+
+Returns a reference to the current line.
+
+    my $line = $manager->curr_line();
+
+    if (${$line} =~ /Hello/)
+    {
+        print "Line contains hello.";
+    }
+
+=cut
+
+sub curr_line
+{
+    my $self = shift;
+
+    return \($self->_lines()->[0]);
+}
 
 1;
 
