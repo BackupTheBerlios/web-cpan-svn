@@ -5,7 +5,7 @@ use strict;
 
 =head1 NAME
 
-MediaWiki::Parser - The great new MediaWiki::Parser!
+MediaWiki::Parser - A module for parsing MediaWiki syntax.
 
 =head1 VERSION
 
@@ -17,35 +17,14 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use MediaWiki::Parser;
 
-    my $foo = MediaWiki::Parser->new();
-    ...
+    my $parser = MediaWiki::Parser->new();
 
-=head1 EXPORT
+    $parser->process_text({'lines' => \@lines});
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
 
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+=head1 METHODS
 
 =head1 AUTHOR
 
@@ -94,7 +73,9 @@ L<http://search.cpan.org/dist/MediaWiki-Parser>
 Copyright 2007 Shlomi Fish, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
+under the terms of the MIT/X11 License:
+
+L<http://www.opensource.org/licenses/mit-license.php>.
 
 =cut
 
