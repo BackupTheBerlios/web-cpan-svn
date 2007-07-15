@@ -13,6 +13,7 @@ my $builder = Test::Run::Builder->new(
     dist_version_from   => 'lib/MediaWiki/Parser.pm',
     build_requires => {
         'Test::More' => 0,
+        'Moose' => 0,
     },
     add_to_cleanup      => [ 'MediaWiki-Parser-*' ],
     create_makefile_pl => 'traditional',
