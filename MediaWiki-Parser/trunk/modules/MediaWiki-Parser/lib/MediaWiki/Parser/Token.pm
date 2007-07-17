@@ -1,87 +1,87 @@
-package MediaWiki::Parser;
+package MediaWiki::Parser::Token;
 
-use warnings;
 use strict;
+use warnings;
 
 use Moose;
 
-use MediaWiki::Parser::LineMan;
-use MediaWiki::Parser::Token;
-
 =head1 NAME
 
-MediaWiki::Parser - A module for parsing MediaWiki syntax.
+MediaWiki::Parser::Token - a parser token.
 
-=head1 VERSION
+=head1 SYNPOSIS
 
-Version 0.01
-
-=cut
-
-our $VERSION = '0.01';
-
-=head1 SYNOPSIS
-
-    use MediaWiki::Parser;
-
-    my $parser = MediaWiki::Parser->new();
-
-    $parser->input_text({'lines' => \@lines});
-
-    while (my $token = $parser->get_next_token())
-    {
-        # Do something with token.
-    }
-
-=head1 METHODS
-
-=cut
-
-has '_line_man' => (
-    isa => "MediaWiki::Parser::LineMan", 
-    is => "rw",
-    handles => 
-    {
-        map { '_'.$_ => $_ } 
-        qw(curr_line next_line with_curr_line)
-    },
-);
-
-=head2 $parser->input_text({ lines => [@lines] })
-
-Inputs the text of @lines into the parser for processing.
-
-=cut
-
-sub input_text
-{
-    my ($self, $args) = @_;
-
-    $self->_line_man(
-        MediaWiki::Parser::LineMan->new(
-            lines => $args->{lines},
-        )
-    );
-
-    return;
-}
-
-=head2 my $token = $parser->get_next_token()
-
-Retrieves the next token.
-
-=cut
-
-sub get_next_token
-{
-    my $self = shift;
-
-    return MediaWiki::Parser::Token->new(
+    my $token = MediaWiki::Parser::Token->new(
         type => "paragraph",
         position => "start",
     );
+
+=head1 DESCRIPTION
+
+This is the token class for the MediaWiki parser which encapsulates a single
+token.
+
+=head1 METHODS
+
+=head2 $token = MediaWiki::Parser::Token->new(%args)
+
+Accepts the following named arguments:
+
+=over 4
+
+=item * type
+
+The type of the token - see type() below.
+
+=item * position
+
+See position() below.
+
+=back
+
+=head2 meta
+
+[Added by Moose - ignore.]
+
+=cut
+
+# TODO - restrict it to "start", "end", etc.
+has 'position' => (isa => "Str", is => 'ro');
+
+=head2 $token->position()
+
+Can be C<"start"> or C<"end">, depending on the position.
+
+=cut
+
+has 'type' => (isa => "Str", is => 'ro');
+
+=head2 $token->type()
+
+The type of event. Can be:
+
+=over 4
+
+=item * 'paragraph'
+
+=back
+
+=cut
+
+=head2 my $bool = $parser->is_start()
+
+Returns true if it's a start event.
+
+=cut
+
+sub is_start
+{
+    my $self = shift;
+
+    return ($self->position() eq "start");
 }
 
+1;
 
 =head1 AUTHOR
 
@@ -136,4 +136,3 @@ L<http://www.opensource.org/licenses/mit-license.php>.
 
 =cut
 
-1; # End of MediaWiki::Parser
