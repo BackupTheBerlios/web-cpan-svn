@@ -78,7 +78,7 @@ sub get_next_token
 
     return MediaWiki::Parser::Token->new(
         type => "paragraph",
-        position => "start",
+        position => "open",
     );
 }
 

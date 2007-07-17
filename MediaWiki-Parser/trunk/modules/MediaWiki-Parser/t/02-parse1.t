@@ -30,5 +30,5 @@ EOF
     );
 
     # TEST
-    ok ($token1->is_start(), "First token is paragraph start");
+    ok ($token1->is_opening(), "First token is paragraph opening event");
 }

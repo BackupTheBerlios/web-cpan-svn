@@ -50,7 +50,8 @@ has 'position' => (isa => "Str", is => 'ro');
 
 =head2 $token->position()
 
-Can be C<"start"> or C<"end">, depending on the position.
+Can be C<"open"> (for opening) or C<"close"> (for closing), depending on the 
+position.
 
 =cut
 
@@ -68,17 +69,17 @@ The type of event. Can be:
 
 =cut
 
-=head2 my $bool = $parser->is_start()
+=head2 my $bool = $parser->is_opening()
 
-Returns true if it's a start event.
+Returns true if it's an opening tag event.
 
 =cut
 
-sub is_start
+sub is_opening
 {
     my $self = shift;
 
-    return ($self->position() eq "start");
+    return ($self->position() eq "open");
 }
 
 1;
