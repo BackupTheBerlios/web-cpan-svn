@@ -1,5 +1,8 @@
 package MediaWiki::Parser::LineMan;
 
+use strict;
+use warnings;
+
 use Exception::Class
     (
         'MediaWiki::Parser::LineMan::Exception',
@@ -42,8 +45,6 @@ The lines to be parsed.
 
 =cut
 
-use strict;
-use warnings;
 
 use Moose;
 

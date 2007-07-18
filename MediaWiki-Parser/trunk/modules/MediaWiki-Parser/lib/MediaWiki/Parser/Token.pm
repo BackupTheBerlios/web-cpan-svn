@@ -5,6 +5,13 @@ use warnings;
 
 use Moose;
 
+package MediaWiki::Parser::Token::TypeConstraints;
+
+use Moose::Util::TypeConstraints;
+enum "PositionValue" => qw(open close standalone);
+
+package MediaWiki::Parser::Token;
+
 =head1 NAME
 
 MediaWiki::Parser::Token - a parser token.
@@ -45,8 +52,9 @@ See position() below.
 
 =cut
 
-# TODO - restrict it to "start", "end", etc.
-has 'position' => (isa => "Str", is => 'ro');
+
+
+has 'position' => (isa => "PositionValue", is => 'ro');
 
 =head2 $token->position()
 
