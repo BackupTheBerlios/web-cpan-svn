@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 4;
 
 use MediaWiki::Parser;
 
@@ -21,14 +21,33 @@ EOF
         }
     );
 
-    my $token1 = $parser->get_next_token();
+    {
+        my $token1 = $parser->get_next_token();
 
-    # TEST
-    is ($token1->type(),
-        "paragraph",
-        "Token is a paragraph"
-    );
+        # TEST
+        is ($token1->type(),
+            "paragraph",
+            "Token is a paragraph"
+        );
 
-    # TEST
-    ok ($token1->is_opening(), "First token is paragraph opening event");
+        # TEST
+        ok ($token1->is_opening(), "First token is paragraph opening event");
+    }
+
+    {
+        my $token2 = $parser->get_next_token();
+
+        # TEST
+        is ($token2->type(),
+            "text",
+            "Token is text"
+        );
+
+        # TEST
+        is ($token2->text(),
+            ("Hello there. I have a proposition for you.\n" .
+            "It's not pretty. It's MediaWiki!\n"),
+            "Second token is the text of the paragraph"
+        );
+    }
 }

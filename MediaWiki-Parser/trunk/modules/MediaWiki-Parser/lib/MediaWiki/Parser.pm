@@ -7,6 +7,9 @@ use Moose;
 
 use MediaWiki::Parser::LineMan;
 use MediaWiki::Parser::Token;
+use MediaWiki::Parser::Token::Text;
+
+use Exception::Class;
 
 =head1 NAME
 
@@ -72,14 +75,40 @@ Retrieves the next token.
 
 =cut
 
+has '_state' => (is => "rw", isa => "Str", default => "default");
+
 sub get_next_token
 {
     my $self = shift;
 
-    return MediaWiki::Parser::Token->new(
-        type => "paragraph",
-        position => "open",
-    );
+    if ($self->_state() eq "default")
+    {
+        $self->_state("para");
+        return MediaWiki::Parser::Token->new(
+            type => "paragraph",
+            position => "open",
+        );
+    }
+    elsif ($self->_state() eq "para")
+    {
+        my $text = "";
+
+        my $use_line = 1;
+
+        my $line_ref = $self->_curr_line();
+
+        # Consume the text.
+        while ($use_line || defined($line_ref = $self->_next_line()))
+        {
+            $use_line = 0;
+
+            $text .= ${$line_ref};
+        }
+
+        return MediaWiki::Parser::Token::Text->new(
+            text => $text,
+        );
+    }
 }
 
 

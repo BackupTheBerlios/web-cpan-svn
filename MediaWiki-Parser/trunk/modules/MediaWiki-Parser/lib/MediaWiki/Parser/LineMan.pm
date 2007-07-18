@@ -94,9 +94,27 @@ sub _increment_line_idx
     return;
 }
 
-=head2 $line_ref = $manager->next_line()
+=head2 $line_ref = $manager->next_line_throw()
 
 Advances the line pointer and returns the new line.
+
+Throws an exception if it reaches the end.
+
+=cut
+
+sub next_line_throw
+{
+    my $self = shift;
+
+    $self->_increment_line_idx();
+
+    return $self->curr_line();
+}
+
+=head2 $line_ref = $manager->next_line()
+
+Similar to next_line_throw() only instead of throwing an exception, it returns
+undef upon end of file.
 
 =cut
 
@@ -104,9 +122,16 @@ sub next_line
 {
     my $self = shift;
 
-    $self->_increment_line_idx();
+    my $line = eval { $self->next_line_throw() };
 
-    return $self->curr_line();
+    if (MediaWiki::Parser::LineMan::Exception::End->caught())
+    {
+        return undef;
+    }
+    else
+    {
+        return $line;
+    }
 }
 
 =head2 $manager->with_curr_line(sub { my $line_ref = shift; })

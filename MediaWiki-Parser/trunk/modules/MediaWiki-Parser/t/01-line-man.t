@@ -57,7 +57,7 @@ EOF
     
     eval
     {
-        $manager->next_line();
+        $manager->next_line_throw();
     };
 
     if (MediaWiki::Parser::LineMan::Exception::End->caught())
