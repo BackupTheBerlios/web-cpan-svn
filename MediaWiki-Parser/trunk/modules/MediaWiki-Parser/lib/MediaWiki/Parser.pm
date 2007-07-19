@@ -75,18 +75,69 @@ Retrieves the next token.
 
 =cut
 
+sub _new_empty_array_ref
+{
+    return [];
+}
+
 has '_state' => (is => "rw", isa => "Str", default => "default");
 
+has "_tokens_queue" => (is => "rw", isa => "ArrayRef", 
+    default => \&_new_empty_array_ref
+);
+
+sub _is_queue_empty
+{
+    my $self = shift;
+
+    return (scalar(@{$self->_tokens_queue()}) == 0);
+}
+
+sub _dequeue
+{
+    my $self = shift;
+
+    if ($self->_is_queue_empty())
+    {
+        return;
+    }
+    else
+    {
+        return shift(@{$self->_tokens_queue()});
+    }
+}
+
+sub _enq
+{
+    my ($self, $token) = @_;
+
+    push @{$self->_tokens_queue()}, $token;
+}
+
 sub get_next_token
+{
+    my $self = shift;
+
+    if ($self->_is_queue_empty())
+    {
+        $self->_enqueue_more_tokens();
+    }
+
+    return $self->_dequeue();
+}
+
+sub _enqueue_more_tokens
 {
     my $self = shift;
 
     if ($self->_state() eq "default")
     {
         $self->_state("para");
-        return MediaWiki::Parser::Token->new(
-            type => "paragraph",
-            position => "open",
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => "paragraph",
+                position => "open",
+            )
         );
     }
     elsif ($self->_state() eq "para")
@@ -105,8 +156,17 @@ sub get_next_token
             $text .= ${$line_ref};
         }
 
-        return MediaWiki::Parser::Token::Text->new(
-            text => $text,
+        $self->_enq(
+            MediaWiki::Parser::Token::Text->new(
+                text => $text,
+            )
+        );
+
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => "paragraph",
+                position => "close",
+            )
         );
     }
 }

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 use MediaWiki::Parser;
 
@@ -49,5 +49,18 @@ EOF
             "It's not pretty. It's MediaWiki!\n"),
             "Second token is the text of the paragraph"
         );
+    }
+
+    {
+        my $token3 = $parser->get_next_token();
+
+        # TEST
+        is ($token3->type(),
+            "paragraph",
+            "Token is a (closing) paragraph"
+        );
+
+        # TEST
+        ok ($token3->is_closing(), "Paragraph was finished");
     }
 }

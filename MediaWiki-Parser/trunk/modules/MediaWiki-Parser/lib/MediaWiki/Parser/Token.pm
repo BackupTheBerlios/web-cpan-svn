@@ -90,6 +90,19 @@ sub is_opening
     return ($self->position() eq "open");
 }
 
+=head2 my $bool = $parser->is_closing()
+
+Returns true if it's an closing tag event.
+
+=cut
+
+sub is_closing
+{
+    my $self = shift;
+
+    return ($self->position() eq "close");
+}
+
 1;
 
 =head1 AUTHOR
