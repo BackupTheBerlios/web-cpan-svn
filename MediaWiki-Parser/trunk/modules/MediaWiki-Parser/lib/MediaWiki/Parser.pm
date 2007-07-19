@@ -130,12 +130,14 @@ sub _skip_empty_lines
 {
     my $self = shift;
 
-    while (${$self->_curr_line()} =~ m{\A\s*\z}ms)
+    my $line_ref = $self->_curr_line();
+
+    while (defined($line_ref) && $$line_ref =~ m{\A\s*\z}ms)
     {
-        $self->_next_line();
+        $line_ref = $self->_next_line();
     }
 
-    return;
+    return $line_ref;
 }
 
 sub _next_non_empty_line
@@ -168,15 +170,21 @@ sub _enqueue_more_tokens
     }
     elsif ($self->_state() eq "default")
     {
-        $self->_skip_empty_lines();
-
-        $self->_state("para");
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => "paragraph",
-                position => "open",
-            )
-        );
+        if (!defined($self->_skip_empty_lines()))
+        {
+            # We reached the end of the document.
+            $self->_state("document_end");
+        }
+        else
+        {
+            $self->_state("para");
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => "paragraph",
+                    position => "open",
+                )
+            );
+        }
     }
     elsif ($self->_state() eq "para")
     {
