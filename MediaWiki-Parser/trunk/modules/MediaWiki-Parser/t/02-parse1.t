@@ -150,9 +150,11 @@ EOF
         ok ($close_token->is_closing(),
             "$para_id - closing paragraph was finished"
         );
+
+        # TEST:$para_asserts=6
     };
 
-    # TEST*6*3
+    # TEST*3*$para_asserts
     $is_paragraph->(
         "Multiple Paragraphs - 1st Paragraph",
         "First paragraph.\nMore of the first paragraph.\n",
