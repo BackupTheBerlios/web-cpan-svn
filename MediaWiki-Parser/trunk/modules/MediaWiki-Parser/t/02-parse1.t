@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 8;
 
 use MediaWiki::Parser;
 
@@ -62,5 +62,23 @@ EOF
 
         # TEST
         ok ($token3->is_closing(), "Paragraph was finished");
+    }
+
+    {
+        my $end_token = $parser->get_next_token();
+
+        # TEST
+        ok (!defined($end_token),
+            "We reached the end of the tokens."
+        );
+    }
+
+    {
+        my $end_token = $parser->get_next_token();
+
+        # TEST
+        ok (!defined($end_token),
+            "Another end token."
+        );
     }
 }
