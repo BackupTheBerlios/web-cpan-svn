@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 28;
 
 use MediaWiki::Parser;
 
@@ -79,6 +79,112 @@ EOF
         # TEST
         ok (!defined($end_token),
             "Another end token."
+        );
+    }
+}
+
+{
+    my $text = <<'EOF';
+First paragraph.
+More of the first paragraph.
+
+Second paragraph.
+Yes, it's the second para.
+And it's definitely the second.
+
+Third paragraph if anyone cares.
+I'm not so bothered by it.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    my $is_paragraph = sub {
+        my ($para_id, $text) = @_;
+
+        local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+        my $open_token = $parser->get_next_token();
+
+        # Assert #1.
+        is ($open_token->type(),
+            "paragraph",
+            "$para_id - Token is a paragraph"
+        );
+
+        # Assert #2.
+        ok ($open_token->is_opening(), 
+            "$para_id - token is paragraph opening event"
+        );
+
+        my $text_token = $parser->get_next_token();
+
+        # Assert #3.
+        is ($text_token->type(),
+            "text",
+            "$para_id - Token is text"
+        );
+
+        # Assert #4.
+        is ($text_token->text(),
+            $text,
+            "$para_id - text token is the text of the paragraph"
+        );
+
+        
+
+        my $close_token = $parser->get_next_token();
+
+        # Assert #5.
+        is ($close_token->type(),
+            "paragraph",
+            "$para_id - Token is a (closing) paragraph"
+        );
+
+        # Assert #6.
+        ok ($close_token->is_closing(),
+            "$para_id - closing paragraph was finished"
+        );
+    };
+
+    # TEST*6*3
+    $is_paragraph->(
+        "Multiple Paragraphs - 1st Paragraph",
+        "First paragraph.\nMore of the first paragraph.\n",
+    );
+
+    $is_paragraph->(
+        "Multiple Paragraphs - 2nd Paragraph",
+        ("Second paragraph.\nYes, it's the second para.\n"
+        . "And it's definitely the second.\n"),
+    );
+ 
+    $is_paragraph->(
+        "Multiple Paragraphs - 3rd Paragraph",
+        ("Third paragraph if anyone cares.\n"
+            . "I'm not so bothered by it.\n"),
+    );
+
+    {
+        my $end_token = $parser->get_next_token();
+
+        # TEST
+        ok (!defined($end_token),
+            "Multiple paragraphs - we reached the end of the tokens."
+        );
+    }
+
+    {
+        my $end_token = $parser->get_next_token();
+
+        # TEST
+        ok (!defined($end_token),
+            "Multiple paragraphs - another end token."
         );
     }
 }

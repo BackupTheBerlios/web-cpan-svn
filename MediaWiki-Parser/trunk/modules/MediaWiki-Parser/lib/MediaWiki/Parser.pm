@@ -126,6 +126,38 @@ sub get_next_token
     return $self->_dequeue();
 }
 
+sub _skip_empty_lines
+{
+    my $self = shift;
+
+    while (${$self->_curr_line()} =~ m{\A\s*\z}ms)
+    {
+        $self->_next_line();
+    }
+
+    return;
+}
+
+sub _next_non_empty_line
+{
+    my $self = shift;
+
+    my $line_ref = $self->_next_line();
+
+    if (!defined($line_ref))
+    {
+        return;
+    }
+    elsif ($$line_ref =~ m{\S})
+    {
+        return $line_ref;
+    }
+    else
+    {
+        return;
+    }
+}
+
 sub _enqueue_more_tokens
 {
     my $self = shift;
@@ -136,6 +168,8 @@ sub _enqueue_more_tokens
     }
     elsif ($self->_state() eq "default")
     {
+        $self->_skip_empty_lines();
+
         $self->_state("para");
         $self->_enq(
             MediaWiki::Parser::Token->new(
@@ -153,7 +187,7 @@ sub _enqueue_more_tokens
         my $line_ref = $self->_curr_line();
 
         # Consume the text.
-        while ($use_line || defined($line_ref = $self->_next_line()))
+        while ($use_line || defined($line_ref = $self->_next_non_empty_line()))
         {
             $use_line = 0;
 
@@ -173,13 +207,25 @@ sub _enqueue_more_tokens
             )
         );
 
-        # TODO : This is temporary to get the tests passed.
-        $self->_state("document_end");
+        $self->_assign_state_after_paragraph();
+
     }
 
     return;
 }
 
+sub _assign_state_after_paragraph
+{
+    my $self = shift;
+
+    $self->_state(
+        $self->_line_man()->is_end_of_lines()
+            ? "document_end"
+            : "default"
+    );
+
+    return;
+}
 
 =head1 AUTHOR
 

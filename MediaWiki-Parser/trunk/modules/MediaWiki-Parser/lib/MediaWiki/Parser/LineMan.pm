@@ -71,11 +71,24 @@ sub curr_line
     return \($self->_lines()->[$self->_curr_line_idx()]);
 }
 
+=head2 my $bool = $line_man->is_end_of_lines()
+
+Determines if it reached the end.
+
+=cut
+
+sub is_end_of_lines
+{
+    my $self = shift;
+
+    return ($self->_curr_line_idx() == $#{$self->_lines()});
+}
+
 sub _check_for_end_of_lines
 {
     my $self = shift;
 
-    if ($self->_curr_line_idx() == $#{$self->_lines()})
+    if ($self->is_end_of_lines())
     {
         MediaWiki::Parser::LineMan::Exception::End->throw(
             'error' => "Trying to seek past the last line."
