@@ -172,89 +172,103 @@ sub _enqueue_more_tokens
 {
     my $self = shift;
 
-    if ($self->_state->status() eq "document_end")
+    my $callback = "_enqueue_tokens_in__" . $self->_state->status();
+
+    $self->$callback();
+
+    return;
+}
+
+sub _enqueue_tokens_in__document_end
+{
+    my $self = shift;
+
+    # Do nothing - don't enqueue more tokens.
+}
+
+sub _enqueue_tokens_in__default
+{
+    my $self = shift;
+
+    if (!defined($self->_skip_empty_lines()))
     {
-        # Do nothing - don't enqueue more tokens.
+        # We reached the end of the document.
+        $self->_state->status("document_end");
     }
-    elsif ($self->_state->status() eq "default")
+    else
     {
-        if (!defined($self->_skip_empty_lines()))
-        {
-            # We reached the end of the document.
-            $self->_state->status("document_end");
-        }
-        else
-        {
-            $self->_state->status("para");
-            $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => "paragraph",
-                    position => "open",
-                )
-            );
-        }
-    }
-    elsif ($self->_state->status() eq "para")
-    {
-        my $text = "";
-
-        my $use_line = 1;
-
-        my $line_ref = $self->_curr_line();
-
-        my $found_markup;
-
-        # Consume the text.
-        PARAGRAPH_LINE_LOOP:
-        while ($use_line || defined($line_ref = $self->_next_non_empty_line()))
-        {
-            $use_line = 0;
-
-            if ($$line_ref =~ m{\G(.*?)('')}cg)
-            {
-                my ($up_to_text, $markup) = ($1, $2);
-                
-                $text .= $up_to_text;
-                $found_markup = $markup;
-
-                last PARAGRAPH_LINE_LOOP;
-            }
-            else
-            {
-                # Extract the remaining $line_ref.
-                $text .= substr($$line_ref, pos($$line_ref) || 0);
-            }
-        }
-
-        if (length($text))
-        {
-            $self->_enq(
-                MediaWiki::Parser::Token::Text->new(
-                    text => $text,
-                )
-            );
-        }
-
-        if (defined($found_markup))
-        {
-            $self->_enq(
-                $self->_state->get_toggle_token({type => "italics"})
-            );
-        }
-        else
-        {
-            $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => "paragraph",
-                    position => "close",
-                )
-            );
-
-            $self->_assign_state_after_paragraph();
-        }
+        $self->_state->status("para");
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => "paragraph",
+                position => "open",
+            )
+        );
     }
 
     return;
+}
+
+sub _enqueue_tokens_in__para
+{
+    my $self = shift;
+
+    my $text = "";
+
+    my $use_line = 1;
+
+    my $line_ref = $self->_curr_line();
+
+    my $found_markup;
+
+    # Consume the text.
+    PARAGRAPH_LINE_LOOP:
+    while ($use_line || defined($line_ref = $self->_next_non_empty_line()))
+    {
+        $use_line = 0;
+
+        if ($$line_ref =~ m{\G(.*?)('')}cg)
+        {
+            my ($up_to_text, $markup) = ($1, $2);
+            
+            $text .= $up_to_text;
+            $found_markup = $markup;
+
+            last PARAGRAPH_LINE_LOOP;
+        }
+        else
+        {
+            # Extract the remaining $line_ref.
+            $text .= substr($$line_ref, pos($$line_ref) || 0);
+        }
+    }
+
+    if (length($text))
+    {
+        $self->_enq(
+            MediaWiki::Parser::Token::Text->new(
+                text => $text,
+            )
+        );
+    }
+
+    if (defined($found_markup))
+    {
+        $self->_enq(
+            $self->_state->get_toggle_token({type => "italics"})
+        );
+    }
+    else
+    {
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => "paragraph",
+                position => "close",
+            )
+        );
+
+        $self->_assign_state_after_paragraph();
+    }
 }
 
 sub _assign_state_after_paragraph
