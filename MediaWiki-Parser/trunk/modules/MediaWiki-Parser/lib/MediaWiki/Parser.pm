@@ -81,6 +81,7 @@ sub _new_empty_array_ref
 }
 
 has '_state' => (is => "rw", isa => "Str", default => "default");
+has '_italics' => (is => "rw", isa => "Bool", default => 0);
 
 has "_tokens_queue" => (is => "rw", isa => "ArrayRef", 
     default => \&_new_empty_array_ref
@@ -194,29 +195,61 @@ sub _enqueue_more_tokens
 
         my $line_ref = $self->_curr_line();
 
+        my $found_markup;
+
         # Consume the text.
+        PARAGRAPH_LINE_LOOP:
         while ($use_line || defined($line_ref = $self->_next_non_empty_line()))
         {
             $use_line = 0;
 
-            $text .= ${$line_ref};
+            if ($$line_ref =~ m{\G(.*?)('')}cg)
+            {
+                my ($up_to_text, $markup) = ($1, $2);
+                
+                $text .= $up_to_text;
+                $found_markup = $markup;
+
+                last PARAGRAPH_LINE_LOOP;
+            }
+            else
+            {
+                # Extract the remaining $line_ref.
+                $text .= substr($$line_ref, pos($$line_ref) || 0);
+            }
         }
 
-        $self->_enq(
-            MediaWiki::Parser::Token::Text->new(
-                text => $text,
-            )
-        );
+        if (length($text))
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token::Text->new(
+                    text => $text,
+                )
+            );
+        }
 
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => "paragraph",
-                position => "close",
-            )
-        );
+        if (defined($found_markup))
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => "italics",
+                    position => ($self->_italics() ? "close" : "open"),
+                )
+            );
+            # Switch the italic.
+            $self->_italics(!$self->_italics());
+        }
+        else
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => "paragraph",
+                    position => "close",
+                )
+            );
 
-        $self->_assign_state_after_paragraph();
-
+            $self->_assign_state_after_paragraph();
+        }
     }
 
     return;

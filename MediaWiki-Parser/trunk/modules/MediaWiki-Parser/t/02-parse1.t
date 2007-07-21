@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 60;
+use Test::More tests => 61;
 
 use MediaWiki::Parser;
 
@@ -286,3 +286,76 @@ EOF
         "Just say 'hello'.\n",
     );
 }
+
+# Token position (open/close/etc.)
+sub token_pos
+{
+    my $token = shift;
+
+    return   $token->is_opening() ? "open" 
+           : $token->is_closing() ? "close"
+           : "unknown";
+}
+
+sub is_tokens_deeply
+{
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+    my ($parser, $expected_tokens, $blurb) = @_;
+
+    my @got_tokens;
+
+    while (defined(my $token = $parser->get_next_token()))
+    {
+        push @got_tokens,
+              ($token->type() eq "paragraph") ? ("para_" . token_pos($token))
+            : ($token->type() eq "text") ? ({ text => $token->text() })
+            : ($token->type() eq "italics") ? ("italics_" . token_pos($token))
+            : "UNKNOWN_TOKEN";
+    }
+
+    if (defined(scalar($parser->get_next_token())))
+    {
+        ok(0, "$blurb - does not return undef twice at end");
+    }
+    else
+    {
+        is_deeply(
+            \@got_tokens,
+            $expected_tokens,
+            $blurb
+        );
+    }
+}
+
+{
+    my $text = <<'EOF';
+Text and some ''italic text''. And some more text.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            "para_open",
+            { text => "Text and some ", },
+            "italics_open",
+            { text => "italic text"},
+            "italics_close",
+            { text => ". And some more text.\n" },
+            "para_close",
+        ],
+        "Simple italic test on one line",
+    );
+}
+
+# TODO : Test for implicit italic close on the end of paragraph.
+
+
