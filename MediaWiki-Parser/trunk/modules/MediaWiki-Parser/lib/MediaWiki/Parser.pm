@@ -8,6 +8,7 @@ use Moose;
 use MediaWiki::Parser::LineMan;
 use MediaWiki::Parser::Token;
 use MediaWiki::Parser::Token::Text;
+use MediaWiki::Parser::State;
 
 use Exception::Class;
 
@@ -80,8 +81,14 @@ sub _new_empty_array_ref
     return [];
 }
 
-has '_state' => (is => "rw", isa => "Str", default => "default");
-has '_italics' => (is => "rw", isa => "Bool", default => 0);
+# has '_state' => (is => "rw", isa => "Str", default => "default");
+# has '_italics' => (is => "rw", isa => "Bool", default => 0);
+
+has '_state' => (
+    is => "rw", 
+    isa => "MediaWiki::Parser::State", 
+    default => sub { return MediaWiki::Parser::State->new() },
+);
 
 has "_tokens_queue" => (is => "rw", isa => "ArrayRef", 
     default => \&_new_empty_array_ref
@@ -165,20 +172,20 @@ sub _enqueue_more_tokens
 {
     my $self = shift;
 
-    if ($self->_state() eq "document_end")
+    if ($self->_state->status() eq "document_end")
     {
         # Do nothing - don't enqueue more tokens.
     }
-    elsif ($self->_state() eq "default")
+    elsif ($self->_state->status() eq "default")
     {
         if (!defined($self->_skip_empty_lines()))
         {
             # We reached the end of the document.
-            $self->_state("document_end");
+            $self->_state->status("document_end");
         }
         else
         {
-            $self->_state("para");
+            $self->_state->status("para");
             $self->_enq(
                 MediaWiki::Parser::Token->new(
                     type => "paragraph",
@@ -187,7 +194,7 @@ sub _enqueue_more_tokens
             );
         }
     }
-    elsif ($self->_state() eq "para")
+    elsif ($self->_state->status() eq "para")
     {
         my $text = "";
 
@@ -231,13 +238,8 @@ sub _enqueue_more_tokens
         if (defined($found_markup))
         {
             $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => "italics",
-                    position => ($self->_italics() ? "close" : "open"),
-                )
+                $self->_state->get_toggle_token({type => "italics"})
             );
-            # Switch the italic.
-            $self->_italics(!$self->_italics());
         }
         else
         {
@@ -259,7 +261,7 @@ sub _assign_state_after_paragraph
 {
     my $self = shift;
 
-    $self->_state(
+    $self->_state->status(
         $self->_line_man()->is_end_of_lines()
             ? "document_end"
             : "default"

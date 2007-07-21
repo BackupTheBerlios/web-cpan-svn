@@ -3,6 +3,7 @@ Changes
 inc/Test/Run/Builder.pm
 lib/MediaWiki/Parser/LineMan.pm
 lib/MediaWiki/Parser.pm
+lib/MediaWiki/Parser/State.pm
 lib/MediaWiki/Parser/Token.pm
 lib/MediaWiki/Parser/Token/Text.pm
 Makefile.PL
