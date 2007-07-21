@@ -7,6 +7,57 @@ use Test::More tests => 54;
 
 use MediaWiki::Parser;
 
+sub is_paragraph
+{
+    my ($parser, $para_id, $text) = @_;
+
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+    my $open_token = $parser->get_next_token();
+
+    # Assert #1.
+    is ($open_token->type(),
+        "paragraph",
+        "$para_id - Token is a paragraph"
+    );
+
+    # Assert #2.
+    ok ($open_token->is_opening(), 
+        "$para_id - token is paragraph opening event"
+    );
+
+    my $text_token = $parser->get_next_token();
+
+    # Assert #3.
+    is ($text_token->type(),
+        "text",
+        "$para_id - Token is text"
+    );
+
+    # Assert #4.
+    is ($text_token->text(),
+        $text,
+        "$para_id - text token is the text of the paragraph"
+    );
+
+    
+
+    my $close_token = $parser->get_next_token();
+
+    # Assert #5.
+    is ($close_token->type(),
+        "paragraph",
+        "$para_id - Token is a (closing) paragraph"
+    );
+
+    # Assert #6.
+    ok ($close_token->is_closing(),
+        "$para_id - closing paragraph was finished"
+    );
+
+    # TEST:$para_asserts=6
+}
+
 {
     my $text = <<'EOF';
 Hello there. I have a proposition for you.
@@ -105,53 +156,7 @@ EOF
     );
 
     my $is_paragraph = sub {
-        my ($para_id, $text) = @_;
-
-        local $Test::Builder::Level = $Test::Builder::Level + 1;
-
-        my $open_token = $parser->get_next_token();
-
-        # Assert #1.
-        is ($open_token->type(),
-            "paragraph",
-            "$para_id - Token is a paragraph"
-        );
-
-        # Assert #2.
-        ok ($open_token->is_opening(), 
-            "$para_id - token is paragraph opening event"
-        );
-
-        my $text_token = $parser->get_next_token();
-
-        # Assert #3.
-        is ($text_token->type(),
-            "text",
-            "$para_id - Token is text"
-        );
-
-        # Assert #4.
-        is ($text_token->text(),
-            $text,
-            "$para_id - text token is the text of the paragraph"
-        );
-
-        
-
-        my $close_token = $parser->get_next_token();
-
-        # Assert #5.
-        is ($close_token->type(),
-            "paragraph",
-            "$para_id - Token is a (closing) paragraph"
-        );
-
-        # Assert #6.
-        ok ($close_token->is_closing(),
-            "$para_id - closing paragraph was finished"
-        );
-
-        # TEST:$para_asserts=6
+        return is_paragraph($parser,@_);
     };
 
     # TEST*3*$para_asserts
@@ -216,53 +221,7 @@ EOF
     );
 
     my $is_paragraph = sub {
-        my ($para_id, $text) = @_;
-
-        local $Test::Builder::Level = $Test::Builder::Level + 1;
-
-        my $open_token = $parser->get_next_token();
-
-        # Assert #1.
-        is ($open_token->type(),
-            "paragraph",
-            "$para_id - Token is a paragraph"
-        );
-
-        # Assert #2.
-        ok ($open_token->is_opening(), 
-            "$para_id - token is paragraph opening event"
-        );
-
-        my $text_token = $parser->get_next_token();
-
-        # Assert #3.
-        is ($text_token->type(),
-            "text",
-            "$para_id - Token is text"
-        );
-
-        # Assert #4.
-        is ($text_token->text(),
-            $text,
-            "$para_id - text token is the text of the paragraph"
-        );
-
-        
-
-        my $close_token = $parser->get_next_token();
-
-        # Assert #5.
-        is ($close_token->type(),
-            "paragraph",
-            "$para_id - Token is a (closing) paragraph"
-        );
-
-        # Assert #6.
-        ok ($close_token->is_closing(),
-            "$para_id - closing paragraph was finished"
-        );
-
-        # TEST:$para_asserts=6
+        return is_paragraph($parser,@_);
     };
 
     # TEST*4*$para_asserts
