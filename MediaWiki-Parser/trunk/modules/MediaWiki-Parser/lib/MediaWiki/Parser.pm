@@ -174,7 +174,12 @@ sub _enqueue_more_tokens
 
     my $callback = "_enqueue_tokens_in__" . $self->_state->status();
 
-    $self->$callback();
+    my $callback_ret = $self->$callback();
+
+    if (defined($callback_ret))
+    {
+        $self->_state->status($callback_ret->{'next_state'});
+    }
 
     return;
 }
@@ -184,6 +189,7 @@ sub _enqueue_tokens_in__document_end
     my $self = shift;
 
     # Do nothing - don't enqueue more tokens.
+    return;
 }
 
 sub _enqueue_tokens_in__default
@@ -192,21 +198,18 @@ sub _enqueue_tokens_in__default
 
     if (!defined($self->_skip_empty_lines()))
     {
-        # We reached the end of the document.
-        $self->_state->status("document_end");
+        return { next_state => "document_end" };
     }
     else
     {
-        $self->_state->status("para");
         $self->_enq(
             MediaWiki::Parser::Token->new(
                 type => "paragraph",
                 position => "open",
             )
         );
+        return { next_state => "para" };
     }
-
-    return;
 }
 
 sub _enqueue_tokens_in__para
@@ -257,6 +260,7 @@ sub _enqueue_tokens_in__para
         $self->_enq(
             $self->_state->get_toggle_token({type => "italics"})
         );
+        return;
     }
     else
     {
@@ -267,21 +271,18 @@ sub _enqueue_tokens_in__para
             )
         );
 
-        $self->_assign_state_after_paragraph();
+        return { next_state => $self->_get_status_after_paragraph()};
     }
 }
 
-sub _assign_state_after_paragraph
+sub _get_status_after_paragraph
 {
     my $self = shift;
 
-    $self->_state->status(
+    return
         $self->_line_man()->is_end_of_lines()
             ? "document_end"
-            : "default"
-    );
-
-    return;
+            : "default";
 }
 
 =head1 AUTHOR
