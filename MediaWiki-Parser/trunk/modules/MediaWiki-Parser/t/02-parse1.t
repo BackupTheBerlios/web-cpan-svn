@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 54;
+use Test::More tests => 60;
 
 use MediaWiki::Parser;
 
@@ -262,4 +262,27 @@ EOF
             "Trail/Lead WS - another end token."
         );
     }
+}
+
+{
+    my $text = <<'EOF';
+
+Just say 'hello'.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST*1*$para_asserts
+    is_paragraph(
+        $parser,
+        "Single single-quotes pass as normal text.",
+        "Just say 'hello'.\n",
+    );
 }
