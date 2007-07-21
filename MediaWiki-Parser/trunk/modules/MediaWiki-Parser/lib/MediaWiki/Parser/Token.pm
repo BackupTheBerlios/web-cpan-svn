@@ -103,6 +103,29 @@ sub is_closing
     return ($self->position() eq "close");
 }
 
+has '_implicit' => (isa => "Bool", is => 'ro', init_arg => "implicit");
+
+=head2 my $bool = $token->is_implicit()
+
+Returns true if it's an implicit event. I.e: one that was added by the parser
+to maintain HTML/XML integrity and not specified explicitly by the user.
+
+An example of this is an implicit closing italics at the end of the line:
+
+    Hello ''Italics
+    Another Line.
+
+C<"Another Line."> will not be italicized.
+
+=cut
+
+sub is_implicit
+{
+    my $self = shift;
+
+    return $self->_implicit();
+}
+
 1;
 
 =head1 AUTHOR

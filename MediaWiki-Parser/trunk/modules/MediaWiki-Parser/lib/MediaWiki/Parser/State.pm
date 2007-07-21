@@ -55,12 +55,34 @@ sub get_toggle_token
         MediaWiki::Parser::Token->new(
             type => "italics",
             position => ($self->_italics() ? "close" : "open"),
+            ($args->{'implicit'} ? (implicit => 1) : ()),
         );
 
     # Switch the italic.
     $self->_italics(!$self->_italics());
 
     return $token;
+}
+
+=head2 $state->line_end()
+
+Performs a syntactical line end operation and implicity closes all the
+opened events that must be closed on a line end, and returns them as an
+array reference. If there's nothing to be closed - returns undef.
+
+=cut
+
+
+sub line_end
+{
+    my $self = shift;
+
+    if ($self->_italics())
+    {
+        return [ $self->get_toggle_token({type => "italics", implicit => 1}) ];
+    }
+
+    return;
 }
 
 1;

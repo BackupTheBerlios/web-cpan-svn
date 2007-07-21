@@ -115,11 +115,20 @@ sub _dequeue
     }
 }
 
+sub _enq_multiple
+{
+    my ($self, $tokens_ref) = @_;
+
+    push @{$self->_tokens_queue()}, @{$tokens_ref};
+
+    return;
+}
+
 sub _enq
 {
     my ($self, $token) = @_;
 
-    push @{$self->_tokens_queue()}, $token;
+    return $self->_enq_multiple([$token]);
 }
 
 sub get_next_token
@@ -224,11 +233,19 @@ sub _enqueue_tokens_in__para
 
     my $found_markup;
 
+    my $implicit_line_end_tokens;
+
     # Consume the text.
     PARAGRAPH_LINE_LOOP:
     while ($use_line || defined($line_ref = $self->_next_non_empty_line()))
     {
         $use_line = 0;
+
+        # It's placed here because we still need to move to the next line.
+        if (defined($implicit_line_end_tokens))
+        {
+            last PARAGRAPH_LINE_LOOP;
+        }
 
         if ($$line_ref =~ m{\G(.*?)('')}cg)
         {
@@ -243,6 +260,8 @@ sub _enqueue_tokens_in__para
         {
             # Extract the remaining $line_ref.
             $text .= substr($$line_ref, pos($$line_ref) || 0);
+
+            $implicit_line_end_tokens = $self->_state()->line_end();
         }
     }
 
@@ -253,6 +272,12 @@ sub _enqueue_tokens_in__para
                 text => $text,
             )
         );
+    }
+
+    if (defined($implicit_line_end_tokens))
+    {
+        $self->_enq_multiple($implicit_line_end_tokens);
+        return;
     }
 
     if (defined($found_markup))

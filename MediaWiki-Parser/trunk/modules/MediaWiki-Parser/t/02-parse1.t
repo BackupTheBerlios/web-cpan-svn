@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 61;
+use Test::More tests => 62;
 
 use MediaWiki::Parser;
 
@@ -297,6 +297,41 @@ sub token_pos
            : "unknown";
 }
 
+my %pos_tokens_map =
+(
+    "paragraph" => "para",
+    "italics" => "italics",
+);
+
+sub get_token_representation
+{
+    my $token = shift;
+
+    if (exists($pos_tokens_map{$token->type()}))
+    {
+        my $ret =
+        {
+            t => $pos_tokens_map{$token->type()},
+            p => token_pos($token),
+        };
+
+        if ($token->is_implicit())
+        {
+            $ret->{implicit} = 1;
+        }
+
+        return $ret;
+    }
+    elsif ($token->type() eq "text")
+    {
+        return { text => $token->text() };
+    }
+    else
+    {
+        return "UNKNOWN_TOKEN";
+    }
+}
+
 sub is_tokens_deeply
 {
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -306,11 +341,7 @@ sub is_tokens_deeply
 
     while (defined(my $token = $parser->get_next_token()))
     {
-        push @got_tokens,
-              ($token->type() eq "paragraph") ? ("para_" . token_pos($token))
-            : ($token->type() eq "text") ? ({ text => $token->text() })
-            : ($token->type() eq "italics") ? ("italics_" . token_pos($token))
-            : "UNKNOWN_TOKEN";
+        push @got_tokens, get_token_representation($token);
     }
 
     if (defined(scalar($parser->get_next_token())))
@@ -344,18 +375,71 @@ EOF
     is_tokens_deeply(
         $parser,
         [
-            "para_open",
+            {
+                t => "para",
+                p => "open",
+            },
             { text => "Text and some ", },
-            "italics_open",
+            {
+                t => "italics",
+                p => "open",
+            },
             { text => "italic text"},
-            "italics_close",
+            {
+                t => "italics",
+                p => "close",
+            },
             { text => ". And some more text.\n" },
-            "para_close",
+            {
+                t => "para",
+                p => "close",
+            },
         ],
         "Simple italic test on one line",
     );
 }
 
-# TODO : Test for implicit italic close on the end of paragraph.
+{
+    my $text = <<'EOF';
+Hello ''Open Italic.
+Non-italicized text.
 
 
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ", },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "Open Italic.\n"},
+            {
+                t => "italics",
+                p => "close",
+                implicit => 1,
+            },
+            { text => "Non-italicized text.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Italic text will implicitly close at the end of the line",
+    );
+}
