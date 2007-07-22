@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 63;
+use Test::More tests => 64;
 
 use MediaWiki::Parser;
 
@@ -578,5 +578,57 @@ EOF
             },
         ],
         "More comprehensive tests for \"''\".",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Paragraph with trailing italic ''
+
+Another paragraph.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Paragraph with trailing italic ", },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "\n"},
+            {
+                t => "italics",
+                p => "close",
+                implicit => 1,
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Another paragraph.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Paragraph with trailing italics.",
     );
 }

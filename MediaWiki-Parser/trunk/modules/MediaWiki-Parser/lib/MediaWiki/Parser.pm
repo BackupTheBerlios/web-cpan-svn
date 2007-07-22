@@ -277,7 +277,6 @@ sub _enqueue_tokens_in__para
     if (defined($implicit_line_end_tokens))
     {
         $self->_enq_multiple($implicit_line_end_tokens);
-        return;
     }
 
     if (defined($found_markup))
@@ -287,7 +286,7 @@ sub _enqueue_tokens_in__para
         );
         return;
     }
-    else
+    elsif (!defined($line_ref))
     {
         $self->_enq(
             MediaWiki::Parser::Token->new(
@@ -298,6 +297,8 @@ sub _enqueue_tokens_in__para
 
         return { next_state => $self->_get_status_after_paragraph()};
     }
+
+    return;
 }
 
 sub _get_status_after_paragraph
