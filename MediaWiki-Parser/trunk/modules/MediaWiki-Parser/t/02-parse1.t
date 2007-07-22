@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 62;
+use Test::More tests => 63;
 
 use MediaWiki::Parser;
 
@@ -441,5 +441,142 @@ EOF
             },
         ],
         "Italic text will implicitly close at the end of the line",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello ''it1'' for ''Italic(2)'' ''
+Another line ''italic'' - ''more''.
+
+Another paragraph with ''italic''.
+
+And another one.
+
+He said: ''hello''.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ", },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "it1"},
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => " for " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "Italic(2)" },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => " " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "\n" },
+            {
+                t => "italics",
+                p => "close",
+                implicit => 1,
+            },
+            { text => "Another line " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "italic" },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => " - " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "more" },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => ".\n"},
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Another paragraph with " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "italic" },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => ".\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "And another one.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "He said: " },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "hello" },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => ".\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "More comprehensive tests for \"''\".",
     );
 }
