@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 64;
+use Test::More tests => 68;
 
 use MediaWiki::Parser;
 
@@ -301,6 +301,7 @@ my %pos_tokens_map =
 (
     "paragraph" => "para",
     "italics" => "italics",
+    "bold" => "bold",
 );
 
 sub get_token_representation
@@ -630,5 +631,282 @@ EOF
             },
         ],
         "Paragraph with trailing italics.",
+    );
+}
+
+# Start tests for standalone bold.
+
+{
+    my $text = <<'EOF';
+Text and some '''bold text'''. And some more text.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Text and some ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "bold text"},
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => ". And some more text.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Simple bold test on one line",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello '''Open Bold.
+Non-boldized text.
+
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "Open Bold.\n"},
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            { text => "Non-boldized text.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Bold text will implicitly close at the end of the line",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello '''b1''' for '''Bold(2)''' '''
+Another line '''bold''' - '''more'''.
+
+Another paragraph with '''bold'''.
+
+And another one.
+
+He said: '''hello'''.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "b1"},
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => " for " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "Bold(2)" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => " " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "\n" },
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            { text => "Another line " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "bold" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => " - " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "more" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => ".\n"},
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Another paragraph with " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "bold" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => ".\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "And another one.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "He said: " },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "hello" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => ".\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "More comprehensive tests for \"'''\".",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Paragraph with trailing bold '''
+
+Another paragraph.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Paragraph with trailing bold ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "\n"},
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Another paragraph.\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Paragraph with trailing bolds.",
     );
 }

@@ -247,7 +247,7 @@ sub _enqueue_tokens_in__para
             last PARAGRAPH_LINE_LOOP;
         }
 
-        if ($$line_ref =~ m{\G(.*?)('')}cg)
+        if ($$line_ref =~ m{\G(.*?)('{2,})}cg)
         {
             my ($up_to_text, $markup) = ($1, $2);
             
@@ -281,9 +281,18 @@ sub _enqueue_tokens_in__para
 
     if (defined($found_markup))
     {
-        $self->_enq(
-            $self->_state->get_toggle_token({type => "italics"})
-        );
+        if ($found_markup eq q{''})
+        {
+            $self->_enq(
+                $self->_state->get_toggle_token({type => "italics"})
+            );
+        }
+        elsif ($found_markup eq q{'''})
+        {
+            $self->_enq(
+                $self->_state->get_toggle_token({type => "bold"})
+            );
+        }
         return;
     }
     elsif (!defined($line_ref))

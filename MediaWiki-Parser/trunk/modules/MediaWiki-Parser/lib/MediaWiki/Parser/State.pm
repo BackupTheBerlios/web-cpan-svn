@@ -39,11 +39,13 @@ The status within the state machine of the parser.
 =cut
 
 has '_italics' => (isa => "Bool", is => 'rw', default => 0);
+has '_bold'    => (isa => "Bool", is => 'rw', default => 0);
 
 =head2 $state->get_toggle_token({type => $type})
 
 Toggles the state specified by "type" and returns the appropriate opening
-or closing markup token. Currently supported types are C<"italics">.
+or closing markup token. Currently supported types are C<"italics"> and
+C<"bold">.
 
 =cut
 
@@ -51,15 +53,18 @@ sub get_toggle_token
 {
     my ($self, $args) = @_;
 
+    my $type = $args->{type};
+    my $field = "_$type";
+
     my $token =
         MediaWiki::Parser::Token->new(
-            type => "italics",
-            position => ($self->_italics() ? "close" : "open"),
+            type => $type,
+            position => ($self->$field() ? "close" : "open"),
             ($args->{'implicit'} ? (implicit => 1) : ()),
         );
 
-    # Switch the italic.
-    $self->_italics(!$self->_italics());
+    # Switch the field
+    $self->$field(!$self->$field());
 
     return $token;
 }
@@ -77,12 +82,26 @@ sub line_end
 {
     my $self = shift;
 
-    if ($self->_italics())
+    my @ret_tokens;
+    foreach my $type (qw(italics bold))
     {
-        return [ $self->get_toggle_token({type => "italics", implicit => 1}) ];
+        my $field = "_$type";
+        if ($self->$field())
+        {
+            push @ret_tokens, 
+                 $self->get_toggle_token({type => $type, implicit => 1})
+                 ;
+        }
     }
 
-    return;
+    if (@ret_tokens)
+    {
+        return \@ret_tokens;
+    }
+    else
+    {
+        return;
+    }
 }
 
 1;
