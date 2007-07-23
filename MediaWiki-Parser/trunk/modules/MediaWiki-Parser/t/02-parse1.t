@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 72;
+use Test::More tests => 73;
 
 use MediaWiki::Parser;
 
@@ -1134,5 +1134,58 @@ EOF
             },
         ],
         "Closing both bold and italics at the end of the line",
+    );
+}
+
+{
+    my $text = <<'EOF';
+''Italics '''And Bold
+Hello
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "Italics ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "And Bold\n" },
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            {
+                t => "italics",
+                p => "close",
+                implicit => 1,
+            },
+            {text => "Hello\n"},
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Closing both italics and bold at the end of the line",
     );
 }

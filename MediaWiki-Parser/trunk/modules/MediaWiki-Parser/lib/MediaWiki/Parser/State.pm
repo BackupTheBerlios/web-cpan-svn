@@ -148,17 +148,18 @@ sub line_end
 
     my @ret_tokens;
 
-    # TODO : change to use _line_formats_stack().
-    foreach my $type (qw(italics bold))
+    while (@{$self->_line_formats_stack()})
     {
-        my $field = "_$type";
-        if ($self->$field())
-        {
-            push @ret_tokens, 
-                 @{$self->get_toggle_tokens({type => $type, implicit => 1})}
-                 ;
-        }
-    }
+        my $tokens =
+            $self->get_toggle_tokens(
+                {
+                    type => $self->_line_formats_stack()->[-1]->{type},
+                    implicit => 1,
+                }
+            );
+        
+        push @ret_tokens, @{$tokens};
+    }      
 
     if (@ret_tokens)
     {
