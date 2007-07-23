@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 69;
+use Test::More tests => 70;
 
 use MediaWiki::Parser;
 
@@ -959,5 +959,66 @@ EOF
             },
         ],
         "Nested bold and italics.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+''Italics '''Italics and Bold'' Only Bold''' Nothing.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "Italics ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "Italics and Bold" },
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            {
+                t => "italics",
+                p => "close",
+            },
+            {
+                t => "bold",
+                p => "open",
+                implicit => 1,
+            },
+            { text => " Only Bold", },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => " Nothing.\n"},
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Interlaced (= Improperly nested) bold and italics.",
     );
 }

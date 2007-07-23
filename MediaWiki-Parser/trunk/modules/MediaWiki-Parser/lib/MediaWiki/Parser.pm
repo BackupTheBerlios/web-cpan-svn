@@ -283,15 +283,11 @@ sub _enqueue_tokens_in__para
     {
         if ($found_markup eq q{''})
         {
-            $self->_enq(
-                $self->_state->get_toggle_token({type => "italics"})
-            );
+            $self->_enq_toggle_tokens({type => "italics"});
         }
         elsif ($found_markup eq q{'''})
         {
-            $self->_enq(
-                $self->_state->get_toggle_token({type => "bold"})
-            );
+            $self->_enq_toggle_tokens({type => "bold"});
         }
         return;
     }
@@ -308,6 +304,16 @@ sub _enqueue_tokens_in__para
     }
 
     return;
+}
+
+sub _enq_toggle_tokens
+{
+    my ($self, $args) = @_;
+
+    return
+        $self->_enq_multiple(
+            $self->_state->get_toggle_tokens({type => $args->{type}})
+        );
 }
 
 sub _get_status_after_paragraph

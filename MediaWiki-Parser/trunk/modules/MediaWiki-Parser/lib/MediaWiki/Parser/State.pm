@@ -5,6 +5,8 @@ use warnings;
 
 use Moose;
 
+use List::Util;
+
 =head1 NAME
 
 MediaWiki::Parser::State - the state of the parser.
@@ -41,21 +43,83 @@ The status within the state machine of the parser.
 has '_italics' => (isa => "Bool", is => 'rw', default => 0);
 has '_bold'    => (isa => "Bool", is => 'rw', default => 0);
 
-=head2 $state->get_toggle_token({type => $type})
+=head2 $state->get_toggle_tokens({type => $type})
 
 Toggles the state specified by "type" and returns the appropriate opening
-or closing markup token. Currently supported types are C<"italics"> and
+or closing markup tokens. Currently supported types are C<"italics"> and
 C<"bold">.
+
+We sometimes need more than one because of implicit open/close tokens due
+to improper nesting in the markup.
 
 =cut
 
-sub get_toggle_token
+has '_line_formats_stack' => (is => "rw", isa => "ArrayRef", default => sub { [] });
+
+sub get_toggle_tokens
 {
     my ($self, $args) = @_;
 
     my $type = $args->{type};
     my $field = "_$type";
 
+    my @ret = ();
+
+    my $push_actual_elem = sub {
+        push @ret,
+            MediaWiki::Parser::Token->new(
+                type => $type,
+                position => ($self->$field() ? "close" : "open"),
+                ($args->{'implicit'} ? (implicit => 1) : ()),
+            );
+    };
+
+    # If it's open - we should close it.
+    if ($self->$field())
+    {
+        my $formats_stack = $self->_line_formats_stack();
+        my $last = $#$formats_stack;
+
+        my $type_occur_idx = 
+            List::Util::first 
+            { $formats_stack->[$_]->{type} eq $type }
+            (reverse (0 .. $last ))
+            ;
+
+        foreach my $format_elem (@{$formats_stack}
+            [ reverse($type_occur_idx+1 .. $last) ] )
+        {
+            push @ret,
+                MediaWiki::Parser::Token->new(
+                    type => $format_elem->{type},
+                    position => "close",
+                    implicit => 1,
+                );
+        }
+
+        $push_actual_elem->();
+        
+        foreach my $format_elem (@{$formats_stack}
+            [ $type_occur_idx+1 .. $last ] )
+        {
+            push @ret,
+                MediaWiki::Parser::Token->new(
+                    type => $format_elem->{type},
+                    position => "open",
+                    implicit => 1,
+                );
+        }
+
+        # Remove the element from the stack
+        splice(@{$formats_stack}, $type_occur_idx, 1);
+    }
+    else
+    {
+        # If it's closed - we'll open a new one.
+        push @{$self->_line_formats_stack()}, { type => $type };
+        $push_actual_elem->();
+    }
+        
     my $token =
         MediaWiki::Parser::Token->new(
             type => $type,
@@ -66,7 +130,7 @@ sub get_toggle_token
     # Switch the field
     $self->$field(!$self->$field());
 
-    return $token;
+    return \@ret;
 }
 
 =head2 $state->line_end()
@@ -83,13 +147,15 @@ sub line_end
     my $self = shift;
 
     my @ret_tokens;
+
+    # TODO : change to use _line_formats_stack().
     foreach my $type (qw(italics bold))
     {
         my $field = "_$type";
         if ($self->$field())
         {
             push @ret_tokens, 
-                 $self->get_toggle_token({type => $type, implicit => 1})
+                 @{$self->get_toggle_tokens({type => $type, implicit => 1})}
                  ;
         }
     }
