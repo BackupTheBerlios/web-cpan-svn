@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 68;
+use Test::More tests => 69;
 
 use MediaWiki::Parser;
 
@@ -908,5 +908,56 @@ EOF
             },
         ],
         "Paragraph with trailing bolds.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+''Italics '''Italics and Bold''' Only Italics'' Nothing.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "Italics ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "Italics and Bold" },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => " Only Italics", },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => " Nothing.\n"},
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Nested bold and italics.",
     );
 }
