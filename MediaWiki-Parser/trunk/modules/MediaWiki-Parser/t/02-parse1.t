@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 75;
+use Test::More tests => 76;
 
 use MediaWiki::Parser;
 
@@ -1286,5 +1286,55 @@ EOF
             },
         ],
         "Quintuple Apostrophe - End B and Start I",
+    );
+}
+
+{
+    my $text = <<'EOF';
+''I and '''''B'''.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "I and ",},
+            {
+                t => "italics",
+                p => "close",
+            },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "B", },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => ".\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Quintuple Apostrophe - End I and Start B",
     );
 }
