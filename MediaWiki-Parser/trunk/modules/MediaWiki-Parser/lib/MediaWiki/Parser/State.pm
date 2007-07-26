@@ -34,11 +34,38 @@ Currently accepts no arguments.
 
 has 'status' => (isa => "Str", is => 'rw', default => "default");
 
-=head2 $token->status()
+=head2 $state->status()
 
 The status within the state machine of the parser.
 
 =cut
+
+=head2 $state->incoming_text()
+
+Sets/returns the incoming text for the next iteration of the parser. If there
+was leftover text after a formatting (such as an irregular number of 
+apostrophes, etc.), use this.
+
+=cut
+
+has 'incoming_text' => (isa => "Str", is => 'rw', default => "");
+
+=head2 $state->flush_incoming_text()
+
+Returns the current C<incoming_text()> and sets it to zero.
+
+=cut
+
+sub flush_incoming_text
+{
+    my $self = shift;
+
+    my $ret = $self->incoming_text();
+
+    $self->incoming_text("");
+
+    return $ret;
+}
 
 has '_italics' => (isa => "Bool", is => 'rw', default => 0);
 has '_bold'    => (isa => "Bool", is => 'rw', default => 0);

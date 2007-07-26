@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 77;
+use Test::More tests => 78;
 
 use MediaWiki::Parser;
 
@@ -1386,5 +1386,54 @@ EOF
             },
         ],
         "Quintuple Apostrophe - Implicit B at end.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+'''''''InB''''''''''''''''''''''.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "italics",
+                p => "open",
+            },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "''InB",},
+            {
+                t => "bold",
+                p => "close",
+            },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => "'''''''''''''''''.\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing more than 5 Apostrophes at once - should be appended to text.",
     );
 }

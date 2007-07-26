@@ -225,7 +225,7 @@ sub _enqueue_tokens_in__para
 {
     my $self = shift;
 
-    my $text = "";
+    my $text = $self->_state->flush_incoming_text();
 
     my $use_line = 1;
 
@@ -293,12 +293,13 @@ sub _enqueue_tokens_in__para
         {
             my $rest = $1;
 
-            # TODO : enqueue $rest.
             $self->_enq_toggle_tokens_for_simultaneous_formattings(
                 {
                     types => [qw(italics bold)],
                 }
             );
+
+            $self->_state->incoming_text($rest);
         }
         return;
     }
