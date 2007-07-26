@@ -158,8 +158,10 @@ sub get_simult_toggle_tokens
     my @order = 
         sort 
         {
-            (($stack_order{$a} || 0) <=> ($stack_order{$b} || 0)) ||
-            ($types_order{$a} <=> $types_order{$b})
+            (($stack_order{$a} || (@$stack+1)) <=> 
+             ($stack_order{$b} || (@$stack+1))
+            ) 
+            || ($types_order{$a} <=> $types_order{$b})
         }
         @$types_array;
 
