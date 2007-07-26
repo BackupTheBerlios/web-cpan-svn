@@ -289,6 +289,17 @@ sub _enqueue_tokens_in__para
         {
             $self->_enq_toggle_tokens({type => "bold"});
         }
+        elsif ($found_markup =~ m{\A'{5}('*)\z})
+        {
+            my $rest = $1;
+
+            # TODO : enqueue $rest.
+            $self->_enq_toggle_tokens_for_simultaneous_formattings(
+                {
+                    types => [qw(italics bold)],
+                }
+            );
+        }
         return;
     }
     elsif (!defined($line_ref))
@@ -313,6 +324,16 @@ sub _enq_toggle_tokens
     return
         $self->_enq_multiple(
             $self->_state->get_toggle_tokens({type => $args->{type}})
+        );
+}
+
+sub _enq_toggle_tokens_for_simultaneous_formattings
+{
+    my ($self, $args) = @_;
+
+    return
+        $self->_enq_multiple(
+            $self->_state->get_simult_toggle_tokens({types => $args->{types}})
         );
 }
 

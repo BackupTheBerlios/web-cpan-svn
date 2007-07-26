@@ -133,6 +133,39 @@ sub get_toggle_tokens
     return \@ret;
 }
 
+=head2 $state->get_simult_toggle_tokens({types => \@types})
+
+Returns several simultaneous types as in the case of C<'''''> - italics+bold.
+C<@types> specifies the types themselves and gives some order hints.
+
+=cut
+
+sub get_simult_toggle_tokens
+{
+    my ($self, $args) = @_;
+
+    my $types_array = $args->{types};
+
+    my %types_order = (map { $types_array->[$_] => $_ } (0 .. $#$types_array));
+
+    my $stack = $self->_line_formats_stack();
+    my %stack_order = 
+        (map 
+            { $stack->[$_]->{type} => (@$stack - $_) }
+            (0 .. $#$stack)
+        );
+
+    my @order = 
+        sort 
+        {
+            (($stack_order{$a} || 0) <=> ($stack_order{$b} || 0)) ||
+            ($types_order{$a} <=> $types_order{$b})
+        }
+        @$types_array;
+
+    return [ map { @{$self->get_toggle_tokens({type => $_})} } @order];
+}
+
 =head2 $state->line_end()
 
 Performs a syntactical line end operation and implicity closes all the
