@@ -285,9 +285,13 @@ sub _enqueue_tokens_in__para
         {
             $self->_enq_toggle_tokens({type => "italics"});
         }
-        elsif ($found_markup eq q{'''})
+        elsif ($found_markup =~ m{\A'''('?)\z})
         {
+            my $rest = $1;
+
             $self->_enq_toggle_tokens({type => "bold"});
+
+            $self->_state->incoming_text($rest);
         }
         elsif ($found_markup =~ m{\A'{5}('*)\z})
         {

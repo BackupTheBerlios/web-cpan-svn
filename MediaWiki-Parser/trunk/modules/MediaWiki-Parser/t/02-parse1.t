@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 78;
+use Test::More tests => 79;
 
 use MediaWiki::Parser;
 
@@ -1435,5 +1435,46 @@ EOF
             },
         ],
         "Testing more than 5 Apostrophes at once - should be appended to text.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+''''Bold''''.
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "'Bold",},
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => "'.\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing 4 Apostrophes",
     );
 }
