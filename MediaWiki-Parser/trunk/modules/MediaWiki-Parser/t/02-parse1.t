@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 80;
+use Test::More tests => 81;
 
 use MediaWiki::Parser;
 
@@ -1529,6 +1529,68 @@ EOF
                 p => "close",
             },
         ],
-        "Testing 4 Apostrophes",
+        "Testing newline",
+    );
+}
+
+{
+    my $text = <<'EOF';
+One '''Line<br>Two''' Line<br />ThreeLine<br/>FourLine<br  / >FiveLine
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "One ",},
+            {
+                t => "bold",
+                p => "open",
+            },
+            {text => "Line"},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "Two",},
+            {
+                t => "bold",
+                p => "close",
+            },
+            {text => " Line",},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "ThreeLine",},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "FourLine", },
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "FiveLine\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing bold across newlines",
     );
 }
