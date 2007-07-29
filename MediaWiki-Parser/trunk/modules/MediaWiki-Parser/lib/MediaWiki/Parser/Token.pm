@@ -103,6 +103,19 @@ sub is_closing
     return ($self->position() eq "close");
 }
 
+=head2 my $bool = $parser->is_standalone()
+
+Returns true if it's a standalone tag event.
+
+=cut
+
+sub is_standalone
+{
+    my $self = shift;
+
+    return ($self->position() eq "standalone");
+}
+
 has '_implicit' => (isa => "Bool", is => 'ro', init_arg => "implicit");
 
 =head2 my $bool = $token->is_implicit()

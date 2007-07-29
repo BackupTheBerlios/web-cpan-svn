@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 79;
+use Test::More tests => 80;
 
 use MediaWiki::Parser;
 
@@ -294,6 +294,7 @@ sub token_pos
 
     return   $token->is_opening() ? "open" 
            : $token->is_closing() ? "close"
+           : $token->is_standalone() ? "standalone"
            : "unknown";
 }
 
@@ -302,6 +303,7 @@ my %pos_tokens_map =
     "paragraph" => "para",
     "italics" => "italics",
     "bold" => "bold",
+    "linebreak" => "linebreak",
 );
 
 sub get_token_representation
@@ -1470,6 +1472,58 @@ EOF
                 p => "close",
             },
             { text => "'.\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing 4 Apostrophes",
+    );
+}
+
+{
+    my $text = <<'EOF';
+OneLine<br>TwoLine<br />ThreeLine<br/>FourLine<br  / >FiveLine
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "OneLine",},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "TwoLine",},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "ThreeLine",},
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "FourLine", },
+            {
+                t => "linebreak",
+                p => "standalone",
+            },
+            { text => "FiveLine\n" },
             {
                 t => "para",
                 p => "close",

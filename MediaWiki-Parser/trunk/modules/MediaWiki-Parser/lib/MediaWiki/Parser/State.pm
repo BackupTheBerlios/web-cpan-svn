@@ -195,6 +195,26 @@ sub get_simult_toggle_tokens
     return [ map { @{$self->get_toggle_tokens({type => $_})} } @order];
 }
 
+=head2 $state->get_standalone_tokens({ type => $type})
+
+Get the tokens required for a standalone event. Currently supported types
+are C<"linebreak">.
+
+=cut
+
+sub get_standalone_tokens
+{
+    my ($self, $args) = @_;
+
+    return 
+        [
+            MediaWiki::Parser::Token->new(
+                type => "linebreak",
+                position => "standalone",
+            )
+        ];
+}
+
 =head2 $state->line_end()
 
 Performs a syntactical line end operation and implicity closes all the

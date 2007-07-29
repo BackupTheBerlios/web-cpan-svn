@@ -247,7 +247,7 @@ sub _enqueue_tokens_in__para
             last PARAGRAPH_LINE_LOOP;
         }
 
-        if ($$line_ref =~ m{\G(.*?)('{2,})}cg)
+        if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<)}cg)
         {
             my ($up_to_text, $markup) = ($1, $2);
             
@@ -304,6 +304,19 @@ sub _enqueue_tokens_in__para
             );
 
             $self->_state->incoming_text($rest);
+        }
+        elsif ($found_markup eq "<")
+        {
+            if ($$line_ref =~ m{\Gbr */? *>}cg)
+            {
+                $self->_enq_multiple(
+                    $self->_state->get_standalone_tokens(
+                        {
+                            type => "linebreak"
+                        }
+                    )
+                );
+            }
         }
         return;
     }
