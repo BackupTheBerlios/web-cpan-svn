@@ -77,6 +77,13 @@ The type of event. Can be:
 
 =cut
 
+has 'subtype' => (isa => "Str", is => 'ro');
+
+=head2 $token->subtype()
+
+The subtype of the event. For the "signature" type it can be C<'username'>,
+C<'username+date'> and C<'date'>.
+
 =head2 my $bool = $parser->is_opening()
 
 Returns true if it's an opening tag event.

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 81;
+use Test::More tests => 82;
 
 use MediaWiki::Parser;
 
@@ -304,7 +304,10 @@ my %pos_tokens_map =
     "italics" => "italics",
     "bold" => "bold",
     "linebreak" => "linebreak",
+    "signature" => "signature",
 );
+
+my %has_subtype = (map { $_ => 1 } qw(signature));
 
 sub get_token_representation
 {
@@ -321,6 +324,11 @@ sub get_token_representation
         if ($token->is_implicit())
         {
             $ret->{implicit} = 1;
+        }
+
+        if (exists($has_subtype{$token->type()}))
+        {
+            $ret->{st} = $token->subtype();
         }
 
         return $ret;
@@ -1592,5 +1600,77 @@ EOF
             },
         ],
         "Testing bold across newlines",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Sign: ~~~ Sign+Date: ~~~~ Date-Alone: ~~~~~
+
+11 tildes: ~~~~~~~~~~~
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Sign: ",},
+            {
+                t => "signature",
+                p => "standalone",
+                st => "username",
+            },
+            {text => " Sign+Date: "},
+            {
+                t => "signature",
+                p => "standalone",
+                st => "username+date",
+            },
+            { text => " Date-Alone: ",},
+            {
+                t => "signature",
+                p => "standalone",
+                st => "date",
+            },
+            { text => "\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },            
+            {text => "11 tildes: ",},
+            {
+                t => "signature",
+                p => "standalone",
+                st => "date",
+            },
+            {
+                t => "signature",
+                p => "standalone",
+                st => "date",
+            },
+            { text => "~\n",},
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing the signature - multiple tildes",
     );
 }

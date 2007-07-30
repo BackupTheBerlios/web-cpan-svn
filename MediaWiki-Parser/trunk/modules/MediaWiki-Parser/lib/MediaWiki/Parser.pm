@@ -247,7 +247,7 @@ sub _enqueue_tokens_in__para
             last PARAGRAPH_LINE_LOOP;
         }
 
-        if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<)}cg)
+        if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<|\~{3,5})}cg)
         {
             my ($up_to_text, $markup) = ($1, $2);
             
@@ -305,6 +305,18 @@ sub _enqueue_tokens_in__para
 
             $self->_state->incoming_text($rest);
         }
+        elsif ($found_markup =~ m{\A\~+\z})
+        {
+            $self->_enq_multiple(
+                $self->_state->get_standalone_tokens(
+                    {
+                        type => "signature",
+                        subtype =>
+                            $self->_get_signature_subtype($found_markup),
+                    }
+                )
+            );
+        }
         elsif ($found_markup eq "<")
         {
             if ($$line_ref =~ m{\Gbr */? *>}cg)
@@ -333,6 +345,15 @@ sub _enqueue_tokens_in__para
     }
 
     return;
+}
+
+sub _get_signature_subtype
+{
+    my ($self, $markup) = @_;
+
+    return    +($markup eq "~~~") ? "username" 
+            :  ($markup eq "~~~~") ? "username+date"
+            :  "date";
 }
 
 sub _enq_toggle_tokens

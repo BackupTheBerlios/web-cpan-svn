@@ -209,8 +209,12 @@ sub get_standalone_tokens
     return 
         [
             MediaWiki::Parser::Token->new(
-                type => "linebreak",
+                type => $args->{type},
                 position => "standalone",
+                (exists($args->{subtype}) ? 
+                    (subtype => $args->{subtype}) : 
+                    ()
+                ),
             )
         ];
 }
