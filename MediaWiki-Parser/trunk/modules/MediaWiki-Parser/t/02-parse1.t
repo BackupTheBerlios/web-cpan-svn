@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 82;
+use Test::More tests => 83;
 
 use MediaWiki::Parser;
 
@@ -305,6 +305,7 @@ my %pos_tokens_map =
     "bold" => "bold",
     "linebreak" => "linebreak",
     "signature" => "signature",
+    "html-tag" => "html",
 );
 
 my %has_subtype = (map { $_ => 1 } qw(signature));
@@ -329,6 +330,11 @@ sub get_token_representation
         if (exists($has_subtype{$token->type()}))
         {
             $ret->{st} = $token->subtype();
+        }
+
+        if ($token->type() eq "html-tag")
+        {
+            $ret->{helem} = $token->element_name();
         }
 
         return $ret;
@@ -1672,5 +1678,49 @@ EOF
             },
         ],
         "Testing the signature - multiple tildes",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello <tt>Teletype</tt>!
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ",},
+            {
+                t => "html",
+                p => "open",
+                helem => "tt",
+            },
+            { text => "Teletype", },
+            {
+                t => "html",
+                p => "close",
+                helem => "tt",
+            },
+            { text => "!\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing HTML element - tt",
     );
 }

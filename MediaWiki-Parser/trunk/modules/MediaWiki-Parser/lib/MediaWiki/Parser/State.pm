@@ -7,6 +7,9 @@ use Moose;
 
 use List::Util;
 
+use MediaWiki::Parser::Token;
+use MediaWiki::Parser::Token::HTML;
+
 =head1 NAME
 
 MediaWiki::Parser::State - the state of the parser.
@@ -81,7 +84,13 @@ to improper nesting in the markup.
 
 =cut
 
-has '_line_formats_stack' => (is => "rw", isa => "ArrayRef", default => sub { [] });
+has '_line_formats_stack' => (is => "rw", isa => "ArrayRef", 
+    default => sub { [] }
+);
+
+has '_opened_html_elems' => (is => "rw", isa => "HashRef",
+    default => sub { +{} }
+);
 
 sub get_toggle_tokens
 {
@@ -158,6 +167,48 @@ sub get_toggle_tokens
     $self->$field(!$self->$field());
 
     return \@ret;
+}
+
+=head2 $state->get_html_tokens({ element_name => "tt", 'open' => $bool})
+
+Retrieves the HTML tokens that are needed.
+
+=cut
+
+sub get_html_tokens
+{
+    # TODO : fix the assumption that the input is well-formed.
+    my ($self, $args) = @_;
+
+    my $name = $args->{element_name};
+    my $open = $args->{'open'};
+
+    if ($open)
+    {
+        $self->_opened_html_elems()->{$name} = 1;
+        push @{$self->_line_formats_stack()},
+            { type => "html_tag", element_name => $name};
+        return
+        [
+            MediaWiki::Parser::Token::HTML->new(
+                element_name => $name,
+                position => "open",
+            )
+        ];
+    }
+    else
+    {
+        delete($self->_opened_html_elems()->{$name});
+        pop(@{$self->_line_formats_stack()});
+
+        return 
+        [ 
+            MediaWiki::Parser::Token::HTML->new(
+                element_name => $name,
+                position => "close",
+            )
+        ];
+    }
 }
 
 =head2 $state->get_simult_toggle_tokens({types => \@types})

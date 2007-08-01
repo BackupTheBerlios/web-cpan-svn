@@ -319,15 +319,32 @@ sub _enqueue_tokens_in__para
         }
         elsif ($found_markup eq "<")
         {
-            if ($$line_ref =~ m{\Gbr */? *>}cg)
+            if ($$line_ref =~ m{\G(/?)(\w+) *(/?) *>}cg)
             {
-                $self->_enq_multiple(
-                    $self->_state->get_standalone_tokens(
-                        {
-                            type => "linebreak"
-                        }
+                my ($close_slash, $elem_name, $standalone_slash) = ($1,$2,$3);
+                if ($elem_name eq "br")
+                {
+                    $self->_enq_multiple(
+                        $self->_state->get_standalone_tokens(
+                            {
+                                type => "linebreak"
+                            }
+                        )
+                    );
+                }
+                elsif ($elem_name eq "tt")
+                {
+                    my $close = ($close_slash eq "/");
+
+                    $self->_enq_multiple(
+                        $self->_state->get_html_tokens(
+                            {
+                                element_name => $elem_name,
+                                'open' => (!$close),                            
+                            }
+                        )
                     )
-                );
+                }
             }
         }
         return;
