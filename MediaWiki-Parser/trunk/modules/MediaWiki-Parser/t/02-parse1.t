@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 83;
+use Test::More tests => 84;
 
 use MediaWiki::Parser;
 
@@ -1722,5 +1722,59 @@ EOF
             },
         ],
         "Testing HTML element - tt",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello ''It <tt>Teletype</tt> EndIt''!
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello ",},
+            {
+                t => "italics",
+                p => "open",
+            },
+            { text => "It ", },
+            {
+                t => "html",
+                p => "open",
+                helem => "tt",
+            },
+            { text => "Teletype", },
+            {
+                t => "html",
+                p => "close",
+                helem => "tt",
+            },
+            { text => " EndIt", },
+            {
+                t => "italics",
+                p => "close",
+            },
+            { text => "!\n", },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Testing HTML element in combination with Italics - well formed.",
     );
 }
