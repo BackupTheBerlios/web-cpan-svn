@@ -1,0 +1,26 @@
+Build.PL
+Changes
+eg/camelids2.xml
+eg/camelids.xml
+eg/xmlsemdiff
+lib/XML/SemanticDiff/BasicHandler.pm
+lib/XML/SemanticDiff.pm
+Makefile.PL
+MANIFEST
+META.yml                                 Module meta-data (added by MakeMaker)
+README
+t/01basic.t
+t/02load_xml.t
+t/03simple_compare.t
+t/04namespaces.t
+t/05simple_handler.t
+t/06pass_to_handler.t
+t/07pitest.t
+t/08nonexist_ns.t
+t/09two-tags.t
+t/10wide-chars.t
+t/11tag-in-different-locations.t
+t/12missing-element-has-o-as-cdata.t
+t/13to-doc-read.t
+t/pod-coverage.t
+t/pod.t
