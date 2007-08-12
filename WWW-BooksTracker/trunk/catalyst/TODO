@@ -4,7 +4,6 @@ Bugs:
 Cleanups:
 ---------
 
-* Merge book_edit.tt and book_add.tt
 * Extract most of the Perl code out of the templates.
 
 Tasks:
