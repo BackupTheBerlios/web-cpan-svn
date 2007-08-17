@@ -146,6 +146,106 @@ sub is_implicit
     return $self->_implicit();
 }
 
+=head2 implicit_close()
+
+Returns an implicit close token for this one. This is useful with interlaced
+tokens.
+
+=cut
+
+sub implicit_close
+{
+    my $self = shift;
+
+    return
+        MediaWiki::Parser::Token->new(
+            @{$self->_get_fields()},
+            implicit => 1,
+            position => "close",
+        );
+}
+
+=head2 implicit_open()
+
+Returns an implicit open token for this one. This is useful with interlaced
+tokens.
+
+=cut
+
+sub implicit_open
+{
+    my $self = shift;
+
+    return
+        MediaWiki::Parser::Token->new(
+            @{$self->_get_fields()},
+            implicit => 1,
+            position => "open",
+        );
+}
+
+=head2 clone()
+
+Clones the token.
+
+=cut
+
+sub clone
+{
+    my ($self, $args) = @_;
+
+    $args ||= {};
+
+    my $extra_params = $args->{extra_params} || [];
+
+    return ref($self)->new(
+        @{$self->_get_clone_params()},
+        @{$extra_params},
+    );
+}
+
+sub _get_fields
+{
+    my $self = shift;
+
+    return 
+    [
+        type => $self->type(),
+        subtype => $self->subtype(),
+    ];
+}
+
+sub _get_clone_params
+{
+    my $self = shift;
+
+    return
+    [
+        position => $self->position(),
+        implicit => $self->_implicit(),
+        @{$self->_get_fields()},
+    ];
+}
+
+=head2 $token->matches({%args})
+
+Whether the token matches the spec in %args.
+
+=cut
+
+sub matches
+{
+    my ($self, $args) = @_;
+
+    return (
+           ($self->type() eq $args->{type})
+        && (defined($self->subtype()) 
+            ? ($self->subtype() eq $args->{subtype})
+            : 1
+        )
+    );
+}
+
 1;
 
 =head1 AUTHOR

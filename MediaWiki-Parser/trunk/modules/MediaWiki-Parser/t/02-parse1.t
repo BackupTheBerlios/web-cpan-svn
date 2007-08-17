@@ -1,9 +1,10 @@
+#!perl
 #!perl -T
 
 use strict;
 use warnings;
 
-use Test::More tests => 85;
+use Test::More tests => 86;
 
 use MediaWiki::Parser;
 
@@ -1830,5 +1831,68 @@ EOF
             },
         ],
         "Testing HTML element in combination with Italics - well formed (#2)",
+    );
+}
+
+{
+    my $text = <<'EOF';
+<tt>TT ''' Bold - End TT </tt> End Bold.'''
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "html",
+                p => "open",
+                helem => "tt",
+            },
+            { text => "TT ", },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => " Bold - End TT "},
+            {
+                t => "bold",
+                p => "close",
+                implicit => 1,
+            },
+            {
+                t => "html",
+                p => "close",
+                helem => "tt",
+            },
+            {
+                t => "bold",
+                p => "open",
+                implicit => 1,
+            },
+            { text => " End Bold.", },
+            {
+                t => "bold",
+                p => "close",
+            },
+            { text => "\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Interlaced HTML Markup and normal wiki markup",
     );
 }

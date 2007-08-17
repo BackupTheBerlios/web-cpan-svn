@@ -379,7 +379,13 @@ sub _enq_toggle_tokens
 
     return
         $self->_enq_multiple(
-            $self->_state->get_toggle_tokens({type => $args->{type}})
+            $self->_state->get_toggle_tokens(
+                {
+                    token => MediaWiki::Parser::Token->new(
+                        type => $args->{type},
+                        position => "open",
+                    ),
+                })
         );
 }
 

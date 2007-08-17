@@ -73,9 +73,9 @@ sub flush_incoming_text
 has '_italics' => (isa => "Bool", is => 'rw', default => 0);
 has '_bold'    => (isa => "Bool", is => 'rw', default => 0);
 
-=head2 $state->get_toggle_tokens({type => $type})
+=head2 $state->get_toggle_tokens({token => $token})
 
-Toggles the state specified by "type" and returns the appropriate opening
+Toggles the state specified by token and returns the appropriate opening
 or closing markup tokens. Currently supported types are C<"italics"> and
 C<"bold">.
 
@@ -92,45 +92,97 @@ has '_opened_html_elems' => (is => "rw", isa => "HashRef",
     default => sub { +{} }
 );
 
-sub get_toggle_tokens
+sub _is_open
 {
     my ($self, $args) = @_;
 
     my $type = $args->{type};
+
     my $field = "_$type";
+
+    return +($args->{type} eq "html-tag")
+        ?  $self->_opened_html_elems()->{$args->{element_name}} 
+        :  $self->$field();
+}
+
+sub _close_token_state
+{
+    my ($self, $args) = @_;
+
+    my $type = $args->{type};
+
+    if ($args->{type} eq "html-tag")
+    {
+        delete ($self->_opened_html_elems()->{$args->{element_name}});
+    }
+    else
+    {
+        my $field = "_$type";
+        $self->$field(0);
+    }
+}
+
+sub _open_token_state
+{
+    my ($self, $args) = @_;
+
+    my $type = $args->{type};
+
+    if ($args->{type} eq "html-tag")
+    {
+        $self->_opened_html_elems()->{$args->{element_name}} = 1;
+    }
+    else
+    {
+        my $field = "_$type";
+        $self->$field(1);
+    }
+}
+
+sub get_toggle_tokens
+{
+    my ($self, $args) = @_;
+
+    my $input_token = $args->{token};
+
+    my $is_open = $self->_is_open($input_token);
 
     my @ret = ();
 
     my $push_actual_elem = sub {
-        push @ret,
-            MediaWiki::Parser::Token->new(
-                type => $type,
-                position => ($self->$field() ? "close" : "open"),
-                ($args->{'implicit'} ? (implicit => 1) : ()),
+
+        my $token = 
+            $input_token->clone(
+                {
+                    extra_params =>
+                    [
+                        position => ($is_open ? "close" : "open"),
+                        ($args->{'implicit'} ? (implicit => 1) : ()),
+                    ],
+                },
             );
+
+        push @ret, $token;
+
+        return $token;
     };
 
     # If it's open - we should close it.
-    if ($self->$field())
+    if ($is_open)
     {
         my $formats_stack = $self->_line_formats_stack();
         my $last = $#$formats_stack;
 
-        my $type_occur_idx = 
-            List::Util::first 
-            { $formats_stack->[$_]->{type} eq $type }
+        my $type_occur_idx =
+            List::Util::first
+            { $formats_stack->[$_]->matches($input_token) }
             (reverse (0 .. $last ))
             ;
 
         foreach my $format_elem (@{$formats_stack}
             [ reverse($type_occur_idx+1 .. $last) ] )
         {
-            push @ret,
-                MediaWiki::Parser::Token->new(
-                    type => $format_elem->{type},
-                    position => "close",
-                    implicit => 1,
-                );
+            push @ret, $format_elem->implicit_close();
         }
 
         $push_actual_elem->();
@@ -138,33 +190,24 @@ sub get_toggle_tokens
         foreach my $format_elem (@{$formats_stack}
             [ $type_occur_idx+1 .. $last ] )
         {
-            push @ret,
-                MediaWiki::Parser::Token->new(
-                    type => $format_elem->{type},
-                    position => "open",
-                    implicit => 1,
-                );
+            push @ret, $format_elem->implicit_open();
         }
 
         # Remove the element from the stack
         splice(@{$formats_stack}, $type_occur_idx, 1);
+
+        # Switch the field
+        $self->_close_token_state($input_token);
     }
     else
     {
         # If it's closed - we'll open a new one.
-        push @{$self->_line_formats_stack()}, { type => $type };
-        $push_actual_elem->();
-    }
-        
-    my $token =
-        MediaWiki::Parser::Token->new(
-            type => $type,
-            position => ($self->$field() ? "close" : "open"),
-            ($args->{'implicit'} ? (implicit => 1) : ()),
-        );
+        push @{$self->_line_formats_stack()},
+            $push_actual_elem->()->clone();
 
-    # Switch the field
-    $self->$field(!$self->$field());
+        # Switch the field
+        $self->_open_token_state($input_token);
+    }
 
     return \@ret;
 }
@@ -186,28 +229,26 @@ sub get_html_tokens
     if ($open)
     {
         $self->_opened_html_elems()->{$name} = 1;
-        push @{$self->_line_formats_stack()},
-            { type => "html_tag", element_name => $name};
-        return
-        [
+
+        my $ret = 
             MediaWiki::Parser::Token::HTML->new(
                 element_name => $name,
                 position => "open",
-            )
-        ];
+            );
+        push @{$self->_line_formats_stack()}, $ret->clone();
+        return [ $ret ];
     }
     else
     {
-        delete($self->_opened_html_elems()->{$name});
-        pop(@{$self->_line_formats_stack()});
-
-        return 
-        [ 
-            MediaWiki::Parser::Token::HTML->new(
-                element_name => $name,
-                position => "close",
-            )
-        ];
+        return $self->get_toggle_tokens(
+            {
+                token =>
+                    MediaWiki::Parser::Token::HTML->new(
+                        element_name => $name,
+                        position => "close",
+                    ),
+            }
+        );
     }
 }
 
@@ -243,7 +284,19 @@ sub get_simult_toggle_tokens
         }
         @$types_array;
 
-    return [ map { @{$self->get_toggle_tokens({type => $_})} } @order];
+    return [ map { 
+        @{
+            $self->get_toggle_tokens(
+                {
+                    token =>
+                    MediaWiki::Parser::Token->new(
+                        type => $_,
+                        position => "open",
+                    )
+                }
+            )
+        } } @order
+        ];
 }
 
 =head2 $state->get_standalone_tokens({ type => $type})
@@ -290,8 +343,11 @@ sub line_end
         my $tokens =
             $self->get_toggle_tokens(
                 {
-                    type => $self->_line_formats_stack()->[-1]->{type},
-                    implicit => 1,
+                    token => $self->_line_formats_stack()->[-1]->clone(
+                        {
+                            extra_params => [ implicit => 1, ],
+                        }
+                    ),
                 }
             );
         

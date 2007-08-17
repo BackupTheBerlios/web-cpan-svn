@@ -49,6 +49,23 @@ Returns C<"text"> for a text-based token.
 
 =cut
 
+override "_get_fields" => sub {
+    my $self = shift;
+    return [@{super()}, element_name => $self->element_name()];
+};
+
+=head2 matches()
+
+See L<MediaWiki::Parser::Token>.
+
+=cut
+
+override "matches" => sub {
+    my ($self, $args) = @_;
+
+    return super() && ($self->element_name() eq $args->{element_name});
+};
+
 1;
 
 =head1 AUTHOR
