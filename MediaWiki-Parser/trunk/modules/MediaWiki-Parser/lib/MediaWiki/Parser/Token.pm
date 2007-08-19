@@ -157,12 +157,15 @@ sub implicit_close
 {
     my $self = shift;
 
-    return
-        MediaWiki::Parser::Token->new(
-            @{$self->_get_fields()},
-            implicit => 1,
-            position => "close",
-        );
+    return $self->clone(
+        {
+            extra_params =>
+            [
+                implicit => 1,
+                position => "close",
+            ]
+        }
+    );
 }
 
 =head2 implicit_open()
@@ -172,16 +175,20 @@ tokens.
 
 =cut
 
+
 sub implicit_open
 {
     my $self = shift;
 
-    return
-        MediaWiki::Parser::Token->new(
-            @{$self->_get_fields()},
-            implicit => 1,
-            position => "open",
-        );
+    return $self->clone(
+        {
+            extra_params =>
+            [
+                implicit => 1,
+                position => "open",
+            ]
+        }
+    );
 }
 
 =head2 clone()

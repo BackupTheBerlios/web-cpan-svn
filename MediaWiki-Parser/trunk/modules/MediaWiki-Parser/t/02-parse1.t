@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 86;
+use Test::More tests => 87;
 
 use MediaWiki::Parser;
 
@@ -1894,5 +1894,69 @@ EOF
             },
         ],
         "Interlaced HTML Markup and normal wiki markup",
+    );
+}
+
+{
+    my $text = <<'EOF';
+'''Start Bold <tt>Start TT - End Bold''' End TT </tt>
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                t => "bold",
+                p => "open",
+            },
+            { text => "Start Bold ", },
+            {
+                t => "html",
+                p => "open",
+                helem => "tt",
+            },
+            { text => "Start TT - End Bold", },
+            {
+                t => "html",
+                p => "close",
+                helem => "tt",
+                implicit => 1,
+            },
+            {
+                t => "bold",
+                p => "close",
+            },
+            {
+                t => "html",
+                p => "open",
+                helem => "tt",
+                implicit => 1,
+            },
+            { text => " End TT ", },
+            {
+                t => "html",
+                p => "close",
+                helem => "tt",
+            },
+            { text => "\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Interlaced HTML Markup and normal wiki markup - 2",
     );
 }
