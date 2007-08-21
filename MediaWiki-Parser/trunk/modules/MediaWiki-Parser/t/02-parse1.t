@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 87;
+use Test::More tests => 88;
 
 use MediaWiki::Parser;
 
@@ -1960,3 +1960,43 @@ EOF
         "Interlaced HTML Markup and normal wiki markup - 2",
     );
 }
+
+{
+    my $text = <<'EOF';
+Hello <nowiki> There ''Lambda Pi'' Fill
+There for you ''' Lambda '''
+</nowiki>
+
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => ("Hello  There ''Lambda Pi'' Fill\n"
+                    . "There for you ''' Lambda '''\n\n" )
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "<nowiki> - 1",
+    );
+}
+
+

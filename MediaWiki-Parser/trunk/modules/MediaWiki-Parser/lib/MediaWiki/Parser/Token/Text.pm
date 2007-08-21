@@ -37,7 +37,7 @@ For internal use.
 
 =cut
 
-has "text" => (isa => "Str", is => "ro");
+has "text" => (isa => "Str", is => "rw");
 
 =head2 $token->text()
 
@@ -52,6 +52,21 @@ has "+type" => (default => "text");
 Returns C<"text"> for a text-based token.
 
 =cut
+
+=head2 append_text($text)
+
+Appends the text C<$text> to the token.
+
+=cut
+
+sub append_text
+{
+    my ($self, $text_to_append) = @_;
+
+    $self->text($self->text().$text_to_append);
+
+    return;
+}
 
 1;
 

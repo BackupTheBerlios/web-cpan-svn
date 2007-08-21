@@ -131,6 +131,29 @@ sub _enq
     return $self->_enq_multiple([$token]);
 }
 
+sub _append_text_to_last_token
+{
+    my ($self, $text) = @_;
+
+    my $last_token = $self->_tokens_queue()->[-1];
+    if (defined($last_token) &&
+        $last_token->isa("MediaWiki::Parser::Token::Text")
+       )
+    {
+        $last_token->append_text($text);
+    }
+    else
+    {
+        $self->_enq(
+            MediaWiki::Parser::Token::Text->new(
+                text => $text,
+            )
+        );
+    }
+
+    return;
+}
+
 sub get_next_token
 {
     my $self = shift;
@@ -183,11 +206,20 @@ sub _enqueue_more_tokens
 
     my $callback = "_enqueue_tokens_in__" . $self->_state->status();
 
-    my $callback_ret = $self->$callback();
-
-    if (defined($callback_ret))
+    while (defined(my $callback_ret = $self->$callback()))
     {
-        $self->_state->status($callback_ret->{'next_state'});
+        if ($callback_ret->{'again'})
+        {
+            # Continue the loop.
+        }
+        else
+        {
+            if ($callback_ret->{next_state})
+            {
+                $self->_state->status($callback_ret->{'next_state'});
+            }
+            last;
+        }
     }
 
     return;
@@ -267,11 +299,7 @@ sub _enqueue_tokens_in__para
 
     if (length($text))
     {
-        $self->_enq(
-            MediaWiki::Parser::Token::Text->new(
-                text => $text,
-            )
-        );
+        $self->_append_text_to_last_token($text);
     }
 
     if (defined($implicit_line_end_tokens))
@@ -345,6 +373,13 @@ sub _enqueue_tokens_in__para
                         )
                     )
                 }
+                elsif ($elem_name eq "nowiki")
+                {
+                    $self->_append_text_to_last_token(
+                        $self->_consume_nowiki_text()
+                    );
+                    return { again => 1};
+                }
             }
         }
         return;
@@ -362,6 +397,32 @@ sub _enqueue_tokens_in__para
     }
 
     return;
+}
+
+sub _consume_nowiki_text
+{
+    my ($self) = @_;
+
+    my $ret = "";
+
+    my $line_ref = $self->_curr_line();
+
+    while (defined($line_ref))
+    {
+        $$line_ref =~ m{\G(.*?)((?:</nowiki>)|\z)}cgms;
+
+        my ($text, $nowiki) = ($1, $2);
+
+        $ret .= $text;
+
+        if ($nowiki)
+        {
+            return $ret;
+        }
+        $line_ref = $self->_next_line();
+    }
+
+    return $ret;
 }
 
 sub _get_signature_subtype
