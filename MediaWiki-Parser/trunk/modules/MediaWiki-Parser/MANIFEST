@@ -15,5 +15,6 @@ t/00-load.t
 t/01-line-man.t
 t/02-parse1.t
 t/boilerplate.t
+t/lib/MediaWiki/Parser/Test/IsTokens.pm
 t/pod-coverage.t
 t/pod.t
