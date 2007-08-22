@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 88;
+use Test::More tests => 89;
 
 use MediaWiki::Parser;
 
@@ -1999,4 +1999,39 @@ EOF
     );
 }
 
+{
+    my $text = <<'EOF';
+Foo bar <nowiki>There ''Yes</nowiki> Baz Quux Lom <nowiki>Kom
+Trude <tt>Plus</nowiki>. On the house.
 
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => 
+                    ("Foo bar There ''Yes Baz Quux Lom Kom\n"
+                    . "Trude <tt>Plus. On the house.\n"),
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "<nowiki> - 2 - multiple nowikis are concatenated",
+    );
+}
