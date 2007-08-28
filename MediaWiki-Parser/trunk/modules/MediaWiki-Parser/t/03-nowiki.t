@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use lib "./t/lib";
 
@@ -126,5 +126,47 @@ EOF
             },
         ],
         "<nowiki> - 2 - up to end of document.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Foo bar <nowiki>There Foo
+
+Bar Quux
+
+Still nowiki.
+
+End Doc
+EOF
+
+    chomp($text);
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => 
+                    ("Foo bar There Foo\n\nBar Quux\n\nStill nowiki.\n\nEnd Doc"),
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "<nowiki> - without closing tag",
     );
 }
