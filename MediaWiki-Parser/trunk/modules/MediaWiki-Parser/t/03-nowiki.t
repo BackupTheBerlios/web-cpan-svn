@@ -4,13 +4,15 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use lib "./t/lib";
 
 use MediaWiki::Parser::Test::IsTokens;
 
 use MediaWiki::Parser;
+
+use utf8;
 
 {
     my $text = <<'EOF';
@@ -168,5 +170,39 @@ EOF
             },
         ],
         "<nowiki> - without closing tag",
+    );
+}
+
+{
+    my $text = <<'EOF';
+<nowiki>Hello &lt;fi&gt; &amp;&amp; &eacute; There</nowiki>
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => 
+                    ("Hello <fi> && é There\n"),
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "<nowiki> - SGML entities test.",
     );
 }

@@ -12,6 +12,8 @@ use MediaWiki::Parser::State;
 
 use Exception::Class;
 
+use HTML::Entities ();
+
 =head1 NAME
 
 MediaWiki::Parser - A module for parsing MediaWiki syntax.
@@ -133,7 +135,9 @@ sub _enq
 
 sub _append_text_to_last_token
 {
-    my ($self, $text) = @_;
+    my ($self, $text_with_ent) = @_;
+
+    my $text = HTML::Entities::decode_entities($text_with_ent);
 
     my $last_token = $self->_tokens_queue()->[-1];
     if (defined($last_token) &&

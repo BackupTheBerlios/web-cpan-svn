@@ -4,7 +4,9 @@
 use strict;
 use warnings;
 
-use Test::More tests => 87;
+use utf8;
+
+use Test::More tests => 88;
 
 use lib "./t/lib";
 
@@ -1874,5 +1876,36 @@ EOF
             },
         ],
         "Interlaced HTML Markup and normal wiki markup - 2",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Hello &lt;fi&gt; &amp;&amp; &eacute; There
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { text => "Hello <fi> && é There\n" },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "SGML Entities",
     );
 }
