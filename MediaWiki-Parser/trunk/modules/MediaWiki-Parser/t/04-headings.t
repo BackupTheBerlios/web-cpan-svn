@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use lib "./t/lib";
 
@@ -169,3 +169,36 @@ EOF
     );
 }
 
+{
+    my $text = <<'EOF';
+
+== 2 start - 4 end ====
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "heading",
+                p => "open",
+                level => 2,
+            },
+            { text => "2 start - 4 end ==", },
+            {
+                t => "heading",
+                p => "close",
+            },
+        ],
+        "Uneven heading mark - 2 start - 4 end",
+    );
+}
