@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use lib "./t/lib";
 
@@ -200,5 +200,62 @@ EOF
             },
         ],
         "Uneven heading mark - 2 start - 4 end",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before heading
+=== Heading &amp; Hello - &eacute ===
+After heading
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "Before heading\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "heading",
+                p => "open",
+                level => 3,
+            },
+            { text => "Heading & Hello - é" , },
+            {
+                t => "heading",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "After heading\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Headings with Entities",
     );
 }

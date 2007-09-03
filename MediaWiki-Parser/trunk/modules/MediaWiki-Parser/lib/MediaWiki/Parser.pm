@@ -337,13 +337,15 @@ sub _enqueue_tokens_in__para
                         position => "open",
                         level => $level,
                     ),
-                    MediaWiki::Parser::Token::Text->new(
-                        text => $text,
-                    ),
-                    MediaWiki::Parser::Token::Heading->new(
-                        position => "close",
-                    ),
                 ]
+            );
+
+            $self->_append_text_to_last_token($text);
+
+            $self->_enq(
+                MediaWiki::Parser::Token::Heading->new(
+                    position => "close",
+                )
             );
 
             $self->_next_line();
