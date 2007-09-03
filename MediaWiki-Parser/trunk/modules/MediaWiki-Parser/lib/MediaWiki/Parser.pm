@@ -8,11 +8,14 @@ use Moose;
 use MediaWiki::Parser::LineMan;
 use MediaWiki::Parser::Token;
 use MediaWiki::Parser::Token::Text;
+use MediaWiki::Parser::Token::Heading;
 use MediaWiki::Parser::State;
 
 use Exception::Class;
 
 use HTML::Entities ();
+
+use List::Util ();
 
 =head1 NAME
 
@@ -257,6 +260,32 @@ sub _enqueue_tokens_in__default
     }
 }
 
+sub _get_line_heading_values
+{
+    my ($self, $line_ref) = @_;
+
+    my ($start, $end);
+
+    if (pos($$line_ref))
+    {
+        return;
+    }
+
+    if ($$line_ref !~ m{\A(=+)})
+    {
+        return;    
+    }
+    $start = length($1);
+
+    if ($$line_ref !~ m{(=+)\s*\z})
+    {
+        return;
+    }
+    $end = length($1);
+
+    return ($start, $end);
+}
+
 sub _enqueue_tokens_in__para
 {
     my $self = shift;
@@ -281,6 +310,44 @@ sub _enqueue_tokens_in__para
         if (defined($implicit_line_end_tokens))
         {
             last PARAGRAPH_LINE_LOOP;
+        }
+
+        if (my ($s, $e) = $self->_get_line_heading_values($line_ref))
+        {
+            if (length($text))
+            {
+                $self->_append_text_to_last_token($text);
+            }
+
+            my $level = List::Util::min($s,$e);
+
+            my $text = $$line_ref;
+
+            $text =~ s[\A={$level}\s*][];
+            $text =~ s[\s*={$level}\s*\z][];
+
+            $self->_enq_multiple(
+                [
+                    MediaWiki::Parser::Token->new(
+                        type => "paragraph",
+                        position => "close",
+                    ),
+                    MediaWiki::Parser::Token::Heading->new(
+                        position => "open",
+                        level => $level,
+                    ),
+                    MediaWiki::Parser::Token::Text->new(
+                        text => $text,
+                    ),
+                    MediaWiki::Parser::Token::Heading->new(
+                        position => "close",
+                    ),
+                ]
+            );
+
+            $self->_next_line();
+
+            return { next_state => $self->_get_status_after_paragraph()};
         }
 
         if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<|\~{3,5})}cg)

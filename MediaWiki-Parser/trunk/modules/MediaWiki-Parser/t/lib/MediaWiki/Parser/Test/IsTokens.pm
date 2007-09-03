@@ -28,6 +28,7 @@ my %pos_tokens_map =
     "linebreak" => "linebreak",
     "signature" => "signature",
     "html-tag" => "html",
+    "heading" => "heading",
 );
 
 my %has_subtype = (map { $_ => 1 } qw(signature));
@@ -57,6 +58,13 @@ sub get_token_representation
         if ($token->type() eq "html-tag")
         {
             $ret->{helem} = $token->element_name();
+        }
+        elsif ($token->type() eq "heading")
+        {
+            if ($token->is_opening())
+            {
+                $ret->{level} = $token->level();
+            }
         }
 
         return $ret;
