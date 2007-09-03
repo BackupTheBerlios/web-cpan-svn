@@ -165,7 +165,8 @@ sub get_next_token
 {
     my $self = shift;
 
-    if ($self->_is_queue_empty())
+    while ( ($self->_state()->status() ne "document_end")
+         && $self->_is_queue_empty())
     {
         $self->_enqueue_more_tokens();
     }
@@ -240,6 +241,8 @@ sub _enqueue_tokens_in__document_end
     return;
 }
 
+has '_para_should_start' => (isa => "Bool", is => "rw", default => 0);
+
 sub _enqueue_tokens_in__default
 {
     my $self = shift;
@@ -250,12 +253,7 @@ sub _enqueue_tokens_in__default
     }
     else
     {
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => "paragraph",
-                position => "open",
-            )
-        );
+        $self->_para_should_start(1);
         return { next_state => "para" };
     }
 }
@@ -328,10 +326,13 @@ sub _enqueue_tokens_in__para
 
             $self->_enq_multiple(
                 [
-                    MediaWiki::Parser::Token->new(
-                        type => "paragraph",
-                        position => "close",
-                    ),
+                    $self->_para_should_start()
+                        ? () 
+                        : (MediaWiki::Parser::Token->new(
+                            type => "paragraph",
+                            position => "close",
+                        ))
+                    ,
                     MediaWiki::Parser::Token::Heading->new(
                         position => "open",
                         level => $level,
@@ -349,6 +350,17 @@ sub _enqueue_tokens_in__para
 
             return { next_state => $self->_get_status_after_paragraph()};
         }
+        elsif ($self->_para_should_start())
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => "paragraph",
+                    position => "open",
+                )
+            );
+            $self->_para_should_start(0);
+        }
+
 
         if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<|\~{3,5})}cg)
         {
