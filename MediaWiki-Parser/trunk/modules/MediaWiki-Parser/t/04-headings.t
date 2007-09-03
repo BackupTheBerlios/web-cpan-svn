@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use lib "./t/lib";
 
@@ -132,6 +132,40 @@ EOF
             },
         ],
         "Heading test 1 with space in between",
+    );
+}
+
+{
+    my $text = <<'EOF';
+
+=== 3 start - 2 end ==
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "heading",
+                p => "open",
+                level => 2,
+            },
+            { text => "= 3 start - 2 end", },
+            {
+                t => "heading",
+                p => "close",
+            },
+        ],
+        "Uneven heading mark - 3 start - 2 end",
     );
 }
 
