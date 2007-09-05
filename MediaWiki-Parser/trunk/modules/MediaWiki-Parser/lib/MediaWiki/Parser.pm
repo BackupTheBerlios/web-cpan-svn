@@ -368,6 +368,9 @@ sub _enqueue_tokens_in__para
                 if ($self->_state()->para_sub_state() eq "para")
                 {
                     # Close the paragraph.
+                    
+                    $self->_append_text_to_last_token($text);
+
                     $self->_enq(
                         MediaWiki::Parser::Token->new(
                             type => "paragraph",
@@ -384,10 +387,21 @@ sub _enqueue_tokens_in__para
                 );
 
                 $self->_state()->para_sub_state("code_block");
+                return;
             }
         }
-        elsif ($self->_state()->para_sub_state() eq "none")
+        elsif ((!pos($$line_ref)) && $self->_state()->para_sub_state() ne "para")
         {
+            if ($self->_state()->para_sub_state() eq "code_block")
+            {
+                $self->_append_text_to_last_token($text);
+                $self->_enq(
+                    MediaWiki::Parser::Token->new(
+                        type => "code_block",
+                        position => "close",
+                    )
+                );
+            }
             $self->_enq(
                 MediaWiki::Parser::Token->new(
                     type => "paragraph",
@@ -395,8 +409,8 @@ sub _enqueue_tokens_in__para
                 )
             );
             $self->_state()->para_sub_state("para");
+            return;
         }
-
 
         if ($$line_ref =~ m{\G(.*?)((?:'{2,})|<|\~{3,5})}cg)
         {

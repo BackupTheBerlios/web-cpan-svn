@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use lib "./t/lib";
 
@@ -116,6 +116,61 @@ EOF
             },
         ],
         "Code Block - with formattings",
+    );
+}
+
+{
+    my $text = <<'EOF';
+    Code block 1
+    More code block 1
+Regular paragraph
+    Code block 2
+    More code block 2
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "code_block",
+                p => "open",
+            },
+            { text => "   Code block 1\n   More code block 1\n", },
+            {
+                t => "code_block",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "Regular paragraph\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "code_block",
+                p => "open",
+            },
+            { text => "   Code block 2\n   More code block 2\n", },
+            {
+                t => "code_block",
+                p => "close",
+            },
+        ],
+        "Code Block - without line-space difference",
     );
 }
 
