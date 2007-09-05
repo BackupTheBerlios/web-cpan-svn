@@ -29,6 +29,7 @@ my %pos_tokens_map =
     "signature" => "signature",
     "html-tag" => "html",
     "heading" => "heading",
+    "code_block" => "code_block",
 );
 
 my %has_subtype = (map { $_ => 1 } qw(signature));

@@ -241,8 +241,6 @@ sub _enqueue_tokens_in__document_end
     return;
 }
 
-has '_para_should_start' => (isa => "Bool", is => "rw", default => 0);
-
 sub _enqueue_tokens_in__default
 {
     my $self = shift;
@@ -253,7 +251,7 @@ sub _enqueue_tokens_in__default
     }
     else
     {
-        $self->_para_should_start(1);
+        $self->_state->para_sub_state("none");
         return { next_state => "para" };
     }
 }
@@ -324,20 +322,30 @@ sub _enqueue_tokens_in__para
             $text =~ s[\A={$level}\s*][];
             $text =~ s[\s*={$level}\s*\z][];
 
-            $self->_enq_multiple(
-                [
-                    $self->_para_should_start()
-                        ? () 
-                        : (MediaWiki::Parser::Token->new(
+            if ($self->_state->para_sub_state() eq "para")
+            {
+                $self->_enq(
+                    MediaWiki::Parser::Token->new(
                             type => "paragraph",
                             position => "close",
-                        ))
-                    ,
-                    MediaWiki::Parser::Token::Heading->new(
-                        position => "open",
-                        level => $level,
-                    ),
-                ]
+                        )
+                );
+            }
+            elsif ($self->_state->para_sub_state() eq "code_block")
+            {
+                $self->_enq(
+                    MediaWiki::Parser::Token->new(
+                            type => "code_block",
+                            position => "open",
+                        )
+                );                
+            }
+
+            $self->_enq(
+                MediaWiki::Parser::Token::Heading->new(
+                    position => "open",
+                    level => $level,
+                ),
             );
 
             $self->_append_text_to_last_token($text);
@@ -352,7 +360,33 @@ sub _enqueue_tokens_in__para
 
             return { next_state => $self->_get_status_after_paragraph()};
         }
-        elsif ($self->_para_should_start())
+        # If it is a code block.
+        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A }g))
+        {
+            if ($self->_state()->para_sub_state() ne "code_block")
+            {
+                if ($self->_state()->para_sub_state() eq "para")
+                {
+                    # Close the paragraph.
+                    $self->_enq(
+                        MediaWiki::Parser::Token->new(
+                            type => "paragraph",
+                            position => "close",
+                        )
+                    );
+                }
+                
+                $self->_enq(
+                    MediaWiki::Parser::Token->new(
+                        type => "code_block",
+                        position => "open",
+                    ),
+                );
+
+                $self->_state()->para_sub_state("code_block");
+            }
+        }
+        elsif ($self->_state()->para_sub_state() eq "none")
         {
             $self->_enq(
                 MediaWiki::Parser::Token->new(
@@ -360,7 +394,7 @@ sub _enqueue_tokens_in__para
                     position => "open",
                 )
             );
-            $self->_para_should_start(0);
+            $self->_state()->para_sub_state("para");
         }
 
 
@@ -473,10 +507,15 @@ sub _enqueue_tokens_in__para
     {
         $self->_enq(
             MediaWiki::Parser::Token->new(
-                type => "paragraph",
+                type => 
+                    (($self->_state->para_sub_state() eq "para")
+                        ? "paragraph"
+                        : "code_block"
+                    ),
                 position => "close",
             )
         );
+        $self->_state->para_sub_state("none");
 
         return { next_state => $self->_get_status_after_paragraph()};
     }

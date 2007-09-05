@@ -364,6 +364,26 @@ sub line_end
     }
 }
 
+has 'para_sub_state' => (isa => "Str", is => "rw", default => "none");
+
+=head2 $state->para_sub_state()
+
+The sub-state within the paragraph state.
+
+Can be:
+
+=over 4
+
+=item * 'none'
+
+=item * 'code_block'
+
+=item * 'para'
+
+=back
+
+=cut
+
 1;
 
 =head1 AUTHOR
