@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use lib "./t/lib";
 
@@ -171,6 +171,83 @@ EOF
             },
         ],
         "Code Block - without line-space difference",
+    );
+}
+
+{
+    my $text = <<'EOF';
+  Code block 1
+  More code block 1
+== Heading ==
+    Code block 2
+    More code block 2
+==== Heading 2 ====
+A paragraph.
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "code_block",
+                p => "open",
+            },
+            { text => " Code block 1\n More code block 1\n", },
+            {
+                t => "code_block",
+                p => "close",
+            },
+            {
+                t => "heading",
+                p => "open",
+                level => 2,
+            },
+            { text => "Heading" },
+            {
+                t => "heading",
+                p => "close",
+            },
+            {
+                t => "code_block",
+                p => "open",
+            },
+            { text => "   Code block 2\n   More code block 2\n", },
+            {
+                t => "code_block",
+                p => "close",
+            },
+            {
+                t => "heading",
+                p => "open",
+                level => 4,
+            },
+            { text => "Heading 2" },
+            {
+                t => "heading",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "A paragraph.\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Code Block - switching directly from/to heading.",
     );
 }
 

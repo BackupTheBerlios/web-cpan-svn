@@ -336,7 +336,7 @@ sub _enqueue_tokens_in__para
                 $self->_enq(
                     MediaWiki::Parser::Token->new(
                             type => "code_block",
-                            position => "open",
+                            position => "close",
                         )
                 );                
             }
@@ -356,9 +356,11 @@ sub _enqueue_tokens_in__para
                 )
             );
 
+            my $ret = { next_state => $self->_get_status_after_paragraph()};
+
             $self->_next_line();
 
-            return { next_state => $self->_get_status_after_paragraph()};
+            return $ret;
         }
         # If it is a code block.
         elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A }g))
