@@ -378,7 +378,7 @@ Can be:
 
 =item * 'code_block'
 
-=item * 'para'
+=item * 'paragraph'
 
 =back
 

@@ -322,7 +322,7 @@ sub _enqueue_tokens_in__para
             $text =~ s[\A={$level}\s*][];
             $text =~ s[\s*={$level}\s*\z][];
 
-            if ($self->_state->para_sub_state() eq "para")
+            if ($self->_state->para_sub_state() eq "paragraph")
             {
                 $self->_enq(
                     MediaWiki::Parser::Token->new(
@@ -367,7 +367,7 @@ sub _enqueue_tokens_in__para
         {
             if ($self->_state()->para_sub_state() ne "code_block")
             {
-                if ($self->_state()->para_sub_state() eq "para")
+                if ($self->_state()->para_sub_state() eq "paragraph")
                 {
                     # Close the paragraph.
                     
@@ -392,7 +392,7 @@ sub _enqueue_tokens_in__para
                 return;
             }
         }
-        elsif ((!pos($$line_ref)) && $self->_state()->para_sub_state() ne "para")
+        elsif ((!pos($$line_ref)) && $self->_state()->para_sub_state() ne "paragraph")
         {
             if ($self->_state()->para_sub_state() eq "code_block")
             {
@@ -410,7 +410,7 @@ sub _enqueue_tokens_in__para
                     position => "open",
                 )
             );
-            $self->_state()->para_sub_state("para");
+            $self->_state()->para_sub_state("paragraph");
             return;
         }
 
@@ -524,7 +524,7 @@ sub _enqueue_tokens_in__para
         $self->_enq(
             MediaWiki::Parser::Token->new(
                 type => 
-                    (($self->_state->para_sub_state() eq "para")
+                    (($self->_state->para_sub_state() eq "paragraph")
                         ? "paragraph"
                         : "code_block"
                     ),
