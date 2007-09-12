@@ -322,24 +322,7 @@ sub _enqueue_tokens_in__para
             $text =~ s[\A={$level}\s*][];
             $text =~ s[\s*={$level}\s*\z][];
 
-            if ($self->_state->para_sub_state() eq "paragraph")
-            {
-                $self->_enq(
-                    MediaWiki::Parser::Token->new(
-                            type => "paragraph",
-                            position => "close",
-                        )
-                );
-            }
-            elsif ($self->_state->para_sub_state() eq "code_block")
-            {
-                $self->_enq(
-                    MediaWiki::Parser::Token->new(
-                            type => "code_block",
-                            position => "close",
-                        )
-                );                
-            }
+            $self->_switch_para_sub_state({sub_state => "none"});
 
             $self->_enq(
                 MediaWiki::Parser::Token::Heading->new(
@@ -610,6 +593,45 @@ sub _get_status_after_paragraph
             : "default";
 }
 
+sub _switch_para_sub_state
+{
+    my ($self, $args) = @_;
+
+    my $new_sub_state = $args->{sub_state};
+    
+    my $old_sub_state = $self->_state->para_sub_state();
+
+    # If they are the same state - don't do anything.
+    if ($old_sub_state eq $new_sub_state)
+    {
+        return;
+    }
+
+    if ($old_sub_state ne "none")
+    {
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => $old_sub_state,
+                position => "close",
+            )
+        );
+    }
+
+    if ($new_sub_state ne "none")
+    {
+        $self->_enq(
+            MediaWiki::Parser::Token->new(
+                type => $new_sub_state,
+                position => "open",
+            )
+        );
+    }
+
+    $self->_state->para_sub_state($new_sub_state);
+    
+    return;
+}
+
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at iglu.org.il> >>
@@ -626,7 +648,7 @@ your bug as I make changes.
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc MediaWiki::Parser
+perldoc MediaWiki::Parser
 
 You can also look for information at:
 
