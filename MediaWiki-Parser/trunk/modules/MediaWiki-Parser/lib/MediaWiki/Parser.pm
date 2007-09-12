@@ -140,6 +140,11 @@ sub _append_text_to_last_token
 {
     my ($self, $text_with_ent) = @_;
 
+    if (length($text_with_ent) == 0)
+    {
+        return;
+    }
+
     my $text = HTML::Entities::decode_entities($text_with_ent);
 
     my $last_token = $self->_tokens_queue()->[-1];
@@ -348,30 +353,11 @@ sub _enqueue_tokens_in__para
         # If it is a code block.
         elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A }g))
         {
-            if ($self->_state()->para_sub_state() ne "code_block")
+            $self->_append_text_to_last_token($text);
+            $text = "";
+
+            if ($self->_switch_para_sub_state({sub_state => "code_block"}) > 0)
             {
-                if ($self->_state()->para_sub_state() eq "paragraph")
-                {
-                    # Close the paragraph.
-                    
-                    $self->_append_text_to_last_token($text);
-
-                    $self->_enq(
-                        MediaWiki::Parser::Token->new(
-                            type => "paragraph",
-                            position => "close",
-                        )
-                    );
-                }
-                
-                $self->_enq(
-                    MediaWiki::Parser::Token->new(
-                        type => "code_block",
-                        position => "open",
-                    ),
-                );
-
-                $self->_state()->para_sub_state("code_block");
                 return;
             }
         }
@@ -601,35 +587,40 @@ sub _switch_para_sub_state
     
     my $old_sub_state = $self->_state->para_sub_state();
 
+    my $num_tokens = 0;
+
     # If they are the same state - don't do anything.
     if ($old_sub_state eq $new_sub_state)
     {
-        return;
     }
-
-    if ($old_sub_state ne "none")
+    else
     {
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => $old_sub_state,
-                position => "close",
-            )
-        );
-    }
+        if ($old_sub_state ne "none")
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => $old_sub_state,
+                    position => "close",
+                )
+            );
+            $num_tokens++;
+        }
 
-    if ($new_sub_state ne "none")
-    {
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => $new_sub_state,
-                position => "open",
-            )
-        );
-    }
+        if ($new_sub_state ne "none")
+        {
+            $self->_enq(
+                MediaWiki::Parser::Token->new(
+                    type => $new_sub_state,
+                    position => "open",
+                )
+            );
+            $num_tokens++;
+        }
 
-    $self->_state->para_sub_state($new_sub_state);
+        $self->_state->para_sub_state($new_sub_state);
+    }
     
-    return;
+    return $num_tokens;
 }
 
 =head1 AUTHOR
