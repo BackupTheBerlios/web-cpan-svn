@@ -479,17 +479,7 @@ sub _enqueue_tokens_in__para
     }
     elsif (!defined($line_ref))
     {
-        $self->_enq(
-            MediaWiki::Parser::Token->new(
-                type => 
-                    (($self->_state->para_sub_state() eq "paragraph")
-                        ? "paragraph"
-                        : "code_block"
-                    ),
-                position => "close",
-            )
-        );
-        $self->_state->para_sub_state("none");
+        $self->_switch_para_sub_state({sub_state => "none"});
 
         return { next_state => $self->_get_status_after_paragraph()};
     }
