@@ -363,23 +363,12 @@ sub _enqueue_tokens_in__para
         }
         elsif ((!pos($$line_ref)) && $self->_state()->para_sub_state() ne "paragraph")
         {
-            if ($self->_state()->para_sub_state() eq "code_block")
-            {
-                $self->_append_text_to_last_token($text);
-                $self->_enq(
-                    MediaWiki::Parser::Token->new(
-                        type => "code_block",
-                        position => "close",
-                    )
-                );
-            }
-            $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => "paragraph",
-                    position => "open",
-                )
-            );
-            $self->_state()->para_sub_state("paragraph");
+            $self->_append_text_to_last_token($text);
+            $text = "";
+
+            # It always enqueues some tokens.
+            $self->_switch_para_sub_state({sub_state => "paragraph"});
+
             return;
         }
 
