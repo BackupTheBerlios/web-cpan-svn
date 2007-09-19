@@ -402,80 +402,12 @@ sub _enqueue_tokens_in__para
 
     if (defined($found_markup))
     {
-        if ($found_markup eq q{''})
-        {
-            $self->_enq_toggle_tokens({type => "italics"});
-        }
-        elsif ($found_markup =~ m{\A'''('?)\z})
-        {
-            my $rest = $1;
-
-            $self->_enq_toggle_tokens({type => "bold"});
-
-            $self->_state->incoming_text($rest);
-        }
-        elsif ($found_markup =~ m{\A'{5}('*)\z})
-        {
-            my $rest = $1;
-
-            $self->_enq_toggle_tokens_for_simultaneous_formattings(
-                {
-                    types => [qw(italics bold)],
-                }
-            );
-
-            $self->_state->incoming_text($rest);
-        }
-        elsif ($found_markup =~ m{\A\~+\z})
-        {
-            $self->_enq_multiple(
-                $self->_state->get_standalone_tokens(
-                    {
-                        type => "signature",
-                        subtype =>
-                            $self->_get_signature_subtype($found_markup),
-                    }
-                )
-            );
-        }
-        elsif ($found_markup eq "<")
-        {
-            if ($$line_ref =~ m{\G(/?)(\w+) *(/?) *>}cg)
+        return $self->_handle_found_markup(
             {
-                my ($close_slash, $elem_name, $standalone_slash) = ($1,$2,$3);
-                if ($elem_name eq "br")
-                {
-                    $self->_enq_multiple(
-                        $self->_state->get_standalone_tokens(
-                            {
-                                type => "linebreak"
-                            }
-                        )
-                    );
-                }
-                elsif ($elem_name eq "tt")
-                {
-                    my $close = ($close_slash eq "/");
-
-                    $self->_enq_multiple(
-                        $self->_state->get_html_tokens(
-                            {
-                                element_name => $elem_name,
-                                'open' => (!$close),                            
-                            }
-                        )
-                    )
-                }
-                elsif ($elem_name eq "nowiki")
-                {
-                    $self->_append_text_to_last_token(
-                        $self->_consume_nowiki_text()
-                    );
-                    return { again => 1};
-                }
+                found_markup => $found_markup,
+                line_ref => $line_ref,
             }
-        }
-        return;
+        );
     }
     elsif (!defined($line_ref))
     {
@@ -484,6 +416,89 @@ sub _enqueue_tokens_in__para
         return { next_state => $self->_get_status_after_paragraph()};
     }
 
+    return;
+}
+
+sub _handle_found_markup
+{
+    my ($self, $args) = @_;
+
+    my $found_markup = $args->{found_markup};
+    my $line_ref = $args->{line_ref};
+
+    if ($found_markup eq q{''})
+    {
+        $self->_enq_toggle_tokens({type => "italics"});
+    }
+    elsif ($found_markup =~ m{\A'''('?)\z})
+    {
+        my $rest = $1;
+
+        $self->_enq_toggle_tokens({type => "bold"});
+
+        $self->_state->incoming_text($rest);
+    }
+    elsif ($found_markup =~ m{\A'{5}('*)\z})
+    {
+        my $rest = $1;
+
+        $self->_enq_toggle_tokens_for_simultaneous_formattings(
+            {
+                types => [qw(italics bold)],
+            }
+        );
+
+        $self->_state->incoming_text($rest);
+    }
+    elsif ($found_markup =~ m{\A\~+\z})
+    {
+        $self->_enq_multiple(
+            $self->_state->get_standalone_tokens(
+                {
+                    type => "signature",
+                    subtype =>
+                        $self->_get_signature_subtype($found_markup),
+                }
+            )
+        );
+    }
+    elsif ($found_markup eq "<")
+    {
+        if ($$line_ref =~ m{\G(/?)(\w+) *(/?) *>}cg)
+        {
+            my ($close_slash, $elem_name, $standalone_slash) = ($1,$2,$3);
+            if ($elem_name eq "br")
+            {
+                $self->_enq_multiple(
+                    $self->_state->get_standalone_tokens(
+                        {
+                            type => "linebreak"
+                        }
+                    )
+                );
+            }
+            elsif ($elem_name eq "tt")
+            {
+                my $close = ($close_slash eq "/");
+
+                $self->_enq_multiple(
+                    $self->_state->get_html_tokens(
+                        {
+                            element_name => $elem_name,
+                            'open' => (!$close),                            
+                        }
+                    )
+                )
+            }
+            elsif ($elem_name eq "nowiki")
+            {
+                $self->_append_text_to_last_token(
+                    $self->_consume_nowiki_text()
+                );
+                return { again => 1};
+            }
+        }
+    }
     return;
 }
 
