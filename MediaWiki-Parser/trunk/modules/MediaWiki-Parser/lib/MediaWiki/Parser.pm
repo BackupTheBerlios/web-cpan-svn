@@ -534,7 +534,8 @@ sub _enq_toggle_tokens
                         type => $args->{type},
                         position => "open",
                     ),
-                })
+                }
+            )
         );
 }
 
