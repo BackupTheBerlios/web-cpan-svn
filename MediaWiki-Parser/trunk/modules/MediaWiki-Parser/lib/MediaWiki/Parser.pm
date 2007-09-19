@@ -487,7 +487,6 @@ sub _handle_found_html_tag
                     }
                 )
             );
-            return;
         }
         elsif ($elem_name eq "tt")
         {
@@ -501,7 +500,6 @@ sub _handle_found_html_tag
                     }
                 )
             );
-            return;
         }
         elsif ($elem_name eq "nowiki")
         {
@@ -511,10 +509,7 @@ sub _handle_found_html_tag
             return { again => 1};
         }
     }
-    else
-    {
-        return;
-    }
+    return;
 }
 
 sub _consume_nowiki_text
