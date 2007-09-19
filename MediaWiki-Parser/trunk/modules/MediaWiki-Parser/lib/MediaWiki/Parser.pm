@@ -464,42 +464,57 @@ sub _handle_found_markup
     }
     elsif ($found_markup eq "<")
     {
-        if ($$line_ref =~ m{\G(/?)(\w+) *(/?) *>}cg)
-        {
-            my ($close_slash, $elem_name, $standalone_slash) = ($1,$2,$3);
-            if ($elem_name eq "br")
-            {
-                $self->_enq_multiple(
-                    $self->_state->get_standalone_tokens(
-                        {
-                            type => "linebreak"
-                        }
-                    )
-                );
-            }
-            elsif ($elem_name eq "tt")
-            {
-                my $close = ($close_slash eq "/");
-
-                $self->_enq_multiple(
-                    $self->_state->get_html_tokens(
-                        {
-                            element_name => $elem_name,
-                            'open' => (!$close),                            
-                        }
-                    )
-                )
-            }
-            elsif ($elem_name eq "nowiki")
-            {
-                $self->_append_text_to_last_token(
-                    $self->_consume_nowiki_text()
-                );
-                return { again => 1};
-            }
-        }
+        return $self->_handle_found_html_tag($args);
     }
     return;
+}
+
+sub _handle_found_html_tag
+{
+    my ($self, $args) = @_;
+
+    my $line_ref = $args->{line_ref};
+
+    if ($$line_ref =~ m{\G(/?)(\w+) *(/?) *>}cg)
+    {
+        my ($close_slash, $elem_name, $standalone_slash) = ($1,$2,$3);
+        if ($elem_name eq "br")
+        {
+            $self->_enq_multiple(
+                $self->_state->get_standalone_tokens(
+                    {
+                        type => "linebreak"
+                    }
+                )
+            );
+            return;
+        }
+        elsif ($elem_name eq "tt")
+        {
+            my $close = ($close_slash eq "/");
+
+            $self->_enq_multiple(
+                $self->_state->get_html_tokens(
+                    {
+                        element_name => $elem_name,
+                        'open' => (!$close),                            
+                    }
+                )
+            );
+            return;
+        }
+        elsif ($elem_name eq "nowiki")
+        {
+            $self->_append_text_to_last_token(
+                $self->_consume_nowiki_text()
+            );
+            return { again => 1};
+        }
+    }
+    else
+    {
+        return;
+    }
 }
 
 sub _consume_nowiki_text
