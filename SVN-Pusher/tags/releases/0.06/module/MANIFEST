@@ -1,0 +1,12 @@
+bin/svn-pusher
+Build.PL
+CHANGES
+examples/svn-pusher-test.sh
+lib/SVN/Pusher/CmdLine.pm
+lib/SVN/Pusher.pm
+Makefile.PL
+MANIFEST
+META.yml                                 Module meta-data (added by MakeMaker)
+README
+t/00-load.t
+TODO
