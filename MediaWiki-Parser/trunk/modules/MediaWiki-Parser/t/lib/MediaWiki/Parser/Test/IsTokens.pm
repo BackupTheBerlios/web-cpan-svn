@@ -30,9 +30,11 @@ my %pos_tokens_map =
     "html-tag" => "html",
     "heading" => "heading",
     "code_block" => "code_block",
+    "listitem" => "listitem",
+    "list" => "list",
 );
 
-my %has_subtype = (map { $_ => 1 } qw(signature));
+my %has_subtype = (map { $_ => 1 } qw(signature list));
 
 sub get_token_representation
 {
@@ -51,7 +53,7 @@ sub get_token_representation
             $ret->{implicit} = 1;
         }
 
-        if (exists($has_subtype{$token->type()}))
+        if (exists($has_subtype{$token->type()}) && ($ret->{p} ne "close"))
         {
             $ret->{st} = $token->subtype();
         }

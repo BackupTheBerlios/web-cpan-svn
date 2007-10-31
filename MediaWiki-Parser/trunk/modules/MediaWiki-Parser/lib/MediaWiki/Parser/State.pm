@@ -364,13 +364,25 @@ sub line_end
     }
 }
 
-has 'para_sub_state' => (isa => "Str", is => "rw", default => "none");
+has 'para_sub_state' => (isa => "ArrayRef", is => "rw", 
+    default => sub { [] });
+
+sub is_para_sub_state_paragraph
+{
+    my $self = shift;
+
+    return 
+    (
+           (@{$self->para_sub_state()} == 1)
+        && ($self->para_sub_state()->[0] eq "paragraph")
+    );
+}
 
 =head2 $state->para_sub_state()
 
 The sub-state within the paragraph state.
 
-Can be:
+An array ref of items that can be:
 
 =over 4
 
@@ -380,7 +392,15 @@ Can be:
 
 =item * 'paragraph'
 
+=item * 'list'
+
+=item * 'listitem'
+
 =back
+
+=head2 $state->is_para_sub_state_paragraph
+
+Checks if the para_sub_state is a paragraph.
 
 =cut
 

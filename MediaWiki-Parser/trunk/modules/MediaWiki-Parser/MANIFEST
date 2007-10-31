@@ -18,6 +18,7 @@ t/02-parse1.t
 t/03-nowiki.t
 t/04-headings.t
 t/05-code-block.t
+t/06-lists.t
 t/boilerplate.t
 t/lib/MediaWiki/Parser/Test/IsTokens.pm
 t/pod-coverage.t

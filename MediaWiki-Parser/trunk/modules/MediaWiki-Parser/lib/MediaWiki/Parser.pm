@@ -256,7 +256,7 @@ sub _enqueue_tokens_in__default
     }
     else
     {
-        $self->_state->para_sub_state("none");
+        $self->_state->para_sub_state([]);
         return { next_state => "para" };
     }
 }
@@ -327,7 +327,7 @@ sub _enqueue_tokens_in__para
             $text =~ s[\A={$level}\s*][];
             $text =~ s[\s*={$level}\s*\z][];
 
-            $self->_switch_para_sub_state({sub_state => "none"});
+            $self->_switch_para_sub_state({sub_state => []});
 
             $self->_enq(
                 MediaWiki::Parser::Token::Heading->new(
@@ -361,7 +361,21 @@ sub _enqueue_tokens_in__para
                 return;
             }
         }
-        elsif ((!pos($$line_ref)) && $self->_state()->para_sub_state() ne "paragraph")
+        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A\*}g))
+        {
+            $self->_append_text_to_last_token($text);
+            $text = "";
+
+            $self->_switch_para_sub_state(
+                {
+                    sub_state => ["list", "listitem"]
+                }
+            );
+            return;
+        }
+        elsif (    (!pos($$line_ref)) 
+                && (! $self->_state()->is_para_sub_state_paragraph())
+            )
         {
             $self->_append_text_to_last_token($text);
             $text = "";
@@ -411,7 +425,7 @@ sub _enqueue_tokens_in__para
     }
     elsif (!defined($line_ref))
     {
-        $self->_switch_para_sub_state({sub_state => "none"});
+        $self->_switch_para_sub_state({sub_state => []});
 
         return { next_state => $self->_get_status_after_paragraph()};
     }
@@ -589,41 +603,67 @@ sub _switch_para_sub_state
     my ($self, $args) = @_;
 
     my $new_sub_state = $args->{sub_state};
+
+    if (ref($new_sub_state) ne "ARRAY")
+    {
+        $new_sub_state = [ $new_sub_state ];
+    }
     
     my $old_sub_state = $self->_state->para_sub_state();
 
     my $num_tokens = 0;
 
-    # If they are the same state - don't do anything.
-    if ($old_sub_state eq $new_sub_state)
+    my $diff_from;
+
+    my $limit = List::Util::min(scalar(@$old_sub_state), scalar(@$new_sub_state));
+
+    foreach my $idx (0 .. ($limit-1))
     {
+        if ($old_sub_state->[$idx] ne $new_sub_state->[$idx])
+        {
+            $diff_from = $idx;
+            last;
+        }
     }
-    else
+
+    if (!defined($diff_from))
     {
-        if ($old_sub_state ne "none")
+        $diff_from = $limit;
+    }
+
+    # Pop all the old_sub_state items
+    foreach my $elem (@$old_sub_state[reverse($diff_from .. $#$old_sub_state)])
+    {
+        if ($elem ne "none")
         {
             $self->_enq(
                 MediaWiki::Parser::Token->new(
-                    type => $old_sub_state,
+                    type => $elem,
                     position => "close",
                 )
             );
             $num_tokens++;
         }
+    }
 
-        if ($new_sub_state ne "none")
+    # Push the elements of the new_sub_state
+    foreach my $elem (@$new_sub_state[$diff_from .. $#$new_sub_state])
+    {
+        if ($elem ne "none")
         {
             $self->_enq(
                 MediaWiki::Parser::Token->new(
-                    type => $new_sub_state,
+                    type => $elem,
                     position => "open",
+                    # Temporary hack.
+                    ($elem eq "list") ? (subtype => "unordered") : (),
                 )
             );
             $num_tokens++;
-        }
-
-        $self->_state->para_sub_state($new_sub_state);
+        }   
     }
+
+    $self->_state->para_sub_state($new_sub_state);
     
     return $num_tokens;
 }
