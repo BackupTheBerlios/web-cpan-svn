@@ -366,9 +366,14 @@ sub _enqueue_tokens_in__para
             $self->_append_text_to_last_token($text);
             $text = "";
 
+            my @components = ("list", "listitem");
+
+            my $tail = pop(@components);
+
             $self->_switch_para_sub_state(
                 {
-                    sub_state => ["list", "listitem"]
+                    sub_state => \@components,
+                    sub_state_tail => [$tail],
                 }
             );
             return;
@@ -603,6 +608,10 @@ sub _switch_para_sub_state
     my ($self, $args) = @_;
 
     my $new_sub_state = $args->{sub_state};
+    # The tail is items that are added to the new state *after*
+    # the comparison with the old state. Thus, they can be used to
+    # start new each time.
+    my $new_tail = $args->{sub_state_tail} || [];
 
     if (ref($new_sub_state) ne "ARRAY")
     {
@@ -646,8 +655,11 @@ sub _switch_para_sub_state
         }
     }
 
+    push @$new_sub_state, @$new_tail;
     # Push the elements of the new_sub_state
-    foreach my $elem (@$new_sub_state[$diff_from .. $#$new_sub_state])
+    foreach my $elem (
+        @$new_sub_state[$diff_from .. $#$new_sub_state]
+    )
     {
         if ($elem ne "none")
         {

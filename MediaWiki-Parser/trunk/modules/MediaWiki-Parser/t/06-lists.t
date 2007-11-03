@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use lib "./t/lib";
 
@@ -59,6 +59,82 @@ EOF
                 t => "listitem",
                 p => "close",
             },
+            {
+                t => "list",
+                p => "close",
+            },
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "After list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Simple one-item unordered list.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before list
+*Item1
+*Item2
+After list
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "Before list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Item1\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Item2\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            
             {
                 t => "list",
                 p => "close",
