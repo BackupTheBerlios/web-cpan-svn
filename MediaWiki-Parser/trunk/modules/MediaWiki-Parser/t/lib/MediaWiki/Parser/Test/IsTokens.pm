@@ -8,6 +8,7 @@ use base 'Exporter';
 our @EXPORT = (qw(is_tokens_deeply));
 
 use Test::More;
+use Test::Differences;
 
 # Token position (open/close/etc.)
 sub token_pos
@@ -100,7 +101,7 @@ sub is_tokens_deeply
     }
     else
     {
-        is_deeply(
+        eq_or_diff(
             \@got_tokens,
             $expected_tokens,
             $blurb

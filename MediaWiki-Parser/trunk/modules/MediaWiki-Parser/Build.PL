@@ -11,10 +11,14 @@ my $builder = Test::Run::Builder->new(
     license             => 'perl',
     dist_author         => 'Shlomi Fish <shlomif@iglu.org.il>',
     dist_version_from   => 'lib/MediaWiki/Parser.pm',
-    build_requires => {
-        'Test::More' => 0,
+    requires =>
+    {
         'Moose' => 0,
         'Exception::Class' => 0,
+    },
+    build_requires => {
+        'Test::More' => 0,
+        'Test::Differences' => 0,
     },
     add_to_cleanup      => [ 'MediaWiki-Parser-*' ],
     create_makefile_pl => 'traditional',
