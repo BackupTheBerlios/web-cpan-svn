@@ -38,7 +38,7 @@ EOF
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "Before list\n",
             },
             {
@@ -67,7 +67,7 @@ EOF
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "After list\n",
             },
             {
@@ -104,7 +104,7 @@ EOF
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "Before list\n",
             },
             {
@@ -134,7 +134,7 @@ EOF
                 t => "listitem",
                 p => "close",
             },
-            
+
             {
                 t => "list",
                 p => "close",
@@ -143,7 +143,7 @@ EOF
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "After list\n",
             },
             {
@@ -181,7 +181,7 @@ EOF
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "Before list\n",
             },
             {
@@ -201,7 +201,7 @@ EOF
             {
                 t => "listitem",
                 p => "close",
-            },          
+            },
             {
                 t => "list",
                 p => "close",
@@ -219,17 +219,17 @@ EOF
             {
                 t => "listitem",
                 p => "close",
-            },          
+            },
             {
                 t => "list",
                 p => "close",
             },
-            
+
             {
                 t => "para",
                 p => "open",
             },
-            { 
+            {
                 text => "After list\n",
             },
             {
