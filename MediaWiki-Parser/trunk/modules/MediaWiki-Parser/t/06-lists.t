@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use lib "./t/lib";
 
@@ -152,6 +152,92 @@ EOF
             },
         ],
         "Simple one-item unordered list.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before list
+*First List
+
+*Second List
+After list
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "Before list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "First List\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },          
+            {
+                t => "list",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Second List\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },          
+            {
+                t => "list",
+                p => "close",
+            },
+            
+            {
+                t => "para",
+                p => "open",
+            },
+            { 
+                text => "After list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Two one-item lists separated by an empty line",
     );
 }
 
