@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use lib "./t/lib";
 
@@ -238,6 +238,122 @@ EOF
             },
         ],
         "Two one-item lists separated by an empty line",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before list
+*First List
+*2nd Item
+
+*Second List
+*Item 2
+*Item 3
+After list
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                text => "Before list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "First List\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "2nd Item\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Second List\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Item 2\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "Item 3\n", },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "close",
+            },
+
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                text => "After list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Two separated lists with some items in each.",
     );
 }
 
