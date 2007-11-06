@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use lib "./t/lib";
 
@@ -356,4 +356,98 @@ EOF
         "Two separated lists with some items in each.",
     );
 }
+
+{
+    my $text = <<'EOF';
+Before list
+*List
+**Inner List
+After list
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                text => "Before list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            { text => "List\n", },
+            {
+                t => "list",
+                p => "open",
+                st => "unordered",
+            },
+            {
+                t => "listitem",
+                p => "open",
+            },
+            {
+                text => "Inner List\n"
+            },
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "close",
+            },            
+            {
+                t => "listitem",
+                p => "close",
+            },
+            {
+                t => "list",
+                p => "close",
+            },
+
+            {
+                t => "para",
+                p => "open",
+            },
+            {
+                text => "After list\n",
+            },
+            {
+                t => "para",
+                p => "close",
+            },
+        ],
+        "Nested lists.",
+    );
+}
+
+# TODO:
+# Test: 
+# 1. more than one item.
+# 2. Several depths of nesting at once.
+# 3. Ordered lists
+# 4. Definition lists.
 

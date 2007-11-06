@@ -361,12 +361,16 @@ sub _enqueue_tokens_in__para
                 return;
             }
         }
-        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A\*}g))
+        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A([*]+)}g))
         {
+            my $line_prefix = $1;
+
             $self->_append_text_to_last_token($text);
             $text = "";
 
-            my @components = ("list", "listitem");
+            my @components = (map { ("list", "listitem") }
+                split(//, $line_prefix)
+            );
 
             my $tail = pop(@components);
 
