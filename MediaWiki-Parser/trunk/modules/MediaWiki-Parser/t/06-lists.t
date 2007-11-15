@@ -374,6 +374,23 @@ sub p
     );
 }
 
+sub ul
+{
+    return
+    (
+        {
+            t => "list",
+            p => "open",
+            st => "unordered",
+        },
+        @_,
+        {
+            t => "list",
+            p => "close",
+        },
+    );
+}
+
 {
     my $text = <<'EOF';
 Before list
@@ -395,11 +412,13 @@ EOF
     is_tokens_deeply(
         $parser,
         [
-            p(
+            p("Before list\n",),
+            ul(
             {
-                text => "Before list\n",
-            }
-            ),
+                t => "listitem",
+                p => "open",
+            },
+            "List\n",
             {
                 t => "list",
                 p => "open",
@@ -409,19 +428,7 @@ EOF
                 t => "listitem",
                 p => "open",
             },
-            { text => "List\n", },
-            {
-                t => "list",
-                p => "open",
-                st => "unordered",
-            },
-            {
-                t => "listitem",
-                p => "open",
-            },
-            {
-                text => "Inner List\n"
-            },
+            "Inner List\n",
             {
                 t => "listitem",
                 p => "close",
@@ -434,14 +441,9 @@ EOF
                 t => "listitem",
                 p => "close",
             },
-            {
-                t => "list",
-                p => "close",
-            },
+        ),
             p(
-            {
-                text => "After list\n",
-            },
+                "After list\n",
             ),
         ],
         "Nested lists.",

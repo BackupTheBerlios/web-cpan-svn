@@ -83,6 +83,12 @@ sub get_token_representation
     }
 }
 
+sub _post_process_tokens
+{
+    my $tokens = shift;
+    return [map { (ref($_) eq "") ? +{ text => $_ } : $_ } @$tokens];
+}
+
 sub is_tokens_deeply
 {
     local $Test::Builder::Level = $Test::Builder::Level + 1;
@@ -103,7 +109,7 @@ sub is_tokens_deeply
     {
         eq_or_diff(
             \@got_tokens,
-            $expected_tokens,
+            _post_process_tokens($expected_tokens),
             $blurb
         );
     }
