@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 use lib "./t/lib";
 
@@ -498,10 +498,74 @@ EOF
     );
 }
 
+{
+    my $text = <<'EOF';
+Before list
+*List
+****LI/LI/LI/LI
+**LI/LI
+**LI/LI2
+****LI/LI/LI/LI
+*LI
+
+*New list
+*2nd Item
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            p("Before list\n",),
+            ul(
+                li(
+                    "List\n",
+                    ul(
+                        li(
+                            ul(
+                                li(
+                                    ul(
+                                        li("LI/LI/LI/LI\n",),
+                                    ),
+                                )
+                            ),
+                        ),
+                        li("LI/LI\n"),
+                        li(
+                            "LI/LI2\n",
+                            ul(
+                                li(
+                                    ul(
+                                        li("LI/LI/LI/LI\n",),
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ),
+                ),
+                li("LI\n"),
+            ),
+            ul(
+                li("New list\n"),
+                li("2nd Item\n"),
+            ),
+        ],
+        "Nested lists with more than one item",
+    );
+}
+
 # TODO:
 # Test: 
-# 1. more than one item.
-# 2. Several depths of nesting at once.
+# + 1. more than one item.
+# + 2. Several depths of nesting at once.
 # 3. Ordered lists
 # 4. Definition lists.
 
