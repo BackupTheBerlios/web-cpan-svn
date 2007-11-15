@@ -357,6 +357,23 @@ EOF
     );
 }
 
+# Wrap the arguments in an open-close para.
+sub p
+{
+    return
+    (
+        {
+            t => "para",
+            p => "open",
+        },
+        @_,
+        {
+            t => "para",
+            p => "close",
+        },
+    );
+}
+
 {
     my $text = <<'EOF';
 Before list
@@ -378,17 +395,11 @@ EOF
     is_tokens_deeply(
         $parser,
         [
-            {
-                t => "para",
-                p => "open",
-            },
+            p(
             {
                 text => "Before list\n",
-            },
-            {
-                t => "para",
-                p => "close",
-            },
+            }
+            ),
             {
                 t => "list",
                 p => "open",
@@ -427,18 +438,11 @@ EOF
                 t => "list",
                 p => "close",
             },
-
-            {
-                t => "para",
-                p => "open",
-            },
+            p(
             {
                 text => "After list\n",
             },
-            {
-                t => "para",
-                p => "close",
-            },
+            ),
         ],
         "Nested lists.",
     );
