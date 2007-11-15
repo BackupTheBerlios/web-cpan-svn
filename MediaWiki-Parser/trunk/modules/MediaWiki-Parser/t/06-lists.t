@@ -391,6 +391,21 @@ sub ul
     );
 }
 
+sub li
+{
+    return
+    (
+        {
+            t => "listitem",
+            p => "open",
+        },
+        @_,
+        {
+            t => "listitem",
+            p => "close",
+        },
+    );
+}
 {
     my $text = <<'EOF';
 Before list
@@ -414,37 +429,16 @@ EOF
         [
             p("Before list\n",),
             ul(
-            {
-                t => "listitem",
-                p => "open",
-            },
-            "List\n",
-            {
-                t => "list",
-                p => "open",
-                st => "unordered",
-            },
-            {
-                t => "listitem",
-                p => "open",
-            },
-            "Inner List\n",
-            {
-                t => "listitem",
-                p => "close",
-            },
-            {
-                t => "list",
-                p => "close",
-            },            
-            {
-                t => "listitem",
-                p => "close",
-            },
-        ),
-            p(
-                "After list\n",
+                li(
+                    "List\n",
+                    ul(
+                        li(
+                            "Inner List\n",
+                        )
+                    ),
+                ),
             ),
+            p("After list\n",),
         ],
         "Nested lists.",
     );
