@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use lib "./t/lib";
 
@@ -406,6 +406,7 @@ sub li
         },
     );
 }
+
 {
     my $text = <<'EOF';
 Before list
@@ -441,6 +442,59 @@ EOF
             p("After list\n",),
         ],
         "Nested lists.",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before list
+*List
+**Inner List
+**Another inner item
+*Outer Item
+*Start another list
+**LI/LI1
+**LI/LI2
+**LI/LI3
+*Outer Item
+After list
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            p("Before list\n",),
+            ul(
+                li(
+                    "List\n",
+                    ul(
+                        li( "Inner List\n",),
+                        li( "Another inner item\n",),
+                    ),
+                ),
+                li("Outer Item\n"),
+                li(
+                    "Start another list\n",
+                    ul(
+                        li( "LI/LI1\n",),
+                        li( "LI/LI2\n",),
+                        li( "LI/LI3\n",),
+                    ),
+                ),
+                li("Outer Item\n"),
+            ),
+            p("After list\n",),
+        ],
+        "Nested lists with more than one item",
     );
 }
 
