@@ -4,7 +4,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 use lib "./t/lib";
 
@@ -391,6 +391,23 @@ sub ul
     );
 }
 
+sub ol
+{
+    return
+    (
+        {
+            t => "list",
+            p => "open",
+            st => "ordered",
+        },
+        @_,
+        {
+            t => "list",
+            p => "close",
+        },
+    );
+}
+
 sub li
 {
     return
@@ -559,6 +576,38 @@ EOF
             ),
         ],
         "Nested lists with more than one item",
+    );
+}
+
+{
+    my $text = <<'EOF';
+Before list
+#Foo1
+#Clade2
+After list
+
+EOF
+
+    my $parser = MediaWiki::Parser->new();
+
+    $parser->input_text(
+        {
+            lines => [split(/^/, $text)],
+        }
+    );
+
+    # TEST
+    is_tokens_deeply(
+        $parser,
+        [
+            p("Before list\n",),
+            ol(
+                li("Foo1\n"),
+                li("Clade2\n"),
+            ),
+            p("After list\n",),
+        ],
+        "Simple ordered list",
     );
 }
 

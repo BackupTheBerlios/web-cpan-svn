@@ -374,7 +374,7 @@ sub is_para_sub_state_paragraph
     return 
     (
            (@{$self->para_sub_state()} == 1)
-        && ($self->para_sub_state()->[0] eq "paragraph")
+        && ($self->para_sub_state()->[0]->type() eq "paragraph")
     );
 }
 

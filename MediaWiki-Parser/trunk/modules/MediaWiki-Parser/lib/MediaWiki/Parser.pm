@@ -287,6 +287,42 @@ sub _get_line_heading_values
     return ($start, $end);
 }
 
+sub _get_char_comps
+{
+    my ($self, $c) = @_;
+
+    if ($c eq "#")
+    {
+        return 
+        (
+            MediaWiki::Parser::Token->new(
+                type => "list",
+                subtype => "ordered",
+                position => "open",
+            ),
+            MediaWiki::Parser::Token->new(
+                type => "listitem",
+                position => "open",
+            )
+        );
+    }
+    else # $c eq "*"
+    {
+        return
+        (
+            MediaWiki::Parser::Token->new(
+                type => "list",
+                subtype => "unordered",
+                position => "open",
+            ),
+            MediaWiki::Parser::Token->new(
+                type => "listitem",
+                position => "open",
+            )
+        );
+    }
+}
+
 sub _enqueue_tokens_in__para
 {
     my $self = shift;
@@ -361,14 +397,14 @@ sub _enqueue_tokens_in__para
                 return;
             }
         }
-        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A([*]+)}g))
+        elsif ((!pos($$line_ref)) && ($$line_ref =~ m{\A([*#]+)}g))
         {
             my $line_prefix = $1;
 
             $self->_append_text_to_last_token($text);
             $text = "";
 
-            my @components = (map { ("list", "listitem") }
+            my @components = (map { $self->_get_char_comps($_) }
                 split(//, $line_prefix)
             );
 
@@ -621,6 +657,21 @@ sub _switch_para_sub_state
     {
         $new_sub_state = [ $new_sub_state ];
     }
+
+    $new_sub_state = 
+    [ 
+        map 
+        { 
+            +(ref($_) eq "") ? 
+                MediaWiki::Parser::Token->new(
+                    type => $_,
+                    position => "open",
+                )
+                :
+                $_
+        }
+        @$new_sub_state
+    ];
     
     my $old_sub_state = $self->_state->para_sub_state();
 
@@ -632,7 +683,7 @@ sub _switch_para_sub_state
 
     foreach my $idx (0 .. ($limit-1))
     {
-        if ($old_sub_state->[$idx] ne $new_sub_state->[$idx])
+        if (! $old_sub_state->[$idx]->matches($new_sub_state->[$idx]))
         {
             $diff_from = $idx;
             last;
@@ -647,16 +698,10 @@ sub _switch_para_sub_state
     # Pop all the old_sub_state items
     foreach my $elem (@$old_sub_state[reverse($diff_from .. $#$old_sub_state)])
     {
-        if ($elem ne "none")
-        {
-            $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => $elem,
-                    position => "close",
-                )
-            );
-            $num_tokens++;
-        }
+        $self->_enq(
+            $elem->clone({extra_params => [position => "close"]}),
+        );
+        $num_tokens++;
     }
 
     push @$new_sub_state, @$new_tail;
@@ -665,18 +710,10 @@ sub _switch_para_sub_state
         @$new_sub_state[$diff_from .. $#$new_sub_state]
     )
     {
-        if ($elem ne "none")
-        {
-            $self->_enq(
-                MediaWiki::Parser::Token->new(
-                    type => $elem,
-                    position => "open",
-                    # Temporary hack.
-                    ($elem eq "list") ? (subtype => "unordered") : (),
-                )
-            );
-            $num_tokens++;
-        }   
+        $self->_enq(
+            $elem->clone(),
+        );
+        $num_tokens++;
     }
 
     $self->_state->para_sub_state($new_sub_state);

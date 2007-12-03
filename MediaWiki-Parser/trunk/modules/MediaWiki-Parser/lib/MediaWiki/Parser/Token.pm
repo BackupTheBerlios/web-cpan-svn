@@ -218,7 +218,7 @@ sub _get_fields
     return 
     [
         type => $self->type(),
-        subtype => $self->subtype(),
+        (defined($self->subtype()) ? (subtype => $self->subtype()) : ()),
     ];
 }
 
