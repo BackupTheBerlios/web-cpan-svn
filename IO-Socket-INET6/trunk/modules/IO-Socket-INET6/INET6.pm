@@ -10,6 +10,8 @@
 package IO::Socket::INET6;
 
 use strict;
+use warnings;
+
 our(@ISA, $VERSION);
 use IO::Socket;
 use Socket;
