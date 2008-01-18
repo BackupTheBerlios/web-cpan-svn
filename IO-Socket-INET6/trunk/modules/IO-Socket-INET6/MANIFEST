@@ -1,0 +1,8 @@
+ChangeLog
+INET6.pm
+MANIFEST
+Makefile.PL
+README
+t/io_multihomed6.t
+t/io_sock6.t
+t/io_udp6.t

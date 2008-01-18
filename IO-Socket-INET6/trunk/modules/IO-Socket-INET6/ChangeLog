@@ -1,0 +1,48 @@
+2004-18-10  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* New Release INET6-2.51 .
+	* Patch from David Town <David.Town@marconi.com>
+	  - peeraddr(), sockaddr() methods implemented.
+	  - peerhost(), peerport(), sockhost(), sockport() improved efficiency.
+	  - New optional parameters: Local(Peer)Flow,Local(Peer)Scopeid. (Only for IPv6)
+	  - Local hack for MSWin32 platforms.
+
+2003-12-12  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* New Release INET6-2.01 .
+	* Patch from Wouter de Jong <wouter@widexs.nl>
+	  - fixing the parser on regexp at sock_info()
+	* Patch from Olaf M.Kolkman <olaf@ripe.net>
+	  - Toggle the -w flag to avoid some warning messages around tests
+	* fixing peerhost method.
+
+2003-11-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* New Release INET6-2.00 . Protocol independent IPv4-IPv6.
+	* New paramter: Domain => AF_UNSPEC(def.),AF_INET,AF_INET6
+	* Replace _get_addr by getnameinfo()
+		 (RFC3493 deprecates getipnodeby() )
+	* sockaddr,peeraddr methods eliminated, (non IP-independent)
+	* Improved test.
+
+2003-07-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* New Release INET6-1.28
+	* Makefile.PL includes prerequisites: (min.) Socket6 0.12
+	* Fix _get_addr in INET6.pm to use Socket6::getipnodebyname.
+
+2003-06-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* New Release INET6-1.27.
+	* t/io_sock_inet6.t: New file for 'make test'.
+
+2003-06-14  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* Patch from Masahito Omote <omote@debian.org>.
+	  - Fix IPv6 address and port splitt bug.
+	  - Fix _get_addr in INET6.pm to use Socket6::getaddrinfo.
+
+2003-06-05  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+
+	* Initial CPAN release.
+
