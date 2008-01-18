@@ -1,3 +1,13 @@
+Changes by Shlomi Fish <shlomif@iglu.org.il>
+
+	* Added a test for peerhost() too.
+	* Fixed sockhost() with the fact that inet_ntop() was not imported.
+		- Added a test.
+	* Added "use warnings" to IO::Socket::INET6.
+	* Added a modified version of my patch (with more comments) to patch 
+	the problems I found in IO-Socket-INET6. (generating 
+	warnings upon using and failed tests.).
+
 2004-18-10  Rafael Martinez Torres <rafael.martinez@novagnet.com>
 
 	* New Release INET6-2.51 .
