@@ -64,10 +64,15 @@ sub compare_addr {
 $| = 1;
 print "1..7\n";
 
-use Socket;
+# Make sure we don't import any extraneous symbols
+# which may clash and emit warnings.
+# 
+# See:
+# http://qa.mandriva.com/show_bug.cgi?id=36889
+use Socket ();
 use Socket6;
-use IO::Socket;
-use IO::Socket::INET6 ;
+use IO::Socket ();
+use IO::Socket::INET6 ();
 
 $udpa = IO::Socket::INET6->new(Proto => 'udp', LocalAddr => '::1')
      || IO::Socket::INET6->new(Proto => 'udp', LocalAddr => 'localhost')

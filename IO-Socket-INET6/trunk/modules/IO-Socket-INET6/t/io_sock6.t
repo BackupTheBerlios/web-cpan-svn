@@ -1,4 +1,6 @@
-#!./perl
+#!./perl -w
+
+use strict;
 
 BEGIN {
     unless(grep /blib/, @INC) {
@@ -42,7 +44,7 @@ eval {
 
 use IO::Socket::INET6;
 
-$listen = IO::Socket::INET6->new(Listen => 2,
+my $listen = IO::Socket::INET6->new(Listen => 2,
 				Proto => 'tcp',
 				# some systems seem to need as much as 10,
 				# so be generous with the timeout
@@ -58,7 +60,9 @@ if ($^O eq 'os2' and
     exit 0;
 }
 
-$port = $listen->sockport;
+my $port = $listen->sockport;
+
+my ($pid, $sock);
 
 if($pid = fork()) {
 
@@ -175,10 +179,11 @@ if($pid = fork()) {
 }
 
 # Then test UDP sockets
-$server = IO::Socket->new(Domain => AF_INET6,
-			 Proto  => 'udp',
-                          LocalAddr => 'localhost')
-       || IO::Socket->new( 
+
+# Test the numeric address directly because "localhost" usually maps
+# to an IPv4 address.
+
+my $server = IO::Socket->new( 
 			Domain => AF_INET6,
 			 Proto  => 'udp',
                           LocalAddr => '::1');
@@ -193,10 +198,11 @@ if ($^O eq 'mpeix') {
         print $buf;
     } elsif (defined($pid)) {
         #child
+
+        # Test the numeric address directly because "localhost" usually maps
+        # to an IPv4 address.
+
         $sock = IO::Socket::INET6->new(Proto => 'udp',
-					Domain => AF_INET6,
-                                      PeerAddr => "localhost:$port")
-             || IO::Socket::INET6->new(Proto => 'udp',
 					Domain => AF_INET6,
                                      	PeerAddr => "[::1]:$port");
         $sock->send("ok 12\n");
@@ -225,7 +231,7 @@ if ( $^O eq 'qnx' ) {
 ### Set up some data to be transfered between the server and
 ### the client. We'll use own source code ...
 #
-local @data;
+my @data;
 if( !open( SRC, "< $0")) {
     print "not ok 15 - $!";
 } else {
@@ -237,7 +243,7 @@ print "ok 15\n";
 ### TEST 16
 ### Start the server
 #
-my $listen = IO::Socket::INET6->new( Listen => 2, Proto => 'tcp', Timeout => 15) ||
+$listen = IO::Socket::INET6->new( Listen => 2, Proto => 'tcp', Timeout => 15) ||
     print "not ";
 print "ok 16\n";
 die if( !defined( $listen));

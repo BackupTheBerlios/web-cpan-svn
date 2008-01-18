@@ -55,7 +55,10 @@ package main;
 use IO::Socket::INET6;
 
 $listen = IO::Socket::INET6->new(Listen => 2,
-				LocalPort => 8080,
+				# 8080 is a commonly used port
+                # so we're using a more obscure port
+                # instead.
+				LocalPort => 28083,
 				Family => AF_INET,
 				Proto => 'tcp',
 				Timeout => 5,

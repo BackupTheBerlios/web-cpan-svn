@@ -6,3 +6,4 @@ README
 t/io_multihomed6.t
 t/io_sock6.t
 t/io_udp6.t
+META.yml                                 Module meta-data (added by MakeMaker)
