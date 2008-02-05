@@ -1,5 +1,6 @@
-Changes by Shlomi Fish <shlomif@iglu.org.il>
+2008-02-05 Shlomi Fish <shlomif@iglu.org.il>
 
+	* New Release IO-Socket-INET6-2.52
 	* Added a test for peerhost() too.
 	* Fixed sockhost() with the fact that inet_ntop() was not imported.
 		- Added a test.
