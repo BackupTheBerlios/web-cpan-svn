@@ -584,6 +584,9 @@ This program is based on L<IO::Socket::INET> by Graham Barr
 Modified by Rafael Martinez Torres <rafael.martinez@novagnet.com> and
 Euro6IX project.
 
+Modified further by Shlomi Fish <shlomif@iglu.org.il>, while disclaiming
+all copyrights.
+
 =head1 COPYRIGHT
 
 Copyright (c) 2003- Rafael Martinez Torres <rafael.martinez@novagnet.com>.
