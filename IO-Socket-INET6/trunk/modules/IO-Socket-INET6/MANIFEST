@@ -1,5 +1,6 @@
+Build.PL
 ChangeLog
-INET6.pm
+lib/IO/Socket/INET6.pm
 MANIFEST
 Makefile.PL
 README
