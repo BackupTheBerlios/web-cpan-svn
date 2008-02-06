@@ -1,11 +1,13 @@
 Build.PL
 ChangeLog
 lib/IO/Socket/INET6.pm
-MANIFEST
 Makefile.PL
+MANIFEST
+META.yml                                 Module meta-data (added by MakeMaker)
 README
 t/host6.t
 t/io_multihomed6.t
 t/io_sock6.t
 t/io_udp6.t
-META.yml                                 Module meta-data (added by MakeMaker)
+t/pod-coverage.t
+t/pod.t

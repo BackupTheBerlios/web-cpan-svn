@@ -525,9 +525,31 @@ by default. This was not the case with earlier releases.
 
 =over 4
 
+=item accept ()
+
+See L<IO::Socket::INET>.
+
+=item bind ()
+
+See L<IO::Socket::INET>.
+
+=item configure ()
+
+This function exists in this module, but I (= Shlomi Fish) don't know what it 
+does, or understand it. It's also not tested anywhere. I'll be happy to be
+enlightened.
+
+=item connect ()
+
+See L<IO::Socket::INET>.
+
 =item sockaddr ()
 
 Return the address part of the sockaddr structure for the socket
+
+=item sockdomain()
+
+Returns the domain of the socket - AF_INET or AF_INET6 or whatever.
 
 =item sockport ()
 
