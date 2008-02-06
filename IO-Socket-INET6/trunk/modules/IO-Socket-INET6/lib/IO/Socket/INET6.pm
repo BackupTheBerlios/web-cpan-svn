@@ -572,6 +572,13 @@ on the peer host
 
 =back
 
+=head1 REPOSITORY
+
+The Subversion repository for this module carrying complete version history
+and other information is:
+
+L<http://svn.berlios.de/svnroot/repos/web-cpan/IO-Socket-INET6/>
+
 =head1 SEE ALSO
 
 L<Socket>,L<Socket6>, L<IO::Socket>
