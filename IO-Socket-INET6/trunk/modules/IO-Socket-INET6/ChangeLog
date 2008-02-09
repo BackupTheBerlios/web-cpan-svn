@@ -1,3 +1,6 @@
+	* Changed the email address of Rafael to the new one in the ChangeLog
+	and README files.
+
 2008-02-05 Shlomi Fish <shlomif@iglu.org.il>
 
 	* New Release IO-Socket-INET6-2.52
@@ -9,7 +12,7 @@
 	the problems I found in IO-Socket-INET6. (generating 
 	warnings upon using and failed tests.).
 
-2004-18-10  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2004-18-10  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* New Release INET6-2.51 .
 	* Patch from David Town <David.Town@marconi.com>
@@ -18,7 +21,7 @@
 	  - New optional parameters: Local(Peer)Flow,Local(Peer)Scopeid. (Only for IPv6)
 	  - Local hack for MSWin32 platforms.
 
-2003-12-12  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-12-12  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* New Release INET6-2.01 .
 	* Patch from Wouter de Jong <wouter@widexs.nl>
@@ -27,7 +30,7 @@
 	  - Toggle the -w flag to avoid some warning messages around tests
 	* fixing peerhost method.
 
-2003-11-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-11-24  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* New Release INET6-2.00 . Protocol independent IPv4-IPv6.
 	* New paramter: Domain => AF_UNSPEC(def.),AF_INET,AF_INET6
@@ -36,24 +39,24 @@
 	* sockaddr,peeraddr methods eliminated, (non IP-independent)
 	* Improved test.
 
-2003-07-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-07-24  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* New Release INET6-1.28
 	* Makefile.PL includes prerequisites: (min.) Socket6 0.12
 	* Fix _get_addr in INET6.pm to use Socket6::getipnodebyname.
 
-2003-06-24  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-06-24  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* New Release INET6-1.27.
 	* t/io_sock_inet6.t: New file for 'make test'.
 
-2003-06-14  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-06-14  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* Patch from Masahito Omote <omote@debian.org>.
 	  - Fix IPv6 address and port splitt bug.
 	  - Fix _get_addr in INET6.pm to use Socket6::getaddrinfo.
 
-2003-06-05  Rafael Martinez Torres <rafael.martinez@novagnet.com>
+2003-06-05  Rafael Martinez Torres <rmartine@fdi.ucm.es>
 
 	* Initial CPAN release.
 

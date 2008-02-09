@@ -21,10 +21,12 @@ level. Be warned.
 This program is based on IO::Socket::INET by Graham Barr <gbarr@pobox.com>
 and currently maintained by the Perl Porters.
 
-Modified by Rafael Martinez Torres <rafael.martinez@novagnet.com> and
+Modified by Rafael Martinez Torres <rmartine@fdi.ucm.es> and
 Euro6IX project.
 
-Copyright (c) 2003- Rafael Martinez Torres <rafael.martinez@novagnet.com>.
+Further modified by Shlomi Fish <shlomif@iglu.org.il>.
+
+Copyright (c) 2003- Rafael Martinez Torres <rmartine@fdi.ucm.es>.
 Copyright (c) 2003- Euro6IX project.
 Copyright (c) 1996-8 Graham Barr <gbarr@pobox.com>.
 
