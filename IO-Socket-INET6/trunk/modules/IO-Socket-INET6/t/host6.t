@@ -52,7 +52,7 @@ if(my $pid = fork()) {
     exit;
 } elsif (defined $pid) {
 
-    plan tests => 2;
+    plan tests => 4;
     # child, try various ways to connect
     my $sock = IO::Socket::INET6->new("[::1]:$port");
 
@@ -61,6 +61,12 @@ if(my $pid = fork()) {
     
     # TEST
     ok ($sock->peerhost(), "Checking for peerhost() success");
+
+    # TEST
+    is ($sock->sockflow(), 0, "Checking for sockflow() success");
+
+    # TEST
+    is ($sock->peerflow(), 0, "Checking for peerflow() success");
 
     print {$sock} "H\n";
     undef($sock);

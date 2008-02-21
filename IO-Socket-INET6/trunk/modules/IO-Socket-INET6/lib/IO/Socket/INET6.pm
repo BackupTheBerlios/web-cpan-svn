@@ -17,7 +17,11 @@ use IO::Socket;
 use Socket;
 # IO::Socket and Socket already import stuff here - possibly AF_INET6
 # and PF_INET6 so selectively import things from Socket6.
-use Socket6 (qw(AI_PASSIVE inet_ntop inet_pton getaddrinfo sockaddr_in6));
+use Socket6 (
+    qw(AI_PASSIVE inet_ntop inet_pton getaddrinfo 
+    sockaddr_in6 unpack_sockaddr_in6_all)
+);
+
 use Carp;
 use Exporter;
 use Errno;
