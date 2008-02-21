@@ -1,8 +1,16 @@
+2008-02-21 Shlomi Fish <shlomif@iglu.org.il>
+	* Converted to Build.PL and placed INET6.pm under lib/.
+	* Added a "repository" URL to the POD. 
+	* Added the pod.t and pod-coverage.t files and we now have full POD
+	coverage.
+	* Added more dependencies to the Build.PL.
+	* Added the credit of "Shlomi Fish".
 	* Changed the email address of Rafael to the new one in the ChangeLog
 	and README files.
 	* Someone reported that sockflow() and peerflow() were broken. The reason
 	for that was that unpack_sockaddr_in6_all was not imported from Socket6.
 	This release fixes it (with tests in t/host6.t).
+	* New Release IO-Socket-INET6-2.53
 
 2008-02-05 Shlomi Fish <shlomif@iglu.org.il>
 

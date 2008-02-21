@@ -8,7 +8,9 @@ WriteMakefile
           'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/IO/Socket/INET6.pm',
           'PREREQ_PM' => {
-                           'Socket6' => '0.12'
+                           'Test::More' => 0,
+                           'Socket6' => '0.12',
+                           'IO::Socket' => 0
                          }
         )
 ;
