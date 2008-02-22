@@ -27,7 +27,7 @@ use Exporter;
 use Errno;
 
 @ISA = qw(IO::Socket);
-$VERSION = "2.53";
+$VERSION = "2.54";
 #Purpose: allow protocol independent protocol and original interface.
 
 my $EINVAL = exists(&Errno::EINVAL) ? Errno::EINVAL() : 1;
