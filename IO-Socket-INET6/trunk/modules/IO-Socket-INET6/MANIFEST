@@ -5,6 +5,7 @@ Makefile.PL
 MANIFEST
 META.yml                                 Module meta-data (added by MakeMaker)
 README
+t/configure6.t
 t/host6.t
 t/io_multihomed6.t
 t/io_sock6.t

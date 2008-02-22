@@ -19,7 +19,7 @@ use Socket;
 # and PF_INET6 so selectively import things from Socket6.
 use Socket6 (
     qw(AI_PASSIVE inet_ntop inet_pton getaddrinfo 
-    sockaddr_in6 unpack_sockaddr_in6_all)
+    sockaddr_in6 unpack_sockaddr_in6_all pack_sockaddr_in6_all)
 );
 
 use Carp;
