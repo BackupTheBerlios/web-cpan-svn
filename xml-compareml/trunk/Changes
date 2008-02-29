@@ -1,4 +1,6 @@
 Revision history for XML::CompareML
 
+0.2.1    Fri Feb 29 17:02:49 IST 2008
+    - Implemented <url>, <fullname> and <vendor> elements for the <impl>.
 0.2.0    Tue Apr 12 15:09:04 IDT 2005
     - First CPAN Release
