@@ -20,6 +20,17 @@ TODO:
                 <url>http://subversion.tigris.org/</url>
                 <fullname>Subversion Version Control System</fullname>
             </impl>
+            <impl id="bazaar">
+                <name>Bazaar</name>
+                <url>http://bazaar-vcs.org/</url>
+                <vendor>Canonical</vendor>
+            </impl>
+            <impl id="toobad">
+                <name>Toobad</name>
+                <url>http://toobad.tld/</url>
+                <fullname>Not-Too-Bad</fullname>
+                <vendor>MyCompany</vendor>
+            </impl>
             
         </implementations>
         <timestamp>

@@ -24,6 +24,8 @@ is ($buffer,
     <<"EOF",
 <li><a href="http://www.cvshome.org/">CVS</a></li>
 <li><a href="http://subversion.tigris.org/">Subversion Version Control System</a></li>
+<li><a href="http://bazaar-vcs.org/">Bazaar</a> by Canonical</li>
+<li><a href="http://toobad.tld/">Not-Too-Bad</a> by MyCompany</li>
 EOF
     "Checking that the systems' list is correct."
 );

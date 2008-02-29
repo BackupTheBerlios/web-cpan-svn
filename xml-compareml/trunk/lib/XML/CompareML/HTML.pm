@@ -197,12 +197,16 @@ sub gen_systems_list
         my $name = $self->_impl_get_tag_text($impl, "name");
         my $url = $self->_impl_get_tag_text($impl, "url");
         my $fullname = $self->_impl_get_tag_text($impl, "fullname");
+        my $vendor = $self->_impl_get_tag_text($impl, "vendor");
         if (!defined($url))
         {
             die "URL not specified for implementation " . $self->_impl_get_name($_);
         }
         print {$fh} qq{<li><a href="} . CGI::escapeHTML($url) . qq{">} . 
-            CGI::escapeHTML(defined($fullname) ? $fullname : $name) . qq{</a></li>\n};
+            CGI::escapeHTML(defined($fullname) ? $fullname : $name) . 
+            qq{</a>} . (defined($vendor) ? " by $vendor" : "") .
+            qq{</li>\n}
+            ;
     }
 }
 1;
