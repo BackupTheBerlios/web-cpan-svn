@@ -200,7 +200,7 @@ sub gen_systems_list
         my $vendor = $self->_impl_get_tag_text($impl, "vendor");
         if (!defined($url))
         {
-            die "URL not specified for implementation " . $self->_impl_get_name($_);
+            die "URL not specified for implementation $name.";
         }
         print {$fh} qq{<li><a href="} . CGI::escapeHTML($url) . qq{">} . 
             CGI::escapeHTML(defined($fullname) ? $fullname : $name) . 

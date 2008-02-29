@@ -1,20 +1,21 @@
---- #YAML:1.0
+---
 name: XML-CompareML
-version: 0.2.0
+version: 0.2.1
+author:
+  - 'Shlomi Fish <shlomif@iglu.org.il>'
+abstract: A processor for the CompareML markup language
 license: bsd
-distribution_type: module
+resources:
+  license: http://www.opensource.org/licenses/bsd-license.php
 requires:
   Class::Accessor: 0
   IO::Scalar: 0
   Test::More: 0
   XML::LibXML: 0
-recommends: {}
-build_requires: {}
-conflicts: {}
 provides:
   XML::CompareML:
     file: lib/XML/CompareML.pm
-    version: 0.2.0
+    version: 0.2.1
   XML::CompareML::Base:
     file: lib/XML/CompareML/Base.pm
   XML::CompareML::DTD::Generate:
@@ -23,4 +24,7 @@ provides:
     file: lib/XML/CompareML/DocBook.pm
   XML::CompareML::HTML:
     file: lib/XML/CompareML/HTML.pm
-generated_by: Module::Build version 0.21
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2

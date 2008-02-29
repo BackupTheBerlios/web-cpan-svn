@@ -2,7 +2,7 @@ package XML::CompareML;
 
 use vars qw($VERSION);
 
-$VERSION = '0.2.1';
+$VERSION = '0.2.2';
 
 1; # End of XML::CompareML
 
