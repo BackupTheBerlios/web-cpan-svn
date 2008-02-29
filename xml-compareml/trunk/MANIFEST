@@ -1,14 +1,16 @@
 Build.PL
 Changes
+lib/XML/CompareML/Base.pm
+lib/XML/CompareML/DocBook.pm
+lib/XML/CompareML/DTD/Generate.pm
+lib/XML/CompareML/HTML.pm
+lib/XML/CompareML.pm
 MANIFEST
 META.yml # Will be created by "make dist"
 README
-lib/XML/CompareML.pm
-lib/XML/CompareML/Base.pm
-lib/XML/CompareML/DocBook.pm
-lib/XML/CompareML/HTML.pm
-lib/XML/CompareML/DTD/Generate.pm
 t/00-load.t
 t/01generate.t
-t/pod.t
+t/02sys-list.t
 t/files/scm-comparison.xml
+t/files/scm-sys-list-1.xml
+t/pod.t

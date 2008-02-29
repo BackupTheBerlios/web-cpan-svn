@@ -41,12 +41,24 @@ sub xml_node_contents_to_string
     return $ret;
 }
 
+sub _impl_get_tag_text
+{
+    my $self = shift;
+    my $impl_elem = shift;
+    my $tag = shift;
+    my ($name_elem) = $impl_elem->getChildrenByTagName($tag);
+    if (!defined($name_elem))
+    {
+        return;
+    }
+    return $self->xml_node_contents_to_string($name_elem);    
+}
+
 sub _impl_get_name
 {
     my $self = shift;
     my $impl_elem = shift;
-    my ($name_elem) = $impl_elem->getChildrenByTagName("name");
-    return $self->xml_node_contents_to_string($name_elem);
+    return $self->_impl_get_tag_text($impl_elem, "name");
 }
 
 sub get_implementations

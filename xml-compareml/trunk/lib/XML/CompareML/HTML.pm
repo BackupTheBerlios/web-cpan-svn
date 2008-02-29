@@ -2,6 +2,7 @@ package XML::CompareML::HTML;
 
 use strict;
 use warnings;
+use CGI ();
 
 use base 'XML::CompareML::Base';
 
@@ -181,5 +182,27 @@ sub render_section_end
         $self->toc_out("\n</ul>\n");
     }
     $self->toc_out("</li>\n");
+}
+
+sub gen_systems_list
+{
+    my ($self, %args) = @_;
+
+    my $fh = $args{output_handle};
+
+    my @implementations = $self->findnodes("/comparison/meta/implementations/impl");
+
+    foreach my $impl (@implementations)
+    {
+        my $name = $self->_impl_get_tag_text($impl, "name");
+        my $url = $self->_impl_get_tag_text($impl, "url");
+        my $fullname = $self->_impl_get_tag_text($impl, "fullname");
+        if (!defined($url))
+        {
+            die "URL not specified for implementation " . $self->_impl_get_name($_);
+        }
+        print {$fh} qq{<li><a href="} . CGI::escapeHTML($url) . qq{">} . 
+            CGI::escapeHTML(defined($fullname) ? $fullname : $name) . qq{</a></li>\n};
+    }
 }
 1;

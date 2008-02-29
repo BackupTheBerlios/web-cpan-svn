@@ -9,8 +9,11 @@ sub get_dtd
 <!ELEMENT comparison (meta,contents)>
 <!ELEMENT meta (implementations,timestamp?)>
 <!ELEMENT implementations (impl+)>
-<!ELEMENT impl (name)>
+<!ELEMENT impl (name,url?,fullname?,vendor?)>
 <!ELEMENT name (#PCDATA)>
+<!ELEMENT url (#PCDATA)>
+<!ELEMENT fullname (#PCDATA)>
+<!ELEMENT vendor (#PCDATA)>
 <!ELEMENT contents (section)>
 <!ELEMENT section (title,expl?,compare?,section*)>
 <!ELEMENT title (#PCDATA)>
