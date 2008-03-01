@@ -1,0 +1,29 @@
+Revision history for Test::Count
+
+0.0105    Sat Mar  1 15:52:35 IST 2008
+          - Now handling trailing whitespace in "# TEST" lines properly.
+
+0.0104    Wed Nov 21 12:07:32 IST 2007
+          - Fixed the 'requires' and 'build_requires' in the Build.PL
+          file.
+
+0.0103    Tue Nov 20 22:52:42 IST 2007
+          - Upgraded Test::Run::Builder that works properly with the recent
+          Test::Run and friends.          
+          - Fixed a bug with using variables whose values are zero in
+          expressions.
+          - Fixed a bug in which assignments were performed twice.
+
+0.0102    Tue Sep 19 14:40:34 IDT 2006
+          - Now generating a pass-through Makefile.PL.
+
+0.0101    Thu Sep 14 17:03:00 IDT 2006
+          - Added an acknowledgement for Parse::RecDescent.
+          - Converted Build.PL to Test::Run::Builder.
+          - Added more meaningful documentation.
+
+0.01      Sat Aug 19 17:57:31 IDT 2006
+          - First version
+          - starting from the skeleton of Module-Starter.
+          - Implemented most of the desired functionality. (except various
+          nice to have customizations.)
