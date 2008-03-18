@@ -4,14 +4,15 @@ version: 0.2.2
 author:
   - 'Shlomi Fish <shlomif@iglu.org.il>'
 abstract: A processor for the CompareML markup language
-license: bsd
+license: mit
 resources:
-  license: http://www.opensource.org/licenses/bsd-license.php
+  license: http://opensource.org/licenses/mit-license.php
 requires:
   Class::Accessor: 0
+  XML::LibXML: 0
+build_requires:
   IO::Scalar: 0
   Test::More: 0
-  XML::LibXML: 0
 provides:
   XML::CompareML:
     file: lib/XML/CompareML.pm
