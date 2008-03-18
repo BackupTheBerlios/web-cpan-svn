@@ -9,6 +9,10 @@ my $builder = Module::Build->new(
     requires => {
         'Class::Accessor' => 0,
         'XML::LibXML' => 0,
+        'XML::LibXML::Common' => 0,
+        'CGI' => 0,
+        'strict' => 0,
+        'warnings' => 0,
     },
     build_requires => {
         'Test::More' => 0,

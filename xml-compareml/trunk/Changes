@@ -7,6 +7,7 @@ Revision history for XML::CompareML
     - Moved "Test::More" and "IO::Scalar" to the build_requires.
     - now generating a Makefile.PL from the Build.PL.
     - added an example under examples/.
+    - added more dependencies to the Build.PL
 0.2.2    Fri Feb 29 17:24:55 IST 2008
     - Fixed the die in the last patch to reference the name correctly.
 0.2.1    Fri Feb 29 17:02:49 IST 2008
