@@ -3,11 +3,21 @@ package XML::CompareML::DocBook;
 use strict;
 use warnings;
 
+=head1 NAME
+
+XML::CompareML::DocBook - convert CompareML to DocBook
+
+=head1 SYNOPSIS
+
+See L<XML::CompareXML>.
+
+=cut
+
 use XML::LibXML::Common qw(:w3c);
 
 use base 'XML::CompareML::Base';
 
-sub print_header
+sub _print_header
 {
     my $self = shift;
     my $o = $self->{o};
@@ -22,22 +32,22 @@ EOF
 }
 
 # Do Nothing
-sub start_rendering
+sub _start_rendering
 {
 }
 
 # Do Nothing
-sub finish_rendering
+sub _finish_rendering
 {
 }
 
-sub print_footer
+sub _print_footer
 {
     my $self = shift;
     print {*{$self->{o}}} "</article>\n";
 }
 
-sub render_section_start
+sub _render_section_start
 {
     my $self = shift;
     my %args = (@_);
@@ -50,10 +60,10 @@ sub render_section_start
 
     if ($depth)
     {
-        $self->out("<section id=\"$id\">\n");
+        $self->_out("<section id=\"$id\">\n");
     }
 
-    $self->out("<title>$title_string</title>\n");
+    $self->_out("<title>$title_string</title>\n");
 
     if ($depth == 0)
     {
@@ -70,7 +80,7 @@ sub render_section_start
     }
 }
 
-sub render_sys_table_start
+sub _render_sys_table_start
 {
     my ($self,%args) = @_;
 
@@ -92,7 +102,7 @@ sub render_sys_table_start
 EOF
 }
 
-sub html_to_docbook
+sub _html_to_docbook
 {
     my $parent_node = shift;
     my $not_first = shift;
@@ -137,13 +147,13 @@ sub html_to_docbook
     return $ret;
 }
 
-sub render_s_elem
+sub _render_s_elem
 {
     my ($self, $s_elem) = @_;
     return html_to_docbook($s_elem);
 }
 
-sub render_sys_table_row
+sub _render_sys_table_row
 {
     my ($self, %args) = @_;
 
@@ -151,13 +161,13 @@ sub render_sys_table_row
                 "<entry>\n" . $args{desc} . "\n</entry>\n</row>\n");
 }
 
-sub render_sys_table_end
+sub _render_sys_table_end
 {
     my $self = shift;
     $self->out("</tbody>\n</tgroup>\n</table>\n");
 }
 
-sub render_section_end
+sub _render_section_end
 {
     my ($self, %args) = @_;
 
@@ -168,6 +178,23 @@ sub render_section_end
         $self->out("</section>\n");
     }
 }
+
+=head1 AUTHOR
+
+Shlomi Fish, L<http://www.shlomifish.org/>.
+
+=head1 SEE ALSO
+
+L<XML::CompareML>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2004, Shlomi Fish. All rights reserved.
+
+You can use, modify and distribute this module under the terms of the MIT X11
+license. ( L<http://www.opensource.org/licenses/mit-license.php> ).
+
+=cut
 
 1;
 

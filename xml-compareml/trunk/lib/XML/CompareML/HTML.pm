@@ -6,7 +6,20 @@ use CGI ();
 
 use base 'XML::CompareML::Base';
 
-sub print_header
+
+=head1 NAME
+
+XML::CompareML::HTML - convert CompareML to HTML
+
+=head1 SYNOPSIS
+
+See L<XML::CompareXML>.
+
+=head1 METHODS
+
+=cut
+
+sub _print_header
 {
     my $self = shift;
 
@@ -27,6 +40,13 @@ $style
 <body>
 EOF
 }
+
+=head2 get_head_css_style()
+
+Should return the CSS style of the <head> element. Overridable in 
+child classes.
+
+=cut
 
 sub get_head_css_style
 {
@@ -85,13 +105,13 @@ EOF
     return $style;
 }
 
-sub start_rendering
+sub _start_rendering
 {
     my $self = shift;
     $self->{toc_text} .= "<ul class=\"toc\">\n";
 }
 
-sub finish_rendering
+sub _finish_rendering
 {
     my $self = shift;
     
@@ -101,13 +121,13 @@ sub finish_rendering
     $self->{document_text} =~ s!<<<TOC>>>!$toc_text!;
 }
 
-sub print_footer
+sub _print_footer
 {
     my $self = shift;
     print {*{$self->{o}}} "\n</body>\n</html>\n";
 }
 
-sub render_section_start
+sub _render_section_start
 {
     my $self = shift;
     my %args = (@_);
@@ -119,59 +139,59 @@ sub render_section_start
     my $sub_sections = $args{sub_sections};
 
     my $d = $depth+1;
-    $self->out("<h$d id=\"$id\">$title_string</h$d>\n");
+    $self->_out("<h$d id=\"$id\">$title_string</h$d>\n");
 
     if ($expl)
     {
-        $self->out("<p class=\"expl\">\n" . $self->xml_node_contents_to_string($expl) . "\n</p>\n");
+        $self->_out("<p class=\"expl\">\n" . $self->_xml_node_contents_to_string($expl) . "\n</p>\n");
     }
 
     if ($depth == 0)
     {
-        if (defined($self->timestamp()))
+        if (defined($self->_timestamp()))
         {
-            $self->out("<p><b>Timestamp:</b> <tt>" . $self->timestamp() . "</tt></p>");
+            $self->_out("<p><b>Timestamp:</b> <tt>" . $self->_timestamp() . "</tt></p>");
         }
-        $self->out("<<<TOC>>>\n");
+        $self->_out("<<<TOC>>>\n");
     }
 
-    $self->toc_out("<li><a href=\"#$id\">$title_string</a>");
+    $self->_toc_out("<li><a href=\"#$id\">$title_string</a>");
 
     if (@$sub_sections)
     {
-        $self->toc_out("\n<ul>\n");
+        $self->_toc_out("\n<ul>\n");
     }
 }
 
-sub render_sys_table_start
+sub _render_sys_table_start
 {
     my $self = shift;
-    $self->out("<table class=\"compare\">\n");
+    $self->_out("<table class=\"compare\">\n");
 }
 
-sub render_s_elem
+sub _render_s_elem
 {
     my ($self, $s_elem) = @_;
-    return $self->xml_node_contents_to_string($s_elem);
+    return $self->_xml_node_contents_to_string($s_elem);
 }
 
-sub render_sys_table_row
+sub _render_sys_table_row
 {
     my ($self, %args) = @_;
     
-    $self->out(
+    $self->_out(
         "<tr>\n<td class=\"sys\">" . $args{name} . "</td>\n" .
         "<td class=\"desc\">\n" . $args{desc} . "\n</td>\n</tr>\n"
     );
 }
 
-sub render_sys_table_end
+sub _render_sys_table_end
 {
     my $self = shift;
-    $self->out("</table>\n");
+    $self->_out("</table>\n");
 }
 
-sub render_section_end
+sub _render_section_end
 {
     my ($self, %args) = @_;
 
@@ -179,10 +199,18 @@ sub render_section_end
     
     if (@$sub_sections)
     {
-        $self->toc_out("\n</ul>\n");
+        $self->_toc_out("\n</ul>\n");
     }
-    $self->toc_out("</li>\n");
+    $self->_toc_out("</li>\n");
 }
+
+=head2 $converter->gen_systems_list({output_handle => \*STDOUT})
+
+Generates a list of li's with links to the systems, not unlike:
+
+L<http://better-scm.berlios.de/comparison/>
+
+=cut
 
 sub gen_systems_list
 {
@@ -190,7 +218,7 @@ sub gen_systems_list
 
     my $fh = $args{output_handle};
 
-    my @implementations = $self->findnodes("/comparison/meta/implementations/impl");
+    my @implementations = $self->_findnodes("/comparison/meta/implementations/impl");
 
     foreach my $impl (@implementations)
     {
@@ -209,4 +237,22 @@ sub gen_systems_list
             ;
     }
 }
+
+=head1 AUTHOR
+
+Shlomi Fish, L<http://www.shlomifish.org/>.
+
+=head1 SEE ALSO
+
+L<XML::CompareML>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2004, Shlomi Fish. All rights reserved.
+
+You can use, modify and distribute this module under the terms of the MIT X11
+license. ( L<http://www.opensource.org/licenses/mit-license.php> ).
+
+=cut
+
 1;

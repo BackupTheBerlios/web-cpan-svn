@@ -3,6 +3,25 @@ package XML::CompareML::Base;
 use strict;
 use warnings;
 
+=head1 NAME
+
+XML::CompareML::Base - base class for the CompareML-to-something converters.
+
+=head1 SYNOPSIS
+
+see L<XML::CompareML>.
+
+=head1 METHODS
+
+=head2 new()
+
+A constructor - should be used by a derived class.
+
+=head2 $compare->process()
+
+See L<XML::CompareML>
+=cut
+
 use XML::LibXML;
 
 use XML::CompareML::DTD::Generate;
@@ -10,7 +29,7 @@ use XML::CompareML::DTD::Generate;
 use base qw(Class::Accessor);
 
 __PACKAGE__->mk_accessors(
-    qw(timestamp root_elem impls_indexes impls_names),
+    qw(_timestamp root_elem impls_indexes impls_names),
     qw(parser dom),
 );
 
@@ -23,13 +42,13 @@ sub new
     return $self;
 }
 
-sub findnodes
+sub _findnodes
 {
     my $self = shift;
     return $self->root_elem->findnodes(@_);
 }
 
-sub xml_node_contents_to_string
+sub _xml_node_contents_to_string
 {
     my $self = shift;
     my $node = shift;
@@ -51,7 +70,7 @@ sub _impl_get_tag_text
     {
         return;
     }
-    return $self->xml_node_contents_to_string($name_elem);    
+    return $self->_xml_node_contents_to_string($name_elem);    
 }
 
 sub _impl_get_name
@@ -61,7 +80,7 @@ sub _impl_get_name
     return $self->_impl_get_tag_text($impl_elem, "name");
 }
 
-sub get_implementations
+sub _get_implementations
 {
     my $self = shift;
     return 
@@ -73,17 +92,17 @@ sub get_implementations
                         'name' => $self->_impl_get_name($_)
                     } 
                 } 
-            $self->findnodes("/comparison/meta/implementations/impl")
+            $self->_findnodes("/comparison/meta/implementations/impl")
         ];
 }
 
-sub get_timestamp
+sub _get_timestamp
 {
     my $self = shift;
-    my @nodes = $self->findnodes("/comparison/meta/timestamp");
+    my @nodes = $self->_findnodes("/comparison/meta/timestamp");
     if (@nodes)
     {
-        return $self->xml_node_contents_to_string($nodes[0]);
+        return $self->_xml_node_contents_to_string($nodes[0]);
     }
     else
     {
@@ -132,39 +151,39 @@ sub process
     my ($contents_elem) = $self->root_elem->getChildrenByTagName("contents");
     my ($top_section_elem) = $contents_elem->getChildrenByTagName("section");
 
-    my @impls = @{$self->get_implementations()};
+    my @impls = @{$self->_get_implementations()};
 
     $self->{impls} = \@impls;
     $self->impls_indexes(+{ map { $impls[$_]->{'id'} => $_ } (0 .. $#impls) });
     $self->impls_names(+{map { $_->{'id'} => $_->{'name'} } @impls });
-    $self->timestamp($self->get_timestamp());
+    $self->_timestamp($self->_get_timestamp());
 
     $self->{document_text} = "";
     $self->{toc_text} = "";
 
     # Make sure we print anything only when we finished extracting all
     # the meta-data.
-    $self->print_header();
+    $self->_print_header();
 
-    $self->start_rendering();
+    $self->_start_rendering();
 
-    $self->render_section('elem' => $top_section_elem, 'depth' => 0,);
+    $self->_render_section('elem' => $top_section_elem, 'depth' => 0,);
 
-    $self->finish_rendering();
+    $self->_finish_rendering();
 
     print {*{$self->{o}}} $self->{document_text};
     
-    $self->print_footer();
+    $self->_print_footer();
 }
 
-sub name
+sub _name
 {
     my $self = shift;
     my $id = shift;
     return $self->impls_names->{$id};
 }
 
-sub sorter
+sub _sorter
 {
     my $self = shift;
     my $impl = shift;
@@ -178,19 +197,19 @@ sub sorter
     return $indexes->{$impl};
 }
 
-sub out
+sub _out
 {
     my $self = shift;
     $self->{document_text} .= join("", @_);
 }
 
-sub toc_out
+sub _toc_out
 {
     my $self = shift;
     $self->{toc_text} .= join("", @_);
 }
 
-sub render_section
+sub _render_section
 {
     my $self = shift;
     my %args = (@_);
@@ -214,42 +233,59 @@ sub render_section
         'sub_sections' => \@sub_sections,
         );
         
-    $self->render_section_start(
+    $self->_render_section_start(
         @args
     );
     
     if ($compare)
     {
-        $self->render_sys_table_start(@args);
+        $self->_render_sys_table_start(@args);
 
         my @systems = ($compare->getChildrenByTagName("s"));
         my %kv =
             (map
-                { $_->getAttribute("id") => $self->render_s_elem($_) }
+                { $_->getAttribute("id") => $self->_render_s_elem($_) }
                 @systems
             );
-        my @keys_sorted = (sort { $self->sorter($a) <=> $self->sorter($b) } keys(%kv));
+        my @keys_sorted = (sort { $self->_sorter($a) <=> $self->_sorter($b) } keys(%kv));
         foreach my $k (@keys_sorted)
         {
-            $self->render_sys_table_row(
-                'name' => $self->name($k),
+            $self->_render_sys_table_row(
+                'name' => $self->_name($k),
                 'desc' => $kv{$k},
             );
         }
-        $self->render_sys_table_end();
+        $self->_render_sys_table_end();
     }
 
     foreach my $sub (@sub_sections)
     {
-        $self->render_section(
+        $self->_render_section(
             'elem' => $sub,
             'depth' => ($depth+1)
             );
     }
 
-    $self->render_section_end(
+    $self->_render_section_end(
         @args,
     );
 }
+
+=head1 AUTHOR
+
+Shlomi Fish, L<http://www.shlomifish.org/>.
+
+=head1 SEE ALSO
+
+L<XML::CompareML>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2004, Shlomi Fish. All rights reserved.
+
+You can use, modify and distribute this module under the terms of the MIT X11
+license. ( L<http://www.opensource.org/licenses/mit-license.php> ).
+
+=cut
 
 1;

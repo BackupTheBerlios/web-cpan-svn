@@ -3,6 +3,24 @@ package XML::CompareML::DTD::Generate;
 use strict;
 use warnings;
 
+=head1 NAME
+
+XML::CompareML::DTD::Generate - generate the DTD for CompareML.
+
+=head1 SYNOPSIS
+
+    use XML::CompareML::DTD::Generate;
+
+    my $dtd_text = XML::CompareML::DTD::Generate::get_dtd();
+
+=head1 FUNCTIONS
+
+=head2 get_dtd()
+
+Calculates and returns the DTD. Not exported.
+
+=cut
+
 sub get_dtd
 {
     return <<"EOF";
@@ -28,4 +46,22 @@ sub get_dtd
 <!ATTLIST impl id CDATA #REQUIRED>    
 EOF
 }
+
+=head1 AUTHOR
+
+Shlomi Fish, L<http://www.shlomifish.org/>.
+
+=head1 SEE ALSO
+
+L<XML::CompareML>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright 2004, Shlomi Fish. All rights reserved.
+
+You can use, modify and distribute this module under the terms of the MIT X11
+license. ( L<http://www.opensource.org/licenses/mit-license.php> ).
+
+=cut
+
 1;

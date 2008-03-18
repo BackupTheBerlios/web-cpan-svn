@@ -14,3 +14,4 @@ t/02sys-list.t
 t/files/scm-comparison.xml
 t/files/scm-sys-list-1.xml
 t/pod.t
+t/pod-coverage.t

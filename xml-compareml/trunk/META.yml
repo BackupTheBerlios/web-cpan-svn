@@ -1,6 +1,6 @@
 ---
 name: XML-CompareML
-version: 0.2.1
+version: 0.2.2
 author:
   - 'Shlomi Fish <shlomif@iglu.org.il>'
 abstract: A processor for the CompareML markup language
@@ -15,7 +15,7 @@ requires:
 provides:
   XML::CompareML:
     file: lib/XML/CompareML.pm
-    version: 0.2.1
+    version: 0.2.2
   XML::CompareML::Base:
     file: lib/XML/CompareML/Base.pm
   XML::CompareML::DTD::Generate:
