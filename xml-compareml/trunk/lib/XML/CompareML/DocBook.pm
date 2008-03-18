@@ -67,16 +67,16 @@ sub _render_section_start
 
     if ($depth == 0)
     {
-        if (defined($self->timestamp()))
+        if (defined($self->_timestamp()))
         {
-            $self->out("<articleinfo><date>" . $self->timestamp() .
+            $self->_out("<articleinfo><date>" . $self->_timestamp() .
                 "</date></articleinfo>\n");
         }
     }
 
     if ($expl)
     {
-        $self->out("<para>\n" . $self->xml_node_contents_to_string($expl) . "\n</para>\n");
+        $self->_out("<para>\n" . $self->_xml_node_contents_to_string($expl) . "\n</para>\n");
     }
 }
 
@@ -86,7 +86,7 @@ sub _render_sys_table_start
 
     my $title_string = $args{title_string};
     
-    $self->out(<<"EOF");
+    $self->_out(<<"EOF");
 <table frame=\"all\">
 <title>Comparison - $title_string</title>
 <tgroup cols=\"2\" align=\"left\" colsep=\"1\" rowsep=\"1\">
@@ -122,7 +122,7 @@ sub _html_to_docbook
                 my @attrs = $node->attributes();
                 $ret .= "<" . $node->nodeName() . " " . join(" ", map { "$_=\"".$node->getAttribute($_)."\""} @attrs) . ">";
             }
-            $ret .= html_to_docbook($node, 1);
+            $ret .= _html_to_docbook($node, 1);
 
             if ($node->nodeName() eq "a")
             {
@@ -150,21 +150,21 @@ sub _html_to_docbook
 sub _render_s_elem
 {
     my ($self, $s_elem) = @_;
-    return html_to_docbook($s_elem);
+    return _html_to_docbook($s_elem);
 }
 
 sub _render_sys_table_row
 {
     my ($self, %args) = @_;
 
-    $self->out("<row>\n<entry>" . $args{name}. "</entry>\n" .
+    $self->_out("<row>\n<entry>" . $args{name}. "</entry>\n" .
                 "<entry>\n" . $args{desc} . "\n</entry>\n</row>\n");
 }
 
 sub _render_sys_table_end
 {
     my $self = shift;
-    $self->out("</tbody>\n</tgroup>\n</table>\n");
+    $self->_out("</tbody>\n</tgroup>\n</table>\n");
 }
 
 sub _render_section_end
@@ -175,7 +175,7 @@ sub _render_section_end
 
     if ($depth)
     {
-        $self->out("</section>\n");
+        $self->_out("</section>\n");
     }
 }
 
