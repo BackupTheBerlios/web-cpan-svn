@@ -1,5 +1,7 @@
 Build.PL
 Changes
+examples/render.pl
+examples/scm-comparison.xml
 lib/XML/CompareML/Base.pm
 lib/XML/CompareML/DocBook.pm
 lib/XML/CompareML/DTD/Generate.pm
