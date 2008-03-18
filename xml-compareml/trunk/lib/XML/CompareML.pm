@@ -1,5 +1,8 @@
 package XML::CompareML;
 
+use strict;
+use warnings;
+
 use vars qw($VERSION);
 
 $VERSION = '0.2.2';
