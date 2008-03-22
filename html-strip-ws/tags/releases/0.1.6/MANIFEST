@@ -1,0 +1,13 @@
+Build.PL
+Changes
+COPYING
+examples/strip-ws.pl
+lib/HTML/Strip/Whitespace.pm
+Makefile.PL
+MANIFEST
+META.yml                                 Module meta-data (added by MakeMaker)
+README
+t/HTML-Strip-Whitespace.t
+TODO
+t/pod-coverage.t
+t/pod.t
