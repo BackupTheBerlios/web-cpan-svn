@@ -1,0 +1,19 @@
+/*- Marinelli styles for IE6 v0.1 - Drupal6x - 11/03/08
+author:singalkuppe: leoni.matteo[at]gmail.com - www.signalkuppe.com
+ */
+
+#utilities form{bottom:7px;}
+#utilities input.form-submit{padding:0px;}	
+#utilities input.form-text {padding:1px 1px 3px 1px;}
+
+div.admin .left {
+  _margin-left:0.2em;
+}
+
+.item-list .pager li{
+margin:0px 1px 0 1px;
+}
+
+.item-list .pager li.pager-current{
+padding:2px 2px 3px 4px;
+}
