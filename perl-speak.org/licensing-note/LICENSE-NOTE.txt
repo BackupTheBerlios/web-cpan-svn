@@ -1,0 +1,7 @@
+Most of the web-cpan repository is either MIT X11, or if derived
+from original code, usually GPL+Artistic with the rights disclaimed.
+
+However, Drupal is distributed under the GPL. The LocalSettings.php file
+will probably be under MIT X11 too, and so will the per-site customisations.
+
+So this is an exception.
