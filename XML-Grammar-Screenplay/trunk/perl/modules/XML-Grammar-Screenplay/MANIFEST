@@ -1,6 +1,7 @@
 Build.PL
 Changes
 extradata/screenplay-xml.dtd
+extradata/screenplay-xml.rng
 extradata/screenplay-xml-to-docbook.xslt
 extradata/screenplay-xml-to-html.xslt
 inc/Test/Run/Builder.pm
