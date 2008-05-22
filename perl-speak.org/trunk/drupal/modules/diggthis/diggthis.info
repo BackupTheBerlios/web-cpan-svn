@@ -1,0 +1,10 @@
+; $Id: diggthis.info,v 1.3 2008/02/17 16:19:16 yaph Exp $
+name = Diggthis
+description = Display a Digg this button in nodes of enabled types. See http://digg.com/tools/integrate
+core = 6.x
+; Information added by drupal.org packaging script on 2008-02-17
+version = "6.x-1.0"
+core = "6.x"
+project = "diggthis"
+datestamp = "1203271805"
+
