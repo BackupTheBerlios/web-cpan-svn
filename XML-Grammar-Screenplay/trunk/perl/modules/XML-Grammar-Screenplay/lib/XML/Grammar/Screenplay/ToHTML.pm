@@ -106,7 +106,7 @@ sub translate_to_html
 
     eval
     {
-        $ret_code = $rngschema->validate($source_dom);
+        $ret_code = $self->_rng()->validate($source_dom);
     };
 
     if (defined($ret_code) && ($ret_code == 0))
@@ -115,7 +115,7 @@ sub translate_to_html
     }
     else
     {
-        confess "RelaxNG validation failed [\$code == $code ; $@]";
+        confess "RelaxNG validation failed [\$ret_code == $ret_code ; $@]";
     }
 
     my $stylesheet = $self->_stylesheet();

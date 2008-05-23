@@ -22,6 +22,7 @@ MANIFEST
 META.yml # Will be created by "make dist"
 README
 t/00-load.t
+t/app-to-html.t
 t/boilerplate.t
 t/data/docbook/with-internal-description.docbook.xml
 t/data/proto-text/dialogue-with-several-paragraphs.txt
@@ -50,6 +51,7 @@ t/data/xml/with-internal-description.xml
 t/data/xml/with-multi-line-comments.xml
 t/data/xml/with-multi-para-desc.xml
 t/data/xml/with-tags-inside-paragraphs.xml
+t/lib/run-test-1/XML/Grammar/Screenplay/ConfigData.pm
 t/pod-coverage.t
 t/pod.t
 t/proto-text-to-xml.t
