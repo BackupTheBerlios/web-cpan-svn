@@ -525,6 +525,12 @@ sub _parse_non_tag_text_unit
                 {
                     return $self->_parse_speech_unit();
                 }
+                else
+                {
+                    Carp::confess ("Line " . $self->_curr_line_idx() . 
+                        " is not a description or a saying."
+                    );
+                }
             }
         );
     }
