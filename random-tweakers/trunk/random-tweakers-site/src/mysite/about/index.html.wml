@@ -59,6 +59,8 @@ the software, we cannot effectively make such a software.
 
 <h2 id="some-positives">Some Positive Values that Make Us Happy</h2>
 
+<h3 id="freedom">Freedom</h3>
+
 <p>
 In order to be happy, most humans want <b>freedom</b>: from the freedom
 to choose their friends and loved ones, to the freedom to do what they like
@@ -80,4 +82,138 @@ So, another things we say is that:
 </p>
 </blockquote>
 
+<h3 id="ethics">Ethics</h3>
 
+<p>
+Freedom is not enough. Even the most free of men still interact with other
+people, still care about others and has to deal with them. What is the best
+strategy to do that? The best strategy to that, has been terms "Ethics"
+or "Morality". There is nothing mystical or religous about it. Here's a good
+summary of Ethics as I see it:
+</p>
+
+<blockquote id="first-do-not-harm">
+<p>
+<b>First, do not harm.</b>
+</p>
+</blockquote>
+
+<p>
+Indeed, it doesn't matter how much you produce, as long as you don't harm
+yourself and others regularly and intetionally - you're doing fine. It doesn't
+matter if you're a factory worker or a genius - you're still a good person.
+</p>
+
+<h3 id="honesty">Honesty and Openness</h3>
+
+<p>
+What is the best way to communicate, though? There are several famous
+maxims about it:
+</p>
+
+<blockquote id="honesty-aphorisms">
+<ol>
+<li>
+Honesty is the Best Policy.
+</li>
+<li>
+The Truth Shall Set You Free.
+</li>
+<li>
+I Know that I Do Not Know
+</li>
+<li>
+A wiseman can learn from a fool much more than a fool can ever learn from a 
+wiseman.
+</li>
+<li>
+Doubt is not the anti-thesis of faith. It is an element of faith.
+</li>
+</ol>
+</blockquote>
+
+<p>
+A person who is unable to tell others about what he thinks, how he feels, what 
+bothers him, or tell them how he thinks they should improve, will feel
+resentful, trapped, unhappy and even <a href="http://en.wikipedia.org/wiki/Clinical_depression">clinically 
+depressed</a>. That's why it is important to be honest and sincere: tell people
+how you feel, tell them what you think abou them (both positive and negative), 
+don't have dogma and accept nothing as the "absolute truth". This is the path
+to self-esteem, and enlightenment.
+</p>
+
+<p>
+(Obviously, we don't mean one should not be tactful, or keep a lot of his
+private thoughts or desires to himself, or be unnecessarily rude or completely
+unfriendly. But you should still be honest and sincere.)
+</p>
+
+<h3 id="growth">Growth</h3>
+
+<p>
+Obviously even when you're perfectly happy, and ethical and honest, you'll
+likely find something mising. An ambitious human often needs growth. He wishes
+to continuously take greater and greater challenges, become happier as time
+goes by, make new friends, learn more and more, acquire new skills, become 
+wiser and/or more intelligent, etc.
+</p>
+
+<p>
+The opposite of <a href="http://shlomif.livejournal.com/44643.html">growth is 
+death</a>. All people with a living psyche, are growing, even if they appear 
+to not achieve too much "greatness". We seek people with a living growth.
+</p>
+
+<h2 id="what-to-do-with-software">So what does it have to do with Software?</h2>
+
+<p>
+So what does it have to do with software. Several things in fact:
+</p>
+
+<ol>
+
+<li id="foss">
+
+<p>
+Freedom implies software freedom. And honesty and openness implies its
+openness. We are fanatical on both.
+</p>
+
+</li>
+
+<li>
+
+<p>
+In order to make a person happy, a
+software should be
+<a href="http://www.shlomifish.org/philosophy/computers/high-quality-software/">good 
+and high-quality</a>. There are many elements a software vendor can get wrong
+in a software, and we intend to eventually eliminate most or even all of them.
+</p>
+
+<p>
+We believe that openness and freedom, while not absolutely necessary, greatly 
+facilitate making a software high-quality, and are things we can't do without.
+</p>
+
+</li>
+
+<li id="people-are-smart">
+
+<p>
+We believe that <b>people are smart and capable</b>. They can change. They
+can learn new skills. They can grow. So we're not trying to dumb down our 
+software. It doesn't mean we don't believe in making it "user-friendly"
+and "intuitive" - i.e: having good usability. On the contrary, such things
+will make it easier and less frustrating for both experts and ordinary
+users to use.
+</p>
+
+<p>
+However, we still think that people want us and our software to treat them
+as intelligent people.
+</p>
+
+</li>
+
+</ol>
