@@ -16,7 +16,8 @@ of world-domination. Our motto is:
 
 <p>
 As such our plans are to work on innovative open-source software, and be
-successful by providing our employees with <a href="http://www.shlomifish.org/philosophy/computers/software-management/perfect-workplace/">the
+successful by providing our employees with 
+<a href="http://www.shlomifish.org/philosophy/computers/software-management/perfect-workplace/">the
 Perfect Info-Tech Workplace</a>, where they'll create superb values.
 </p>
 
@@ -217,3 +218,58 @@ as intelligent people.
 </li>
 
 </ol>
+
+<h2 id="the-licence">So which Licence Are You Going to Use?</h2>
+
+<p>
+Until further notice, our policy would be to be fanatic to release our
+software under the free-est, most open and least restrictive terms: 
+<a href="http://en.wikipedia.org/wiki/Public_domain">the Public Domain</a>. As
+far as our software is concerned, this implies <a href="http://en.wikipedia.org/wiki/MIT_License">MIT X11 Licence</a> (from now on also the <b>X11L</b>). 
+</p>
+
+<p>
+<b>Why the X11 Licence and not the GPL?</b> That's because we are firm 
+believers in the 1st Ferengi Rule of Acquisition:
+</p>
+
+<blockquote id="first-ferengi-rule">
+<p>
+<b>Greed is Eternal</b>
+</p>
+</blockquote>
+
+<p>
+We are greedy. But we're not greedy for money alone, and feel that our time
+is much more important. Furthermore we greedily want everyone in the world
+to use our software. 
+</p>
+
+<p>
+If our software was GPLed, then people will have to ask us: "Can we link against
+your software?" or "Can we change its licence?". To say nothing of using
+our code in many situations where there are more legal and political hassles.
+We don't want that! If you want to use our code in any way you want, don't 
+ask us - <b>Just Do It</b>!
+</p>
+
+<!--
+TODO:
+- Add about the name.
+    - RHRH.
+    - 
+- Add a note about Qt/BerkeleyDB.
+- Google
+    - Do not intend to get bought by them.
+    - Want to be the next big thing.
+- Ideas:
+    - Qantor.
+    - libeatline.
+    - A better Webmail
+    - Winapt.
+    - Fork of the GIMP community.
+    - Supporting other FOSS.
+    - Note about re-inventing wheels, NIH, etc.
+
+-->
+
