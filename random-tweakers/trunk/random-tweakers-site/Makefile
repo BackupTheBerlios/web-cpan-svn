@@ -35,4 +35,4 @@ $(RSS_FEED): gen-feeds.pl lib/MyManageNews.pm
 
 upload: all
 	cd $(ALL_DEST_BASE)/mysite && \
-	$(RSYNC) -r * eon:public_html/random-tweakers/
+	$(RSYNC) -a * eon:public_html/random-tweakers/

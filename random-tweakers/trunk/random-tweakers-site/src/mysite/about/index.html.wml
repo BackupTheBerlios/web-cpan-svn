@@ -1,0 +1,83 @@
+#include "template.wml"
+
+<latemp_subject "About Random Tweakers" />
+<latemp_version_control_id "$Id$" />
+
+<h2 id="what-is">Who are the Random Tweakers?</h2>
+
+<p>
+Random Tweakers are a new open-source startup, that plans for nothing short
+of world-domination. Our motto is:
+</p>
+
+<blockquote id="motto">
+<b>Random Tweakers - Making the Wheel Rounder</b>
+</blockquote>
+
+<p>
+As such our plans are to work on innovative open-source software, and be
+successful by providing our employees with <a href="http://www.shlomifish.org/philosophy/computers/software-management/perfect-workplace/">the
+Perfect Info-Tech Workplace</a>, where they'll create superb values.
+</p>
+
+<p>
+The rest of this page will explain our philosophy and what we plan to do next.
+</p>
+
+<h2 id="back-to-basics">Back to Basics</h2>
+
+<div style="float:right;">
+<a href="http://en.wikipedia.org/wiki/Image:Aristoteles_Louvre.jpg"><img 
+    src="aristotle-wikipedia-louvre-small.jpg" alt="Sculpture of Aristotle"
+    title="Portrait of Aristotle from the Louvre. Picture taken from the wikipedia" /></a>
+</div>
+
+<p>
+So when we discuss philosophy - where do we start? Obviously with what we
+as human beings want. According to Artistotle in <a 
+href="http://en.wikipedia.org/wiki/Nicomachean_Ethics">Nicomachean 
+Ethics</a>, there are two primary things humans want:
+</p>
+
+<ol>
+<li>
+Life.
+</li>
+<li>
+Happiness. (Or Pleasure)
+</li>
+</ol>
+
+<p>
+What we need to live is common: we need to drink, we need to eat, etc. On the
+other hand, what makes us happy varies from human to human. Different humans
+want different things. But it is our job as software developers to make sure
+that when our users interact with our software, they will be very happy. And
+it is our belief that unless we find pleasure in working and collaborating on
+the software, we cannot effectively make such a software.
+</p>
+
+<h2 id="some-positives">Some Positive Values that Make Us Happy</h2>
+
+<p>
+In order to be happy, most humans want <b>freedom</b>: from the freedom
+to choose their friends and loved ones, to the freedom to do what they like
+to do instead of what other people tell them they have to do, to the political 
+freedom from oppression, to freedom to travel and work wherever they want,
+to freedom to hold and express their own opinions. A person who's completely
+non-free will be miserable. A person who's free to do what he wants, on the
+other hand (if for example he's rich), will most likely feel very happy most
+of the time.
+</p>
+
+<p>
+So, another things we say is that:
+</p>
+
+<blockquote id="happiness-requires-freedom">
+<p>
+<b>Happiness Requires Freedom.</b>
+</p>
+</blockquote>
+
+
