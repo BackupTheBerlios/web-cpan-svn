@@ -37,6 +37,7 @@ h2
 }
 h2, h3, h4
 {
+    clear: right;
     padding-left: 0.3em;
 }
 .main p
@@ -166,4 +167,21 @@ pre
 .bless
 {
     border : none;
+}
+
+.side-img
+{
+    float: right;
+    margin: 0.5em;
+}
+
+blockquote
+{
+    border: medium #bb2 double;
+    padding: 0.2em;
+}
+
+blockquote p
+{
+    margin:0;
 }
