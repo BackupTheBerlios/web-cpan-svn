@@ -179,6 +179,7 @@ blockquote
 {
     border: medium #bb2 double;
     padding: 0.2em;
+    overflow: hidden;
 }
 
 blockquote p
