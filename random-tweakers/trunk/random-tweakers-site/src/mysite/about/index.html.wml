@@ -253,23 +253,136 @@ We don't want that! If you want to use our code in any way you want, don't
 ask us - <b>Just Do It</b>!
 </p>
 
+<p id="gpl-licensed-libs">
+Some companies distribute libraries under the GPL or a similar licence.
+Prime examples for this are 
+<a href="http://trolltech.com/products/qt/">Qt</a>
+by TrollTech (now part of Nokia), and <a 
+href="http://www.oracle.com/technology/products/berkeley-db/">Berkeley DB</a>
+by Sleepy Cat software (now part of Oracle Corp.). What they do is allow free
+software to use the library, and charge money for exempting such products
+if one does not wish to make their code open-source.
+</p>
+
+<p>
+This is a fine and respectful business model. However, it is not our cup
+of tea. We will find other ways to make money than by GPLing the product,
+and if not, we'll at least have fun working on good and usable free software.
+</p>
+
+<h2 id="ideas">So what are you going to work on?</h2>
+
+<p>
+It is our belief that <b>ideas are cheap</b>, and that people tend to have them
+at roughly the same time, and that one should not fear his ideas to be
+stolen and abused. If someone materialises an idea before us, we can always
+join him, and we're not possessive.
+</p>
+
+<p>
+So for posterity, here are some of our ideas for future projects:
+</p>
+
+<ol>
+
+<li>
+
+<p id="qantor-idea">
+<b>Qantor</b> (short for "Qantor ain't no TeX/troff - oh really!") - a
+post-modern typesetting system to provide a saner alternative to TeX and
+LaTeX (and other typesetting systems).
+</p>
+
+</li>
+
+<li id="eatline-idea">
+
+<p>
+<b>libeatline</b> - a BSDLed alternative
+to <a href="http://en.wikipedia.org/wiki/Readline">GNU Readline</a>, that
+will eventually also overcome some of its philosophical limitations.
+</p>
+
+</li>
+
+<li id="winapt-idea">
+
+<p>
+<a href="http://winapt.berlios.de/"><b>Winapt</b></a> - package management
+for Microsoft Windows.
+</p>
+
+</li>
+
+<li id="webmail-idea">
+
+<p>
+A <b>better Web-based email</b> system, because even 
+<a href="http://shlomif.livejournal.com/46955.html">GMail is not too good.</a>.
+</p>
+
+<p>
+Note that we're likely to provide paid hosting for a service of it, despite
+the fact our client will be free for other users to install, and for competing
+services to provide data. 
+
+</p>
+
+</li>
+
+<li id="gimp-idea">
+
+<p>
+Fork of the GIMP (= GNU Image Manipulation Program) <b>Community</b>. Not
+the program itself, but how it is managed, and how the developers interact
+with the users.
+</p>
+
+</li>
+
+</ol>
+
+<p>
+We don't support the "Not-Invented-Here" syndrome, or are mortally against 
+it. Re-using existing code, or implementing something yourself is a decision
+that is dependent on the circumstances. If we can use an existing code as a
+starting point, we probably will (in accordance with <a 
+href="http://www.catb.org/~esr/writings/cathedral-bazaar/">the Cathedral
+and the Bazaar</a>, but we may still end up starting from a fresh page.
+</p>
+
+<h2 id="the-name">Why the Name?</h2>
+
+<p>
+The original idea for a name was "Random Hacks' Random Hackers" or RHRH
+for short, after the <a 
+href="http://www.catb.org/~esr/faqs/hacker-howto.html">computer software 
+enthusiasts</a> (and not necessarily computer intruders) called "Hackers".
+But this was:
+</p>
+
+<ol>
+<li>Too easily confused with computer intruders.</li>
+<li>Too presumptious as a hacker or a hack is often a brilliant creator
+or creation.</li>
+</ol>
+
+<p>
+So we thought of saying "Random Tweakers" instead. Tweakers is not only
+unambigious, but it's also more self-depracating, which is cute and
+works for us.
+</p>
+
+<p>
+The reason we have the <tt>random-tweakers</tt> domain is because we fine
+concatentating English words together without separators obnoxious and
+hard to read, and we'd like to practice what we preach.
+</p>
+
 <!--
 TODO:
-- Add about the name.
-    - RHRH.
-    - 
-- Add a note about Qt/BerkeleyDB.
 - Google
     - Do not intend to get bought by them.
     - Want to be the next big thing.
-- Ideas:
-    - Qantor.
-    - libeatline.
-    - A better Webmail
-    - Winapt.
-    - Fork of the GIMP community.
-    - Supporting other FOSS.
-    - Note about re-inventing wheels, NIH, etc.
-
 -->
 
