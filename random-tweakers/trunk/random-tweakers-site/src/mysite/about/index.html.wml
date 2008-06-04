@@ -68,11 +68,11 @@ the software, we cannot effectively make such a software.
 In order to be happy, most humans want <b>freedom</b>: from the freedom
 to choose their friends and loved ones, to the freedom to do what they like
 to do instead of what other people tell them they have to do, to the political 
-freedom from oppression, to freedom to travel and work wherever they want,
-to freedom to hold and express their own opinions. A person who's completely
-non-free will be miserable. A person who's free to do what he wants, on the
-other hand (if for example he's rich), will most likely feel very happy most
-of the time.
+freedom from oppression, to the freedom to travel and work wherever they want,
+to the freedom to hold and express their own opinions. A person who's 
+completely non-free will be miserable. A person who's free to do what he
+wants, on the other hand (if for example he's rich), will most likely feel 
+very happy most of the time.
 </p>
 
 <p>
@@ -91,8 +91,8 @@ So, another things we say is that:
 Freedom is not enough. Even the most free of men still interact with other
 people, still care about others and has to deal with them. What is the best
 strategy to do that? The best strategy to that, has been terms "Ethics"
-or "Morality". There is nothing mystical or religous about it. Here's a good
-summary of Ethics as I see it:
+or "Morality". There is nothing mystical or religious about it. Here's a good
+summary of Ethics as we see it:
 </p>
 
 <blockquote id="first-do-not-harm">
@@ -140,15 +140,16 @@ A person who is unable to tell others about what he thinks, how he feels, what
 bothers him, or tell them how he thinks they should improve, will feel
 resentful, trapped, unhappy and even <a href="http://en.wikipedia.org/wiki/Clinical_depression">clinically 
 depressed</a>. That's why it is important to be honest and sincere: tell people
-how you feel, tell them what you think about them (both positive and negative), 
-don't have dogma and accept nothing as the "absolute truth". This is the path
-to self-esteem, and enlightenment.
+how you feel, tell them what you think about them (both positive and 
+negative),  don't have dogma and accept nothing as the "absolute truth". This 
+is the path to self-esteem, and enlightenment.
 </p>
 
 <p>
 (Obviously, we don't mean one should not be tactful, or keep a lot of his
-private thoughts or desires to himself, or be unnecessarily rude or completely
-unfriendly. But you should still be honest and sincere.)
+private thoughts or desires to himself or out of the reach of the public,
+or be unnecessarily rude or completely unfriendly. But one should still be
+honest and sincere.)
 </p>
 
 <h3 id="growth">Growth</h3>
@@ -167,10 +168,10 @@ death</a>. All people with a living psyche, are growing, even if they appear
 to not achieve too much "greatness". We seek people with a living growth.
 </p>
 
-<h2 id="what-to-do-with-software">So what does it have to do with Software?</h2>
+<h2 id="what-to-do-with-software">So What does it Have to do with Software?</h2>
 
 <p>
-So what does it have to do with software. Several things in fact:
+So what does it have to do with software. Several facts in fact:
 </p>
 
 <ol>
@@ -189,7 +190,7 @@ openness. We are fanatical on both.
 <p>
 In order to make a person happy, a
 software should be
-<a href="http://www.shlomifish.org/philosophy/computers/high-quality-software/">good 
+<a href="http://www.shlomifish.org/philosophy/computers/high-quality-software/">good
 and high-quality</a>. There are many elements a software vendor can get wrong
 in a software, and we intend to eventually eliminate most or even all of them.
 </p>
@@ -370,13 +371,13 @@ or creation.</li>
 </ol>
 
 <p>
-So we thought of saying "Random Tweakers" instead. Tweakers is not only
+So we thought of saying "Random Tweakers" instead. "Tweakers" is not only
 unambigious, but it's also more self-depracating, which is cute and
 works for us.
 </p>
 
 <p>
-The reason we have the <tt>random-tweakers</tt> domain is because we fine
+The reason we have the <tt>random-tweakers</tt> domain is because we find
 concatentating English words together without separators obnoxious and
 hard to read, and we'd like to practice what we preach.
 </p>
