@@ -349,6 +349,37 @@ with the users.
 
 </li>
 
+<li id="tucan">
+
+<p>
+<b>Tucan</b> - <a href="http://www.shlomifish.org/philosophy/ideas/#tucan">a
+cross-language bridge for high-level Virtual Machines</a> that will allow code
+from one language to be used by other languages.
+</p>
+
+</li>
+
+<li id="unixdoc">
+
+<p>
+<b>Unixdoc</b> - an Integrated Offline and Online Documentation Framework.
+See <a href="http://www.shlomifish.org/philosophy/ideas/unixdoc/">the original
+idea page</a>.
+</p>
+
+</li>
+
+<li id="yonathan">
+
+<p>
+<b>The Yonathan Job Board</b> - Yonathan will be a new and actually usable
+and fun job board for hiring freelancers. See
+<a href="http://svn.berlios.de/svnroot/repos/web-cpan/App-Freelancers-Board-Yonathan/trunk/docs/functional-spec/">the current documentation</a> for more
+information.
+</p>
+
+</li>
+
 </ol>
 
 <p>
