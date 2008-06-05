@@ -383,10 +383,10 @@ information.
 </ol>
 
 <p>
-We don't support the "Not-Invented-Here" syndrome, or are mortally against 
-it. Re-using existing code, or implementing something yourself is a decision
-that is dependent on the circumstances. If we can use an existing code as a
-starting point, we probably will (in accordance with <a 
+We neither subscribe to the "Not-Invented-Here" syndrome, nor are 
+mortally  against it. Re-using existing code, or implementing something
+yourself is a decision that is dependent on the circumstances. If we can use
+an existing code as a starting point, we probably will (in accordance with <a 
 href="http://www.catb.org/~esr/writings/cathedral-bazaar/">the Cathedral
 and the Bazaar</a>, but we may still end up starting from a fresh page.
 </p>
