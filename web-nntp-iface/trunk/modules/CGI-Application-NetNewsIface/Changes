@@ -1,8 +1,10 @@
 Revision history for CGI-Application-NetNewsIface
 
+0.02         Wed May 28 17:05:56 IDT 2008
     - Added the init_cache__mysql() function to initialize a MySQL cache.
       A MySQL-based cache works fine from what I tried.
     - Added a meaningful main page and an about-this-app page.
+    - Added XML-RSS to the deps.
       
 0.0101       Sat May 13 17:52:16 IDT 2006
     - Bumped version to 0.0101
