@@ -1,0 +1,95 @@
+The cache will contain the following tables:
+
+groups:
+
+    name = STRING 
+        - uniquely indexed.
+    idx = INTEGER (unique - incremented for every group)
+        - changed to primary key due to the limitations of
+        SQLite and possibly other database connections.
+    last_art = INTEGER (last article updated in the cache)
+
+articles:
+
+    group_idx - INTEGER
+    article_idx - INTEGER
+        - Primary Key on (group_idx,article_idx)
+    msg_id - STRING
+        - Unique index on (group_idx,msg_id)
+            - needs to be non-unique due to SQLite constraints
+            and the fact group_idx participates in another unique index. 
+    parent - INTEGER
+        - Non-unique Index on (group_idx,parent)
+    subject - STRING
+    from - STRING
+    date - TIMESTAMP
+
+Interface:
+----------
+
+A frontend (base class) with multiple backends (sub-classes). The backend 
+handles storing and retrieving data on the disk, and the frontend uses what
+the backend supplies to do more high-level operations.
+
+The interface to the class would be as follows:
+-----------------------------------------------
+
+my $nntp_cache = 
+    CGI::Application::NetNewsIface::Cache::Foo->new(
+        {
+            'nntp' => $nntp,
+        }
+    );
+
+# Makes the group "perl.qa" the active group.
+
+$nntp_cache->select("perl.qa");
+
+# Updates the active group, by inserting the most recent articles to
+# the cache.
+# (It's being run internally by select.)
+$nntp_cache->update_group();
+
+# Gets the thread for the message indexed $index.
+my ($thread, $coords) = $nntp_cache->get_thread($index);
+# See below for a description of $thread and $coords.
+
+# Gets all the threads for the messages in the range.
+([@threads]) = $nntp_cache->get_threads_for_range($start, $end);
+# (Useful for displaying in the group display)
+
+# Retrieves the index that corresponds to the ID:
+my $index = $nntp_cache->get_index_of_id($msg_id);
+
+--------------------
+
+$thread looks like this:
+
+{
+    'idx' => $index,
+    'subject' => "Problem with Test::More",
+    'date' => $date,
+    'from' => "Shlomi Fish <shlomif@iglu.org.il>",
+    'subs' =>
+    [
+        {
+            'idx' => $index,
+            .
+            'subs' =>
+            [
+                .
+                .
+                .
+            ],
+        }
+        .
+        .
+        .
+    ],
+}
+
+$coords is the coordinates leading to the current article within the thread.
+To access the current article from the coords use:
+
+$thread->{'subs'}->[$coords[0]]->{'subs'}->[$coords[1]]->...
+
