@@ -5,48 +5,25 @@ use strict;
 
 =head1 NAME
 
-Text::Qantor::Parser - The great new Text::Qantor::Parser!
+Text::Qantor::Parser - The Qantor parser.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.0.1
 
 =cut
 
-our $VERSION = '0.01';
-
+use version; our $VERSION = qv('0.0.1');
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Text::Qantor::Parser;
 
-    my $foo = Text::Qantor::Parser->new();
-    ...
+    my $parser = Text::Qantor::Parser->new();
 
-=head1 EXPORT
+=head1 DESCRIPTIONS
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+TODO : B<FILL IN> .
 
 =head1 AUTHOR
 
@@ -57,8 +34,6 @@ Shlomi Fish, C<< <shlomif at cpan.org> >>
 Please report any bugs or feature requests to C<bug-text-qantor-parser at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Text-Qantor>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
 
 
 =head1 SUPPORT
@@ -99,7 +74,6 @@ L<http://search.cpan.org/dist/Text-Qantor>
 Copyright 2008 Shlomi Fish, all rights reserved.
 
 This program is released under the following license: mit
-
 
 =cut
 

@@ -9,6 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Text/Qantor.pm',
     build_requires => {
         'Test::More' => 0,
+        'version' => 0,
     },
     add_to_cleanup      => [ 'Text-Qantor-*' ],
     create_makefile_pl => 'traditional',

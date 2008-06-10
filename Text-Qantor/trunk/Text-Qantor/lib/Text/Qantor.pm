@@ -5,48 +5,28 @@ use strict;
 
 =head1 NAME
 
-Text::Qantor - The great new Text::Qantor!
+Text::Qantor - a post-modern Typesetting System.
 
 =head1 VERSION
 
-Version 0.01
+Version v0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+use version; our $VERSION = qv('0.0.1');
 
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Text::Qantor;
 
-    my $foo = Text::Qantor->new();
-    ...
+    my $qantor = Text::Qantor->new();
+    
+=head1 DESCRIPTION
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+B<FILL IN>
 
 =head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -93,13 +73,11 @@ L<http://search.cpan.org/dist/Text-Qantor>
 
 =head1 ACKNOWLEDGEMENTS
 
-
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2008 Shlomi Fish, all rights reserved.
 
 This program is released under the following license: mit
-
 
 =cut
 
