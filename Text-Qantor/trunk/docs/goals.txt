@@ -1,0 +1,27 @@
+Mint - Mint is not TeX (or Mint is not Troff)
+
+Correction: Qantor - Qantor Ain't No Tex/Troff, Oh, Really!
+
+A typesetting system.
+
+Goals:
+------
+
+1. Making all the things currently easy with TeX/LaTeX also easy.
+
+2. Good support for internationalization, Unicode and BiDi.
+
+3. Good support for Hypertext.
+
+4. Easily processable and understandable. (So qantor won't be the only thing
+that can understand Qantor).
+
+5. Good support for incorporating media, mathematical equations, etc.
+
+6. Easy to learn and master.
+
+7. Turing complete and very flexible.
+
+8. Meaningful, easy to understand errors.
+
+9. No real need for TeX->LaTeX - usable as is.

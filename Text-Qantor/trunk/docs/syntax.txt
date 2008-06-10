@@ -1,0 +1,18 @@
+Qantor Syntax Description:
+--------------------------
+
+* Macros start with a backslash (\).
+
+* Curly braces wrap units of text ({ ... }), such as macro arguments, etc.
+
+* &\w+; indicate SGML entities. (e.g: &amp; &lt; &gt; &nbsp;)
+
+* <<(\w+) ... \1 is a here-document - a non-processed (except for SGML
+entities and some backslash combinations block.
+
+* \<, \\, \&, \{, \} - literal special characters.
+
+* <hello> ... </hello> or <mytag /> - tags. They wrap text within arguments
+and can be bound to user-defined constructs.
+
+
