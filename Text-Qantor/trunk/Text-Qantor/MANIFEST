@@ -1,9 +1,12 @@
 Build.PL
 Changes
+inc/Test/Run/Builder.pm
+lib/Text/Qantor/Parser.pm
+lib/Text/Qantor.pm
 MANIFEST
 README
-lib/Text/Qantor.pm
-lib/Text/Qantor/Parser.pm
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
+Makefile.PL
+META.yml
