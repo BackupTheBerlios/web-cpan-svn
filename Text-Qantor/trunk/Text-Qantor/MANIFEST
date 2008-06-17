@@ -3,10 +3,13 @@ Changes
 inc/Test/Run/Builder.pm
 lib/Text/Qantor/Parser.pm
 lib/Text/Qantor.pm
+Makefile.PL
 MANIFEST
+META.yml
 README
 t/00-load.t
+t/01-convert-to-xsl-fo.t
+t/data/to-xsl-fo/input/three-paras.qant
+t/data/to-xsl-fo/xsl-fo/three-paras.fo
 t/pod-coverage.t
 t/pod.t
-Makefile.PL
-META.yml
