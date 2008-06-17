@@ -103,6 +103,14 @@ foreach my $input_file (@files)
                 last XML_READERS_LOOP;
             }
         }
+        elsif ($type == XML_READER_TYPE_ELEMENT())
+        {
+            if ($got_reader->name() ne $expected_reader->name())
+            {
+                diag("Got name: " . $got_reader->name(). " at " . $got_reader->lineNumber() . " ; Expected name: " . $expected_reader->name() . " at " .$expected_reader->lineNumber());
+                last XML_READERS_LOOP;
+            }
+        }
         # Move to the next element.
         $next_elem->();
     }
