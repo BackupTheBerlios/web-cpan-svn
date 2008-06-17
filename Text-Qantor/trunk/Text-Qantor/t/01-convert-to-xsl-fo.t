@@ -5,8 +5,11 @@ use warnings;
 
 use Test::More tests => 1;
 
+use lib "./t/lib";
+
+use Test::XML::Ordered qw(is_xml_ordered);
+
 use IO::String;
-use XML::LibXML::Reader;
 
 use Text::Qantor;
 
@@ -64,56 +67,10 @@ foreach my $input_file (@files)
     close($got_output_fh);
 
     # Now let's compare the XMLs.
-    
-    my $got_reader = XML::LibXML::Reader->new(string => $got_buffer);
-    my $expected_reader = XML::LibXML::Reader->new(location => $expected_file);
-
-    my $next_elem = sub {
-        $got_reader->read();
-        $expected_reader->read();
-    };
-
-    $next_elem->();
-
-    my $all_ok = 1;
-    XML_READERS_LOOP:
-    while ($got_reader->depth() && $expected_reader->depth())
-    {
-        my $type = $got_reader->nodeType();
-        if ($type ne $expected_reader->nodeType())
-        {
-            $all_ok = 0;
-            diag("Got: " . $got_reader->nodeType(). " at " . $got_reader->lineNumber() . " ; Expected: " . $expected_reader->nodeType() . " at " .$expected_reader->lineNumber());
-            last XML_READERS_LOOP;
-        }
-        elsif ($type == XML_READER_TYPE_TEXT())
-        {
-            my $got_text = $got_reader->value();
-            my $expected_text = $expected_reader->value();
-
-            foreach my $t ($got_text, $expected_text)
-            {
-                $t =~ s{\A\s+}{}ms;
-                $t =~ s{\s+\z}{}ms;
-                $t =~ s{\s+}{ }ms;
-            }
-            if ($got_text ne $expected_text)
-            {
-                diag ("Texts differ: Got[" . $got_reader->lineNumber(). "] Expected [". $expected_reader->lineNumber(). "]");
-                last XML_READERS_LOOP;
-            }
-        }
-        elsif ($type == XML_READER_TYPE_ELEMENT())
-        {
-            if ($got_reader->name() ne $expected_reader->name())
-            {
-                diag("Got name: " . $got_reader->name(). " at " . $got_reader->lineNumber() . " ; Expected name: " . $expected_reader->name() . " at " .$expected_reader->lineNumber());
-                last XML_READERS_LOOP;
-            }
-        }
-        # Move to the next element.
-        $next_elem->();
-    }
     # TEST
-    ok ($all_ok, "XML comparison was OK.");
+    is_xml_ordered(
+        [ string => $got_buffer ],
+        [ location => $expected_file ],
+        "'$input_file' generated good output"
+    );
 }
