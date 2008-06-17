@@ -65,13 +65,15 @@ foreach my $input_file (@files)
 
     # Now let's compare the XMLs.
     
-    my $got_reader = XML::LibXML::Reader->new(string => $got_output_fh);
+    my $got_reader = XML::LibXML::Reader->new(string => $got_buffer);
     my $expected_reader = XML::LibXML::Reader->new(location => $expected_file);
 
     my $next_elem = sub {
         $got_reader->read();
         $expected_reader->read();
     };
+
+    $next_elem->();
 
     my $all_ok = 1;
     XML_READERS_LOOP:
