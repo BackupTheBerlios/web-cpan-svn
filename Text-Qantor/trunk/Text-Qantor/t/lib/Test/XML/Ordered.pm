@@ -46,6 +46,43 @@ sub _init
 
     $self->{diag_message} = $args->{diag_message};
 
+    $self->{got_end} = 0;
+    $self->{expected_end} = 0;
+
+    return;
+}
+
+sub _got_end
+{
+    return shift->{got_end};
+}
+
+sub _expected_end
+{
+    return shift->{expected_end};
+}
+
+sub _read_got
+{
+    my $self = shift;
+
+    if ($self->_got->read() <= 0)
+    {
+        $self->{got_end} = 1;
+    }
+
+    return;
+}
+
+sub _read_expected
+{
+    my $self = shift;
+
+    if ($self->_expected->read() <= 0)
+    {
+        $self->{expected_end} = 1;
+    }
+
     return;
 }
 
@@ -53,8 +90,8 @@ sub _next_elem
 {
     my $self = shift;
 
-    $self->_got->read();
-    $self->_expected->read();
+    $self->_read_got();
+    $self->_read_expected();
 
     return;
 }
@@ -77,10 +114,23 @@ sub _compare_loop
         }
     };
 
-    while ($self->_got->depth() && $self->_expected->depth())
+    NODE_LOOP:
+    while ((!$self->_got_end()) && (!$self->_expected_end()))
     {
         my $type = $self->_got->nodeType();
-        if ($type ne $self->_expected->nodeType())
+        my $exp_type = $self->_expected->nodeType();
+
+        if ($type == XML_READER_TYPE_SIGNIFICANT_WHITESPACE())
+        {
+            $self->_read_got();
+            redo NODE_LOOP;
+        }
+        elsif ($exp_type == XML_READER_TYPE_SIGNIFICANT_WHITESPACE())
+        {
+            $self->_read_expected();
+            redo NODE_LOOP;
+        }
+        elsif ($type != $exp_type)
         {
             return $calc_prob->({param => "nodeType"});
         }
@@ -95,7 +145,10 @@ sub _compare_loop
                 $t =~ s{\s+\z}{}ms;
                 $t =~ s{\s+}{ }ms;
             }
-            return $calc_prob->({param => "text"});
+            if ($got_text ne $expected_text)
+            {
+                return $calc_prob->({param => "text"});
+            }
         }
         elsif ($type == XML_READER_TYPE_ELEMENT())
         {
@@ -120,7 +173,11 @@ sub _get_diag_message
     if ($status_struct->{param} eq "nodeType")
     {
         return 
-            "Got: " . $self->_got->nodeType(). " at " . $self->_got->lineNumber() . " ; Expected: " . $self->_expected->nodeType() . " at " .$self->_expected->lineNumber();
+            "Different Node Type!\n" 
+            . "Got: " . $self->_got->nodeType() . " at line " . $self->_got->lineNumber()
+            . "\n"
+            . "Expected: " . $self->_expected->nodeType() . " at line " . $self->_expected->lineNumber()
+            ;
     }
     elsif ($status_struct->{param} eq "text")
     {

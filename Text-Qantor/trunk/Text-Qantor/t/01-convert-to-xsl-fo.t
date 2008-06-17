@@ -54,8 +54,8 @@ foreach my $input_file (@files)
 
     open my $input_file_fh, "<", $input_file;
 
-    my $got_buffer = "";
-    my $got_output_fh = IO::String->new($got_buffer);
+    my $got_file = "t/data/to-xsl-fo/output-xsl-fo/$base.fo";
+    open my $got_output_fh, ">", $got_file;
 
     $qantor->convert_input_to_xsl_fo(
         {
@@ -70,7 +70,7 @@ foreach my $input_file (@files)
     # Now let's compare the XMLs.
     # TEST*$num_files
     is_xml_ordered(
-        [ string => $got_buffer ],
+        [ location => $got_file ],
         [ location => $expected_file ],
         "'$input_file' generated good output"
     );

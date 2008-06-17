@@ -96,21 +96,36 @@ sub convert_input_to_xsl_fo
     $writer->startTag([$fo_ns, "page-sequence"], "master-reference" => "A4");
     $writer->startTag([$fo_ns, "flow"], "flow-name" => "xsl-region-body");
 
-    foreach my $para (
-        "First paragraph - foo is better.",
-        "Second paragraph - bar is worse.",
-        "Third paragraph - quux for the win!",
-    )
+    my $para_text = "";
+
+    my $write_para = sub {
+        if (length($para_text))
+        {
+            $writer->startTag([$fo_ns, "block"]);
+
+            $para_text =~ s{\n+\z}{}ms;
+
+            $writer->characters($para_text);
+
+            $writer->endTag();
+                $para_text = "";
+        }        
+    };
+    while (my $line = <$in_fh>)
     {
-        $writer->startTag([$fo_ns, "block"]);
-
-        $writer->characters($para);
-
-        $writer->endTag();
+        if ($line eq "\n")
+        {
+            $write_para->();
+        }
+        else
+        {
+            $para_text .= $line;
+        }
     }
+    $write_para->();
 
-    $writer->endTag();
-    $writer->endTag();
+    $writer->endTag(); # flow
+    $writer->endTag(); # page-sequence
 
     $writer->endTag(); # End the root element.
 
