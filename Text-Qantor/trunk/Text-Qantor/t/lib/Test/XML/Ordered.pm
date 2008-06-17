@@ -156,7 +156,7 @@ sub compare
         diag($self->_get_diag_message($status_struct));
     }
 
-    return ok($verdict, "XML comparison was OK.");
+    return ok($verdict, $self->{diag_message});
 }
 
 sub is_xml_ordered

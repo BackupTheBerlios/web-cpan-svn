@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use lib "./t/lib";
 
@@ -13,10 +13,12 @@ use IO::String;
 
 use Text::Qantor;
 
+# TEST:$num_files=2
 my @files =
 (
     qw(
         t/data/to-xsl-fo/input/three-paras.qant
+        t/data/to-xsl-fo/input/several-paras.qant
     )
 );
 
@@ -35,7 +37,6 @@ sub read_file
     return $contents;
 }
 
-# TEST:$num_files=1
 
 
 foreach my $input_file (@files)
@@ -67,7 +68,7 @@ foreach my $input_file (@files)
     close($got_output_fh);
 
     # Now let's compare the XMLs.
-    # TEST
+    # TEST*$num_files
     is_xml_ordered(
         [ string => $got_buffer ],
         [ location => $expected_file ],

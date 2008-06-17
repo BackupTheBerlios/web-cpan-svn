@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<fo:root xmlns:fo="http://www.w3.org/1999/XSL/Format">
+<fo:layout-master-set>
+<fo:simple-page-master master-name="A4">
+<fo:region-body />
+</fo:simple-page-master>
+</fo:layout-master-set>
+<fo:page-sequence master-reference="A4">
+<fo:flow flow-name="xsl-region-body">
+<fo:block>From the Human Hacking Field Guide:</fo:block>
+<fo:block>I followed him for a few hallways and then entered with him into a computer
+lab. There he walked to some figure (looked like a girl) with purple (!) hair.
+</fo:block>
+<fo:block>"Hi!" he said.</fo:block>
+<fo:block>"Hiiiii..." I heard an enthusiastic female voice. "Whatcha doing here?"</fo:block>
+<fo:block>"Jenn, please come here. Jenn I'd like you to meet Eve Siegel, who likes to be
+called 'Erisa'. Erisa, I told you about Jenn."</fo:block>
+<fo:block>I looked at this Erisa character. Her hair was dyed purple, her face had too
+much makeup, and her facial expression was horrid. Remember that episode in
+"Sabrina - The Teenage Witch" where Sabrina transforms herself into a punk? She
+looked only a bit better than that.</fo:block>
+</fo:flow>
+</fo:page-sequence>
+</fo:root>
