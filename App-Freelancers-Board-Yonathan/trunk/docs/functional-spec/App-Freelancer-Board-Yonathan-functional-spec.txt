@@ -136,5 +136,12 @@ was a problem with his testimonial.
 
 That way, both Moses and Vashti are happy.
 
-3.b: there will be a meta-user for testimonials on the entire site.
+5. The Forum:
+-------------
+
+David has successfully killed the giant Goliath, using his sling. He has
+searched the Web for a suitable forum for giant-killing heroes and found
+www.yonathan.tld. He registers there, and posts a post which he tags
+using the tags "giants", "killing" and "heroes".
+
 
