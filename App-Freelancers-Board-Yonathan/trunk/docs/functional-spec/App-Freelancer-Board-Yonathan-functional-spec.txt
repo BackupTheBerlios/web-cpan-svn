@@ -1,5 +1,12 @@
-This a functional spec for a freelancer-finding board. It is similar to 
-getafreelancer.com / rentacoder.com except for the following key differences:
+This a functional spec for a site serving as: 
+
+1. A Freelancer-finding board.  (a la rentacoder.com / getafreelancer.com )
+
+2. A job-seeking board. (a la monster.com , http://jobs.joelonsoftware.com/ )
+
+3. A tag-based forum.
+
+The key-differences are:
 
 1. The prospective freelancers will be able to reveal their true 
 identities, and link to their web sites, portfolios, email addresses, etc.
@@ -22,7 +29,7 @@ Case studies:
 1. Posting an offer:
 --------------------
 
-Moses is the leader of Bney-Yisra'el and he's looking for someone to build
+Moses is the leader of Bney-Yisra'el and he is looking for someone to build
 a site to announce the Exodus from Egypt. He goes to www.yonathan.tld. There 
 he registers, waits for the confirmation email and gets it.
 
