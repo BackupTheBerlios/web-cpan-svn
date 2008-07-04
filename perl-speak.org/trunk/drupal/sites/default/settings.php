@@ -91,8 +91,7 @@
  *   $db_url = 'pgsql://username:password@localhost/databasename';
  */
 include("password.php");
-
-$db_url = 'pgsql://drupal1:' . $db_password . '@localhost/drupal1';
+// $db_url = 'pgsql://' . $db_database . ':' . $db_password . '@localhost/drupal1';
 $db_prefix = 'drupal1_';
 
 /**
