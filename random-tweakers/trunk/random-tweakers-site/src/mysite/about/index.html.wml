@@ -390,6 +390,30 @@ web-site.
 
 </li>
 
+<li id="spark-lisp">
+
+<p>
+<a href="http://www.shlomifish.org/open-source/projects/Park-Lisp/"><b>Spark 
+Lisp</b></a> - a modern and usable dialect of Lisp inspired by 
+<a href="http://www.paulgraham.com/arc.html">Arc</a>, Perl 5/6,
+Ruby, Smalltalk, and other languages.
+</p>
+
+</li>
+
+<li id="peque">
+
+<p>
+<b>Peque</b> - short for "Personal Questing Engine" - a vertical engine for
+<a href="http://en.wikipedia.org/wiki/Adventure_game">computerised adventure
+games</a> that will allow building more and more sophisticated games from the
+same source. Part of our vision is to also set up "PQAN - the Personal 
+Questing Archive Network" which will contain re-usable code and media for
+such games.
+</p>
+
+</li>
+
 </ol>
 
 <p>
