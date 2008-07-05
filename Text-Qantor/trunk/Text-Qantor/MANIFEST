@@ -2,6 +2,10 @@ Build.PL
 Changes
 inc/Test/Run/Builder.pm
 inc/Text/Qantor/Builder.pm
+lib/Text/Qantor/Parser/Elem/Base.pm
+lib/Text/Qantor/Parser/Elem/MacroCall.pm
+lib/Text/Qantor/Parser/Elem/ParaList.pm
+lib/Text/Qantor/Parser/Elem/Para.pm
 lib/Text/Qantor/Parser.pm
 lib/Text/Qantor.pm
 Makefile.PL

@@ -4,6 +4,7 @@ use warnings;
 use strict;
 
 use XML::Writer;
+use Text::Qantor::Parser;
 
 =head1 NAME
 
@@ -96,6 +97,14 @@ sub convert_input_to_xsl_fo
     $writer->startTag([$fo_ns, "page-sequence"], "master-reference" => "A4");
     $writer->startTag([$fo_ns, "flow"], "flow-name" => "xsl-region-body");
 
+    my $parser = Text::Qantor::Parser->new();
+
+    my $doc_tree = $parser->YYParse(yylex => 
+        sub {
+            return $self->_lexer($args)
+        },
+
+
     my $para_text = "";
 
     my $write_para = sub {
@@ -108,7 +117,7 @@ sub convert_input_to_xsl_fo
             $writer->characters($para_text);
 
             $writer->endTag();
-                $para_text = "";
+            $para_text = "";
         }        
     };
     while (my $line = <$in_fh>)
