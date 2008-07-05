@@ -4,9 +4,9 @@ use warnings;
 use File::Spec;
 use lib File::Spec->catdir(File::Spec->curdir(), "inc");
 
-use Test::Run::Builder;
+use Text::Qantor::Builder;
 
-my $builder = Test::Run::Builder->new(
+my $builder = Text::Qantor::Builder->new(
     module_name         => 'Text::Qantor',
     license             => 'mit',
     dist_author         => 'Shlomi Fish <shlomif@cpan.org>',
@@ -14,6 +14,7 @@ my $builder = Test::Run::Builder->new(
     build_requires => {
         'Test::More' => 0,
         'version' => 0,
+        'Parse::Yapp' => 0,
     },
     add_to_cleanup      => [ 'Text-Qantor-*' ],
     create_makefile_pl => 'traditional',

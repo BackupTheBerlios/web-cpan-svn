@@ -1,80 +1,187 @@
+####################################################################
+#
+#    This file was generated using Parse::Yapp version 1.05.
+#
+#        Don't edit this file, use source file instead.
+#
+#             ANY CHANGE MADE HERE WILL BE LOST !
+#
+####################################################################
 package Text::Qantor::Parser;
-
-use warnings;
+use vars qw ( @ISA );
 use strict;
 
-=head1 NAME
-
-Text::Qantor::Parser - The Qantor parser.
-
-=head1 VERSION
-
-Version 0.0.1
-
-=cut
-
-use version; our $VERSION = qv('0.0.1');
-
-=head1 SYNOPSIS
-
-    use Text::Qantor::Parser;
-
-    my $parser = Text::Qantor::Parser->new();
-
-=head1 DESCRIPTIONS
-
-TODO : B<FILL IN> .
-
-=head1 AUTHOR
-
-Shlomi Fish, C<< <shlomif at cpan.org> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-text-qantor-parser at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Text-Qantor>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+@ISA= qw ( Parse::Yapp::Driver );
+use Parse::Yapp::Driver;
 
 
-=head1 SUPPORT
 
-You can find documentation for this module with the perldoc command.
+sub new {
+        my($class)=shift;
+        ref($class)
+    and $class=ref($class);
 
-    perldoc Text::Qantor
+    my($self)=$class->SUPER::new( yyversion => '1.05',
+                                  yystates =>
+[
+	{#State 0
+		ACTIONS => {
+			"\\" => 7,
+			"[^\\]+" => 8
+		},
+		GOTOS => {
+			'para_text' => 1,
+			'macro_para_text' => 2,
+			'input' => 3,
+			'text' => 5,
+			'plain_para_text' => 4,
+			'para' => 6
+		}
+	},
+	{#State 1
+		ACTIONS => {
+			"^\s*\n" => 10
+		},
+		GOTOS => {
+			'empty_line' => 9
+		}
+	},
+	{#State 2
+		DEFAULT => -7
+	},
+	{#State 3
+		ACTIONS => {
+			'' => 11
+		}
+	},
+	{#State 4
+		DEFAULT => -6
+	},
+	{#State 5
+		ACTIONS => {
+			"\\" => 7,
+			"[^\\]+" => 8
+		},
+		DEFAULT => -1,
+		GOTOS => {
+			'para_text' => 1,
+			'macro_para_text' => 2,
+			'plain_para_text' => 4,
+			'para' => 12
+		}
+	},
+	{#State 6
+		DEFAULT => -2
+	},
+	{#State 7
+		ACTIONS => {
+			"\w+" => 14
+		},
+		GOTOS => {
+			'macro_ident' => 13
+		}
+	},
+	{#State 8
+		DEFAULT => -10
+	},
+	{#State 9
+		DEFAULT => -4
+	},
+	{#State 10
+		DEFAULT => -5
+	},
+	{#State 11
+		DEFAULT => 0
+	},
+	{#State 12
+		DEFAULT => -3
+	},
+	{#State 13
+		ACTIONS => {
+			"{" => 15
+		}
+	},
+	{#State 14
+		DEFAULT => -9
+	},
+	{#State 15
+		ACTIONS => {
+			"\\" => 7,
+			"[^\\]+" => 8
+		},
+		GOTOS => {
+			'para_text' => 16,
+			'macro_para_text' => 2,
+			'plain_para_text' => 4
+		}
+	},
+	{#State 16
+		ACTIONS => {
+			"}" => 17
+		}
+	},
+	{#State 17
+		DEFAULT => -8
+	}
+],
+                                  yyrules  =>
+[
+	[#Rule 0
+		 '$start', 2, undef
+	],
+	[#Rule 1
+		 'input', 1, undef
+	],
+	[#Rule 2
+		 'text', 1,
+sub
+#line 8 "qantor_grammar.yp"
+{ Text::Qantor::Parser::Elem::Para->new({ contents => $_[1] }); }
+	],
+	[#Rule 3
+		 'text', 2,
+sub
+#line 9 "qantor_grammar.yp"
+{ 
+        my $l = Text::Qantor::Elem::ParaList->new($_[1]);
+        $l->append($_[2]);
+        $l
+        }
+	],
+	[#Rule 4
+		 'para', 2, undef
+	],
+	[#Rule 5
+		 'empty_line', 1, undef
+	],
+	[#Rule 6
+		 'para_text', 1, undef
+	],
+	[#Rule 7
+		 'para_text', 1, undef
+	],
+	[#Rule 8
+		 'macro_para_text', 5,
+sub
+#line 24 "qantor_grammar.yp"
+{ Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2], body => $_[4] }) }
+	],
+	[#Rule 9
+		 'macro_ident', 1, undef
+	],
+	[#Rule 10
+		 'plain_para_text', 1, undef
+	]
+],
+                                  @_);
+    bless($self,$class);
+}
+
+#line 34 "qantor_grammar.yp"
 
 
-You can also look for information at:
+use Text::Qantor::Parser::Elem::Para;
+use Text::Qantor::Parser::Elem::ParaList;
+use Text::Qantor::Parser::Elem::MacroCall;
 
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Text-Qantor>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Text-Qantor>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Text-Qantor>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Text-Qantor>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Shlomi Fish, all rights reserved.
-
-This program is released under the following license: mit
-
-=cut
-
-1; # End of Text::Qantor::Parser
+1;

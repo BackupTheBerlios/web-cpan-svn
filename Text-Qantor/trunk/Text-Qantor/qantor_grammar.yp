@@ -1,0 +1,38 @@
+# qantor_grammar.yp
+# 
+# Grammar for Qantor
+%%
+
+input: text ;
+
+text: para { Text::Qantor::Parser::Elem::Para->new({ contents => $_[1] }); }
+    | text para { 
+        my $l = Text::Qantor::Elem::ParaList->new($_[1]);
+        $l->append($_[2]);
+        $l
+        }
+        ;
+
+para: para_text empty_line ;
+
+empty_line: '^\s*\n' ;
+
+para_text: plain_para_text
+    | macro_para_text
+    ;
+
+macro_para_text: '\\' macro_ident '{' para_text '}' { Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2], body => $_[4] }) } 
+    ;
+    
+macro_ident: '\w+' # TODO - create a better regex for it than just 
+                   # alphanumeric chars.
+    ;
+
+plain_para_text: '[^\\]+'
+    ;
+
+%%
+
+use Text::Qantor::Parser::Elem::Para;
+use Text::Qantor::Parser::Elem::ParaList;
+use Text::Qantor::Parser::Elem::MacroCall;
