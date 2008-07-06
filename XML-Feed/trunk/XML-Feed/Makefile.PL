@@ -10,8 +10,6 @@ license('perl');
 no_index(directory => 't');
 sign(1);
 
-include('ExtUtils::AutoInstall');
-
 requires('Class::ErrorHandler');
 requires('Feed::Find');
 requires('URI::Fetch');
@@ -26,6 +24,5 @@ build_requires('HTML::TokeParser');
 build_requires('Test::More');
 
 auto_include();
-auto_install();
 
 &WriteAll;
