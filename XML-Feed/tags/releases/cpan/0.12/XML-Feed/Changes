@@ -1,0 +1,78 @@
+# $Id: Changes 1958 2006-08-14 05:31:27Z btrott $
+
+Revision history for XML::Feed
+
+0.12  2006.08.13
+    - Generate Atom 1.0 feeds by default. Thanks to Tatsuhiko Miyagawa for
+      the patch.
+
+0.11  2006.08.07
+    - Fixed a bug in XML::Feed::Atom where entry->link and feed->link didn't
+      return the proper link element if the "rel" attribute wasn't defined for
+      a <link /> tag. Thanks to Tatsuhiko Miyagawa for the patch.
+
+0.10  2006.07.17
+    - Oops, an Atom test in 01-parse.t was previously succeeding only because
+      of a bug in XML::Atom. Now that that bug is fixed, this one is now
+      fixed, too.
+
+0.09  2006.07.10
+    - Fixed date format errors with XML::Feed::RSS. Thanks to Tatsuhiko
+      Miyagawa for the patch.
+    - Use add_module to properly add namespaces to the RSS document. Thanks
+      to Tatsuhiko Miyagawa for the patch.
+
+0.08  2006.03.03
+    - $feed->author wasn't being converted properly by Feed->convert. Thanks
+      to Tatsuhiko Miyagawa for the patch.
+    - Added eval around Entry->issued calls, to properly catch invalid
+      date formats, and just return undef, rather than dying. Thanks to
+      Tatsuhiko Miyagawa for the spot.
+    - Fixed issued/modified format issue with dates in timezones other than
+      UTC. Thanks to Tatsuhiko Miyagawa for the patch.
+
+0.07  2005.08.11
+    - Added XML::Feed::splice method, to make feed splicing easier.
+    - Fixed some unitialized value warnings.
+
+0.06  2005.08.09
+    - Added Feed->convert and Entry->convert methods to allow conversion
+      between formats.
+    - Added ability to create new Feed and Entry objects, add entries, etc.
+    - Added $PREFERRED_PARSER variable to allow usage of compatible
+      RSS parsers, like XML::RSS::LibXML. Thanks to Tatsuhiko Miyagawa
+      for the patch.
+
+0.05  2005.01.01
+    - Call URI::Fetch::URI_GONE() instead of URI::Fetch::FEED_GONE(). Thanks
+      to Richard Clamp for the patch.
+
+0.04  2004.12.31
+    - Use "loose" parsing in DateTime::Format::Mail so that we don't die
+      on invalid RFC-822 dates.
+    - XML::Feed::Entry->link on RSS feeds will now use a <guid> element
+      if a <link> element isn't found.
+    - Switched to using URI::Fetch when fetching feeds. Since we're not
+      storing or caching feeds currently, this basically just buys us
+      GZIP support, but that's something.
+
+0.03  2004.10.09
+    - Fixed bug with feed format detection: properly detect format even in
+      feeds with <!DOCTYPE> at the top. (Thanks to Alberto Quario for the
+      note.)
+    - Use Class::ErrorHandler instead of XML::Feed::ErrorHandler.
+    - Moved auto-discovery code into Feed::Find. XML::Feed->find_feeds is
+      now just a wrapper around that module.
+
+0.02  2004.07.29
+    - Changed behavior of Entry->summary to prevent it from returning the
+      full contents of the entry. Now, in an RSS feed, summary only returns
+      a value if there is both a <description> element *and* one of the
+      other elements typically used for the full content.
+    - Changed content model for Entry->content and Entry->summary.
+      They now return an XML::Feed::Content object, which knows about both
+      the actual content and the MIME type of the content.
+    - Improved feed format detection by first tag in feed.
+
+0.01  2004.06.01
+    - Initial distribution.

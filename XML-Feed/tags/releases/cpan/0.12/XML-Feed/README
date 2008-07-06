@@ -1,0 +1,34 @@
+$Id: README 1925 2006-03-03 17:37:50Z btrott $
+
+This is XML::Feed, an abstraction above the RSS and Atom syndication
+feed formats. It supports both parsing and autodiscovery of feeds.
+
+PREREQUISITES
+
+    * Class::ErrorHandler
+    * XML::RSS
+    * XML::Atom
+    * DateTime
+    * DateTime::Format::Mail
+    * DateTime::Format::W3CDTF
+    * List::Util
+    * Feed::Find
+    * URI::Fetch
+
+INSTALLATION
+
+XML::Feed installation is straightforward. If your CPAN shell
+is set up, you should just be able to do
+
+    % perl -MCPAN -e 'install XML::Feed'
+
+Download it, unpack it, then build it as per the usual:
+
+    % perl Makefile.PL
+    % make && make test
+
+Then install it:
+
+    % make install
+
+Six Apart / cpan@sixapart.com
