@@ -1,20 +1,21 @@
 # qantor_grammar.yp
 # 
 # Grammar for Qantor
+%left EOF TEXT
 %%
 
-input: text empty_line
+input: text EOF { $_[1] }
     ;
 
-text: para 
-    | text para { 
+text: raw_para
+    | text empty_line raw_para {
         my $l = $_[1];
-        $l->append($_[2]);
+        $l->append($_[3]);
         $l
         }
         ;
 
-para: para_text empty_line { 
+raw_para: para_text {
         my $p = Text::Qantor::Parser::Elem::Para->new(
                     { body => $_[1]->[0] },
                     );
@@ -23,16 +24,15 @@ para: para_text empty_line {
                 )  } 
     ;
 
-single_empty_line: EMPTY_LINE 
+single_empty_line: EMPTY_LINE { print "\nTheMappaOo\n";}
     ;
 
-empty_line: single_empty_line
-    | empty_line single_empty_line 
-    | empty_line EOF
+empty_line: single_empty_line { print "\nFOO1\n"}
+    | empty_line single_empty_line  { print "\nFOO2\n"}
     ;
 
 para_text: plain_para_text
-    | macro_para_text
+      #| macro_para_text
     ;
 
 macro_start: MACRO_START 

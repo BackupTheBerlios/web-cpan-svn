@@ -169,6 +169,7 @@ sub _lexer2
         $parser->YYData->{LINE_COUNT}++;
         if (!defined($parser->YYData->{LINE} = <$in_fh>))
         {
+            $parser->YYData->{STATE} = "EOF";
             return ['EOF', undef];
         }
         elsif ($parser->YYData->{LINE} =~ m{\A\s*\z})
@@ -192,7 +193,11 @@ sub _lexer2
     {
         my $state = $parser->YYData->{STATE};
 
-        if ($state eq "text")
+        if ($state eq "EOF")
+        {
+            return ('', undef);
+        }
+        elsif ($state eq "text")
         {
             if ($parser->YYData->{LINE} =~ m{\G\z}gmos)
             {

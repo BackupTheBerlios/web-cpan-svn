@@ -29,7 +29,10 @@ sub ACTION_yapp
     );
 
     print join(" ", @cmd), "\n";
-    return system(@cmd);
+    if (system(@cmd))
+    {
+        die "Yapp Failed";
+    }
 }
 
 sub ACTION_code
