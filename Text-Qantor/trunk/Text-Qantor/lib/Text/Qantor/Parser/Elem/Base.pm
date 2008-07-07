@@ -35,6 +35,16 @@ __PACKAGE__->mk_accessors(qw(
         name
     ));
 
+sub new
+{
+    my $class = shift;
+    my $self = {};
+    bless $self, $class;
+    
+    $self->_init(@_);
+
+    return $self;
+}
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

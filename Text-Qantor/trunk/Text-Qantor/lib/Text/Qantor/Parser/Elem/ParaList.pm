@@ -30,6 +30,35 @@ Initializes a new one.
 
 use base 'Text::Qantor::Parser::Elem::Base';
 
+__PACKAGE__->mk_accessors(qw(_list));
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    if ($args->{para})
+    {
+        $self->_list([$args->{para}]);
+    }
+
+    return;
+}
+
+=head2 $para_list->append($other_para_list)
+
+Adds a copy of the paragraphs in $other_para_list to $para_list 
+
+=cut
+
+sub append
+{
+    my ($self, $other) = @_;
+
+    push @{$self->_list()}, @{$other->_list()};
+
+    return;
+}
+
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

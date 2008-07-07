@@ -13,12 +13,32 @@ sub ACTION_yapp
 
     my $p = $self->{'properties'};
 
-    system(
+    my $output = File::Spec->catdir($p->{base_dir}, "lib", qw(Text Qantor Parser.pm));
+    my $input = "qantor_grammar.yp";
+
+    if ($self->up_to_date($input, $output))
+    {
+        return;
+    }
+
+    my @cmd = (
         "yapp",
-        "-o", File::Spec->catdir($p->{base_dir}, "lib", qw(Text Qantor Parser.pm)),
+         "-o", $output,
         "-m", "Text::Qantor::Parser",
-        "qantor_grammar.yp",
+        $input,
     );
+
+    print join(" ", @cmd), "\n";
+    return system(@cmd);
+}
+
+sub ACTION_code
+{
+    my $self = shift;
+
+    $self->depends_on('yapp');
+
+    return $self->SUPER::ACTION_code();
 }
 
 1;

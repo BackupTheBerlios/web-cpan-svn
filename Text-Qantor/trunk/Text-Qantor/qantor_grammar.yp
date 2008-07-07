@@ -3,33 +3,50 @@
 # Grammar for Qantor
 %%
 
-input: text ;
+input: text empty_line
+    ;
 
-text: para { Text::Qantor::Parser::Elem::Para->new({ body => $_[1] }); }
+text: para 
     | text para { 
-        my $l = Text::Qantor::Elem::ParaList->new($_[1]);
+        my $l = $_[1];
         $l->append($_[2]);
         $l
         }
         ;
 
-para: para_text empty_line { $_[1] } 
+para: para_text empty_line { 
+        my $p = Text::Qantor::Parser::Elem::Para->new(
+                    { body => $_[1]->[0] },
+                    );
+                return Text::Qantor::Parser::Elem::ParaList->new(
+                { para => $p,},
+                )  } 
     ;
 
-empty_line: '^\\s*\n' ;
+single_empty_line: EMPTY_LINE 
+    ;
+
+empty_line: single_empty_line
+    | empty_line single_empty_line 
+    | empty_line EOF
+    ;
 
 para_text: plain_para_text
     | macro_para_text
     ;
 
-macro_para_text: '\\' macro_ident '{' para_text '}' { Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2], body => $_[4] }) } 
+macro_start: MACRO_START 
+    ;
+
+macro_para_text : macro_start macro_ident MACRO_BODY_START para_text MACRO_BODY_END { Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2], body => $_[4] }) } 
     ;
     
-macro_ident: '\\w+' # TODO - create a better regex for it than just 
+macro_ident: MACRO_NAME # TODO - create a better regex for it than just 
                    # alphanumeric chars.
     ;
 
-plain_para_text: '[^\\\\]+'
+plain_para_text: TEXT
+    | plain_para_text TEXT { my $t1 = $_[1] ; my $t2 = $_[2] ; [$t1->[0].$t2->[0], $t1->[1]] }
     ;
 
 %%
@@ -37,3 +54,5 @@ plain_para_text: '[^\\\\]+'
 use Text::Qantor::Parser::Elem::Para;
 use Text::Qantor::Parser::Elem::ParaList;
 use Text::Qantor::Parser::Elem::MacroCall;
+
+

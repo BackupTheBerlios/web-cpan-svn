@@ -101,8 +101,14 @@ sub convert_input_to_xsl_fo
 
     my $doc_tree = $parser->YYParse(yylex => 
         sub {
-            return $self->_lexer($args)
+            return $self->_lexer($args, [@_]);
         },
+        yyerror =>
+        sub {
+            return $self->_parser_error($args, [@_]);
+        },
+        yydebug => 0x1F,
+    );
 
 
     my $para_text = "";
@@ -139,6 +145,120 @@ sub convert_input_to_xsl_fo
     $writer->endTag(); # End the root element.
 
     return;
+}
+
+sub _lexer
+{
+    my $self = shift;
+    my @ret = $self->_lexer2(@_);
+
+    use Data::Dumper;
+    print Dumper(\@ret);
+    return @ret;
+}
+
+sub _lexer2
+{
+    my ($self, $args, $yylex_params) = @_;
+
+    my $in_fh = $args->{in_fh};
+
+    my $parser = $yylex_params->[0];
+
+    my $read_line = sub {
+        $parser->YYData->{LINE_COUNT}++;
+        if (!defined($parser->YYData->{LINE} = <$in_fh>))
+        {
+            return ['EOF', undef];
+        }
+        elsif ($parser->YYData->{LINE} =~ m{\A\s*\z})
+        {
+            return ['EMPTY_LINE', [$parser->YYData->{LINE}, 
+                $parser->YYData->{LINE_COUNT}]];
+        }
+        return;
+    };
+
+    if (!defined($parser->YYData->{LINE}))
+    {
+        $parser->YYData->{STATE} = "text";
+        if (my $ret = $read_line->())
+        {
+            return @$ret
+        }
+    }
+    
+    while (1)
+    {
+        my $state = $parser->YYData->{STATE};
+
+        if ($state eq "text")
+        {
+            if ($parser->YYData->{LINE} =~ m{\G\z}gmos)
+            {
+                if (my $ret = $read_line->())
+                {
+                    return @$ret;
+                }
+            }
+            elsif ($parser->YYData->{LINE} =~ m{\G(\\)(?=\w)}gmos)
+            {
+                $parser->YYData->{STATE} = "after_macro_start";
+                return ("MACRO_START", [$1, $parser->YYData->{LINE_COUNT}]);
+            }
+            elsif ($parser->YYData->{LINE} =~ m{\G(\\\W)}gmos)
+            {
+                return ("BS_ESCAPE_SEQ", [$1, $parser->YYData->{LINE_COUNT}]);
+            }
+            elsif ($parser->YYData->{LINE} =~ m{\G(\})(?=\w)}gmos)
+            {
+                return ("MACRO_BODY_END", [$1, $parser->YYData->{LINE_COUNT}]);
+            }
+            elsif ($parser->YYData->{LINE} =~ m{\G([^\\\}]+)}gmos)
+            {
+                return ("TEXT", [$1, $parser->YYData->{LINE_COUNT}]);
+            }
+        }
+        elsif ($state eq "after_macro_start")
+        {
+            $parser->YYData->{LINE} =~ m{\G(\w+)}gmos;
+
+            my $macro_name = $1;
+
+            $parser->YYData->{STATE} = "after_macro_name";
+
+            return ("MACRO_NAME", [$macro_name, $parser->YYData->{LINE_COUNT}]);
+        }
+        elsif ($state eq "after_macro_name")
+        {
+            if ($parser->YYData->{LINE} =~ m{\G(\{)}gmos)
+            {
+                $parser->YYData->{STATE} = "text";
+                return ("MACRO_BODY_START", [$1, $parser->YYData->{LINE_COUNT}]);
+            }
+            else
+            {
+                die "No { after macro name in Line No. " . $parser->YYData->{LINE_COUNT} ;
+            }
+        }
+    }
+    die "Should not happen."
+}
+
+sub _parser_error
+{
+    my ($self, $args, $yylex_params) = @_;
+ 
+    my $parser = $yylex_params->[0];
+
+    if (exists $parser->YYData->{ERRMSG})
+    {
+        die $parser->YYData->{ERRMSG};
+    }
+
+    die "Syntax error.";
+
+    return 1;
 }
 
 =head1 AUTHOR

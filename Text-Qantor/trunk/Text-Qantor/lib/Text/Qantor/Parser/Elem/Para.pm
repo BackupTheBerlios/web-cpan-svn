@@ -30,6 +30,15 @@ Initializes a new one.
 
 use base 'Text::Qantor::Parser::Elem::Base';
 
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->body($args->{body});
+
+    return;
+}
+
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>
