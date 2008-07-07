@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use lib "./t/lib";
 
@@ -13,7 +13,7 @@ use IO::String;
 
 use Text::Qantor;
 
-# TEST:$num_files=1
+# TEST:$num_files=2
 my @files =
 (
     qw(
@@ -23,7 +23,7 @@ my @files =
     )
 );
 
-@files = (@files[0 .. 0]);
+@files = (@files[0 .. 1]);
 
 sub read_file
 {
