@@ -107,37 +107,17 @@ sub convert_input_to_xsl_fo
         sub {
             return $self->_parser_error($args, [@_]);
         },
-        yydebug => 0x1F,
+        # yydebug => 0x1F,
     );
 
-
-    my $para_text = "";
-
-    my $write_para = sub {
-        if (length($para_text))
-        {
-            $writer->startTag([$fo_ns, "block"]);
-
-            $para_text =~ s{\n+\z}{}ms;
-
-            $writer->characters($para_text);
-
-            $writer->endTag();
-            $para_text = "";
-        }        
-    };
-    while (my $line = <$in_fh>)
+    foreach my $p (@{$doc_tree->_list()})
     {
-        if ($line eq "\n")
-        {
-            $write_para->();
-        }
-        else
-        {
-            $para_text .= $line;
-        }
+        $writer->startTag([$fo_ns, "block"]);
+
+        $writer->characters($p->body());
+
+        $writer->endTag();
     }
-    $write_para->();
 
     $writer->endTag(); # flow
     $writer->endTag(); # page-sequence
@@ -151,9 +131,6 @@ sub _lexer
 {
     my $self = shift;
     my @ret = $self->_lexer2(@_);
-
-    use Data::Dumper;
-    print Dumper(\@ret);
     return @ret;
 }
 
@@ -165,12 +142,19 @@ sub _lexer2
 
     my $parser = $yylex_params->[0];
 
+    $parser->YYData->{STATE} ||= "text";
+
+    if ($parser->YYData->{STATE} eq "EOF")
+    {
+        return ('', undef);
+    }
+
     my $read_line = sub {
         $parser->YYData->{LINE_COUNT}++;
         if (!defined($parser->YYData->{LINE} = <$in_fh>))
         {
             $parser->YYData->{STATE} = "EOF";
-            return ['EOF', undef];
+            return ['', undef];
         }
         elsif ($parser->YYData->{LINE} =~ m{\A\s*\z})
         {
@@ -179,6 +163,7 @@ sub _lexer2
         }
         return;
     };
+    
 
     if (!defined($parser->YYData->{LINE}))
     {
@@ -193,11 +178,7 @@ sub _lexer2
     {
         my $state = $parser->YYData->{STATE};
 
-        if ($state eq "EOF")
-        {
-            return ('', undef);
-        }
-        elsif ($state eq "text")
+        if ($state eq "text")
         {
             if ($parser->YYData->{LINE} =~ m{\G\z}gmos)
             {
