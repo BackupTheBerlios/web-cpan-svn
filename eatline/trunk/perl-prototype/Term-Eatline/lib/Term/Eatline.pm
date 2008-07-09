@@ -16,6 +16,13 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+use base 'Class::Accessor';
+
+use Curses;
+
+__PACKAGE__->mk_accessors(qw(
+    main_win
+    ));
 
 =head1 SYNOPSIS
 
@@ -30,15 +37,32 @@ Perhaps a little code snippet.
         # Do something with $line.
     }
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 FUNCTIONS
+
+=head2 Term::Eatline->new({%args})
+
+The constructor.
 
 =cut
 
+sub new
+{
+    my ($class, $args) = @_;
+    my $self = $class->SUPER::new($args);
+
+    $self->_init($args);
+
+    return $self;
+}
+
+sub _init
+{
+    my ($self, $args) = @_;
+
+    my $main_win = Curses->new();
+
+    $self->_main_win($main_win);
+}
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>

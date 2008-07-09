@@ -1,8 +1,9 @@
 Build.PL
 Changes
+lib/Term/Eatline.pm
 MANIFEST
 README
-lib/Term/Eatline.pm
 t/00-load.t
+test-eatline.pl
 t/pod-coverage.t
 t/pod.t
