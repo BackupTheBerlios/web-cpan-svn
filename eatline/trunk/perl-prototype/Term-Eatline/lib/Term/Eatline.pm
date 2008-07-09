@@ -5,7 +5,8 @@ use strict;
 
 =head1 NAME
 
-Term::Eatline - The great new Term::Eatline!
+Term::Eatline - a Perl prototype for libeatline - the BSDLed GNU readline 
+replacement and extension.
 
 =head1 VERSION
 
@@ -18,14 +19,16 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
 Perhaps a little code snippet.
 
     use Term::Eatline;
 
-    my $foo = Term::Eatline->new();
-    ...
+    my $eatline = Term::Eatline->new();
+
+    while (my $line = $eatline->readline())
+    {
+        # Do something with $line.
+    }
 
 =head1 EXPORT
 
@@ -34,19 +37,7 @@ if you don't export anything, such as for a purely object-oriented module.
 
 =head1 FUNCTIONS
 
-=head2 function1
-
 =cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -98,8 +89,8 @@ L<http://search.cpan.org/dist/Term-Eatline>
 
 Copyright 2008 Shlomi Fish, all rights reserved.
 
-This program is released under the following license: mit
-
+This program is released under the following license: MIT X11 Licence
+( L<http://www.opensource.org/licenses/mit-license.php> )
 
 =cut
 
