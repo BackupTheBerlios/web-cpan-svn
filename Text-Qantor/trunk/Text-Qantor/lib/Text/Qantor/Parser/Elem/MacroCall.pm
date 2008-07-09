@@ -28,6 +28,16 @@ Initializes a new one.
 
 =cut
 
+sub _init
+{
+    my ($self, $args) = @_;
+
+    $self->name($args->{name});
+    $self->body($args->{body});
+
+    return;
+}
+
 use base 'Text::Qantor::Parser::Elem::Base';
 
 =head1 AUTHOR

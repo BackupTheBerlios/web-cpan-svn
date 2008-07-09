@@ -2,9 +2,10 @@
 # 
 # Grammar for Qantor
 %left TEXT
+%left MACRO_START
 %%
 
-input: text { $_[1] }
+input: raw_para { $_[1] }
     ;
 
 text: raw_para
@@ -15,13 +16,10 @@ text: raw_para
         }
         ;
 
-raw_para: para_text {
-        my $p = Text::Qantor::Parser::Elem::Para->new(
-                    { body => $_[1]->[0] },
-                    );
-                return Text::Qantor::Parser::Elem::ParaList->new(
-                { para => $p,},
-                )  } 
+raw_para: para_text_wrapper
+    | raw_para para_text_wrapper {
+        my ($self, $l, $other) = @_; $l->append($other); return $l;
+    }
     ;
 
 single_empty_line: EMPTY_LINE 
@@ -31,14 +29,21 @@ empty_line: single_empty_line
     | empty_line single_empty_line
     ;
 
-para_text: plain_para_text
-      #| macro_para_text
-    ;
+para_text_wrapper: para_text { 
+        my $p = Text::Qantor::Parser::Elem::Para->new(
+                    { body => $_[1] },
+                    );
+                return Text::Qantor::Parser::Elem::ParaList->new(
+                { para => $p,},
+                ) 
+                }
+         ;
 
-macro_start: MACRO_START 
-    ;
+para_text: macro_para_text 
+         | plain_para_text
+         ;
 
-macro_para_text : macro_start macro_ident MACRO_BODY_START para_text MACRO_BODY_END { Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2], body => $_[4] }) } 
+macro_para_text: MACRO_START MACRO_NAME MACRO_BODY_START para_text MACRO_BODY_END { Text::Qantor::Parser::Elem::MacroCall->new({ name => $_[2]->[0], body => $_[4]->[0] }) } 
     ;
     
 macro_ident: MACRO_NAME # TODO - create a better regex for it than just 

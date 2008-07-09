@@ -3,6 +3,8 @@ package Text::Qantor;
 use warnings;
 use strict;
 
+use Carp;
+
 use XML::Writer;
 use Text::Qantor::Parser;
 
@@ -107,7 +109,7 @@ sub convert_input_to_xsl_fo
         sub {
             return $self->_parser_error($args, [@_]);
         },
-        # yydebug => 0x1F,
+        yydebug => 0x1F,
     );
 
     foreach my $p (@{$doc_tree->_list()})
@@ -131,6 +133,9 @@ sub _lexer
 {
     my $self = shift;
     my @ret = $self->_lexer2(@_);
+
+    use Data::Dumper;
+    print Dumper(\@ret);
     return @ret;
 }
 
@@ -180,34 +185,34 @@ sub _lexer2
 
         if ($state eq "text")
         {
-            if ($parser->YYData->{LINE} =~ m{\G\z}gmos)
+            if ($parser->YYData->{LINE} =~ m{\G\z}cgms)
             {
                 if (my $ret = $read_line->())
                 {
                     return @$ret;
                 }
             }
-            elsif ($parser->YYData->{LINE} =~ m{\G(\\)(?=\w)}gmos)
+            elsif ($parser->YYData->{LINE} =~ m{\G(\\)(?=\w)}cgms)
             {
                 $parser->YYData->{STATE} = "after_macro_start";
                 return ("MACRO_START", [$1, $parser->YYData->{LINE_COUNT}]);
             }
-            elsif ($parser->YYData->{LINE} =~ m{\G(\\\W)}gmos)
+            elsif ($parser->YYData->{LINE} =~ m{\G(\\\W)}cgms)
             {
                 return ("BS_ESCAPE_SEQ", [$1, $parser->YYData->{LINE_COUNT}]);
             }
-            elsif ($parser->YYData->{LINE} =~ m{\G(\})(?=\w)}gmos)
+            elsif ($parser->YYData->{LINE} =~ m{\G(\})}cgms)
             {
                 return ("MACRO_BODY_END", [$1, $parser->YYData->{LINE_COUNT}]);
             }
-            elsif ($parser->YYData->{LINE} =~ m{\G([^\\\}]+)}gmos)
+            elsif ($parser->YYData->{LINE} =~ m{\G([^\\\}]+)}cgms)
             {
                 return ("TEXT", [$1, $parser->YYData->{LINE_COUNT}]);
             }
         }
         elsif ($state eq "after_macro_start")
         {
-            $parser->YYData->{LINE} =~ m{\G(\w+)}gmos;
+            $parser->YYData->{LINE} =~ m{\G(\w+)}cgms;
 
             my $macro_name = $1;
 
@@ -217,7 +222,7 @@ sub _lexer2
         }
         elsif ($state eq "after_macro_name")
         {
-            if ($parser->YYData->{LINE} =~ m{\G(\{)}gmos)
+            if ($parser->YYData->{LINE} =~ m{\G(\{)}cgms)
             {
                 $parser->YYData->{STATE} = "text";
                 return ("MACRO_BODY_START", [$1, $parser->YYData->{LINE_COUNT}]);
@@ -242,7 +247,7 @@ sub _parser_error
         die $parser->YYData->{ERRMSG};
     }
 
-    die "Syntax error.";
+    Carp::confess("Syntax error.");
 
     return 1;
 }
