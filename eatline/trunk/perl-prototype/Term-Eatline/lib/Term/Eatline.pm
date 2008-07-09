@@ -21,7 +21,7 @@ use base 'Class::Accessor';
 use Curses;
 
 __PACKAGE__->mk_accessors(qw(
-    main_win
+    _main_win
     ));
 
 =head1 SYNOPSIS
@@ -62,7 +62,45 @@ sub _init
     my $main_win = Curses->new();
 
     $self->_main_win($main_win);
+
+    $self->_main_win()->initscr();
 }
+
+sub DESTROY
+{
+    my $self = shift;
+
+    print "\n\n\n\n\n\nAre you sure?\n\n\n\n";
+
+    $self->_destroy();
+}
+
+sub _destroy
+{
+    my $self = shift;
+
+    $self->_main_win(undef);
+
+    endwin();
+}
+
+sub readline
+{
+    my $self = shift;
+
+    my $line = "";
+    while (my $char = $self->_main_win->getch())
+    {
+        $line .= $char;
+
+        if ($char eq "\n")
+        {
+            return $line;
+        }
+    }
+}
+
+
 =head1 AUTHOR
 
 Shlomi Fish, C<< <shlomif at cpan.org> >>
