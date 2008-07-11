@@ -136,7 +136,6 @@ style="border:0" src="$(ROOT)/images/paypal.gif" alt="PayPal Donate" /></a>
 
 <define-tag gen_module_html>
 <set-var module_name="%0" />
-<subject "<get-var module_name />" />
 <:{
 my $module_name = "<get-var module_name />";
 my $modules_list = MyModulesList::get_module_list();

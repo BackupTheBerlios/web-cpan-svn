@@ -1,3 +1,4 @@
 #include "../template.wml"
 
 <gen_module_html "XML-Grammar-Screenplay" />
+<subject "XML-Grammar-Screenplay" />

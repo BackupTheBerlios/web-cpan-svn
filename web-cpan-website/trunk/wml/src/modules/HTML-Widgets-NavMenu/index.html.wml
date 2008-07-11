@@ -1,4 +1,4 @@
 #include "../template.wml"
 
 <gen_module_html "HTML-Widgets-NavMenu" />
-
+<subject "HTML-Widgets-NavMenu" />

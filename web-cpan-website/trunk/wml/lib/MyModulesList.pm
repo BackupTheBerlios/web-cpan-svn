@@ -5,6 +5,27 @@ use strict;
 my @modules_list =
 (
     {
+        'perl_name' => "App-XML-DocBook-Builder",
+        'subject' => "Docmake",
+        'text' => "Docmake",
+        'title' => "Translate DocBook/XML to Other Formats using XSLT",
+        'svn_dir' => "App-XML-DocBook-Builder",
+        'desc' => <<"EOF",
+<p>
+Docmake is a command line tool to translate 
+<a href="http://en.wikipedia.org/wiki/DocBook">DocBook/XML</a> code into
+various resultnats formats such as XHTML, RTF, PDF and XSL-FO, using the
+more low-level tools. It aims to be a replacement for 
+<a href="http://cyberelk.net/tim/software/xmlto/">xmlto</a>.
+</p>
+
+<p>
+
+</p>
+EOF
+    },
+
+    {
         'perl_name' => "HTML-Strip-Whitespace",
         'text' => "Strip Whitespace",
         'title' => "Strip Unnecessary Whitespace from HTML",
