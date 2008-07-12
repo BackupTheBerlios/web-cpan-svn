@@ -28,6 +28,7 @@ my $builder = Module::Build->new(
     dist_author         => 'Shlomi Fish <shlomif@iglu.org.il>',
     requires => {
         'Class::Accessor' => 0,
+        'XML::LibXSLT' => 0,
         'XML::LibXML' => 0,
         'XML::LibXML::Common' => 0,
         'CGI' => 0,
