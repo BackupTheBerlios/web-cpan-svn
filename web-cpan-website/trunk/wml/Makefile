@@ -34,7 +34,7 @@ $(RSS_FEED): gen-feeds.pl lib/MyManageNews.pm
 upload: upload_berlios
 
 upload_berlios: all
-	(cd dest && $(RSYNC) -r * shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/)
+	(cd dest && $(RSYNC) -a * shlomif@shell.berlios.de:/home/groups/web-cpan/htdocs/)
 
 .PHONY:
 
