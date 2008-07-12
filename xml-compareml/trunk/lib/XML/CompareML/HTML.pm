@@ -6,6 +6,7 @@ use warnings;
 use Carp;
 use File::Spec;
 
+use CGI ();
 use XML::LibXSLT;
 
 use XML::CompareML::ConfigData;

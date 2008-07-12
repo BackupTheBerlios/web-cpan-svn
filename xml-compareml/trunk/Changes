@@ -1,5 +1,13 @@
 Revision history for XML::CompareML
 
+0.2.4    Sat Jul 12 15:18:20 IDT 2008
+    - Added the XSLT stylesheet under extradata/
+    - Adapted Build.PL accordingly.
+    - XML::CompareML::HTML now uses the XSLT stylesheet.
+    - Added support for the <b> (bold) element in HTML text.
+    - Added support for <a> and <b> inside <expl>
+    - Added some tests.
+
 0.2.3
     - Now testing XML::CompareML::DocBook.
     - Added t/pod-coverage.t and made sure we have full test coverage.
@@ -8,9 +16,12 @@ Revision history for XML::CompareML
     - now generating a Makefile.PL from the Build.PL.
     - added an example under examples/.
     - added more dependencies to the Build.PL
+
 0.2.2    Fri Feb 29 17:24:55 IST 2008
     - Fixed the die in the last patch to reference the name correctly.
+
 0.2.1    Fri Feb 29 17:02:49 IST 2008
     - Implemented <url>, <fullname> and <vendor> elements for the <impl>.
+
 0.2.0    Tue Apr 12 15:09:04 IDT 2005
     - First CPAN Release

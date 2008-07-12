@@ -6,7 +6,6 @@ use strict;
 
 use XML::CompareML::HTML;
 use IO::Scalar;
-use CGI ();
 
 my $no_use_buffer = "";
 my $file = IO::Scalar->new(\$no_use_buffer);

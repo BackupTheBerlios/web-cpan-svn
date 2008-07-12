@@ -37,6 +37,7 @@ my $builder = Module::Build->new(
     build_requires => {
         'Test::More' => 0,
         'IO::Scalar' => 0,
+        'Test::Differences' => 0,
     },
     create_makefile_pl => 'passthrough',
     install_path =>

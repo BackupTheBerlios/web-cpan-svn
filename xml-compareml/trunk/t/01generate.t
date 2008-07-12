@@ -54,7 +54,7 @@ use Test::Differences;
 
     $converter->process();
 
-    # Turn to if (1) if you want to generate a good version.
+    # Make it "if (1)" if you want to generate a good version.
     if (0)
     {
         open my $o, ">", "examples/scm-comparison.output.html";
