@@ -96,7 +96,7 @@ tt { color : #8A2BE2 /* The BlueViolet Color */ }
 
 <xsl:template match="expl">
  <p class="expl">
- <xsl:value-of select="."/>
+     <xsl:apply-templates />
  </p>
 </xsl:template>
 
@@ -123,6 +123,10 @@ tt { color : #8A2BE2 /* The BlueViolet Color */ }
 
 <xsl:template match="a">
     <a href="{@href}"><xsl:apply-templates/></a>
+</xsl:template>
+
+<xsl:template match="b">
+    <b><xsl:apply-templates/></b>
 </xsl:template>
 
 </xsl:stylesheet>

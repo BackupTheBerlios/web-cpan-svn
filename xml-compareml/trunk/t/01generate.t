@@ -54,6 +54,15 @@ use Test::Differences;
 
     $converter->process();
 
+    # Turn to if (1) if you want to generate a good version.
+    if (0)
+    {
+        open my $o, ">", "examples/scm-comparison.output.html";
+        binmode $o, ":utf8";
+        print {$o} $buffer;
+        close($o);
+    }
+
     open my $good_html_fh, "<", "examples/scm-comparison.output.html";
     binmode $good_html_fh, ":utf8";
     my $good_content;
