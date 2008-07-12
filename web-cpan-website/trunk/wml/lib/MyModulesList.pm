@@ -19,9 +19,12 @@ more low-level tools. It aims to be a replacement for
 <a href="http://cyberelk.net/tim/software/xmlto/">xmlto</a>.
 </p>
 
-<p>
-
-</p>
+<h2>Project Resources</h2>
+<ul>
+<li>
+<a href="http://freshmeat.net/projects/docmake/">Freshmeat Record</a>
+</li>
+</ul>
 EOF
     },
 
