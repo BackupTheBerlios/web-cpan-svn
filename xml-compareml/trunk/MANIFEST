@@ -1,7 +1,9 @@
 Build.PL
 Changes
 examples/render.pl
+examples/scm-comparison.output.html
 examples/scm-comparison.xml
+extradata/compare-ml.xslt
 lib/XML/CompareML/Base.pm
 lib/XML/CompareML/DocBook.pm
 lib/XML/CompareML/DTD/Generate.pm

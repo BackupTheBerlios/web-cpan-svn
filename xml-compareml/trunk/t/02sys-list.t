@@ -6,6 +6,7 @@ use strict;
 
 use XML::CompareML::HTML;
 use IO::Scalar;
+use CGI ();
 
 my $no_use_buffer = "";
 my $file = IO::Scalar->new(\$no_use_buffer);
@@ -13,6 +14,7 @@ my $converter =
     XML::CompareML::HTML->new(
         'input_filename' => "t/files/scm-sys-list-1.xml",
         'output_handle' => $file,
+        'data_dir' => "./extradata",
     );
 
 my $buffer = "";
