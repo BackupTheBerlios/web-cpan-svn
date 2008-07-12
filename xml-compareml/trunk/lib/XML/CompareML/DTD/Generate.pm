@@ -35,15 +35,16 @@ sub get_dtd
 <!ELEMENT contents (section)>
 <!ELEMENT section (title,expl?,compare?,section*)>
 <!ELEMENT title (#PCDATA)>
-<!ELEMENT expl (#PCDATA)>
+<!ELEMENT expl (#PCDATA|a|b)*>
 <!ELEMENT compare (s+)>
-<!ELEMENT s (#PCDATA|a)*>
-<!ELEMENT a (#PCDATA)>
+<!ELEMENT s (#PCDATA|a|b)*>
+<!ELEMENT a (#PCDATA|b)*>
 <!ELEMENT timestamp (#PCDATA)>
+<!ELEMENT b (#PCDATA)>
 <!ATTLIST section id ID #REQUIRED>
 <!ATTLIST a href CDATA #REQUIRED>
 <!ATTLIST s id CDATA #REQUIRED>
-<!ATTLIST impl id CDATA #REQUIRED>    
+<!ATTLIST impl id CDATA #REQUIRED> 
 EOF
 }
 
