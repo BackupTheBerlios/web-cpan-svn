@@ -1,7 +1,7 @@
 # $Id$
 
 use strict;
-use Test::More tests => 69;
+use Test::More tests => 70;
 use XML::Feed;
 use XML::Feed::Entry;
 use XML::Feed::Content;
@@ -147,5 +147,10 @@ for my $format (qw( Atom RSS )) {
     if ($format eq 'Atom') {
         # TEST*1
         like $feed->as_xml, qr/This is the content/;
+    }
+
+    if ($format eq 'RSS') {
+        # TEST*1
+        like $feed->as_xml, qr{xmlns:dcterms="http://purl.org/dc/terms/"};
     }
 }
