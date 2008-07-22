@@ -1,7 +1,7 @@
 # $Id$
 
 use strict;
-use Test::More tests => 70;
+use Test::More tests => 72;
 use XML::Feed;
 use XML::Feed::Entry;
 use XML::Feed::Content;
@@ -152,5 +152,19 @@ for my $format (qw( Atom RSS )) {
     if ($format eq 'RSS') {
         # TEST*1
         like $feed->as_xml, qr{xmlns:dcterms="http://purl.org/dc/terms/"};
+    }
+
+    $feed->self_link("http://tor.tld/my-feed.rss");
+
+    # TEST*$nf
+    if ($format eq "RSS")
+    {
+        like ($feed->as_xml(), qr{\Q<atom:link href="http://tor.tld/my-feed.rss" rel="self" type="application/rss+xml"/>\E},
+            "Feed contains the atom:link");
+    }
+    elsif ($format eq "Atom")
+    {
+        like ($feed->as_xml(), qr{\Q<link rel="self" href="http://tor.tld/my-feed.rss" type="application/atom+xml"/>\E},
+            "Feed contains the atom:link");
     }
 }

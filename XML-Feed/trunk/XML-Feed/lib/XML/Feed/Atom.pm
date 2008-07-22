@@ -38,6 +38,26 @@ sub link {
         $l ? $l->href : undef;
     }
 }
+
+sub self_link {
+    my $feed = shift;
+    if (@_) {
+        my $uri = shift;
+        $feed->{atom}->add_link({type => "application/atom+xml", rel => "self", href => $uri});
+        return $uri;
+    } 
+    else
+    {
+        my $l =
+            first
+            { !defined $_->rel || $_->rel eq 'self' }
+            $feed->{atom}->link;
+            ;
+
+        return $l ? $l->href : undef;
+    }
+}
+
 sub description { shift->{atom}->tagline(@_) }
 sub copyright   { shift->{atom}->copyright(@_) }
 sub language    { shift->{atom}->language(@_) }
@@ -106,6 +126,7 @@ sub link {
         $l ? $l->href : undef;
     }
 }
+
 
 sub summary {
     my $entry = shift;

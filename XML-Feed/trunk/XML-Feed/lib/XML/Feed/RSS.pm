@@ -15,6 +15,7 @@ sub init_empty {
     $feed->{rss} = $PREFERRED_PARSER->new( version => '2.0' );
     $feed->{rss}->add_module(prefix => "content", uri => 'http://purl.org/rss/1.0/modules/content/');
     $feed->{rss}->add_module(prefix => "dcterms", uri => 'http://purl.org/dc/terms/');
+    $feed->{rss}->add_module(prefix => "atom", uri => 'http://www.w3.org/2005/Atom');
     $feed;
 }
 
@@ -48,6 +49,23 @@ sub language {
         $feed->{rss}->channel('language') ||
         $feed->{rss}->channel->{dc}{language};
     }
+}
+
+sub self_link {
+    my $feed = shift;
+
+    if (@_) {
+        my $uri = shift;
+
+        $feed->{rss}->channel->{'atom'}{'link'} =
+        {
+            rel => "self",
+            href => $uri,
+            type => "application/rss+xml",
+        };
+    }
+
+    return $feed->{rss}->channel->{'atom'}{'link'};
 }
 
 sub generator {
