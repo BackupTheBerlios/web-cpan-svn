@@ -1,0 +1,269 @@
+# $Id: taxonomy_list.pot,v 1.1.2.3 2008/05/11 13:40:54 nancyw Exp $
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  taxonomy_list.module,v 1.7.2.1.2.5 2008/05/07 16:18:52 nancyw
+#  taxonomy_list.info,v 1.1.2.1.2.1 2008/03/25 18:11:12 nancyw
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2008-05-11 09:36-0400\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: taxonomy_list.module:15
+msgid "The Taxonomy List module adds pages that list all terms in a vocabulary (category). In addition, when the Taxonomy Image module is installed, these lists can include an image for each term."
+msgstr ""
+
+#: taxonomy_list.module:307
+msgid "Add to \"!name\""
+msgstr ""
+
+#: taxonomy_list.module:312
+msgid "Edit \"!name\""
+msgstr ""
+
+#: taxonomy_list.module:320
+msgid "Taxonomy list settings"
+msgstr ""
+
+#: taxonomy_list.module:343
+msgid "Used for content types"
+msgstr ""
+
+#: taxonomy_list.module:434
+msgid "make changes to this term"
+msgstr ""
+
+#: taxonomy_list.module:442
+msgid "search for term"
+msgstr ""
+
+#: taxonomy_list.module:444
+msgid "search for content using this term"
+msgstr ""
+
+#: taxonomy_list.module:454
+msgid "create feed for this term"
+msgstr ""
+
+#: taxonomy_list.module:476
+msgid "Related terms"
+msgstr ""
+
+#: taxonomy_list.module:484
+msgid "Synonyms"
+msgstr ""
+
+#: taxonomy_list.module:502
+msgid "Taxonomy List for @name"
+msgstr ""
+
+#: taxonomy_list.module:527
+msgid "<p>The taxonomy_list module enable the URL to browse into each vocabulary, using the format of :</p>"
+msgstr ""
+
+#: taxonomy_list.module:528
+msgid "<code>\"taxonomy/vocabulary/&lt;vid&gt;\"</code>"
+msgstr ""
+
+#: taxonomy_list.module:529
+msgid "<p>Together with the taxonomy_image.module, the list can be displayed with a image icon.</p>"
+msgstr ""
+
+#: taxonomy_list.module:535
+msgid "General settings"
+msgstr ""
+
+#: taxonomy_list.module:551
+msgid "Vocabulary separator"
+msgstr ""
+
+#: taxonomy_list.module:554
+msgid "This is the character that separates multiple vocabulary names in the page title."
+msgstr ""
+
+#: taxonomy_list.module:561
+msgid "List Mode"
+msgstr ""
+
+#: taxonomy_list.module:564
+msgid "Hierarchical - Subcategories as a table inside their parent's cell."
+msgstr ""
+
+#: taxonomy_list.module:565
+msgid "Flat - All terms are listed as the same level in the grid."
+msgstr ""
+
+#: taxonomy_list.module:567
+msgid "How Taxonomy List displays the list of terms."
+msgstr ""
+
+#: taxonomy_list.module:574
+msgid "Terms per row"
+msgstr ""
+
+#: taxonomy_list.module:577
+msgid "Number of terms to be displayed on the same row."
+msgstr ""
+
+#: taxonomy_list.module:583
+msgid "Link options"
+msgstr ""
+
+#: taxonomy_list.module:590
+msgid "Add \"edit term\" link"
+msgstr ""
+
+#: taxonomy_list.module:592
+msgid "Should I add an \"edit term\" link to the display for authorized users?"
+msgstr ""
+
+#: taxonomy_list.module:598
+msgid "Add \"search for term\" link"
+msgstr ""
+
+#: taxonomy_list.module:600
+msgid "Should I add an \"search for term\" link to the display for authorized users?"
+msgstr ""
+
+#: taxonomy_list.module:606
+msgid "Add RSS link"
+msgstr ""
+
+#: taxonomy_list.module:608
+msgid "Should I add an RSS link (icon) to the display?"
+msgstr ""
+
+#: taxonomy_list.module:614
+msgid "Optional information"
+msgstr ""
+
+#: taxonomy_list.module:621
+msgid "Show content types"
+msgstr ""
+
+#: taxonomy_list.module:623
+msgid "Do you want to display a list of the content types for the vocabulary?"
+msgstr ""
+
+#: taxonomy_list.module:628
+msgid "Show related terms"
+msgstr ""
+
+#: taxonomy_list.module:630
+msgid "If there are related terms, should they be listed?"
+msgstr ""
+
+#: taxonomy_list.module:635
+msgid "Show synonyms for the term"
+msgstr ""
+
+#: taxonomy_list.module:637
+msgid "If there are synonyms for the term, should they be listed?"
+msgstr ""
+
+#: taxonomy_list.module:642
+msgid "Show parents of the term"
+msgstr ""
+
+#: taxonomy_list.module:644
+msgid "If this is a child term, show the parent structure?"
+msgstr ""
+
+#: taxonomy_list.module:650
+msgid "Count content"
+msgstr ""
+
+#: taxonomy_list.module:656
+msgid "No count."
+msgstr ""
+
+#: taxonomy_list.module:657
+msgid "Count all content types."
+msgstr ""
+
+#: taxonomy_list.module:658
+msgid "Count by content type."
+msgstr ""
+
+#: taxonomy_list.module:659
+msgid "Count by type, don't show zero counts."
+msgstr ""
+
+#: taxonomy_list.module:663
+msgid "Count content types"
+msgstr ""
+
+#: taxonomy_list.module:666
+msgid "How Taxonomy List counts the content types for terms."
+msgstr ""
+
+#: taxonomy_list.module:673
+msgid "Hide terms with no content"
+msgstr ""
+
+#: taxonomy_list.module:675
+msgid "Do not show the term if there is no content using the term."
+msgstr ""
+
+#: taxonomy_list.module:682
+msgid "Taxonomy Image"
+msgstr ""
+
+#: taxonomy_list.module:683
+msgid "The taxonomy Image module is available."
+msgstr ""
+
+#: taxonomy_list.module:690
+msgid "Show taxonomy image?"
+msgstr ""
+
+#: taxonomy_list.module:692;708
+msgid "Display the taxonomy image?"
+msgstr ""
+
+#: taxonomy_list.module:696
+msgid "Note that Taxonomy Image already provides a wrapper &lt;div&gt;, which may be styled individually."
+msgstr ""
+
+#: taxonomy_list.module:700
+msgid "Term path (e.g. taxonomy/term/xxx)."
+msgstr ""
+
+#: taxonomy_list.module:701
+msgid "Full size image."
+msgstr ""
+
+#: taxonomy_list.module:706
+msgid "Show taxonomy image"
+msgstr ""
+
+#: taxonomy_list.module:23
+msgid "administer taxonomy_list"
+msgstr ""
+
+#: taxonomy_list.module:33 taxonomy_list.info:0
+msgid "Taxonomy List"
+msgstr ""
+
+#: taxonomy_list.module:34
+msgid "Customize how Taxonomy List displays terms on vocabulary pages."
+msgstr ""
+
+#: taxonomy_list.module:0
+msgid "taxonomy_list"
+msgstr ""
+
+#: taxonomy_list.info:0
+msgid "List terms under a specific vocabulary"
+msgstr ""
+
