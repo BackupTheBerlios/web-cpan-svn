@@ -26,6 +26,7 @@ t/app-to-html.t
 t/boilerplate.t
 t/data/docbook/with-internal-description.docbook.xml
 t/data/proto-text/dialogue-with-several-paragraphs.txt
+t/data/proto-text-invalid/inner-desc-inside-char-addressing.txt
 t/data/proto-text/nested-s.txt
 t/data/proto-text/scenes-with-titles.txt
 t/data/proto-text/two-nested-s.txt
@@ -54,6 +55,7 @@ t/data/xml/with-tags-inside-paragraphs.xml
 t/lib/run-test-1/XML/Grammar/Screenplay/ConfigData.pm
 t/pod-coverage.t
 t/pod.t
+t/proto-text-invalid.t
 t/proto-text-to-xml.t
 t/proto-text-to-xml-using-custom-parser.t
 t/qnd-parser-unit.t
