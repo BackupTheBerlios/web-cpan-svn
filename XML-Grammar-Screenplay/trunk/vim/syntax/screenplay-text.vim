@@ -20,7 +20,6 @@ syntax match screenplayTextDescription /^ *\[\_.\{-0,}\]/
 syntax match screenplayTextAddress /^\(+\{2,\}\|[^[:+]*\):/ contained nextgroup=screenplayTextInnerDesc
 syntax match screenplayTextInnerDesc /\[\_.\{-0,}\]/ contained nextgroup=screenplayTextInnerDesc
 
-" syntax region screenplaytextSaying start=/^$^\(\(\w\|[0-9]\|_\|-\)\+\|+\{2,}\):/ end=/^\s*$/ contains=screenplaytextAddress
 syntax region screenplayTextSaying start=/^\s*\n^\(+\{2,\}\|[^[:+]*\):/ end=/^\s*$/ contains=screenplayTextAddress,screenplayTextInnerDesc
 
 hi def link screenplayTextComment Comment
