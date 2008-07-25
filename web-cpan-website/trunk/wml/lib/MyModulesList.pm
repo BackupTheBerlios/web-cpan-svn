@@ -294,18 +294,49 @@ for transforming the XML markup into HTML.
 EOF
     },
     {
+        'perl_name' => "XML-Grammar-Fortune",
+        'text' => "XML-Grammar-Fortune",
+        'title' => "An XML Grammar for Defining Collections of Quotes",
+        'svn_dir' => "XML-Grammar-Fortune",
+        'desc' => <<"EOF",
+<p>
+XML-Grammar-Fortune allows one to collect quotes (or Unix-like fortune
+cookies) using an XML grammar, with a lot of rich meta-data, and to produce 
+XHTML and plaintext from them.
+</p>
+
+<h2>Project Resources</h2>
+
+<h3>Examples</h3>
+
+<ul>
+<li>
+<a href="http://www.shlomifish.org/humour/fortunes/">"Fortune Cookie
+Files" on Shlomi Fish's Homepage</a>
+</li>
+</ul>
+EOF
+    },
+    {
         'perl_name' => "XML-Grammar-Screenplay",
         'text' => "XML-Grammar-Screenplay",
         'title' => "An XML Grammar for Rendering Screenplays",
         'svn_dir' => "XML-Grammar-Screenplay",
         'desc' => <<"EOF",
 <p>
-XML-Grammar-Screenplay is a processor for well-formed plain text represnting
+XML-Grammar-Screenplay is a processor for well-formed plain text representing
 Screenplays. This in turn is rendered into a specialized XML format, and
 that in turn can be converted to HTML or DocBook/XML.
 </p>
 
 <h2>Project Resources</h2>
+
+<ul>
+<li>
+<a href="http://freshmeat.net/projects/screenplay-xml/">Freshmeat.net
+Record</a>
+</li>
+</ul>
 
 <h3>Examples</h3>
 
