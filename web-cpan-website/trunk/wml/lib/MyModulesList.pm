@@ -307,6 +307,12 @@ XHTML and plaintext from them.
 
 <h2>Project Resources</h2>
 
+<ul>
+<li>
+<a href="http://freshmeat.net/projects/fortune-xml/">Freshmeat Record</a>
+</li>
+</ul>
+
 <h3>Examples</h3>
 
 <ul>
@@ -315,6 +321,29 @@ XHTML and plaintext from them.
 Files" on Shlomi Fish's Homepage</a>
 </li>
 </ul>
+
+<h3>Blog Entries about XML-Grammar-Fortune</h3>
+
+<h4>By Shlomi Fish</h4>
+
+<ul>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/36668">XML-Grammar-Fortune</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/36915">"Reflections
+on Syndicating my Fortune Cookies as Atom"</a>
+</li>
+
+<li>
+<a href="http://use.perl.org/~Shlomi+Fish/journal/36997">Overcoming
+Misbheaviours in Code I Did not Write</a>
+</li>
+
+</ul>
+
 EOF
     },
     {
