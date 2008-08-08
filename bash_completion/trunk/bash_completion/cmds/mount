@@ -1,0 +1,43 @@
+# mount(8) completion. This will pull a list of possible mounts out of
+# /etc/{,v}fstab, unless the word being completed contains a ':', which
+# would indicate the specification of an NFS server. In that case, we
+# query the server for a list of all available exports and complete on
+# that instead.
+#
+_mount()
+{       local cur i sm host
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	[[ "$cur" == \\ ]] && cur="/"
+
+	for i in {,/usr}/{,s}bin/showmount; do [ -x $i ] && sm=$i && break; done
+
+	if [ -n "$sm" ] && [[ "$cur" == *:* ]]; then
+		COMPREPLY=( $( $sm -e ${cur%%:*} | sed 1d | \
+			       grep ^${cur#*:} | awk '{print $1}' ) )
+	elif [[ "$cur" == //* ]]; then
+		host=${cur#//}
+		host=${host%%/*}
+		if [ -n "$host" ]; then
+			COMPREPLY=( $( compgen -W "$( echo $( smbclient -d 0 -NL $host 2>/dev/null|
+			sed -ne '/^['"$'\t '"']*Sharename/,/^$/p' |
+			sed -ne '3,$s|^[^A-Za-z]*\([^'"$'\t '"']*\).*$|//'$host'/\1|p' ) )" -- "$cur" ) )
+		fi
+	elif [ -r /etc/vfstab ]; then
+		# Solaris
+		COMPREPLY=( $( awk '! /^[ \t]*#/ {if ($3 ~ /\//) print $3}' \
+				/etc/vfstab | grep "^$cur" ) )
+	elif [ ! -e /etc/fstab ]; then
+		# probably Cygwin
+		COMPREPLY=( $( mount | awk '! /^[ \t]*#/ {if ($3 ~ /\//) print $3}' \
+				 | grep "^$cur" ) )
+	else
+		# probably Linux
+		COMPREPLY=( $( awk '! /^[ \t]*#/ {if ($2 ~ /\//) print $2}' \
+				/etc/fstab | grep "^$cur" ) )
+	fi
+
+	return 0
+}
+complete -F _mount $default $filenames mount

@@ -1,0 +1,20 @@
+# Linux and FreeBSD pgrep(1) completion.
+#
+[ $UNAME = Linux -o $UNAME = FreeBSD ] &&
+_pgrep()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( compgen -W '$( command ps axo command | \
+		      sed -ne "1d; s/^\[\?\([^-][^] ]*\).*$/\1/p" | \
+		      sed -e "s/.*\///" )' -- $cur ) )
+
+	return 0
+}
+[ $UNAME = Linux -o $UNAME = FreeBSD ] && complete -F _pgrep pgrep
+# Linux pidof(8) completion.
+[ $UNAME = Linux ] && complete -F _pgrep pidof
+

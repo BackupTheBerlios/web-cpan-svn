@@ -1,0 +1,22 @@
+# Linux and FreeBSD killall(1) completion.
+#
+[ $UNAME = Linux -o $UNAME = FreeBSD ] &&
+_killall()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [ $COMP_CWORD -eq 1 ] && [[ "$cur" == -* ]]; then
+		_signals
+	else
+		COMPREPLY=( $( compgen -W '$( command ps axo command | \
+			      sed -ne "1d; s/^\[\?\([^-][^] ]*\).*$/\1/p" | \
+			      sed -e "s/.*\///" )' -- $cur ) )
+	fi
+
+	return 0
+}
+[ $UNAME = Linux -o $UNAME = FreeBSD ] && complete -F _killall killall pkill
+

@@ -1,0 +1,14 @@
+# Slackware Linux removepkg completion
+#
+have removepkg && [ -f /etc/slackware-version ] &&
+_removepkg()
+{
+	local packages cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( (cd /var/log/packages; compgen -f -- "$cur") ) )
+} &&
+complete -F _removepkg $filenames removepkg &&
+	complete $dirnames -f -X '!*.tgz' installpkg upgradepkg explodepkg

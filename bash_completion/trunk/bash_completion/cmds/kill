@@ -1,0 +1,18 @@
+# kill(1) completion
+#
+_kill()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [ $COMP_CWORD -eq 1 ] && [[ "$cur" == -* ]]; then
+		# return list of available signals
+		_signals
+	else
+		# return list of available PIDs
+		_pids
+	fi
+}
+complete -F _kill kill
