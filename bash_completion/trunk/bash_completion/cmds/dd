@@ -1,0 +1,32 @@
+# dd(1) completion
+#
+have dd &&
+_dd()
+{
+	 local cur
+
+	 COMPREPLY=()
+	 cur=${COMP_WORDS[COMP_CWORD]}
+
+	 case "$cur" in
+	 if=*|of=*)
+		 cur=${cur#*=}
+		 _filedir
+		 return 0
+		 ;;
+	 conv=*)
+		 cur=${cur#*=}
+		 COMPREPLY=( $( compgen -W 'ascii ebcdic ibm block unblock \
+				lcase notrunc ucase swab noerror sync' \
+				-- $cur ) )
+		 return 0
+		 ;;
+	 esac
+
+	 _expand || return 0
+
+	 COMPREPLY=( $( compgen -W '--help --version' -- $cur ) \
+		     $( compgen -W 'bs cbs conv count ibs if obs of seek skip'\
+				-S '=' -- $cur ) )
+} &&
+complete -F _dd $nospace $filenames dd

@@ -1,0 +1,14 @@
+# CUPS cancel(1) completion
+#
+have cancel &&
+_cancel()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( lpstat | cut -d' ' -f1 | grep "^$cur" ) )
+} &&
+complete -F _cancel $filenames cancel
+

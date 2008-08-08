@@ -1,0 +1,90 @@
+# yum(8) completion
+#
+have yum && {
+_yum()
+{
+	local cur prev special
+	
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	for (( i=0; i < ${#COMP_WORDS[@]}-1; i++ )); do
+		if [[ ${COMP_WORDS[i]} == @(install|update|upgrade|remove|erase|deplist) ]]; then
+			special=${COMP_WORDS[i]}
+		fi
+	done
+
+	if [ -n "$special" ]; then
+	    case $special in
+		install|deplist)
+		    COMPREPLY=( $( compgen -W '$( yum -C list | cut -d" " -f1 )' -- $cur ) )
+		    return 0
+		    ;;
+		*)
+		    _rpm_installed_packages
+		    return 0
+		    ;;
+		esac
+	fi
+
+	case $cur in
+	    --*)
+		COMPREPLY=( $( compgen -W '--installroot --version --help --enablerepo --disablerepo --exclude --obsoletes --noplugins' -- $cur ) )
+		return 0
+		;;
+	    -*)
+		COMPREPLY=( $( compgen -W '-c -e -d -y -t -R -C -h' -- $cur ) )
+		return 0
+		;;
+	esac
+
+	case $prev in
+	    list)
+		COMPREPLY=( $( compgen -W 'all available updates installed extras obsoletes recent' -- $cur ) )
+		;;
+	    clean)
+		COMPREPLY=( $( compgen -W 'packages headers metadata cache dbcache all' -- $cur ) )
+		;;
+	    localinstall)
+		_filedir rpm
+		;;
+	    -c)
+		_filedir
+		;;
+	    --installroot)
+		_filedir -d
+		;;
+	    *)
+		COMPREPLY=( $( compgen -W 'install update check-update upgrade remove list \
+						search info provides clean groupinstall groupupdate \
+						grouplist deplist erase groupinfo groupremove \
+						localinstall localupdate makecache resolvedep \
+						shell whatprovides' -- $cur ) )
+		;;
+	esac
+}
+complete -F _yum $filenames yum
+
+# yum-arch(8) completion
+#
+_yum_arch()
+{
+    local cur
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+
+    case "$cur" in
+	-*)
+	    COMPREPLY=( $( compgen -W '-d -v -vv -n -c -z -s -l -q' -- $cur ) )
+	    ;;
+	*)
+	    _filedir -d
+	    ;;
+    esac
+
+    return 0
+
+}
+complete -F _yum_arch $filenames yum-arch
+}
