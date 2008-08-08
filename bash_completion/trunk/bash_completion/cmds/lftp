@@ -1,0 +1,18 @@
+# lftp(1) bookmark completion
+#
+have lftp &&
+_lftp()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [ $COMP_CWORD -eq 1 ] && [ -f ~/.lftp/bookmarks ]; then
+	    COMPREPLY=( $( compgen -W '$( sed -ne "s/^\(.*\)'$'\t''.*$/\1/p" \
+			   ~/.lftp/bookmarks )' -- $cur ) )
+	fi
+
+	return 0
+} &&
+complete -F _lftp $default lftp
