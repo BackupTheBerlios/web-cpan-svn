@@ -1,0 +1,24 @@
+# chsh(1) completion
+#
+_chsh()
+{
+	local cur prev
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	if [ "$prev" = "-s" ]; then
+	  if [ -f /etc/debian_version ]; then
+	    COMPREPLY=( $( </etc/shells ) )
+	  else
+	    COMPREPLY=( $( chsh -l | grep "^$cur" ) )
+	  fi
+	else
+	  COMPREPLY=( $( compgen -u -- $cur ) )
+	fi
+
+	return 0
+}
+complete -F _chsh chsh
+
