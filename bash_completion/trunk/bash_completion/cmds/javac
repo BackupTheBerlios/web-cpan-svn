@@ -1,0 +1,34 @@
+# javac completion
+#
+have javac &&
+_javac()
+{
+	COMPREPLY=()
+	local cur prev
+
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case $prev in
+		-d)
+			_filedir -d
+			return 0
+			;;
+		-@(classpath|bootclasspath|sourcepath|extdirs))
+			_java_path
+			return 0
+			;;
+	esac
+
+	if [[ "$cur" == -* ]]; then
+		# relevant options completion
+		COMPREPLY=( $( compgen -W '-g -g:none -g:lines -g:vars\
+		-g:source -O -nowarn -verbose -deprecation -classpath\
+		-sourcepath -bootclasspath -extdirs -d -encoding -source\
+		-target -help' -- $cur ) )
+	else
+		# source files completion
+		_filedir java
+	fi
+} &&
+complete -F _javac $filenames javac

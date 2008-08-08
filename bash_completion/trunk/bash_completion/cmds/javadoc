@@ -1,0 +1,50 @@
+# javadoc completion
+#
+have javadoc &&
+_javadoc()
+{
+	COMPREPLY=()
+	local cur prev
+
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case $prev in
+		-@(overview|helpfile|stylesheetfile))
+			_filedir
+			return 0
+			;;
+		-d)
+			_filedir -d
+			return 0
+			;;
+		-@(classpath|bootclasspath|docletpath|sourcepath|extdirs))
+			_java_path
+			return 0
+			;;
+	esac
+
+	if [[ "$cur" == -* ]]; then
+		# relevant options completion
+		COMPREPLY=( $( compgen -W '-overview -public -protected \
+				-package -private -help -doclet -docletpath \
+				-sourcepath -classpath -exclude -subpackages \
+				-breakiterator -bootclasspath -source -extdirs \
+				-verbose -locale -encoding -J -d -use -version \
+				-author -docfilessubdirs -splitindex \
+				-windowtitle -doctitle -header -footer -bottom \
+				-link -linkoffline -excludedocfilessubdir \
+				-group -nocomment -nodeprecated -noqualifier \
+				-nosince -nodeprecatedlist -notree -noindex \
+				-nohelp -nonavbar -quiet -serialwarn -tag \
+				-taglet -tagletpath -charset -helpfile \
+				-linksource -stylesheetfile -docencoding' -- \
+				$cur ) )
+	else
+		# source files completion
+		_filedir java
+		# packages completion
+		_java_packages
+	fi
+} &&
+complete -F _javadoc $filenames javadoc

@@ -1,0 +1,32 @@
+# Debian querybts(1) completion
+#
+have querybts &&
+_querybts()
+{
+	local cur prev
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case "$prev" in
+	    -B|--bts)
+		COMPREPLY=( $( compgen -W "debian guug kde mandrake help" -- \
+			       $cur ))
+		return 0
+		;;
+	    -u|--ui|--interface)
+		COMPREPLY=($( compgen -W "newt text gnome" -- $cur ))
+		return 0
+		;;
+	    *)
+		;;
+	esac
+
+	COMPREPLY=($( compgen -W '-h --help -v --version -A --archive \
+			-B --bts -l --ldap --no-ldap --proxy= --http_proxy= \
+			-s --source -w --web -u --ui --interface \
+			wnpp boot-floppies' -- $cur ) \
+	    		$( apt-cache pkgnames -- $cur ) )
+} &&
+complete -F _querybts $filenames querybts
