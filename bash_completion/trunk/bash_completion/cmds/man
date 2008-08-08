@@ -1,0 +1,63 @@
+# man(1) completion
+#
+[ $UNAME = GNU -o $UNAME = Linux -o $UNAME = Darwin \
+  -o $UNAME = FreeBSD -o $UNAME = SunOS -o $UNAME = Cygwin \
+  -o $UNAME = OpenBSD ] &&
+_man()
+{
+	local cur prev sect manpath UNAME
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	_expand || return 0
+
+	# default completion if parameter contains /
+	if [[ "$cur" == */* ]]; then
+		_filedir
+		return 0
+	fi
+
+	UNAME=$( uname -s )
+	# strip OS type and version under Cygwin
+	UNAME=${UNAME/CYGWIN_*/Cygwin}
+	if [ $UNAME = GNU -o $UNAME = Linux -o $UNAME = FreeBSD \
+	     -o $UNAME = Cygwin ]; then
+		manpath=$( manpath 2>/dev/null || command man --path )
+	else
+		manpath=$MANPATH
+	fi
+
+	if [ -z "$manpath" ]; then
+		COMPREPLY=( $( compgen -c -- $cur ) )
+		return 0
+	fi
+
+	# determine manual section to search
+	[[ "$prev" == [0-9ln] ]] && sect=$prev || sect='*'
+
+	manpath=$manpath:
+	if [ -n "$cur" ]; then
+		manpath="${manpath//://*man$sect/$cur* } ${manpath//://*cat$sect/$cur* }"
+	else
+		manpath="${manpath//://*man$sect/ } ${manpath//://*cat$sect/ }"
+	fi
+		
+	# redirect stderr for when path doesn't exist
+	COMPREPLY=( $( eval command ls "$manpath" 2>/dev/null ) )
+	# weed out directory path names and paths to man pages
+	COMPREPLY=( ${COMPREPLY[@]##*/?(:)} )
+	# strip suffix from man pages
+	COMPREPLY=( ${COMPREPLY[@]%.@(gz|bz2)} )
+	COMPREPLY=( $( compgen -W '${COMPREPLY[@]%.*}' -- "${cur//\\\\/}" ) )
+
+	[[ "$prev" != [0-9ln] ]] && _filedir '[0-9ln]'
+
+	return 0
+}
+[ $UNAME = GNU -o $UNAME = Linux -o $UNAME = Darwin \
+  -o $UNAME = FreeBSD -o $UNAME = SunOS -o $UNAME = Cygwin \
+  -o $UNAME = OpenBSD ] && \
+complete -F _man $filenames man
+

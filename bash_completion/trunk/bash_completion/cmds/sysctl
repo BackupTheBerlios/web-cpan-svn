@@ -1,0 +1,16 @@
+# sysctl(8) completion
+#
+have sysctl &&
+_sysctl()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( compgen -W "$(sysctl -N -a 2>/dev/null)" -- $cur ) )
+
+	return 0
+} &&
+complete -F _sysctl sysctl
+
