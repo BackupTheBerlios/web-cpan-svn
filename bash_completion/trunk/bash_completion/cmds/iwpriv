@@ -1,0 +1,33 @@
+# Linux iwpriv(8) completion
+#
+[ $UNAME = Linux ] && have iwpriv &&
+_iwpriv()
+{
+	local cur prev
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	case "$prev" in
+		roam)
+			COMPREPLY=( $( compgen -W 'on off' -- $cur ) )
+			return 0
+			;;
+		port)
+			COMPREPLY=( $( compgen -W 'ad-hoc managed' -- $cur ) )
+			return 0
+			;;
+	esac
+
+	if [ $COMP_CWORD -eq 1 ]; then
+		if [[ "$cur" == -* ]]; then
+			COMPREPLY=( $( compgen -W '--help --version' -- $cur ) ) 
+		else
+			_available_interfaces -w
+		fi
+	else
+		COMPREPLY=( $( compgen -W '--all roam port' -- $cur ) ) 
+	fi
+} &&
+complete -F _iwpriv iwpriv

@@ -1,0 +1,22 @@
+# Linux iwspy(8) completion
+#
+[ $UNAME = Linux ] && have iwspy &&
+_iwspy()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [ $COMP_CWORD -eq 1 ]; then
+		if [[ "$cur" == -* ]]; then
+			COMPREPLY=( $( compgen -W '--help --version' -- $cur ) ) 
+		else
+			_available_interfaces -w
+		fi
+	else
+		COMPREPLY=( $( compgen -W 'setthr getthr off' -- $cur ) ) 
+	fi
+} &&
+complete -F _iwspy iwspy
+
