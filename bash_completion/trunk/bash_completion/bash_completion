@@ -2995,58 +2995,6 @@ _root_command()
 }
 complete -F _root_command $filenames sudo fakeroot really
 
-# ant(1) completion
-#
-have ant && {
-_ant()
-{
-	local cur prev buildfile i
-
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
-
-	case "$prev" in
-		-buildfile|-f)
-			_filedir 'xml'
-			return 0
-			;;
-		-logfile)
-			_filedir
-			return 0
-			;;
-	esac
-
-	if [[ "$cur" == -* ]]; then
-		# relevant options completion
-		COMPREPLY=( $( compgen -W '-help -projecthelp -version -quiet \
-			       -verbose -debug -emacs -logfile -logger \
-			       -listener -buildfile -f -D -find' -- $cur ) )
-	else
-		# available targets completion
-		# find which buildfile to use
-		buildfile=build.xml
-		for (( i=1; i < COMP_CWORD; i++ )); do
-			if [[ "${COMP_WORDS[i]}" == -buildfile ]]; then
-				buildfile=${COMP_WORDS[i+1]}
-				break
-			fi
-		done
-		[ ! -f $buildfile ] && return 0
-
-		# parse buildfile for targets
-		COMPREPLY=( $( awk -F'"' '/<target name="/ {print $2}' \
-				$buildfile | grep "^$cur" )
-			    $( awk -F"'" "/<target name='/ "'{print $2}' \
-				$buildfile | grep "^$cur" )
-			    $( awk -F'"' '/<target [^n]/ {if ($1 ~ /name=/) { print $2 } else if ($3 ~ /name=/) {print $4} else if ($5 ~ /name=/) {print $6}}' \
-				$buildfile | grep "^$cur" ) )
-	fi
-}
-have complete-ant-cmd.pl && \
-     complete -C complete-ant-cmd.pl -F _ant $filenames ant || \
-     complete -F _ant $filenames ant
-}
 
 have nslookup &&
 _nslookup()
@@ -3062,47 +3010,6 @@ _nslookup()
 			       ignoretc' -- $cur ) )
 } &&
 complete -F _nslookup nslookup
-
-# ncftp(1) bookmark completion
-#
-have ncftp &&
-_ncftp()
-{
-	local cur
-
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-
-	if [ $COMP_CWORD -eq 1 ] && [ -f ~/.ncftp/bookmarks ]; then
-	    COMPREPLY=( $( compgen -W '$( sed -ne "s/^\([^,]\{1,\}\),.*$/\1/p" \
-			   ~/.ncftp/bookmarks )' -- $cur ) )
-	fi
-
-	return 0
-} &&
-complete -F _ncftp $default ncftp
-
-# gdb(1) completion
-#
-have gdb &&
-_gdb()
-{
-	local cur prev
-
-	COMPREPLY=()
-	cur=${COMP_WORDS[COMP_CWORD]}
-	prev=${COMP_WORDS[COMP_CWORD-1]}
-
-	if [ $COMP_CWORD -eq 1 ]; then
-		COMPREPLY=( $( compgen -c -- $cur ) )
-	elif [ $COMP_CWORD -eq 2 ]; then
-		prev=${prev##*/}
-		COMPREPLY=( $( compgen -fW "$( command ps axo comm,pid | \
-				awk '{if ($1 ~ /^'"$prev"'/) print $2}' ) )" \
-				-- "$cur" ) )
-	fi
-} &&
-complete -F _gdb $filenames gdb
 
 _longopt()
 {
