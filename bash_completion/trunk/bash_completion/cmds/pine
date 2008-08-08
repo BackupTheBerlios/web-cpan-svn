@@ -1,0 +1,15 @@
+# PINE address-book completion
+#
+have pine &&
+_pineaddr()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( compgen -W '$( awk "{print \$1}" ~/.addressbook 2>/dev/null)' \
+			-- $cur ) )
+} &&
+complete -F _pineaddr $default pine
+
