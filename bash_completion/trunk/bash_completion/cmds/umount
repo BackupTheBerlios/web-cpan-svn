@@ -1,0 +1,16 @@
+# umount(8) completion. This relies on the mount point being the third
+# space-delimited field in the output of mount(8)
+#
+_umount()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	COMPREPLY=( $( compgen -W '$( mount | cut -d" " -f 3 )' -- $cur ) )
+
+	return 0
+}
+complete -F _umount $dirnames umount
+

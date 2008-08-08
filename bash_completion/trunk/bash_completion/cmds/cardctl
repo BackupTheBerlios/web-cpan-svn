@@ -1,0 +1,18 @@
+# Linux cardctl(8) completion
+#
+have cardctl &&
+_cardctl()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [ $COMP_CWORD -eq 1 ]; then
+		COMPREPLY=( $( compgen -W 'status config ident suspend \
+					   resume reset eject insert scheme' \
+			       -- $cur ) )
+	fi
+} &&
+complete -F _cardctl cardctl
+

@@ -1,0 +1,35 @@
+# Debian GNU dpkg-reconfigure(8) completion
+#
+have dpkg-reconfigure &&
+_dpkg_reconfigure()
+{
+	local cur prev opt
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+
+	case "$prev" in
+	    -@(f|-frontend))
+		opt=( $( echo /usr/share/perl5/Debconf/FrontEnd/* ) )
+		opt=( ${opt[@]##*/} )
+		opt=( ${opt[@]%.pm} )
+		COMPREPLY=( $( compgen -W '${opt[@]}' -- $cur ) )
+		return 0
+		;;
+	    -@(p|-priority))
+  		COMPREPLY=( $( compgen -W 'low medium high critical' -- $cur ) )
+		return 0
+		;;
+	esac
+
+	if [[ "$cur" == -* ]]; then
+	    COMPREPLY=( $( compgen -W '-f --frontend -p --priority -a --all \
+				       -u --unseen-only -h --help -s --showold \
+				       --force --terse' -- $cur ) )
+	else
+	    COMPREPLY=( $( _comp_dpkg_installed_packages $cur ) )
+	fi
+} &&
+complete -F _dpkg_reconfigure $default dpkg-reconfigure

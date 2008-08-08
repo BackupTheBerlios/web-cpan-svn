@@ -1,0 +1,14 @@
+have nslookup &&
+_nslookup()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]#-}
+
+	COMPREPLY=( $( compgen -P '-' -W 'all class= debug d2 domain= \
+			       srchlist= defname search port= querytype= \
+			       type= recurse retry root timeout vc \
+			       ignoretc' -- $cur ) )
+} &&
+complete -F _nslookup nslookup
