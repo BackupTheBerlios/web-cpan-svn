@@ -1,0 +1,26 @@
+# chown(1) completion
+#
+_chown()
+{
+	local cur
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	# options completion
+	if [[ "$cur" == -* ]]; then
+		COMPREPLY=( $( compgen -W '-c -h -f -R -v --changes \
+		--dereference --no-dereference --from= --silent --quiet \
+		--reference= --recursive --verbose --help --version' -- $cur ) )
+	else
+		_count_args
+
+		case $args in
+			1)
+				_usergroup
+				;;
+			*)
+				_filedir
+				;;
+		esac
+	fi
+}
+complete -F _chown $filenames chown

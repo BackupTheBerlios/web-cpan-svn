@@ -1,0 +1,31 @@
+# chgrp(1) completion
+#
+_chgrp()
+{
+	local cur prev
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+	cur=${cur//\\\\/}
+	prev=${COMP_WORDS[COMP_CWORD-1]}
+
+	# options completion
+	if [[ "$cur" == -* ]]; then
+		COMPREPLY=( $( compgen -W '-c -h -f -R -v --changes \
+		--dereference --no-dereference --silent --quiet \
+		--reference= --recursive --verbose --help --version' -- $cur ) )
+		return 0
+	fi
+
+	# first parameter on line or first since an option?
+	if [ $COMP_CWORD -eq 1 ] && [[ "$cur" != -* ]] || \
+	   [[ "$prev" == -* ]] && [ -n "$bash205" ]; then
+		local IFS=$'\n'
+		COMPREPLY=( $( compgen -g $cur 2>/dev/null ) )
+	else
+		_filedir || return 0
+	fi
+
+	return 0
+}
+complete -F _chgrp $filenames chgrp
