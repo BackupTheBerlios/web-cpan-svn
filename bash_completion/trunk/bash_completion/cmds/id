@@ -1,0 +1,18 @@
+# id(1) completion
+#
+have id &&
+_id()
+{
+	local cur
+
+	COMPREPLY=()
+	cur=${COMP_WORDS[COMP_CWORD]}
+
+	if [[ "$cur" == -* ]]; then
+		COMPREPLY=( $( compgen -W '-a -g --group -G --groups -n --name\
+			-r --real -u --user --help --version' -- $cur ) )
+	else
+		COMPREPLY=( $( compgen -u $cur  ) )
+	fi
+} &&
+complete -F _id id
