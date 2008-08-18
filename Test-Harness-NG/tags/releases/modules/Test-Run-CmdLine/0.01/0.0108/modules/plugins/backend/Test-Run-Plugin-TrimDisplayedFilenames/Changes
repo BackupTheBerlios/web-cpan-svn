@@ -1,0 +1,6 @@
+Revision history for Test::Run::Plugin::TrimDisplaysFilenames
+
+0.01    Fri Apr  4 12:38:36 IDT 2008
+        - First version, released on an unsuspecting world.
+        - Forked from a previous module.
+        - very basic functionality - only fromre: and keep:.
