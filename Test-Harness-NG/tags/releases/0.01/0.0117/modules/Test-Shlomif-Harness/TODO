@@ -1,0 +1,27 @@
+* Update the documentation - currently it's mostly updated only to 
+Test::Harness.
+
+* Add an arbitrary number of leaked directories.
+
+* Add a registry for the classes of the helper objects.
+
+* Implement a plugin system for the helper objects.
+
+* Add examples for Test::Run (not T::R::CL) under examples/ in the T::R (core)
+distribution.
+
+* Add a module-starter adaptation for creating a Test::Run/T::R::CL plugin
+distribution.
+
+* Add a way to specify plugin parameters using the command line.
+
+* Add a way to append/remove plugins using the command line.
+
+Bugs:
+-----
+
+* Fix the confusing output of t/sample-tests/too_many2.
+    - see prove vs. runprove.
+
+* Deal with the bug as encountered in Parrot.
+
