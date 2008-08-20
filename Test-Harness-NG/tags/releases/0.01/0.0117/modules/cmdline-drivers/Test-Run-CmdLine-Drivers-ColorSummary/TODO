@@ -1,3 +1,0 @@
-* The code at the moment is kludgy. Better refactor Test::Run appropriately,
-and make the T::R::CL::D::ColorSummary code better.
-
