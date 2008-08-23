@@ -116,7 +116,7 @@ sub getFeedback {
 sub _validateEmail {
     my $self  = shift;
     my $input = shift || '';
-    return ($input =~ /^[\w\-\.\+]+@(\w+)(\.([\w\-]+))+$/);
+    return ($input =~ /^[\w\-\.\+]+@([\w\-]+)(\.([\w\-]+))+$/);
 }
 
 # Checks to see if input is a minimum string length.

@@ -6,7 +6,7 @@ use warnings;
 use Data::Dumper;
 use CGI;
 
-our $VERSION = "1.17";
+our $VERSION = "1.18";
 
 =head1 NAME
 
@@ -2078,6 +2078,12 @@ Added a LICENSE section to the PODs.
 Added t/pod.t (kwalitee).
 
 Added t/pod-coverage.t and made the POD have full coverage (for the kwalitee.)
+
+August 23, 2008 - WWW::Form 1.18
+
+Added a rudimentary test to test for valid emails.
+
+Fixed http://rt.cpan.org/Ticket/Display.html?id=32211 .
 
 =head1 TODO
 

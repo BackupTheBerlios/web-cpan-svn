@@ -13,7 +13,8 @@ t/get_field.t
 t/hidden-elements.t
 t/html-gen.t
 t/lib/CondTestMore.pm
+t/pod-coverage.t
+t/pod.t
 t/render_attributes.t
 t/set_fields.t
-t/pod.t
-t/pod-coverage.t
+t/validate-email.t
