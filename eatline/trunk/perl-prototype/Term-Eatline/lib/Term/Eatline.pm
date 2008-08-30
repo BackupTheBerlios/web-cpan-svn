@@ -23,6 +23,8 @@ use base 'Class::Accessor';
 use Curses;
 
 __PACKAGE__->mk_accessors(qw(
+    _pos
+    _curr_line
     _main_win
     ));
 
@@ -88,6 +90,26 @@ sub _destroy
     endwin();
 }
 
+sub _map_keys
+{
+    my ($keys, $action) = @_;
+    return (map { $_ => $action } @$keys);
+}
+
+sub _get_keyboard_map
+{
+    my $self = shift;
+
+    return
+    {
+        _map_keys(["\ca", KEY_HOME()] => "home"),
+        _map_keys(["\ce", KEY_END()] => "end"),
+        _map_keys([KEY_RIGHT()] => "right"),
+        _map_keys([KEY_LEFT()] => "left"),
+        _map_keys(["\n"] => "enter"),
+    };
+}
+
 =head2 $eatline->readline()
 
 Reads a line from the terminal based on the editing constraints.
@@ -98,51 +120,135 @@ sub readline
 {
     my $self = shift;
 
-    my $line = "";
-    my $pos = 0;
+    my $keyboard_map = $self->_get_keyboard_map();
+
     my ($y, $x);
+    $self->_curr_line("");
+    $self->_move_to_start_line();
+
     while (my $char = $self->_main_win->getch())
     {
         if (($char eq "\ca") || ($char eq KEY_HOME()))
         {
-            $pos = 0;
+            $self->_move_to_start_line();
         }
         elsif (($char eq "\ce") || ($char eq KEY_END()))
         {
-            $pos = length($line);
+            $self->_move_to_end_of_line();
         }
         elsif ($char eq KEY_RIGHT())
         {
-            if (++$pos > length($line))
-            {
-                $pos--;
-            }
+            $self->_inc_pos();
         }
         elsif ($char eq KEY_LEFT())
         {
-            if (--$pos < 0)
-            {
-                $pos++;
-            }
+            $self->_dec_pos();
         }
         elsif ($char eq "\n")
         {
-            $line .= "\n";
-            return $line;
+            return $self->_curr_line() . "\n";
         }
         else
         {
-            $line = substr($line, 0, $pos)
-                  . $char
-                  . substr($line, $pos)
-                  ;
-
-            $pos++;
+            $self->_insert_char(
+                $char
+            );
         }
 
         getyx ($y, $x);
-        $self->_main_win->addstr($y,0,$line);
+        $self->_main_win->addstr($y,0,$self->_curr_line());
     }
+}
+
+=head2 $eatline->_set_pos($idx)
+
+Sets the position in the string.
+
+=cut
+
+sub _set_pos
+{
+    my ($self, $idx) = @_;
+
+    $self->_pos($idx);
+
+    return;
+}
+
+=head2 $eatline->_move_to_start_line()
+
+Moves to the beginning of the line.
+
+=cut
+
+sub _move_to_start_line
+{
+    my $self = shift;
+
+    return $self->_set_pos(0);
+}
+
+=head2 $eatline->_move_to_end_of_line()
+
+Moves to the end of the line.
+
+=cut
+
+sub _move_to_end_of_line
+{
+    my $self = shift;
+
+    return $self->_set_pos(length($self->_curr_line()));
+}
+
+sub _inc_pos
+{
+    my $self = shift;
+
+    if ($self->_pos() == length($self->_curr_line()))
+    {
+        # Do nothing.
+    }
+    else
+    {
+        $self->_set_pos($self->_pos()+1);
+    }
+
+    return;
+}
+
+sub _dec_pos
+{
+    my $self = shift;
+
+    if ($self->_pos() == 0)
+    {
+        # Do nothing.
+    }
+    else
+    {
+        $self->_set_pos($self->_pos()-1);
+    }
+
+    return;
+}
+
+sub _insert_char
+{
+    my ($self, $char) = @_;
+
+    my $line = $self->_curr_line();
+
+    $line = substr($line, 0, $self->_pos())
+          . $char
+          . substr($line, $self->_pos())
+          ;
+
+    $self->_curr_line($line);
+
+    $self->_inc_pos();
+
+    return;
 }
 
 
