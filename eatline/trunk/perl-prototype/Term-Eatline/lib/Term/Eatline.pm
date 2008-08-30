@@ -107,7 +107,7 @@ sub readline
         {
             $pos = 0;
         }
-        elsif ($char eq "\ce")
+        elsif (($char eq "\ce") || ($char eq KEY_END()))
         {
             $pos = length($line);
         }

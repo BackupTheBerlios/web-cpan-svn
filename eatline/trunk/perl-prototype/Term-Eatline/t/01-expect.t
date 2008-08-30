@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 12;
 
 use Expect;
 use File::Spec;
@@ -29,6 +29,7 @@ sub read_file
 my $right_key = "\eOC";
 my $left_key  = "\eOD";
 my $home_key  = "\eOH";
+my $end_key   = "\eOF";
 
 sub test_output
 {
@@ -123,4 +124,19 @@ sub test_output
         "Prefix-Inner==Suffix\n",
         "Testing for <Home> and Ctrl+E."
     );
+
+    # TEST
+    test_output(
+        "Inner\caPrefix-${end_key}==Suffix\n",
+        "Prefix-Inner==Suffix\n",
+        "Testing for <End>."
+    );
+
+    # TEST
+    test_output(
+        "Inner${home_key}Prefix-${end_key}==Suffix\n",
+        "Prefix-Inner==Suffix\n",
+        "Testing for <End> and <Home>."
+    );
+    
 }
