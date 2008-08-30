@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 4;
 
 use Expect;
 use File::Spec;
@@ -67,5 +67,12 @@ sub test_output
         "tring\caS\n",
         "String\n",
         "Testing for Ctrl+A."
+    );
+
+    # TEST
+    test_output(
+        "Inner\caPrefix-\ce==Suffix\n",
+        "Prefix-Inner==Suffix\n",
+        "Testing for Ctrl+A and Ctrl+E."
     );
 }

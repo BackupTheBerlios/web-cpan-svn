@@ -106,6 +106,10 @@ sub readline
         {
             $pos = 0;
         }
+        elsif ($char eq "\ce")
+        {
+            $pos = length($line);
+        }
         elsif ($char eq "\n")
         {
             $line .= "\n";
