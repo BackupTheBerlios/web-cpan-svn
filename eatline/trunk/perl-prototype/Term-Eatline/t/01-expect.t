@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 6;
+use Test::More tests => 7;
 
 use Expect;
 use File::Spec;
@@ -27,6 +27,7 @@ sub read_file
 # You can determine these things by issuing dump.tcl on the commands.
 # See dump.tcl for more information.
 my $right_key = "\eOC";
+my $left_key  = "\eOD";
 
 sub test_output
 {
@@ -93,4 +94,12 @@ sub test_output
         "[]suffix\n",
         "Testing for excessive KEY_RIGHT()."
     );
+
+    # TEST
+    test_output(
+        "[[[]]]" . ($left_key x 3) . "String Inside\n",
+        "[[[String Inside]]]\n",
+        "Testing for LEFT_KEY()"
+    );
+
 }

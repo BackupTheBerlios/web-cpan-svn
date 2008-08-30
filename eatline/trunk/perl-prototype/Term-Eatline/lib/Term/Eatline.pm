@@ -118,6 +118,13 @@ sub readline
                 $pos--;
             }
         }
+        elsif ($char eq KEY_LEFT())
+        {
+            if (--$pos < 0)
+            {
+                $pos++;
+            }
+        }
         elsif ($char eq "\n")
         {
             $line .= "\n";
