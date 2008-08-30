@@ -4,6 +4,10 @@ lib/Term/Eatline.pm
 MANIFEST
 README
 t/00-load.t
+t/01-expect.t
+t/data/bin/read-line-to-file.pl
 test-eatline.pl
 t/pod-coverage.t
 t/pod.t
+Makefile.PL
+META.yml

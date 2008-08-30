@@ -39,7 +39,7 @@ Perhaps a little code snippet.
 
 =head1 FUNCTIONS
 
-=head2 Term::Eatline->new({%args})
+=head2 my $eatline = Term::Eatline->new({%args})
 
 The constructor.
 
@@ -83,6 +83,12 @@ sub _destroy
 
     endwin();
 }
+
+=head2 $eatline->readline()
+
+Reads a line from the terminal based on the editing constraints.
+
+=cut
 
 sub readline
 {
