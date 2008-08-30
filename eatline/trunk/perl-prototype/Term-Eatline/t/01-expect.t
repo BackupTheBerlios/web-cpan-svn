@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 13;
+use Test::More tests => 14;
 
 use Expect;
 use File::Spec;
@@ -144,6 +144,13 @@ sub test_output
         "Sch\b\bhlomi Fish\n",
         "Shlomi Fish\n",
         "Testing for backspace."
+    );
+    
+    # TEST
+    test_output(
+        "Quanta${home_key}\b${end_key}\b\btrumPOD\b\b\blo\n",
+        "Quantrumlo\n",
+        "backspace - don't delete from beginning and more"
     );
     
 }
