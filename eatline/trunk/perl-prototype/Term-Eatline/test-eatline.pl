@@ -19,7 +19,9 @@ while (my $line = $eatline->readline())
     {
         last LINE_LOOP;
     }
+    $eatline->_main_win->move(5,0);
     $eatline->_main_win()->printw("You've entered:{%s}\n", $line);
+    $eatline->_main_win->move(0,0);
     $eatline->_main_win()->refresh();
 }
 };
