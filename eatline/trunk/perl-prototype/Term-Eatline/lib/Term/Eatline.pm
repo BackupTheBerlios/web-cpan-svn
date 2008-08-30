@@ -3,6 +3,8 @@ package Term::Eatline;
 use warnings;
 use strict;
 
+use List::Util qw(min);
+
 =head1 NAME
 
 Term::Eatline - a Perl prototype for libeatline - the BSDLed GNU readline 
@@ -64,6 +66,7 @@ sub _init
     $self->_main_win($main_win);
 
     initscr();
+    noecho();
 }
 
 sub DESTROY
@@ -95,14 +98,31 @@ sub readline
     my $self = shift;
 
     my $line = "";
+    my $pos = 0;
+    my ($y, $x);
     while (my $char = $self->_main_win->getch())
     {
-        $line .= $char;
-
-        if ($char eq "\n")
+        if ($char eq "\ca")
         {
+            $pos = 0;
+        }
+        elsif ($char eq "\n")
+        {
+            $line .= "\n";
             return $line;
         }
+        else
+        {
+            $line = substr($line, 0, $pos)
+                  . $char
+                  . substr($line, $pos)
+                  ;
+
+            $pos++;
+        }
+
+        getyx ($y, $x);
+        $self->_main_win->addstr($y,0,$line);
     }
 }
 

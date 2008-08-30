@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use Expect;
 use File::Spec;
@@ -60,5 +60,12 @@ sub test_output
     # TEST
     test_output("Welcome to Israel!\n", "Welcome to Israel!\n", 
         "Testing for simple output - 2"
+    );
+
+    # TEST
+    test_output(
+        "tring\caS\n",
+        "String\n",
+        "Testing for Ctrl+A."
     );
 }
