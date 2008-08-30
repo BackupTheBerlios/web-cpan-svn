@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 use Expect;
 use File::Spec;
@@ -23,6 +23,11 @@ sub read_file
     close($in);
     return $contents;
 }
+
+# You can determine these things by issuing cat on the terminal and issuing
+# the commands.
+# Credits go to MooingLemur from Freenode.
+my $right_key = "\eOC";
 
 sub test_output
 {
@@ -75,4 +80,11 @@ sub test_output
         "Prefix-Inner==Suffix\n",
         "Testing for Ctrl+A and Ctrl+E."
     );
+
+    # TEST
+    test_output(
+        "[[]]\ca${right_key}hello${right_key}${right_key}row\n",
+        "[hello[]row]\n",
+        "Testing for KEY_RIGHT()."
+    );    
 }

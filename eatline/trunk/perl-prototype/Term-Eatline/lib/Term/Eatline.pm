@@ -64,6 +64,7 @@ sub _init
     my $main_win = Curses->new();
 
     $self->_main_win($main_win);
+    $self->_main_win->keypad(1);
 
     initscr();
     noecho();
@@ -109,6 +110,13 @@ sub readline
         elsif ($char eq "\ce")
         {
             $pos = length($line);
+        }
+        elsif ($char eq KEY_RIGHT())
+        {
+            if (++$pos > length($line))
+            {
+                $pos--;
+            }
         }
         elsif ($char eq "\n")
         {
