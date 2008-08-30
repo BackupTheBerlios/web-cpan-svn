@@ -12,11 +12,11 @@ replacement and extension.
 
 =head1 VERSION
 
-Version 0.01
+Version v0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+use version; our $VERSION = qv('0.0.1');
 
 use base 'Class::Accessor';
 

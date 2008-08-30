@@ -23,6 +23,7 @@ my $builder = Test::Run::Builder->new(
         'Curses' => 0,
         'File::Spec' => 0,
         'List::Util' => 0,
+        'version' => 0,
     },
     add_to_cleanup      => [ 'Term-Eatline-*' ],
     create_makefile_pl => 'traditional',
