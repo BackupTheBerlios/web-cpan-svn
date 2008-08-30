@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 1;
+use Test::More tests => 2;
 
 use Expect;
 use File::Spec;
@@ -24,7 +24,12 @@ sub read_file
     return $contents;
 }
 
+sub test_output
 {
+    local $Test::Builder::Level = $Test::Builder::Level + 1;
+
+    my ($input, $result, $msg) = @_;
+
     my $exp = Expect->new();
     # To disable echoing.
     $exp->raw_pty(1);
@@ -38,14 +43,22 @@ sub read_file
     )
         or Carp::confess("Cannot spawn read-line-to-file");
 
-    $exp->send("Hello\n");
+    $exp->send($input);
 
     $exp->soft_close();
 
     my $contents = read_file($fn_with_output);
-    # TEST
-    is ($contents, "Hello\n", "Simple string entry is OK.");
+    is ($contents, $result, $msg);
 
     unlink($fn_with_output);
 }
 
+{
+    # TEST
+    test_output("Hello\n", "Hello\n", "Testing for simple output - 1");
+
+    # TEST
+    test_output("Welcome to Israel!\n", "Welcome to Israel!\n", 
+        "Testing for simple output - 2"
+    );
+}
