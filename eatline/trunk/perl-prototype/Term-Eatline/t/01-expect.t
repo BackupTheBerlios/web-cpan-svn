@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 8;
+use Test::More tests => 10;
 
 use Expect;
 use File::Spec;
@@ -28,6 +28,7 @@ sub read_file
 # See dump.tcl for more information.
 my $right_key = "\eOC";
 my $left_key  = "\eOD";
+my $home_key  = "\eOH";
 
 sub test_output
 {
@@ -107,5 +108,19 @@ sub test_output
         "123" . ($left_key x 10) . "{Before}\ce\n",
         "{Before}123\n",
         "Testing for excessive KEY_LEFT()."
+    );
+
+    # TEST
+    test_output(
+        "tring${home_key}S\n",
+        "String\n",
+        "Testing for <Home>."
+    );
+
+    # TEST
+    test_output(
+        "Inner${home_key}Prefix-\ce==Suffix\n",
+        "Prefix-Inner==Suffix\n",
+        "Testing for <Home> and Ctrl+E."
     );
 }

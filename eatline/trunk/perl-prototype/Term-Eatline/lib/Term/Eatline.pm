@@ -103,7 +103,7 @@ sub readline
     my ($y, $x);
     while (my $char = $self->_main_win->getch())
     {
-        if ($char eq "\ca")
+        if (($char eq "\ca") || ($char eq KEY_HOME()))
         {
             $pos = 0;
         }
