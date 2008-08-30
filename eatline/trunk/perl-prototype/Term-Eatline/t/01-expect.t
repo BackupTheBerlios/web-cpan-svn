@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 use Expect;
 use File::Spec;
@@ -24,9 +24,8 @@ sub read_file
     return $contents;
 }
 
-# You can determine these things by issuing cat on the terminal and issuing
-# the commands.
-# Credits go to MooingLemur from Freenode.
+# You can determine these things by issuing dump.tcl on the commands.
+# See dump.tcl for more information.
 my $right_key = "\eOC";
 
 sub test_output
@@ -86,5 +85,12 @@ sub test_output
         "[[]]\ca${right_key}hello${right_key}${right_key}row\n",
         "[hello[]row]\n",
         "Testing for KEY_RIGHT()."
-    );    
+    );
+
+    # TEST
+    test_output(
+        "[]\ca${right_key}${right_key}${right_key}suffix\n",
+        "[]suffix\n",
+        "Testing for excessive KEY_RIGHT()."
+    );
 }
