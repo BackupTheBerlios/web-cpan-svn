@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 12;
+use Test::More tests => 13;
 
 use Expect;
 use File::Spec;
@@ -137,6 +137,13 @@ sub test_output
         "Inner${home_key}Prefix-${end_key}==Suffix\n",
         "Prefix-Inner==Suffix\n",
         "Testing for <End> and <Home>."
+    );
+
+    # TEST
+    test_output(
+        "Sch\b\bhlomi Fish\n",
+        "Shlomi Fish\n",
+        "Testing for backspace."
     );
     
 }

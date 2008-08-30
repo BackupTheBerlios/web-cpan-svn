@@ -104,6 +104,7 @@ sub _get_keyboard_map
     {
         _map_keys(["\ca", KEY_HOME()] => "home"),
         _map_keys(["\ce", KEY_END()] => "end"),
+        _map_keys([KEY_BACKSPACE()] => "backspace"),
         _map_keys([KEY_RIGHT()] => "right"),
         _map_keys([KEY_LEFT()] => "left"),
         _map_keys(["\n"] => "enter"),
@@ -143,6 +144,13 @@ sub _key_enter
     my $self = shift;
 
     return { action => "return", };
+}
+
+sub _key_backspace
+{
+    my $self = shift;
+
+    return $self->_remove_char_before();
 }
 
 =head2 $eatline->readline()
@@ -279,6 +287,24 @@ sub _insert_char
     return;
 }
 
+sub _remove_char_before
+{
+    my $self = shift;
+
+    my $line = $self->_curr_line();
+
+    if ($self->_pos() == 0)
+    {
+        return;
+    }
+
+    substr($line, $self->_pos()-1, 1) = "";
+    $self->_dec_pos();
+
+    $self->_curr_line($line);
+
+    return;
+}
 
 =head1 AUTHOR
 
