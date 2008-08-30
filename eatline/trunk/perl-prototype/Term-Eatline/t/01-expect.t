@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 7;
+use Test::More tests => 8;
 
 use Expect;
 use File::Spec;
@@ -99,7 +99,13 @@ sub test_output
     test_output(
         "[[[]]]" . ($left_key x 3) . "String Inside\n",
         "[[[String Inside]]]\n",
-        "Testing for LEFT_KEY()"
+        "Testing for KEY_LEFT()"
     );
 
+    # TEST
+    test_output(
+        "123" . ($left_key x 10) . "{Before}\ce\n",
+        "{Before}123\n",
+        "Testing for excessive KEY_LEFT()."
+    );
 }
