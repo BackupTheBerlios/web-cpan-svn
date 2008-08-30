@@ -1,7 +1,10 @@
 Build.PL
 Changes
+inc/Test/Run/Builder.pm
 lib/Term/Eatline.pm
+Makefile.PL
 MANIFEST
+META.yml
 README
 t/00-load.t
 t/01-expect.t
@@ -9,5 +12,3 @@ t/data/bin/read-line-to-file.pl
 test-eatline.pl
 t/pod-coverage.t
 t/pod.t
-Makefile.PL
-META.yml
