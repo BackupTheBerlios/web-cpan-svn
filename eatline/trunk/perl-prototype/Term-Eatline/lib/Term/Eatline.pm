@@ -63,7 +63,7 @@ sub _init
 
     $self->_main_win($main_win);
 
-    $self->_main_win()->initscr();
+    initscr();
 }
 
 sub DESTROY
