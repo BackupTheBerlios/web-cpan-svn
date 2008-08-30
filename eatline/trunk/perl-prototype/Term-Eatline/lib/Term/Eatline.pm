@@ -110,6 +110,41 @@ sub _get_keyboard_map
     };
 }
 
+sub _key_home
+{
+    my $self = shift;
+
+    return $self->_move_to_start_line();
+}
+
+sub _key_end
+{
+    my $self = shift;
+
+    return $self->_move_to_end_of_line();
+}
+
+sub _key_right
+{
+    my $self = shift;
+
+    return $self->_inc_pos();
+}
+
+sub _key_left
+{
+    my $self = shift;
+
+    return $self->_dec_pos();
+}
+
+sub _key_enter
+{
+    my $self = shift;
+
+    return { action => "return", };
+}
+
 =head2 $eatline->readline()
 
 Reads a line from the terminal based on the editing constraints.
@@ -128,31 +163,24 @@ sub readline
 
     while (my $char = $self->_main_win->getch())
     {
-        if (($char eq "\ca") || ($char eq KEY_HOME()))
+        my $verdict;
+        if (exists($keyboard_map->{$char}))
         {
-            $self->_move_to_start_line();
-        }
-        elsif (($char eq "\ce") || ($char eq KEY_END()))
-        {
-            $self->_move_to_end_of_line();
-        }
-        elsif ($char eq KEY_RIGHT())
-        {
-            $self->_inc_pos();
-        }
-        elsif ($char eq KEY_LEFT())
-        {
-            $self->_dec_pos();
-        }
-        elsif ($char eq "\n")
-        {
-            return $self->_curr_line() . "\n";
+            $verdict = $self->can("_key_" . $keyboard_map->{$char})->($self);
         }
         else
         {
             $self->_insert_char(
                 $char
             );
+        }
+
+        if (ref($verdict) eq "HASH")
+        {
+            if ($verdict->{action} eq "return")
+            {
+                return $self->_curr_line() . "\n";
+            }
         }
 
         getyx ($y, $x);
