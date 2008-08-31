@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 16;
+use Test::More tests => 18;
 
 use Expect;
 use File::Spec;
@@ -165,6 +165,20 @@ sub test_output
         "123" . ("\cb" x 10) . "{Before}\ce\n",
         "{Before}123\n",
         "Testing for excessive C-b (left one char)."
+    );
+
+    # TEST
+    test_output(
+        "[[]]\ca\cfhello\cf\cfrow\n",
+        "[hello[]row]\n",
+        "Testing for Ctrl+F (right one character)."
+    );
+
+    # TEST
+    test_output(
+        "[]\ca\cf\cf\cfsuffix\n",
+        "[]suffix\n",
+        "Testing for excessive Ctrl+F (right one character)."
     );
 
 }

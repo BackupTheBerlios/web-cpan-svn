@@ -105,7 +105,7 @@ sub _get_keyboard_map
         _map_keys(["\ca", KEY_HOME()] => "home"),
         _map_keys(["\ce", KEY_END()] => "end"),
         _map_keys([KEY_BACKSPACE()] => "backspace"),
-        _map_keys([KEY_RIGHT()] => "right"),
+        _map_keys(["\cf", KEY_RIGHT()] => "right"),
         _map_keys(["\cb", KEY_LEFT()] => "left"),
         _map_keys(["\n"] => "enter"),
     };
