@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 14;
+use Test::More tests => 16;
 
 use Expect;
 use File::Spec;
@@ -152,5 +152,19 @@ sub test_output
         "Quantrumlo\n",
         "backspace - don't delete from beginning and more"
     );
-    
+
+    # TEST
+    test_output(
+        "[[[]]]" . ("\cb" x 3) . "String Inside\n",
+        "[[[String Inside]]]\n",
+        "Testing for C-b (left one char)"
+    );
+
+    # TEST
+    test_output(
+        "123" . ("\cb" x 10) . "{Before}\ce\n",
+        "{Before}123\n",
+        "Testing for excessive C-b (left one char)."
+    );
+
 }
