@@ -195,6 +195,7 @@ sub readline
 
         getyx ($y, $x);
         $self->_main_win->addstr($y,0,$self->_curr_line());
+        $self->_main_win->move($y, $self->_pos());
     }
 }
 
