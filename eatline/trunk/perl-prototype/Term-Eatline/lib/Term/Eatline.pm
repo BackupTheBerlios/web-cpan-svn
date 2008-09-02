@@ -107,6 +107,7 @@ sub _get_keyboard_map
         # These backspace settings are based on the hacks in 
         # lib/Curses/UI/Common.pm in get_key().
         _map_keys(["\cH", chr(127), KEY_BACKSPACE()] => "backspace"),
+        _map_keys([KEY_DC()] => "delete"),
         _map_keys(["\cf", KEY_RIGHT()] => "right"),
         _map_keys(["\cb", KEY_LEFT()] => "left"),
         _map_keys(["\n"] => "enter"),
@@ -153,6 +154,13 @@ sub _key_backspace
     my $self = shift;
 
     return $self->_remove_char_before();
+}
+
+sub _key_delete
+{
+    my $self = shift;
+
+    return $self->_remove_this_char();
 }
 
 =head2 $eatline->readline()
@@ -303,6 +311,25 @@ sub _remove_char_before
 
     substr($line, $self->_pos()-1, 1) = "";
     $self->_dec_pos();
+
+    $self->_curr_line($line);
+
+    return;
+}
+
+
+sub _remove_this_char
+{
+    my $self = shift;
+
+    my $line = $self->_curr_line();
+
+    if ($self->_pos() == length($line))
+    {
+        return;
+    }
+
+    substr($line, $self->_pos(), 1) = "";
 
     $self->_curr_line($line);
 

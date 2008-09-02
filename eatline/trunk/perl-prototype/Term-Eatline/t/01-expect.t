@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 18;
+use Test::More tests => 19;
 
 use Expect;
 use File::Spec;
@@ -30,6 +30,7 @@ my $right_key = "\eOC";
 my $left_key  = "\eOD";
 my $home_key  = "\eOH";
 my $end_key   = "\eOF";
+my $delete_key   = "\e[3~";
 
 sub test_output
 {
@@ -179,6 +180,13 @@ sub test_output
         "[]\ca\cf\cf\cfsuffix\n",
         "[]suffix\n",
         "Testing for excessive Ctrl+F (right one character)."
+    );
+
+    # TEST
+    test_output(
+        ("Compract" . ($left_key x 4) . $delete_key . "\ce" . "\n"),
+        "Compact\n",
+        "Testing for delete key."
     );
 
 }
