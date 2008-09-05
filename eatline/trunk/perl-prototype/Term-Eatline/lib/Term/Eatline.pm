@@ -23,9 +23,10 @@ use base 'Class::Accessor';
 use Curses;
 
 __PACKAGE__->mk_accessors(qw(
-    _pos
     _curr_line
     _main_win
+    _num_chars_to_trim_from_end
+    _pos
     ));
 
 =head1 SYNOPSIS
@@ -67,6 +68,7 @@ sub _init
 
     $self->_main_win($main_win);
     $self->_main_win->keypad(1);
+    $self->_num_chars_to_trim_from_end(0);
 
     initscr();
     noecho();
@@ -88,6 +90,26 @@ sub _destroy
     $self->_main_win(undef);
 
     endwin();
+}
+
+sub _inc_num_chars_to_trim_from_end
+{
+    my $self = shift;
+
+    $self->_num_chars_to_trim_from_end($self->_num_chars_to_trim_from_end()+1);
+
+    return;
+}
+
+sub _fetch_num_chars_to_trim_from_end
+{
+    my $self = shift;
+
+    my $ret = $self->_num_chars_to_trim_from_end();
+
+    $self->_num_chars_to_trim_from_end(0);
+
+    return $ret;
 }
 
 sub _map_keys
@@ -202,6 +224,14 @@ sub readline
         }
 
         getyx ($y, $x);
+        if (my $n = $self->_fetch_num_chars_to_trim_from_end())
+        {
+            $self->_main_win->move(
+                $y, 
+                length($self->_curr_line()) - $n,
+            );
+            $self->_main_win->clrtoeol();
+        }
         $self->_main_win->addstr($y,0,$self->_curr_line());
         $self->_main_win->move($y, $self->_pos());
     }
@@ -311,6 +341,7 @@ sub _remove_char_before
 
     substr($line, $self->_pos()-1, 1) = "";
     $self->_dec_pos();
+    $self->_inc_num_chars_to_trim_from_end();
 
     $self->_curr_line($line);
 
@@ -330,6 +361,7 @@ sub _remove_this_char
     }
 
     substr($line, $self->_pos(), 1) = "";
+    $self->_inc_num_chars_to_trim_from_end();
 
     $self->_curr_line($line);
 
