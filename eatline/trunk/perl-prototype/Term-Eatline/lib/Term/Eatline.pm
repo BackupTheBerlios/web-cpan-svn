@@ -25,6 +25,7 @@ use Curses;
 __PACKAGE__->mk_accessors(qw(
     _curr_line
     _is_running
+    _keyboard_map
     _main_win
     _num_chars_to_trim_from_end
     _pos
@@ -65,8 +66,11 @@ sub _init
 {
     my ($self, $args) = @_;
 
+    $self->_keyboard_map($self->_calculate_keyboard_map());
 
     $self->_is_running(0);
+
+    return;
 }
 
 =head2 $eatline->start_running()
@@ -171,7 +175,7 @@ sub _map_keys
     return (map { $_ => $action } @$keys);
 }
 
-sub _get_keyboard_map
+sub _calculate_keyboard_map
 {
     my $self = shift;
 
@@ -270,8 +274,6 @@ sub readline
 
     $self->start_running();
 
-    my $keyboard_map = $self->_get_keyboard_map();
-
     $self->_curr_line("");
     $self->_move_to_start_line();
 
@@ -280,9 +282,9 @@ sub readline
     while (my $char = $self->_main_win->getch())
     {
         my $verdict;
-        if (exists($keyboard_map->{$char}))
+        if (defined(my $mapping = $self->_keyboard_map()->{$char}))
         {
-            $verdict = $self->can("_key_" . $keyboard_map->{$char})->($self);
+            $verdict = $self->can("_key_$mapping")->($self);
         }
         else
         {
