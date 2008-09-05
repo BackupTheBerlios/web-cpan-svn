@@ -262,6 +262,23 @@ sub _update_line_display
     return;
 }
 
+sub _handle_character
+{
+    my ($self, $char) = @_;
+
+    if (defined(my $mapping = $self->_keyboard_map()->{$char}))
+    {
+        return $self->can("_key_$mapping")->($self);
+    }
+    else
+    {
+        $self->_insert_char(
+            $char
+        );
+        return;
+    }
+}
+
 =head2 $eatline->readline()
 
 Reads a line from the terminal based on the editing constraints.
@@ -281,17 +298,7 @@ sub readline
 
     while (my $char = $self->_main_win->getch())
     {
-        my $verdict;
-        if (defined(my $mapping = $self->_keyboard_map()->{$char}))
-        {
-            $verdict = $self->can("_key_$mapping")->($self);
-        }
-        else
-        {
-            $self->_insert_char(
-                $char
-            );
-        }
+        my $verdict = $self->_handle_character($char);
 
         if (ref($verdict) eq "HASH")
         {
