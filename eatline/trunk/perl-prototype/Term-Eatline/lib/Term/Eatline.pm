@@ -335,11 +335,18 @@ sub _move_to_end_of_line
     return $self->_set_pos($self->_line_len());
 }
 
+sub _is_at_end_of_line
+{
+    my $self = shift;
+
+    return ($self->_pos() == $self->_line_len());
+}
+
 sub _inc_pos
 {
     my $self = shift;
 
-    if ($self->_pos() == $self->_line_len())
+    if ($self->_is_at_end_of_line())
     {
         # Do nothing.
     }
@@ -412,7 +419,7 @@ sub _remove_this_char
 
     my $line = $self->_curr_line();
 
-    if ($self->_pos() == $self->_line_len())
+    if ($self->_is_at_end_of_line())
     {
         return;
     }
