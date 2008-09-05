@@ -351,6 +351,13 @@ sub _is_at_end_of_line
     return ($self->_pos() == $self->_line_len());
 }
 
+sub _is_at_start_of_line
+{
+    my $self = shift;
+
+    return ($self->_pos() == 0);
+}
+
 sub _inc_pos
 {
     my $self = shift;
@@ -371,7 +378,7 @@ sub _dec_pos
 {
     my $self = shift;
 
-    if ($self->_pos() == 0)
+    if ($self->_is_at_start_of_line())
     {
         # Do nothing.
     }
@@ -407,7 +414,7 @@ sub _remove_char_before
 
     my $line = $self->_curr_line();
 
-    if ($self->_pos() == 0)
+    if ($self->_is_at_start_of_line())
     {
         return;
     }
