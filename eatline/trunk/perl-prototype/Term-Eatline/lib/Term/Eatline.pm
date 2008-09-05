@@ -238,6 +238,26 @@ sub _key_delete
     return $self->_remove_this_char();
 }
 
+sub _update_line_display
+{
+    my $self = shift;
+
+    my ($y, $x);
+    getyx ($y, $x);
+    if (my $n = $self->_fetch_num_chars_to_trim_from_end())
+    {
+        $self->_main_win->move(
+            $y, 
+            $self->_line_len() - $n,
+        );
+        $self->_main_win->clrtoeol();
+    }
+    $self->_main_win->addstr($y,0,$self->_curr_line());
+    $self->_main_win->move($y, $self->_pos());
+
+    return;
+}
+
 =head2 $eatline->readline()
 
 Reads a line from the terminal based on the editing constraints.
@@ -252,7 +272,6 @@ sub readline
 
     my $keyboard_map = $self->_get_keyboard_map();
 
-    my ($y, $x);
     $self->_curr_line("");
     $self->_move_to_start_line();
 
@@ -280,17 +299,7 @@ sub readline
             }
         }
 
-        getyx ($y, $x);
-        if (my $n = $self->_fetch_num_chars_to_trim_from_end())
-        {
-            $self->_main_win->move(
-                $y, 
-                $self->_line_len() - $n,
-            );
-            $self->_main_win->clrtoeol();
-        }
-        $self->_main_win->addstr($y,0,$self->_curr_line());
-        $self->_main_win->move($y, $self->_pos());
+        $self->_update_line_display();
     }
 }
 
