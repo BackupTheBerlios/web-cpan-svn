@@ -24,6 +24,7 @@ use Curses;
 
 __PACKAGE__->mk_accessors(qw(
     _curr_line
+    _is_running
     _main_win
     _num_chars_to_trim_from_end
     _pos
@@ -64,6 +65,25 @@ sub _init
 {
     my ($self, $args) = @_;
 
+
+    $self->_is_running(0);
+}
+
+=head2 $eatline->start_running()
+
+Actually initialize the screen, which may take over it.
+
+=cut
+
+sub start_running
+{
+    my $self = shift;
+
+    if ($self->_is_running())
+    {
+        return;
+    }
+
     my $main_win = Curses->new();
 
     $self->_main_win($main_win);
@@ -72,6 +92,32 @@ sub _init
 
     initscr();
     noecho();
+
+    $self->_is_running(1);
+
+    return;
+}
+
+=head2 $eatline->stop_running()
+
+Actually finalize the screen.
+
+=cut
+
+sub stop_running
+{
+    my $self = shift;
+    
+    if (! $self->_is_running())
+    {
+        return;
+    }
+
+    endwin();
+    $self->_main_win(undef);
+
+    $self->_is_running(0);
+    return;
 }
 
 sub DESTROY
@@ -87,9 +133,9 @@ sub _destroy
 {
     my $self = shift;
 
-    $self->_main_win(undef);
+    $self->stop_running();
 
-    endwin();
+    return;
 }
 
 sub _inc_num_chars_to_trim_from_end
@@ -110,6 +156,13 @@ sub _fetch_num_chars_to_trim_from_end
     $self->_num_chars_to_trim_from_end(0);
 
     return $ret;
+}
+
+sub _line_len
+{
+    my $self = shift;
+
+    return length($self->_curr_line());
 }
 
 sub _map_keys
@@ -194,6 +247,8 @@ Reads a line from the terminal based on the editing constraints.
 sub readline
 {
     my $self = shift;
+
+    $self->start_running();
 
     my $keyboard_map = $self->_get_keyboard_map();
 

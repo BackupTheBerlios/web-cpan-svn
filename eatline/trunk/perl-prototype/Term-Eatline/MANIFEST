@@ -9,6 +9,7 @@ META.yml
 README
 t/00-load.t
 t/01-expect.t
+t/02-unit.t
 t/data/bin/read-line-to-file.pl
 test-eatline.pl
 t/pod-coverage.t
