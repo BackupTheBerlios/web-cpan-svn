@@ -285,7 +285,7 @@ sub readline
         {
             $self->_main_win->move(
                 $y, 
-                length($self->_curr_line()) - $n,
+                $self->_line_len() - $n,
             );
             $self->_main_win->clrtoeol();
         }
@@ -332,14 +332,14 @@ sub _move_to_end_of_line
 {
     my $self = shift;
 
-    return $self->_set_pos(length($self->_curr_line()));
+    return $self->_set_pos($self->_line_len());
 }
 
 sub _inc_pos
 {
     my $self = shift;
 
-    if ($self->_pos() == length($self->_curr_line()))
+    if ($self->_pos() == $self->_line_len())
     {
         # Do nothing.
     }
@@ -412,7 +412,7 @@ sub _remove_this_char
 
     my $line = $self->_curr_line();
 
-    if ($self->_pos() == length($line))
+    if ($self->_pos() == $self->_line_len())
     {
         return;
     }
