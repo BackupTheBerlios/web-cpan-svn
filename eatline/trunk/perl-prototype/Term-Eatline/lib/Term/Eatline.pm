@@ -201,6 +201,8 @@ sub readline
     $self->_curr_line("");
     $self->_move_to_start_line();
 
+    $self->_main_win->clrtoeol();
+
     while (my $char = $self->_main_win->getch())
     {
         my $verdict;
