@@ -151,7 +151,7 @@ sub fetch_dump
     my $self = shift;
     my (%args) = (@_);
 
-    my $url = "https://OpenSVN.csie.org/";
+    my $url = "https://opensvn.csie.org/";
 
     my $repos_top_version = $self->get_repos_revision();
     my %login_params =
@@ -208,7 +208,7 @@ sub fetch_dump
 
     $response =
         $ua->get(
-            "$url/$fetch_file_path", 
+            "$url$fetch_file_path", 
             ":content_file" => 
                 ($args{'filename'} || ($self->project() . ".dump.gz")),
         );
@@ -219,6 +219,8 @@ sub fetch_dump
             'phase' => "dump_fetch"
         );
     }
+
+    return 0;
 }
 
 1; 
