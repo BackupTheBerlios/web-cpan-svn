@@ -1,9 +1,10 @@
+Build.PL
 Changes
+lib/WWW/OpenSVN.pm
+Makefile.PL
 MANIFEST
 META.yml # Will be created by "make dist"
-Makefile.PL
 README
-lib/WWW/OpenSVN.pm
 t/00-load.t
-t/pod.t
 TODO
+t/pod.t
