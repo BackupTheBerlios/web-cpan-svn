@@ -10,6 +10,7 @@ my $builder = Module::Build->new(
     requires => 
     {
         'LWP::UserAgent' => 0,
+        'perl' => "5.006",
     },
     build_requires =>
     {

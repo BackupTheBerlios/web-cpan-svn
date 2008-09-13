@@ -1,6 +1,7 @@
 package WWW::OpenSVN;
 
 use strict;
+use warnings;
 
 use LWP::UserAgent;
 use LWP::Simple;
