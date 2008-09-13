@@ -1,7 +1,8 @@
 Revision history for WWW-OpenSVN
 
 0.1.3
-    - Converted to Build.PL.
+    - Converted to Build.PL (Kwalitee).
+    - Added full POD coverage (Kwalitee) with a test by t/pod-coverage.t.
 
 0.1.2    2005-05-08
     - First CPAN Version.
