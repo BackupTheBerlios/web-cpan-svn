@@ -1,0 +1,68 @@
+Revision history for Perl extension XML::SemanticDiff.
+
+0.98  September 13 2008
+    - Added the LICENSE section to the POD (Kwalitee).
+    - Added the "use warnings" (Kwalitee).
+    - Added the "Repository URL" on the resources page.
+
+0.97  August 08 2007
+    - Added the README (Kwalitee)
+    - Specified the LICENSE (as "perl") explicitly in the Makefile.PL. 
+      (Kwalitee)
+    - Added t/pod.t. (Kwalitee).
+        - fixed the POD in the process.
+    - Created a Build.PL script based on the Makefile.PL in order to
+      make sure the META.yml is according to the SPEC. (Kwalitee).
+    - Added the t/pod-coverage.t file and made sure the files have
+      full POD coverage. (Kwalitee)
+    - Made sure the second argument in compare can accept a processed
+      XML result, and refactored the code in the process. Added the
+      t/13to-doc-read.t test file.
+    - Converted the "PathFinder" package in lib/XML/SemanticDiff.pm
+      to "XML::SemanticDiff::PathFinder" to maintain namespace
+      purity.
+    - Converted the Pkg to use an object using Non-Expat-Options. Made the 
+      global variables as class members using accessors.
+
+0.96  July 03 2007
+    - Fixed the warning emitted with the namespaces being undefined.
+      (t/8nonexist_ns.t)
+        - fixes http://rt.cpan.org/Public/Bug/Display.html?id=1379
+    - Fixed the search algorithm so it will identify the location of the
+      XML tags properly. (t/09two-tags.t)
+    - Applied a modified version of:
+        http://rt.cpan.org/Ticket/Display.html?id=24715
+        - Fixes an exception when comparing XML with multi-byte 
+          characters.
+        - Thanks to RMBARKER
+        - t/10wide-chars.t
+    - Applied a modified version of:
+        http://rt.cpan.org/Ticket/Display.html?id=18491
+        - Fixes a case where the same tags in different places with
+        identical contents, are not considered semantically identical.
+        - Thanks to CLOTHO for reporting it and suggesting a
+        fix.
+        - t/11tag-in-different-locations.t
+    - Added a regression test against bug:
+        http://rt.cpan.org/Ticket/Display.html?id=2322
+        - Seems to already have been fixed.
+        - t/12missing-element-has-o-as-cdata.t
+
+0.95  April 09 2002
+    [ Undocumented changelog. ]
+
+0.93  June 14 2001
+	- third (hopefully final) BETA
+	- more doc fixes.
+
+0.91  June 12 2001
+	- second BETA release.
+        - code cleanup.
+	- major doc fixes. 
+
+0.50  May 25 2001
+	- initial public BETA release. 
+
+0.01  Thu May 24 10:09:38 2001
+	- original version; created by h2xs 1.19
+
