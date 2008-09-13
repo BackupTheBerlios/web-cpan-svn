@@ -1,5 +1,6 @@
 Build.PL
 Changes
+examples/opensvn-backup.pl
 lib/WWW/OpenSVN.pm
 Makefile.PL
 MANIFEST
