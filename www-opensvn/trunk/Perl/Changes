@@ -5,6 +5,8 @@ Revision history for WWW-OpenSVN
     - Added full POD coverage (Kwalitee) with a test by t/pod-coverage.t.
     - Added use warnings. (Kwalitee)
         - Now requirign perl-5.6.0
+    - Fixed a regression with the <title> in the root repository
+    that prevented reading the revision number.
 
 0.1.2    2005-05-08
     - First CPAN Version.

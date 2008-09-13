@@ -127,7 +127,7 @@ sub _get_repos_revision
     my $project = $self->project();
     my $url = "http://opensvn.csie.org/$project/";
     my $page = get($url);
-    if ($page =~ /<title>Revision (\d+): \/<\/title>/)
+    if ($page =~ /Revision (\d+): \/<\/title>/)
     {
         return ($self->{'repos_revision'} = $1);
     }
