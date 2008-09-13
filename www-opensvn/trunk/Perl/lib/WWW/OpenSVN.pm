@@ -47,7 +47,7 @@ sub new
     my $class = shift;
     my $self = {};
     bless $self, $class;
-    $self->initialize(@_);
+    $self->_init(@_);
     return $self;
 }
 
@@ -63,7 +63,7 @@ use vars qw(@ISA);
 
 @ISA=(qw(WWW::OpenSVN::Base));
 
-sub initialize
+sub _init
 {
     my $self = shift;
     my (%args) = (@_);
@@ -85,25 +85,25 @@ use vars qw(@ISA);
 
 @ISA=(qw(WWW::OpenSVN::Base));
 
-sub initialize
+sub _init
 {
     my $self = shift;
     my (%args) = (@_);
     $self->{'project'} = $args{'project'}
         or die "Project ID not specified!";
-    $self->{'password'} = $args{'password'}
+    $self->{'_password'} = $args{'password'}
         or die "Project Password not speicified!";
     return 0;
 }
 
 
-sub password
+sub _password
 {
     my $self = shift;
-    return $self->{'password'};
+    return $self->{'_password'};
 }
 
-sub gen_error
+sub _gen_error
 {
     my $self = shift;
 
@@ -116,7 +116,7 @@ sub gen_error
         );
 }
 
-sub get_repos_revision
+sub _get_repos_revision
 {
     my $self = shift;
     if (exists($self->{'repos_revision'}))
@@ -132,7 +132,7 @@ sub get_repos_revision
     }
     else
     {
-        $self->gen_error(
+        $self->_gen_error(
             'phase' => 'get_repos_rev',
         );
     }
@@ -153,11 +153,11 @@ sub fetch_dump
 
     my $url = "https://opensvn.csie.org/";
 
-    my $repos_top_version = $self->get_repos_revision();
+    my $repos_top_version = $self->_get_repos_revision();
     my %login_params =
     (
         'project' => $self->project(),
-        'password' => $self->password(),
+        'password' => $self->_password(),
         'action' => "login",
     );
 
@@ -167,7 +167,7 @@ sub fetch_dump
 
     if (!$response->is_success())
     {
-        $self->gen_error(
+        $self->_gen_error(
             'phase' => "login",
         );
     }
@@ -187,7 +187,7 @@ sub fetch_dump
 
     if (! $response->is_success())
     {
-        $self->gen_error(
+        $self->_gen_error(
             'phase' => "dump_request",
         );
     }
@@ -201,7 +201,7 @@ sub fetch_dump
     }
     else
     {
-        $self->gen_error(
+        $self->_gen_error(
             'phase' => "dump_wrong_redirect",
         );
     }
@@ -215,7 +215,7 @@ sub fetch_dump
 
     if (! $response->is_success())
     {
-        $self->gen_error(
+        $self->_gen_error(
             'phase' => "dump_fetch"
         );
     }
