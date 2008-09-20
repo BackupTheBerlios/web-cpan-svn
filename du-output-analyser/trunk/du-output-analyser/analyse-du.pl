@@ -24,16 +24,32 @@ use strict;
 use warnings;
 
 use Getopt::Long;
+use Pod::Usage;
 
 my $prefix = "";
 my $depth = 1;
 my $sort = 1;
+my $man = 0;
+my $help = 0;
 
 GetOptions(
     "prefix|p=s" => \$prefix,
     "depth|d=n" => \$depth,
     "sort" => \$sort,
-);
+    "help|h" => \$help, 
+    "man" => \$man,
+) or pod2usage(2);
+
+if ($help)
+{
+    pod2usage(1)
+}
+
+if ($man)
+{
+    pod2usage(-verbose => 2);
+}
+
 my @results=();
 while(my $line = <>)
 {
