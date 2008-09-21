@@ -123,6 +123,18 @@ Defaults to 1.
 When specified, this option instructs not to sort the items according to their
 size.
 
+=item B<--help> B<-h>
+
+Displays the help.
+
+=item B<--man>
+
+Displays the man page.
+
+=item B<--version>
+
+Displays the version.
+
 =back
 
 =head1 CREDITS
