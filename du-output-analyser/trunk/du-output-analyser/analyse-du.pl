@@ -26,11 +26,14 @@ use warnings;
 use Getopt::Long;
 use Pod::Usage;
 
+our $VERSION = "0.2.0";
+
 my $prefix = "";
 my $depth = 1;
 my $sort = 1;
 my $man = 0;
 my $help = 0;
+my $version = 0;
 
 GetOptions(
     "prefix|p=s" => \$prefix,
@@ -38,6 +41,7 @@ GetOptions(
     "sort" => \$sort,
     "help|h" => \$help, 
     "man" => \$man,
+    "version" => \$version,
 ) or pod2usage(2);
 
 if ($help)
@@ -48,6 +52,12 @@ if ($help)
 if ($man)
 {
     pod2usage(-verbose => 2);
+}
+
+if ($version)
+{
+    print "analyse-du.pl version $VERSION\n";
+    exit(0);
 }
 
 my @results=();
@@ -82,6 +92,10 @@ analyse-du.pl - analyse the output of C<\du .>
 =head1 SYNPOSIS
 
 B<analyse-du.pl> --prefix=progs/ --depth=1 --sort
+
+=head1 VERSION
+
+0.2.0
 
 =head1 DESCRIPTION
 
