@@ -67,10 +67,12 @@ while(my $line = <>)
         }
     }
 }
+
 if ($sort)
 {
     @results = (sort { $a->[1] <=> $b->[1] } @results);
 }
+
 print map { "$_->[1]\t$_->[0]\n" } @results;
 
 =head1 NAME
