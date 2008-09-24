@@ -1,7 +1,8 @@
-
+2008-09-24 Shlomi Fish <shlomif@iglu.org.il>
 	* Fixed: http://rt.cpan.org/Ticket/Display.html?id=39550 :
 	Problem with connect to IPv4 w/o given domain on FreeBSD6.1 (and
-	other BSD systems).
+	other BSD systems). (Thanks to Steffen Ullrich)
+	* New Release IO-Socket-INET6-2.55
 
 2008-02-22 Shlomi Fish <shlomif@iglu.org.il>
 	* Added pack_sockaddr_in6_all to the imports from Socket6 to fix
