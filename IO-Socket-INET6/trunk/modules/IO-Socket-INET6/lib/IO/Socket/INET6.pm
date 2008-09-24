@@ -173,12 +173,18 @@ sub configure {
 	    unless (scalar(@rres)>=5);
     }
 
-    while(1) {
+    LOOP_LRES: while(1) {
 
 	$family = (exists $arg->{PeerAddr})? ($rres[0]):($lres[0]) ;  # One concrete family.
 
 	#printf "DEBUG $family \n";
-	(undef,undef,undef,$lres,undef,@lres) =  @lres; 
+    my $fam_listen;
+	($fam_listen,undef,undef,$lres,undef,@lres) =  @lres;
+    
+    if ($fam_listen != $family)
+    {
+        next LOOP_LRES;
+    }
 
       	if ($lres && $family == AF_INET6) {
        	    if ($arg->{LocalFlow} || $arg->{LocalScope}) {
