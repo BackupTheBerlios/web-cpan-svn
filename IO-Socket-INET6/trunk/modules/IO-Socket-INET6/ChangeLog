@@ -1,3 +1,14 @@
+2008-10-06 Shlomi Fish <shlomif@iglu.org.il>
+	* Applied a modified version of a patch by Anicka Bernathova
+	<anicka@suse.cz>:
+	{{{
+	Previously IO-Socket-INET6 tried to bind even when one side
+	is AF_INET and the other AF_INET6 and this cannot work.
+
+	The FAMILY_CHECK loop is meant to make sure both sides have
+	the same family.
+	}}}
+
 2008-09-24 Shlomi Fish <shlomif@iglu.org.il>
 	* Fixed: http://rt.cpan.org/Ticket/Display.html?id=39550 :
 	Problem with connect to IPv4 w/o given domain on FreeBSD6.1 (and

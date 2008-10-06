@@ -148,12 +148,6 @@ sub configure {
     $proto ||= (getprotobyname('tcp'))[2];
     $type = $arg->{Type} || $socket_type{(getprotobynumber($proto))[0]};
 
-    my @lres = ();
-    @lres = getaddrinfo($laddr,$lport,$family,$type,$proto,AI_PASSIVE);
-
-    return _error($sock, $EINVAL, "getaddrinfo: $lres[0]")
-	unless(scalar(@lres)>=5);
-
     $arg->{PeerAddr} = $arg->{PeerHost}
 	if exists $arg->{PeerHost} && !exists $arg->{PeerAddr};
 
@@ -165,12 +159,60 @@ sub configure {
 
     $sock->blocking($arg->{Blocking}) if defined $arg->{Blocking};
 
-    
-    my @rres = ();
-    if (defined $raddr) {
-    @rres = getaddrinfo($raddr,$rport,$family,$type,$proto,AI_PASSIVE);
-    return _error($sock, $EINVAL, "getaddrinfo: $rres[0]")
-	    unless (scalar(@rres)>=5);
+    # Previously IO-Socket-INET6 tried to bind even when one side
+    # is AF_INET and the other AF_INET6 and this cannot work.
+    #
+    # The FAMILY_CHECK loop is meant to make sure both sides have
+    # the same family.
+
+    my @families;
+    if ($family == AF_UNSPEC) {
+        @families = (AF_INET6, AF_INET);
+    } else {
+        @families = ($family);
+    }
+
+    my $ok = 0;
+    my $msg;
+
+    my @lres;
+    my @rres;
+
+    FAMILY_CHECK:
+    for my $fam (@families) {
+
+        @lres = getaddrinfo(
+            $laddr,$lport,$fam,$type,$proto,AI_PASSIVE
+        );
+
+        if (scalar(@lres) < 5) {
+            $msg = $lres[0];
+            next FAMILY_CHECK;
+        }
+
+        if (defined $raddr) {
+            @rres = getaddrinfo(
+                $raddr,$rport,$fam,$type,$proto,AI_PASSIVE
+            );
+
+            if (scalar(@rres) >= 5) {
+                $ok = 1;
+                last FAMILY_CHECK;
+            }
+            else {
+                $msg = $rres[0];
+            }
+        }
+        else {
+            $ok = 1;
+            last FAMILY_CHECK;
+        }
+
+    }
+
+    if (! $ok)
+    {
+        return _error($sock, $EINVAL, "getaddrinfo: $msg");
     }
 
     LOOP_LRES: while(1) {
@@ -180,7 +222,7 @@ sub configure {
 	#printf "DEBUG $family \n";
     my $fam_listen;
 	($fam_listen,undef,undef,$lres,undef,@lres) =  @lres;
-    
+
     if ($fam_listen != $family)
     {
         next LOOP_LRES;
