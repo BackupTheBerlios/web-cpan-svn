@@ -8,6 +8,7 @@
 	The FAMILY_CHECK loop is meant to make sure both sides have
 	the same family.
 	}}}
+	* New Release IO-Socket-INET6-2.56
 
 2008-09-24 Shlomi Fish <shlomif@iglu.org.il>
 	* Fixed: http://rt.cpan.org/Ticket/Display.html?id=39550 :
