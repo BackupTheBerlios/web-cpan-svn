@@ -2,15 +2,15 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-          'PL_FILES' => {},
-          'INSTALLDIRS' => 'site',
           'NAME' => 'IO::Socket::INET6',
-          'EXE_FILES' => [],
           'VERSION_FROM' => 'lib/IO/Socket/INET6.pm',
           'PREREQ_PM' => {
-                           'Test::More' => 0,
+                           'IO::Socket' => 0,
                            'Socket6' => '0.12',
-                           'IO::Socket' => 0
-                         }
+                           'Test::More' => 0
+                         },
+          'INSTALLDIRS' => 'site',
+          'EXE_FILES' => [],
+          'PL_FILES' => {}
         )
 ;
