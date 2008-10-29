@@ -1,11 +1,12 @@
 Revision history for Perl extension Catalyst::Plugin::SanitizeUrl.
 
+0.2.1   Wed 29 Oct 2008
     - Converted to Build.PL.
-        - Added a license field.
-        - shortened the abstract in lib/Catalyst/Plugin/SanitizeUrl.pm.
-        - fixed the POD for lib/Catalyst/Plugin/SanitizeUrl/PrepAction.pm
-        - added the example.pod.
-        - added t/pod-coverage.t to test for Pod coverage.
+    - Added a license field.
+    - shortened the abstract in lib/Catalyst/Plugin/SanitizeUrl.pm.
+    - fixed the POD for lib/Catalyst/Plugin/SanitizeUrl/PrepAction.pm
+    - added the example.pod.
+    - added t/pod-coverage.t to test for Pod coverage.
 
 0.2.0   Tue 05 May 2005
     - First release.
