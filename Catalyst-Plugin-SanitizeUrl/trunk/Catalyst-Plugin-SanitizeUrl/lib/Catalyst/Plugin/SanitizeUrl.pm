@@ -17,9 +17,10 @@ sub get_action_path
 1;
 
 __END__
+
 =head1 NAME
 
-Catalyst::Plugin::SanitizeUrl - Make sure Catalyst does not ignore trailing slashes
+Catalyst::Plugin::SanitizeUrl - Make Catalyst not ignore trailing slashes
 
 =head1 SYNOPSIS
 

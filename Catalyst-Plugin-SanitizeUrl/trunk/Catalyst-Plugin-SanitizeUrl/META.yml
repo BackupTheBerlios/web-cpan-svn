@@ -1,11 +1,24 @@
-# http://module-build.sourceforge.net/META-spec.html
-#XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
-name:         Catalyst-Plugin-SanitizeUrl
-version:      0.2.0
-version_from: lib/Catalyst/Plugin/SanitizeUrl.pm
-installdirs:  site
+---
+name: Catalyst-Plugin-SanitizeUrl
+version: 0.2.0
+author:
+  - 'Shlomi Fish, C<shlomif@iglu.org.il>'
+abstract: Make Catalyst not ignore trailing slashes
+license: perl
+resources:
+  license: http://dev.perl.org/licenses/
 requires:
-    Catalyst:                      5.23
-
-distribution_type: module
-generated_by: ExtUtils::MakeMaker version 6.17
+  Catalyst: 5.23
+build_requires:
+  Test::More: 0
+provides:
+  Catalyst::Plugin::SanitizeUrl:
+    file: lib/Catalyst/Plugin/SanitizeUrl.pm
+    version: 0.2.0
+  Catalyst::Plugin::SanitizeUrl::PrepAction:
+    file: lib/Catalyst/Plugin/SanitizeUrl/PrepAction.pm
+    version: 0.2.0
+generated_by: Module::Build version 0.2808
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
