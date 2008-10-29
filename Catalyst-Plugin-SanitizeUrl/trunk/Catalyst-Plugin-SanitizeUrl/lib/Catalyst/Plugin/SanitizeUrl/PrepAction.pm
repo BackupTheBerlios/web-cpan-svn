@@ -5,14 +5,20 @@ use warnings;
 
 our $VERSION = '0.2.0';
 
-=head1 Catalyst::Plugin::SanitizeUrl::PrepAction 
+=head1 NAME
 
-A class to abstract functionality out of the prepare_action method.
+Catalyst::Plugin::SanitizeUrl::PrepAction  - A class to abstract functionality 
+out of the prepare_action method.
 
-=item $c->get_action_path
+=head1 SYNOPSIS
+
+For internal use by L<Catalyst::Plugin::SanitizeUrl> .
+
+=head2 $c->get_action_path
 
 Calculate the path components for the action. Returns an array reference
 containing the 
+
 =cut
 
 sub get_action_path {
@@ -21,7 +27,7 @@ sub get_action_path {
     return [ split /\//, $c->req->path ];
 }
 
-=item $c->prepare_action
+=head2 $c->prepare_action
 
 Prepare action. This function is nearly identical to the one in Catalyst.pm
 with the only difference is the extraction of the get_action_path() 
@@ -74,11 +80,15 @@ sub prepare_action {
       if ( $c->debug && @args );
 }
 
+=head1 SEE ALSO
+
+L<Catalyst::Plugin::SanitizeUrl>
+
 =head1 AUTHOR
 
 Sebastian Riedel, C<sri@cpan.org>
 
-Modified by Shlomi Fish, C<shlomif@iglu.org.il>
+Modified by Shlomi Fish, C<shlomif@iglu.org.il> (All rights disclaimed).
 
 =head1 LICENSE
 
