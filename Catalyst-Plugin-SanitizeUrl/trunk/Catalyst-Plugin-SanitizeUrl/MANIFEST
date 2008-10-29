@@ -1,0 +1,10 @@
+Changes
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+t/01use.t
+t/02pod.t
+lib/
+lib/Catalyst/Plugin/SanitizeUrl/PrepAction.pm
+lib/Catalyst/Plugin/SanitizeUrl.pm
