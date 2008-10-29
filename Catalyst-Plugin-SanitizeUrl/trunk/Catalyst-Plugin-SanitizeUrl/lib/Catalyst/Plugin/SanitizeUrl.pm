@@ -56,6 +56,11 @@ Sets up $c->{form}
 Overrided from L<Catalyst::Plugin::SanitizeUrl::PrepAction> to do 
 the right thing.
 
+=head1 NOTES
+
+This module's name is misleading and problematic. I heard of a better module
+to achieve the same ends as this module, but lost the reference.
+
 =head1 SEE ALSO
 
 L<Catalyst>
