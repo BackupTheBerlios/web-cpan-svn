@@ -1,0 +1,8 @@
+=head1 Catalyst::Plugin::SanitizeUrl
+
+A Possible use case for this module is to distinguish between paths
+that end with slash and those that don't so one can use relative links
+(E.g: C<./hello.txt> or C<../hello/> .
+
+I recall reading of a module doing it in a better way, (on use.perl.org IIRC)
+, but I don't recall the specifics.
