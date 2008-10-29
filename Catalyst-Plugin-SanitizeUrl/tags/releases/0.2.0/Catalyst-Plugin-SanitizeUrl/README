@@ -1,0 +1,2 @@
+Make sure that trailing slashes in Catalyst URLs are not ignored.
+
