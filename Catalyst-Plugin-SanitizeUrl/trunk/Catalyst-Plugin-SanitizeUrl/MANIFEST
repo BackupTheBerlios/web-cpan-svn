@@ -9,3 +9,4 @@ META.yml
 README
 t/01use.t
 t/02pod.t
+t/pod-coverage.t
