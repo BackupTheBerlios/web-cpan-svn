@@ -1,11 +1,16 @@
 #!/usr/bin/perl
 
+use strict;
+use warnings;
+
 use DBI;
 use File::Spec;
 
+use Net::DBus;
+
 my $data_dir = 
     File::Spec->catdir(
-        $ENV{HOME}, ".kde", "share", "apps" ,"amarok", "scripts-data",
+        $ENV{HOME}, ".kde4", "share", "apps" ,"amarok", "scripts-data",
     );
 
 my $db_file = File::Spec->catfile($data_dir, "per-song-volume.sqlite");
@@ -37,22 +42,37 @@ $SIG{TERM} = sub {
     $dbh->disconnect();
 };
 
-my @dcop_command = (qw(dcop amarok player));
+my $bus = Net::DBus->find;
+
+# Get a handle to the HAL service
+my $amarok_dbus_service = $bus->get_service("org.kde.amarok");
+
+my $tracklist = $amarok_dbus_service->get_object("/TrackList", "org.freedesktop.MediaPlayer");
+
+my $player = $amarok_dbus_service->get_object("/Player", "org.freedesktop.MediaPlayer");
 
 sub _get_current_path
 {
-    my $path = `@dcop_command path`;
-    chomp($path);
-
-    return $path;
+    return
+        $tracklist->GetMetadata($tracklist->GetCurrentTrack())
+            ->{'location'}
+            ;
 }
 
 sub _get_current_volume
 {
-    my $ret = `@dcop_command getVolume`;
-    chomp($ret);
+    return
+        $player->VolumeGet()
+            ;
+}
 
-    return $ret;
+sub _set_current_volume
+{
+    my $vol = shift;
+
+    return
+        $player->VolumeSet($vol)
+            ;
 }
 
 my $old_path = _get_current_path();
@@ -68,7 +88,7 @@ while(my $input = <STDIN>)
         my $new_volume = (defined($results) ? $results->[0] : $default_volume);
         if ($new_volume != $old_volume)
         {
-            system(@dcop_command, "setVolume", $new_volume);
+            _set_current_volume($new_volume);
             $old_volume = $new_volume;
         }
         $old_path = $new_path;
