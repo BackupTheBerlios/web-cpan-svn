@@ -1,0 +1,17 @@
+This Perl script maintains a per-song volume information. What it means is 
+that a volume is associated with each song, which is recorded whenever the
+volume changes, and is restored to its last value when the song is played
+again. This is useful if you have several songs which sound louder or softer
+than the rest.
+
+To run this script you need perl 5 and DBD::SQLite 
+(http://search.cpan.org/dist/DBD-SQLite/). 
+
+The file "$HOME/.kde/share/apps/amarok/scripts-data/per-song-volume.default-volume.txt"
+can optionally hold the default volume for playing the files (an integer
+from 0 to 100). The default setting for it is 40.
+
+I hope you find this script useful!
+
+    -- Shlomi Fish
+       http://www.shlomifish.org/
