@@ -28,7 +28,7 @@ find({ wanted => \&filter_files, no_chdir => 1}, "extradata");
 
 my $builder = Test::Run::Builder->new(
     module_name         => 'XML::Grammar::Screenplay',
-    license             => 'bsd',
+    license             => 'mit',
     dist_author         => 'Shlomi Fish <shlomif@cpan.org>',
     dist_version_from   => 'lib/XML/Grammar/Screenplay.pm',
     build_requires => {
