@@ -26,6 +26,7 @@ EOF
         qq{</head>\n},
         qq{\n},
         qq{<script language="JavaScript" type="text/javascript" src="label.js"></script>\n},
+        qq{\n},
         qq{<script language="JavaScript">
   pageDepth = 0;
   setPath();
@@ -37,6 +38,16 @@ EOF
         qq{</body>\n},
         qq{</html>\n},
     );
+}
+
+sub view_head1
+{
+    my ($self, $node) = @_;
+
+    my $title = $node->title->present($self);
+
+    return qq{<a name="$title"></a>}, "<h1>", $title,"</h1>\n",
+        $node->content->present($self);
 }
 
 package main;
