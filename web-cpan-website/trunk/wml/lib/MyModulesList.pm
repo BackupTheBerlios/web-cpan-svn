@@ -1,6 +1,7 @@
 package MyModulesList;
 
 use strict;
+use warnings;
 
 my @modules_list =
 (
