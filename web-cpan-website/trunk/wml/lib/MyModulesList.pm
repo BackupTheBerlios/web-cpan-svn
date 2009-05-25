@@ -122,7 +122,8 @@ was recently adopted by us.
 <h2>Project Resources</h2>
 <ul>
 <li>
-Freshmeat Record - FILL IN.
+<a href="http://freshmeat.net/projects/statistics-descriptive">Freshmeat 
+Record</a>
 </li>
 </ul>
 EOF
