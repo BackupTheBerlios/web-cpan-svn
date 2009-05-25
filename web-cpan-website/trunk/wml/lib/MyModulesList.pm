@@ -157,18 +157,9 @@ If you deploy this module in a public URL with a good bandwidth, let me know
 so I can link to it here for demonstration purposes.
 </p>
 <h2>Demos</h2>
-<ul>
-<li>
-<a href="http://freehackers.org/~shlomif/svn-raweb-light/berlios.cgi/">The 
-web-cpan repository at berlios</a> - an SVN::RaWeb::Light web-interface to the
-repository holding the sources of the modules here.
-</li>
-<li>
-<a href="http://freehackers.org/~shlomif/svn-raweb-light/subversion.cgi/">Browse
-Subversion's Repository</a> - browse the svn.collab.net repository that keeps
-track of the code of Subversion itself.
-</li>
-</ul>
+<p>
+URLs are broken due to lack of use.
+</p>
 EOF
     },
     {
