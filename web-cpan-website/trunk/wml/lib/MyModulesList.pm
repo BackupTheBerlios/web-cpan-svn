@@ -101,6 +101,33 @@ implement them using HTML-Widgets-NavMenu.
 EOF
     },
     {
+        'perl_name' => "Statistics-Descriptive",
+        'subject' => "Statistics-Descriptive",
+        'text' => "Statistics-Descriptive",
+        'title' => "Module for Performing Statistical Analysis on Numeric Data",
+        'svn_dir' => "Statistics-Descriptive",
+        'desc' => <<"EOF",
+<p>
+Statistics-Descriptive is a module to perform Statistical Analysis on
+numeric data. It can retrieve such things as the mean (or average), the median,
+the standard deviation, a histogram / frequency analysis, etc.
+</p>
+
+<p>
+Statistics-Descriptive has seen work from several people, the latest of
+whom was <a href="http://search.cpan.org/~colink/">Colin Kuskie</a>, and
+was recently adopted by us.
+</p>
+
+<h2>Project Resources</h2>
+<ul>
+<li>
+Freshmeat Record - FILL IN.
+</li>
+</ul>
+EOF
+    },
+    {
         'perl_name' => "SVN-Pusher",
         'text' => "SVN::Pusher", 
         'title' => "Propagate Changesets between Subversion Repositories",
