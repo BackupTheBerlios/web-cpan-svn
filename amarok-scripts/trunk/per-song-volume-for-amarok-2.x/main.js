@@ -4,6 +4,7 @@ function chomp(raw_text)
 }
 
 Importer.loadQtBinding("qt.core");
+Importer.loadQtBinding("qt.sql");
 
 QByteArray.prototype.toString = function()
 {
@@ -44,89 +45,84 @@ var default_volume = 40;
 // TODO : Remove later.
 Amarok.alert("def-vol = " + default_volume);
 
-// my $dbh = DBI->connect("dbi:SQLite:dbname=$db_file", "", "");
-// 
-// # Don't check for success - if it already exists, we'll get an error
-// # but we'll re-use the existing table
-// $dbh->do("CREATE TABLE songs_volumes (path TEXT PRIMARY KEY, volume INTEGER)");
-// 
-// my $select_by_path_sth = $dbh->prepare("SELECT volume FROM songs_volumes WHERE path = ?");
-// my $insert_sth = $dbh->prepare("INSERT OR REPLACE INTO songs_volumes (path, volume) VALUES (?, ?)");
-// my $make_default_sth = $dbh->prepare("DELETE FROM songs_volumes WHERE path = ?");
-// 
-// $SIG{TERM} = sub {
-//     foreach ($insert_sth, $select_by_path_sth, $make_default_sth)
-//     {
-//         $_->destroy;
-//         $_ = undef;
-//     }
-//     $dbh->disconnect();
-// };
-// 
-// my $bus = Net::DBus->find;
-// 
-// # Get a handle to the HAL service
-// my $amarok_dbus_service = $bus->get_service("org.kde.amarok");
-// 
+var dbh = QSqlDatabase.addDatabase("QSQLITE", "amarok-per-song-volume");
+dbh.setDatabaseName(db_file);
+dbh.open();
+
+// Don't check for success - if it already exists, we'll get an error
+// but we'll re-use the existing table
+dbh.exec("CREATE TABLE songs_volumes (url TEXT PRIMARY KEY, volume INTEGER)");
+
+var select_by_path_sth = new QSqlQuery();
+
+select_by_path_sth.prepare("SELECT volume FROM songs_volumes WHERE url = ?");
+
+var insert_sth = new QSqlQuery();
+
+insert_sth.prepare("INSERT OR REPLACE INTO songs_volumes (url, volume) VALUES (?, ?)");
+
+var make_default_sth = new QSqlQuery();
+
+make_default_sth.prepare("DELETE FROM songs_volumes WHERE url = ?");
+
 // my $tracklist = $amarok_dbus_service->get_object("/TrackList", "org.freedesktop.MediaPlayer");
-// 
+
+
 // my $player = $amarok_dbus_service->get_object("/Player", "org.freedesktop.MediaPlayer");
-// 
-// sub _get_current_path
-// {
-//     return
-//         $tracklist->GetMetadata($tracklist->GetCurrentTrack())
-//             ->{'location'}
-//             ;
-// }
-// 
-// sub _get_current_volume
-// {
-//     return
-//         $player->VolumeGet()
-//             ;
-// }
-// 
-// sub _set_current_volume
-// {
-//     my $vol = shift;
-// 
-//     return
-//         $player->VolumeSet($vol)
-//             ;
-// }
-// 
-// my $old_path = _get_current_path();
-// my $old_volume = _get_current_volume();
-// while(my $input = <STDIN>)
-// {
-//     chomp($input);
-//     if ($input eq "trackChange")
-//     {
-//         my $new_path = _get_current_path();
-//         $select_by_path_sth->execute($new_path);
-//         my $results = $select_by_path_sth->fetchrow_arrayref();
-//         my $new_volume = (defined($results) ? $results->[0] : $default_volume);
-//         if ($new_volume != $old_volume)
-//         {
-//             _set_current_volume($new_volume);
-//             $old_volume = $new_volume;
-//         }
-//         $old_path = $new_path;
-//     }
-//     elsif ($input =~ m{^volumeChange: (\d+)})
-//     {
-//         my $new_volume = $1;
-//         if ($new_volume == $default_volume)
-//         {
-//             $make_default_sth->execute($old_path);
-//         }
-//         else
-//         {
-//             $insert_sth->execute($old_path, $new_volume);
-//         }
-//         $old_volume = $new_volume;
-//     }
-// }
-// 
-// 
+
+function _get_current_path() {
+    var track = Amarok.Engine.currentTrack();
+    
+    if (track)
+    {
+        return track.url;
+    }
+    else
+    {
+        return null;
+    }
+}
+
+function _get_current_volume() {
+    return Amarok.Engine.volume;
+}
+
+function _set_current_volume(vol) {
+    Amarok.Engine.volume = vol;
+}
+ 
+var old_path = _get_current_path();
+var old_volume = _get_current_volume();
+
+Amarok.Engine.trackChanged.connect(
+        function () {
+            var new_path = _get_current_path();
+            select_by_path_sth.addBindValue(new_path);
+            select_by_path_sth.exec();
+            var results = select_by_path_sth.record();
+            var new_volume = results ? parseInt(results.field(0).value()) : default_volume;
+            if (new_volume != old_volume)
+            {
+                _set_current_volume(new_volume);
+                old_volume = new_volume;
+            }
+            old_path = new_path;
+        }
+        );
+
+Amarok.Engine.volumeChanged.connect(
+        function (new_volume) {
+            if (new_volume == default_volume)
+            {
+                make_default_sth.addBindValue(old_path);
+                make_default_sth.exec();
+            }
+            else
+            {
+                insert_sth.addBindValue(old_path);
+                insert_sth.addBindValue(new_volume);
+                old_volume = new_volume;
+            }
+        }
+        );
+
