@@ -122,6 +122,7 @@ Amarok.Engine.volumeChanged.connect(
             {
                 insert_sth.addBindValue(old_path);
                 insert_sth.addBindValue(new_volume);
+                insert_sth.exec();
                 old_volume = new_volume;
             }
         }
