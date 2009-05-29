@@ -1,13 +1,13 @@
-This Perl script maintains a per-song volume information. What it means is 
-that a volume is associated with each song, which is recorded whenever the
+This Amarok 2.x script maintains a per-song volume information. What it means 
+is  that a volume is associated with each song, which is recorded whenever the
 volume changes, and is restored to its last value when the song is played
 again. This is useful if you have several songs which sound louder or softer
 than the rest.
 
-To run this script you need perl 5 and DBD::SQLite 
-(http://search.cpan.org/dist/DBD-SQLite/). 
+To run this script you need Amarok 2.x, QtSql and 
+qt4-database-plugin-sqlite .
 
-The file "$HOME/.kde/share/apps/amarok/scripts-data/per-song-volume.default-volume.txt"
+The file "$HOME/.kde4/share/apps/amarok/scripts-data/per-song-volume.default-volume.txt"
 can optionally hold the default volume for playing the files (an integer
 from 0 to 100). The default setting for it is 40.
 
@@ -15,3 +15,16 @@ I hope you find this script useful!
 
     -- Shlomi Fish
        http://www.shlomifish.org/
+
+Now for a rant: I spent more than 3 hours converting this script from the
+working Perl 5 script for Amarok 1.x. I resented the Amarok developers for
+breaking the old Amarok 1.x script interface, and think that JavaScript is
+a poor choice for a project's exclusive scripting language. ( It's necessary
+for writing browser-side scripts on the web, but it wouldn't have been the
+best choice, retrospectively there, either. )
+
+In any case, I would much rather this script would have been kept as Perl
+or at least written in Ruby or Python or something. But JavaScript gave me
+a lot of problems in the past (doing greasemonkey scripts, etc.) and has
+given me some grief when writing this version of the script.
+
