@@ -86,9 +86,12 @@ function _get_current_volume() {
     return Amarok.Engine.volume;
 }
 
+var ignore_volume_set = false;
 function _set_current_volume(vol) {
+    ignore_volume_set = true;
     // Amarok.alert("set_cur_vol to " + vol);
     Amarok.Engine.volume = vol;
+    ignore_volume_set = false;
 }
  
 var old_path = _get_current_path();
@@ -98,6 +101,7 @@ Amarok.Engine.trackChanged.connect(
         function () {
             var new_path = _get_current_path();
 
+            // Amarok.alert("trackChange ; old_path = " + old_path + "new_path = " + new_path);
             select_by_path_sth.addBindValue(new_path);
             select_by_path_sth.exec();
 
@@ -119,11 +123,17 @@ Amarok.Engine.trackChanged.connect(
                 old_volume = new_volume;
             }
             old_path = new_path;
+            // Amarok.alert("trackChange ; old_path is now " + old_path);
         }
         );
 
 Amarok.Engine.volumeChanged.connect(
         function (new_volume) {
+            if (ignore_volume_set)
+            {
+                return;
+            }
+            // Amarok.alert("volChange ; path = " + old_path);
             if (new_volume == default_volume)
             {
                 make_default_sth.addBindValue(old_path);
