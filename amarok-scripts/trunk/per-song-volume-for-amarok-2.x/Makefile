@@ -3,7 +3,8 @@ BASE = per-song-volume
 PACKAGE = $(BASE).amarokscript.tar.bz2
 PACKAGE_DIR = $(BASE)
 
-FILES = Makefile README COPYING $(BASE).pl $(BASE).spec
+# FILES = Makefile README COPYING $(BASE).pl $(BASE).spec
+FILES = Makefile README COPYING  main.js script.spec
 PACKAGE_FILES = $(patsubst %,$(PACKAGE_DIR)/%,$(FILES))
 
 all: $(PACKAGE)
