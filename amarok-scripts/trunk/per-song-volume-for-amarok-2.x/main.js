@@ -52,15 +52,15 @@ dbh.open();
 // but we'll re-use the existing table
 dbh.exec("CREATE TABLE songs_volumes (url TEXT PRIMARY KEY, volume INTEGER)");
 
-var select_by_path_sth = new QSqlQuery();
+var select_by_path_sth = new QSqlQuery(dbh);
 
 select_by_path_sth.prepare("SELECT volume FROM songs_volumes WHERE url = ?");
 
-var insert_sth = new QSqlQuery();
+var insert_sth = new QSqlQuery(dbh);
 
 insert_sth.prepare("INSERT OR REPLACE INTO songs_volumes (url, volume) VALUES (?, ?)");
 
-var make_default_sth = new QSqlQuery();
+var make_default_sth = new QSqlQuery(dbh);
 
 make_default_sth.prepare("DELETE FROM songs_volumes WHERE url = ?");
 
@@ -97,10 +97,21 @@ var old_volume = _get_current_volume();
 Amarok.Engine.trackChanged.connect(
         function () {
             var new_path = _get_current_path();
+
             select_by_path_sth.addBindValue(new_path);
             select_by_path_sth.exec();
-            var results = select_by_path_sth.value(0);
-            var new_volume = results ? parseInt(results) : default_volume;
+
+            var new_volume;
+
+            if (select_by_path_sth.next())
+            {
+                new_volume = parseInt(select_by_path_sth.value(0));
+            }
+            else
+            {
+                new_volume = default_volume;
+            }
+
             // Amarok.alert("new_vol = " + new_volume + "new_path = " + new_path);
             if (new_volume != old_volume)
             {
