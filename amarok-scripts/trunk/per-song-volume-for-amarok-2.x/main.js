@@ -42,8 +42,7 @@ var default_volume = 40;
     }
 }
 
-// TODO : Remove later.
-Amarok.alert("def-vol = " + default_volume);
+// Amarok.alert("def-vol = " + default_volume);
 
 var dbh = QSqlDatabase.addDatabase("QSQLITE", "amarok-per-song-volume");
 dbh.setDatabaseName(db_file);
@@ -88,6 +87,7 @@ function _get_current_volume() {
 }
 
 function _set_current_volume(vol) {
+    // Amarok.alert("set_cur_vol to " + vol);
     Amarok.Engine.volume = vol;
 }
  
@@ -99,8 +99,9 @@ Amarok.Engine.trackChanged.connect(
             var new_path = _get_current_path();
             select_by_path_sth.addBindValue(new_path);
             select_by_path_sth.exec();
-            var results = select_by_path_sth.record();
-            var new_volume = results ? parseInt(results.field(0).value()) : default_volume;
+            var results = select_by_path_sth.value(0);
+            var new_volume = results ? parseInt(results) : default_volume;
+            // Amarok.alert("new_vol = " + new_volume + "new_path = " + new_path);
             if (new_volume != old_volume)
             {
                 _set_current_volume(new_volume);
