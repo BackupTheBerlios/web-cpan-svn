@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use XML::LibXML;
+use YAML::XS;
+
+my $parser = XML::LibXML->new();
+
+my $doc = $parser->parse_file("subscriptions.opml");
+
+my @tags = $doc->findnodes("//outline[\@title]");
+
+my @feeds = 
+    (map
+        { 
+            { 
+                title => $_->getAttribute("title"),
+                web => $_->getAttribute("htmlUrl"),
+                url => $_->getAttribute("xmlUrl"),
+            }
+        }
+        @tags
+    );
+
+open my $out, ">", "perlanetrc"
+    or die "Could not open perlanetrc";
+print {$out} Dump(
+    {
+        title => "Perlsphere as Perlanet",
+        description => "A Perlsphere clone using Perlanet",
+        url => "http://perlsphere.shlomifish.org/",
+        author =>
+        {
+            name => "Shlomi Fish",
+            email => 'shlomif@iglu.org.il',
+        },
+        entries => 20,
+        opml => "opml.xml",
+        page =>
+        {
+            file => "index.html",
+            template => "index.tt",
+        },
+        feed => 
+        {
+            file => "atom.xml",
+            format => "Atom",
+        },
+        feeds => \@feeds,
+    }
+);
+close($out);

@@ -1,0 +1,3 @@
+#!/bin/sh
+f="subscriptions.opml"
+wget -q -O "$f" http://perlsphere.net/"$f"
