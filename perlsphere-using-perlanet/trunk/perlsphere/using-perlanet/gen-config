@@ -8,7 +8,14 @@ use YAML::XS;
 
 my $parser = XML::LibXML->new();
 
-my $doc = $parser->parse_file("subscriptions.opml");
+my $opml = "subscriptions.opml";
+
+if (! -e $opml)
+{
+    system("./fetch-opml");
+}
+
+my $doc = $parser->parse_file($opml);
 
 my @tags = $doc->findnodes("//outline[\@title]");
 
