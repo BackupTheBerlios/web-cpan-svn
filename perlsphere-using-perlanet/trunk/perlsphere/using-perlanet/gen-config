@@ -4,7 +4,8 @@ use strict;
 use warnings;
 
 use XML::LibXML;
-use YAML::XS;
+# use YAML::XS;
+use YAML;
 
 my $parser = XML::LibXML->new();
 
@@ -33,6 +34,7 @@ my @feeds =
 
 open my $out, ">", "perlanetrc"
     or die "Could not open perlanetrc";
+binmode $out, ":utf8";
 print {$out} Dump(
     {
         title => "Perlsphere as Perlanet",
