@@ -39,7 +39,7 @@ print {$out} Dump(
     {
         title => "Perlsphere as Perlanet",
         description => "A Perlsphere clone using Perlanet",
-        url => "http://perlsphere.shlomifish.org/",
+        url => "http://www.shlomifish.org/perlsphers-using-perlanet/",
         author =>
         {
             name => "Shlomi Fish",
