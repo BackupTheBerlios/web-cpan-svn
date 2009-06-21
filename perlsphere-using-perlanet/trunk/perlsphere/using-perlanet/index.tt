@@ -7,8 +7,21 @@
     <title>[% feed.title %]</title>
   </head>
   <body>
-    <h1>[% feed.title | html %]</h1>
-    <p>[% feed.description | html %]</p>
+      <h1>[% feed.title | html %]</h1>
+      <div class="meta">
+          <p>[% feed.description | html %]</p>
+          <ul>
+              <li><a href="opml.xml">OPML</a></li>
+              <li><a href="atom.xml">Atom</a></li>
+              <li><a href="http://svn.berlios.de/svnroot/repos/web-cpan/perlsphere-using-perlanet/trunk/">Link to the Source Repository</a></li>
+              <li><a href="http://perlsphere.net/">The Original Perlsphere (based on Plagger)</a></li>
+          </ul>
+          <p>
+            Powered by 
+            <a href="http://search.cpan.org/dist/Perlanet/">Perlanet</a>.
+          </p>
+       </div>
+    <div class="entries">
 [% FOREACH entry IN feed.entries %]
     <h2><a href="[% entry.link | url | html %]">[% entry.title | html %]</h2></a>
     [% entry.content.body %]
@@ -17,6 +30,7 @@
     [% IF entry.issued %] on [% entry.issued | html; END %]</p>
 [% END %]
 [% END %]
+    </div>
     <hr />
     <address>[% feed.author | html %] / [% feed.modified | html %]</address>
   </body>
