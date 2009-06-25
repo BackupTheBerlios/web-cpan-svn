@@ -1,0 +1,60 @@
+use strict;
+use warnings;
+
+use File::Spec;
+use lib File::Spec->catdir(File::Spec->curdir(), "inc");
+
+use Test::Run::Builder;
+
+my $build = Test::Run::Builder->new(
+    'module_name' => "HTML::Widgets::NavMenu",
+    'requires' => 
+    {
+        'Test::More' => 0,
+        'Class::Accessor' => 0,
+        'Error' => 0,
+        'perl' => "5.6.1",
+        'IO::Scalar' => 0,
+    },
+    'license' => "mit",
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => "http://svn.berlios.de/svnroot/repos/web-cpan/nav-menu/",
+            homepage => "http://web-cpan.berlios.de/modules/HTML-Widgets-NavMenu/",
+        },
+        keywords =>
+        [
+            "arrows",
+            "bar",
+            "breadcrumbs",
+            "css",
+            "expand",
+            "hidden",
+            "html",
+            "menu",
+            "menus",
+            "nav-bar",
+            "navbar",
+            "navigation",
+            "navigation aids",
+            "nav-menu",
+            "navmenu",
+            "next",
+            "prev",
+            "previous",
+            "pure-perl",
+            "site-map",
+            "skipped",
+            "trail",
+            "tree",
+            "unexpand",
+            "up",
+            "widget",
+            "widgets",
+            "xhtml",
+        ],
+    },
+);
+$build->create_build_script;
