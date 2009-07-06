@@ -18,7 +18,7 @@ if (-e $yaml_fn)
 open my $yaml, ">", $yaml_fn;
 print {$yaml} Dump(
     {
-        common_tags => "",
+        common_tags => [],
         files =>
         [
             (map

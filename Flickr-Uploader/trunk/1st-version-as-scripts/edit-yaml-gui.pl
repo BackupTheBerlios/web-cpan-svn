@@ -3,11 +3,102 @@
 use strict;
 use warnings;
 
+package Flickr::WxPerlUploader::Photo;
+
+our $NUM_DESCRIPTION_PARTS = 5;
+
+use Class::XSAccessor
+    accessors => {
+        (map { $_ => $_ } 
+        (qw(
+            filename
+            tags
+            title
+            description_parts
+        )),
+        )
+    }
+    ;
+
+sub new
+{
+    my $class = shift;
+
+    my $self = {};
+    bless $self, $class;
+
+    $self->_init(@_);
+
+    return $self;
+}
+
+sub _init
+{
+    my $self = shift;
+    my $args = shift;
+
+    $self->filename($args->{'filename'});
+
+    if (! -e $self->filename())
+    {
+        die "Unknown filename '" . $self->filename() . "'!";
+    }
+
+    $self->tags([ @{$args->{'tags'}} ]);
+
+    $self->title($args->{'title'});
+
+    $self->description_parts([ @{$args->{'description_parts'}}]);
+
+    if (@{$self->description_parts()} != $NUM_DESCRIPTION_PARTS)
+    {
+        die ("Incorrect number of description parts - " 
+            . scalar(@{$self->description_parts()}) . "!"
+        );
+    }
+
+    return;
+}
+
 package Flickr::WxPerlUploader::App;
 
 use base 'Wx::App';
 use Wx ':everything';
 use Wx::Event qw(EVT_LISTBOX_DCLICK);
+
+use Class::XSAccessor
+    accessors => {
+        (map { $_ => $_ } 
+        (qw(
+            _common_tags
+            _photo_files
+        )),
+        )
+    }
+    ;
+
+use YAML::XS qw(LoadFile);
+
+sub _read_photos {
+    my $self = shift;
+
+    my $filename = "upload-spec.yml";
+
+    my $yaml = LoadFile($filename);
+
+    $self->_common_tags($yaml->{'common_tags'});
+
+    $self->_photo_files(
+        [ map { 
+            Flickr::WxPerlUploader::Photo->new(
+                $_,
+            )
+            } @{$yaml->{'files'}},
+        ]
+    );
+
+    return;
+}
 
 sub new
 {
@@ -21,6 +112,8 @@ sub new
 sub OnInit
 {
     my( $self ) = @_;
+
+    $self->_read_photos();
 
     my $frame = Wx::Frame->new( undef, -1, 'wxPerl', wxDefaultPosition, [ 200, 100 ] );
 
@@ -52,12 +145,9 @@ sub OnInit
         -1,
         wxDefaultPosition(),
         wxDefaultSize(),
-        [qw(
-            surround_island
-            surrounded_by_blacks
-            adjacent_whites
-            distance_from_islands
-        )]
+        [ 
+            map { $_->filename() } @{$self->_photo_files()}
+        ],
     );
     $sizer->Add($frame->{list}, 1, wxALL(), 10);
 
