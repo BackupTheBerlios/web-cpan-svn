@@ -24,6 +24,24 @@ sub OnInit
 
     my $frame = Wx::Frame->new( undef, -1, 'wxPerl', wxDefaultPosition, [ 200, 100 ] );
 
+    my $menu_bar = Wx::MenuBar->new;
+
+    my $file_menu = Wx::Menu->new;
+    
+    my $exit_item = $file_menu->Append(Wx::wxID_NEW, Wx::gettext("E&xit"));
+
+    Wx::Event::EVT_MENU(
+        $frame,
+        $exit_item,
+        sub {
+            $_[0]->Close();
+        },
+    );
+
+    $menu_bar->Append($file_menu, "&File");
+
+    $frame->SetMenuBar($menu_bar);
+
     my $sizer = Wx::BoxSizer->new(wxHORIZONTAL());
 
     $frame->SetSizer($sizer);
