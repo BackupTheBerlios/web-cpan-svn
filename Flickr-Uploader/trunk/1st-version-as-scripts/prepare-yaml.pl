@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use File::Spec;
-use YAML;
+use YAML::XS;
 
 opendir my $cwd, ".";
 my @paths = sort { $a cmp $b } grep { /\.(jpg|png)$/ } (File::Spec->no_upwards(readdir($cwd)));
@@ -15,8 +15,8 @@ if (-e $yaml_fn)
 {
     die "YAML File already exists!";
 }
-open my $yaml, ">", $yaml_fn;
-print {$yaml} Dump(
+YAML::XS::DumpFile(
+    $yaml_fn,
     {
         common_tags => [],
         files =>
@@ -33,7 +33,6 @@ print {$yaml} Dump(
             }
             @paths),
         ],
-    }
+    },
 );
-close($yaml);
 

@@ -3,12 +3,12 @@
 use strict;
 use warnings;
 
-use YAML;
+use YAML::XS;
 use Carp;
 
 use Flickr::Upload;
 
-my $data = YAML::LoadFile("upload-spec.yml");
+my $data = YAML::XS::LoadFile("upload-spec.yml");
 
 my $common_tags = $data->{common_tags};
 
