@@ -172,12 +172,20 @@ sub OnInit
     );
     $sizer->Add($frame->{list}, 1, wxALL(), 10);
 
-    my $controls_sizer = Wx::BoxSizer->new(wxHORIZONTAL());
+    my $controls_sizer = Wx::GridSizer->new(2, 10, 10);
 
     $sizer->Add($controls_sizer, 1, wxALL(), 10);
 
+    my $title_label = Wx::StaticText->new(
+        $frame, -1, "Title:",
+        Wx::wxDefaultPosition,
+        Wx::wxDefaultSize,
+        Wx::wxALIGN_LEFT,
+    );
+
+
     my $title_box = Wx::TextCtrl->new(
-        $frame, -1, '', 
+        $frame, -1, "", 
         Wx::wxDefaultPosition,
         Wx::wxDefaultSize,
         Wx::wxTE_PROCESS_ENTER
@@ -185,6 +193,7 @@ sub OnInit
 
     $self->{title_box} = $title_box;
 
+    $controls_sizer->Add($title_label, 1, wxALL(), 10);
     $controls_sizer->Add($title_box, 1, wxALL(), 10);
 
     $frame->SetSize(Wx::Size->new(600,400));
