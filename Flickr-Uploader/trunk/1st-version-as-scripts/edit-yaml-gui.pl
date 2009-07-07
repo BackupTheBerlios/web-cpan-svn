@@ -201,6 +201,31 @@ sub OnInit
 
     $self->{frame} = $frame;
 
+    $self->{_prev_image} = undef;
+
+    Wx::Event::EVT_LISTBOX( $self, $frame->{list}, 
+        sub {
+            my $list = shift;
+            my $event = shift;
+
+            if (defined($self->{_prev_image}))
+            {
+                $self->_photo_files->[$self->{_prev_image}]->title(
+                    $title_box->GetValue()
+                );
+            }
+
+            my $idx = $event->GetSelection();
+
+            $self->{_prev_image} = $idx;
+
+            $title_box->SetValue(
+                $self->_photo_files->[$idx]->title()
+            );
+
+            return;
+        },
+    );
 =begin Hello
 
     EVT_LISTBOX_DCLICK($frame->{list}, wxID_ANY(), sub {
