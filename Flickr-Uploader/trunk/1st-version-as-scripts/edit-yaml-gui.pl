@@ -157,7 +157,7 @@ sub OnInit
 
     $frame->SetMenuBar($menu_bar);
 
-    my $sizer = Wx::BoxSizer->new(wxHORIZONTAL());
+    my $sizer = Wx::BoxSizer->new(wxVERTICAL());
 
     $frame->SetSizer($sizer);
 
