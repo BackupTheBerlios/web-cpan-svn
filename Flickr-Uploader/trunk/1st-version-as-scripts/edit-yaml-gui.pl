@@ -157,11 +157,10 @@ sub OnInit
 
     $frame->SetMenuBar($menu_bar);
 
-    my $sizer = Wx::BoxSizer->new(wxVERTICAL());
+    my $sizer = Wx::BoxSizer->new(wxHORIZONTAL());
 
     $frame->SetSizer($sizer);
 
-    $sizer->Add($frame->{board}, 1, wxALL(), 10);
     $frame->{list} = Wx::ListBox->new(
         $frame,
         -1,
@@ -173,10 +172,27 @@ sub OnInit
     );
     $sizer->Add($frame->{list}, 1, wxALL(), 10);
 
+    my $controls_sizer = Wx::BoxSizer->new(wxHORIZONTAL());
+
+    $sizer->Add($controls_sizer, 1, wxALL(), 10);
+
+    my $title_box = Wx::TextCtrl->new(
+        $frame, -1, '', 
+        Wx::wxDefaultPosition,
+        Wx::wxDefaultSize,
+        Wx::wxTE_PROCESS_ENTER
+    );
+
+    $self->{title_box} = $title_box;
+
+    $controls_sizer->Add($title_box, 1, wxALL(), 10);
+
     $frame->SetSize(Wx::Size->new(600,400));
     $frame->Show( 1 );
 
     $self->{frame} = $frame;
+
+=begin Hello
 
     EVT_LISTBOX_DCLICK($frame->{list}, wxID_ANY(), sub {
             my $list = shift;
@@ -184,9 +200,12 @@ sub OnInit
 
             my $sel = $event->GetSelection();
             my $string = $list->GetString($sel);
-            $frame->{board}->perform_solve($string);
         }
     );
+
+=end Hello
+
+=cut
 
     return 1;
 }
