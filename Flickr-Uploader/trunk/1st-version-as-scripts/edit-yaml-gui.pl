@@ -176,16 +176,6 @@ sub OnInit
     my $menu_bar = Wx::MenuBar->new;
 
     my $file_menu = Wx::Menu->new;
-    
-    my $exit_item = $file_menu->Append(Wx::wxID_EXIT, Wx::gettext("E&xit"));
-
-    Wx::Event::EVT_MENU(
-        $frame,
-        $exit_item,
-        sub {
-            $_[0]->Close();
-        },
-    );
 
     my $save_item = $file_menu->Append(Wx::wxID_SAVE, Wx::gettext("&Save"));
 
@@ -195,6 +185,16 @@ sub OnInit
         sub {
             return $self->_save();
         }
+    );
+    
+    my $exit_item = $file_menu->Append(Wx::wxID_EXIT, Wx::gettext("E&xit"));
+
+    Wx::Event::EVT_MENU(
+        $frame,
+        $exit_item,
+        sub {
+            $_[0]->Close();
+        },
     );
 
     $menu_bar->Append($file_menu, "&File");
