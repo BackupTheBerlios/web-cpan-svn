@@ -82,6 +82,19 @@ sub _init
     return;
 }
 
+sub _serialize
+{
+    my $self = shift;
+
+    return
+    {
+        filename => $self->filename(),
+        tags => $self->tags(),
+        title => $self->title(),
+        description_parts => $self->description_parts(),
+    };
+}
+
 package Flickr::WxPerlUploader::App;
 
 use base 'Wx::App';
@@ -94,17 +107,18 @@ use Class::XSAccessor
         (qw(
             _common_tags
             _photo_files
+            _was_data_changed
         )),
         )
     }
     ;
 
-use YAML::XS qw(LoadFile);
+use YAML::XS qw(LoadFile DumpFile);
+
+my $filename = "upload-spec.yml";
 
 sub _read_photos {
     my $self = shift;
-
-    my $filename = "upload-spec.yml";
 
     my $yaml = LoadFile($filename);
 
@@ -131,11 +145,31 @@ sub new
     return $self;
 }
 
+sub _save
+{
+    my $self = shift;
+
+    DumpFile($filename, 
+        {
+            common_tags => $self->_common_tags(),
+            files =>
+            [
+                map { $_->_serialize() } @{$self->_photo_files()},
+            ],
+        },
+    );
+
+    $self->_was_data_changed(0);
+
+    return;
+}
+
 sub OnInit
 {
     my( $self ) = @_;
 
     $self->_read_photos();
+    $self->_was_data_changed(0);
 
     my $frame = Wx::Frame->new( undef, -1, 'wxPerl', wxDefaultPosition, [ 200, 100 ] );
 
@@ -143,7 +177,7 @@ sub OnInit
 
     my $file_menu = Wx::Menu->new;
     
-    my $exit_item = $file_menu->Append(Wx::wxID_NEW, Wx::gettext("E&xit"));
+    my $exit_item = $file_menu->Append(Wx::wxID_EXIT, Wx::gettext("E&xit"));
 
     Wx::Event::EVT_MENU(
         $frame,
@@ -151,6 +185,16 @@ sub OnInit
         sub {
             $_[0]->Close();
         },
+    );
+
+    my $save_item = $file_menu->Append(Wx::wxID_SAVE, Wx::gettext("&Save"));
+
+    Wx::Event::EVT_MENU(
+        $frame,
+        $save_item,
+        sub {
+            return $self->_save();
+        }
     );
 
     $menu_bar->Append($file_menu, "&File");
@@ -208,13 +252,6 @@ sub OnInit
             my $list = shift;
             my $event = shift;
 
-            if (defined($self->{_prev_image}))
-            {
-                $self->_photo_files->[$self->{_prev_image}]->title(
-                    $title_box->GetValue()
-                );
-            }
-
             my $idx = $event->GetSelection();
 
             $self->{_prev_image} = $idx;
@@ -224,6 +261,20 @@ sub OnInit
             );
 
             return;
+        },
+    );
+
+    Wx::Event::EVT_TEXT( $self, $title_box,
+        sub {
+
+            if (defined($self->{_prev_image}))
+            {
+                $self->_photo_files->[$self->{_prev_image}]->title(
+                    $title_box->GetValue()
+                );
+            }
+
+            $self->_was_data_changed(1);
         },
     );
 =begin Hello
