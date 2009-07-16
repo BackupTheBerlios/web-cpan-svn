@@ -193,7 +193,23 @@ sub OnInit
         $frame,
         $exit_item,
         sub {
-            $_[0]->Close();
+            my $win = shift;
+
+            if ($self->_was_data_changed())
+            {
+                my $verdict = Wx::MessageBox(
+                    Wx::gettext("There are unsaved changes. Still exit?"),
+                    Wx::gettext("Exit without save?"),
+                    (Wx::wxOK | Wx::wxCANCEL),
+                    $frame,
+                );
+                
+                if ($verdict == Wx::wxCANCEL)
+                {
+                    return;
+                }
+            }
+            $win->Close();
         },
     );
 
@@ -277,20 +293,6 @@ sub OnInit
             $self->_was_data_changed(1);
         },
     );
-=begin Hello
-
-    EVT_LISTBOX_DCLICK($frame->{list}, wxID_ANY(), sub {
-            my $list = shift;
-            my $event = shift;
-
-            my $sel = $event->GetSelection();
-            my $string = $list->GetString($sel);
-        }
-    );
-
-=end Hello
-
-=cut
 
     return 1;
 }
