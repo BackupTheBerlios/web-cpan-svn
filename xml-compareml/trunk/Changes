@@ -1,5 +1,6 @@
 Revision history for XML::CompareML
 
+0.2.5    Fri Jul 17 17:04:12 IDT 2009
     - Added XML::LibXSLT to the dependencies.
     - Converted Build.PL to use XML::Grammar::Builder.
     - Enhanced the Build.PL with keywords and resources.

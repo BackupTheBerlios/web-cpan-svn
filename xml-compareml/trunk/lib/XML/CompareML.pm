@@ -5,7 +5,7 @@ use warnings;
 
 use vars qw($VERSION);
 
-$VERSION = '0.2.4';
+$VERSION = '0.2.5';
 
 1; # End of XML::CompareML
 
@@ -17,7 +17,7 @@ XML::CompareML - A processor for the CompareML markup language
 
 =head1 VERSION
 
-Version 0.2.3
+Version 0.2.5
 
 =head1 SYNOPSIS
 
