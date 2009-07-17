@@ -6,6 +6,8 @@ author:
 abstract: A processor for the CompareML markup language
 license: mit
 resources:
+  Repository: https://svn.berlios.de/svnroot/repos/web-cpan/xml-compareml/
+  homepage: http://web-cpan.berlios.de/modules/XML-CompareML/
   license: http://www.opensource.org/licenses/mit-license.php
 build_requires:
   IO::Scalar: 0
@@ -37,3 +39,20 @@ generated_by: Module::Build version 0.3306
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
+keywords:
+  - Better SCM
+  - categories
+  - compare
+  - CompareML
+  - comparison
+  - criteria
+  - criterion
+  - grammar
+  - language
+  - markup
+  - scm-comparison
+  - systems
+  - tree
+  - version control
+  - xml
+  - XML

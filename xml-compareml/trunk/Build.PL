@@ -25,6 +25,33 @@ my $builder = XML::Grammar::Builder->new(
         'Test::Differences' => 0,
     },
     create_makefile_pl => 'passthrough',
+    meta_merge => {
+        resources => {
+            homepage => "http://web-cpan.berlios.de/modules/XML-CompareML/",
+            license => "http://www.opensource.org/licenses/mit-license.php",
+            Repository => "https://svn.berlios.de/svnroot/repos/web-cpan/xml-compareml/",
+            Demo => "http://better-scm.berlios.de/comparison/",
+        },
+        keywords =>
+        [
+            "Better SCM",
+            "categories",
+            "compare",
+            "CompareML",
+            "comparison",
+            "criteria",
+            "criterion",
+            "grammar",
+            "language",
+            "markup",
+            "scm-comparison",
+            "systems",
+            "tree",
+            "version control",
+            "xml",
+            "XML",
+        ]
+    },
 );
 
 $builder->create_build_script();
