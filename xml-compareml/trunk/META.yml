@@ -1,12 +1,16 @@
 ---
 name: XML-CompareML
-version: 0.2.4
+version: v0.2.4
 author:
   - 'Shlomi Fish <shlomif@iglu.org.il>'
 abstract: A processor for the CompareML markup language
 license: mit
 resources:
-  license: http://opensource.org/licenses/mit-license.php
+  license: http://www.opensource.org/licenses/mit-license.php
+build_requires:
+  IO::Scalar: 0
+  Test::Differences: 0
+  Test::More: 0
 requires:
   CGI: 0
   Class::Accessor: 0
@@ -15,14 +19,12 @@ requires:
   XML::LibXSLT: 0
   strict: 0
   warnings: 0
-build_requires:
-  IO::Scalar: 0
-  Test::Differences: 0
-  Test::More: 0
+configure_requires:
+  Module::Build: 0.3306
 provides:
   XML::CompareML:
     file: lib/XML/CompareML.pm
-    version: 0.2.4
+    version: v0.2.4
   XML::CompareML::Base:
     file: lib/XML/CompareML/Base.pm
   XML::CompareML::DTD::Generate:
@@ -31,7 +33,7 @@ provides:
     file: lib/XML/CompareML/DocBook.pm
   XML::CompareML::HTML:
     file: lib/XML/CompareML/HTML.pm
-generated_by: Module::Build version 0.2808
+generated_by: Module::Build version 0.3306
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4

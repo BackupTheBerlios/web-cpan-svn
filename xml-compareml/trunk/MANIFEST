@@ -4,6 +4,8 @@ examples/render.pl
 examples/scm-comparison.output.html
 examples/scm-comparison.xml
 extradata/compare-ml.xslt
+inc/Test/Run/Builder.pm
+inc/XML/Grammar/Builder.pm
 lib/XML/CompareML/Base.pm
 lib/XML/CompareML/DocBook.pm
 lib/XML/CompareML/DTD/Generate.pm
