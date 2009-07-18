@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 19;
+use Test::More tests => 20;
 
 use Expect;
 use File::Spec;
@@ -189,4 +189,13 @@ sub test_output
         "Testing for delete key."
     );
 
+    {
+        local $TODO = 1;
+    # TEST
+    test_output(
+        ("One two three four" . $home_key . "\efleer\efBORE" . "\n"),
+        "Oneleer twoBORE three four\n",
+        "Alt+F"
+    );
+    }
 }

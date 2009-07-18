@@ -190,6 +190,7 @@ sub _calculate_keyboard_map
         _map_keys(["\cf", KEY_RIGHT()] => "right"),
         _map_keys(["\cb", KEY_LEFT()] => "left"),
         _map_keys(["\n"] => "enter"),
+        _map_keys(["\ef"] => "right_word"),
     };
 }
 
@@ -240,6 +241,13 @@ sub _key_delete
     my $self = shift;
 
     return $self->_remove_this_char();
+}
+
+sub _key_right_word
+{
+    my $self = shift;
+
+    return $self->_skip_to_end_of_next_word();
 }
 
 sub _update_line_display
@@ -455,6 +463,25 @@ sub _remove_this_char
     $self->_curr_line($line);
 
     return;
+}
+
+sub _skip_to_end_of_next_word
+{
+    my $self = shift;
+
+    my $line = $self->_curr_line();
+
+    pos($line) = $self->_pos();
+
+    if ($line =~ m{\G[^a-z]*[a-z]+}gms)
+    {
+        $self->_set_pos(pos($line));
+        return;
+    }
+    else
+    {
+        return $self->_move_to_end_of_line(); 
+    }
 }
 
 =head1 AUTHOR
