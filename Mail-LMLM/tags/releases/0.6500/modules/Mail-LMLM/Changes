@@ -1,0 +1,34 @@
+0.6500:   ( Thu Jul 23 18:04:02 IDT 2009 )
+    - Added the -owner address to mailman.
+    
+0.6400:   ( Wed Mar  7 21:13:01 IST 2007 )
+    - Kwalitee improvements:
+        - Added pod.t and pod-coverage.t files.
+        - Added full POD coverage.
+        - Added a Build.PL file.
+        - Changed the COPYRIGHT POD section to LICENSE
+
+0.6300:   ( Tue Apr 25 09:49:24 IDT 2006 )
+    - Added id="" attributes to the sections.
+
+0.6.2:
+    - RPM .spec fixes for new versions of Mandriva.
+    - Fixed the prepare_package.sh script.
+
+0.6.1:
+    Processed the prolog and epilog parameters in Mail::LMLM.
+
+0.6.0:
+    Upgraded the minor version number to a stable version.
+
+0.5.16:
+    Added MANIFEST to itself.
+
+    Added the RPM Spec file.
+
+0.5.15: 
+    Added a t/use.t test and made sure the objects were moved to blib 
+    during the installation.
+
+    The version is now read from Mail::LMLM.pm instead of the ver.txt
+    file.
