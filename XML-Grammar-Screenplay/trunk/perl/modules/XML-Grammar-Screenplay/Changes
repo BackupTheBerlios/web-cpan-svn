@@ -1,5 +1,6 @@
 Revision history for XML-Grammar-Screenplay
 
+0.0503  Wed Jul 29 10:12:38 IDT 2009
         - Included a "package XML::Grammar::Screenplay::FromProto::Nodes"
         statement at the top of:
         lib/XML/Grammar/Screenplay/FromProto/Nodes.pm
