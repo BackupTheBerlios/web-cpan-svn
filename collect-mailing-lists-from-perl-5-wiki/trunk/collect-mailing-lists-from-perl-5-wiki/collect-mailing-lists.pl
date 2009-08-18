@@ -49,12 +49,13 @@ eval {
 LINKS_LOOP:
 foreach my $l (@valid_links)
 {
+    my $process_link = sub {
     my $url = $l->url_abs();
 
     my $url_entry = ($visited_links->{$url} ||= { count => 0 });
-    if ($url_entry->{count}++)
+    if ($url_entry->{count})
     {
-        next LINKS_LOOP;
+        return;
     }
     print "Visiting $url\n";
     $mech->get($l->url());
@@ -137,6 +138,11 @@ foreach my $l (@valid_links)
     }
 
     $url_entry->{mailing_lists} = \@mailing_lists_out;
+    $url_entry->{count} = 1;
+
+    };
+
+    eval { $process_link->(); };
 }
 continue
 {
