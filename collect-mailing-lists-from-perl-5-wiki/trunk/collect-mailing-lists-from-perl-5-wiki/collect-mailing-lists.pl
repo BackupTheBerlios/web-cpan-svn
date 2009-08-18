@@ -43,7 +43,7 @@ my @valid_links =
     {
         my $url = $_->url_abs();
         (
-            $url !~ m{\?(?:activestate|mailing_lists(?:\#|_\d)|lost_mailing_lists|\z|action=|about_this_website|help_section|wiki_(?:news|tools)|policies_and_guidelines|most_wanted_pages|sidebar|perl_5_wiki)}
+            $url !~ m{\?(?:activestate|cpants\z|windows\z|usenet\z|books\z|unix|corba|eureka|linux|damian_conway|mark_jason_dominus|mailing_lists(?:\#|_\d)|lost_mailing_lists|\z|action=|about_this_website|help_section|wiki_(?:news|tools)|policies_and_guidelines|most_wanted_pages|sidebar|perl_5_wiki)}
         );
     }
     @$links
