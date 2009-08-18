@@ -13,6 +13,7 @@ the Perl 5 Wiki into one database.
 use WWW::Mechanize;
 use HTML::TreeBuilder::LibXML;
 use Data::Dumper;
+use YAML::XS qw(LoadFile DumpFile);
 
 my $mech = WWW::Mechanize->new();
 
@@ -35,13 +36,23 @@ my @valid_links =
     @$links
 );
 
-my %visited_links;
+my $yaml_fn = "p5wiki_mailing_lists_data_1.yml";
+
+if (! -e $yaml_fn)
+{
+    DumpFile($yaml_fn, {});
+}
+
+my $visited_links = LoadFile($yaml_fn);
+
+eval {
 LINKS_LOOP:
 foreach my $l (@valid_links)
 {
     my $url = $l->url_abs();
 
-    if ($visited_links{$url}++)
+    my $url_entry = ($visited_links->{$url} ||= { count => 0 });
+    if ($url_entry->{count}++)
     {
         next LINKS_LOOP;
     }
@@ -65,6 +76,8 @@ foreach my $l (@valid_links)
 
     my @mailing_lists = $mailing_list_ul->findnodes("li");
 
+    my @mailing_lists_out;
+
     foreach my $mail_list (@mailing_lists)
     {
         my $text = $mail_list->as_HTML();
@@ -80,6 +93,8 @@ foreach my $l (@valid_links)
         my ($mail_list_ul) = $mail_list->findnodes("following-sibling::ul");
 
         my @items = $mail_list_ul->findnodes("li");
+
+        my @items_out;
 
         foreach my $item (@items)
         {
@@ -103,12 +118,40 @@ foreach my $l (@valid_links)
                 "\tValue-url == $value_url\n", 
                 "\tValue-content == $value_content\n"
                 ;
+
+            push @items_out,
+                +{
+                    key => $key,
+                    value_url => $value_url,
+                    value_content => $value_content,
+                }
+            ;
         }
+
+        push @mailing_lists_out,
+            +{
+                desc => $desc,
+                items => \@items_out,
+            }
+            ;
     }
+
+    $url_entry->{mailing_lists} = \@mailing_lists_out;
 }
 continue
 {
     $mech->back();
+}
+
+};
+
+my $err = $@;
+
+DumpFile($yaml_fn, $visited_links);
+
+if ($err)
+{
+    die $err;
 }
 
 =head1 LICENSE
@@ -118,3 +161,6 @@ This file is licensed under the MIT X11 License:
 L<http://www.opensource.org/licenses/mit-license.php>
 
 =cut
+
+1;
+
