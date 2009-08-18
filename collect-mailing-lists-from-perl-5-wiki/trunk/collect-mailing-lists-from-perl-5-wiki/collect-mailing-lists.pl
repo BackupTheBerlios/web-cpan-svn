@@ -24,13 +24,26 @@ my $links = $mech->find_all_links(
     url_abs_regex => qr{\A\Q$prefix\E},
 );
 
+my $content = $mech->response()->content();
+
+my $start =qq{<h2 id="categories">Categories</h2>};
+my $end = qq{<h2 id="end_of_categories_marker_for_processing">End of Categories (Marker for Processing)</h2>};
+
+my ($catlinks) = ($content =~ m{\Q$start\E(.*?)\Q$end\E}ms);
+
 my @valid_links = 
 (
+    grep
+    {
+        my $rel_url = $_->url();
+
+        (index($catlinks, qq{"$rel_url"}) >= 0)
+    }
     grep 
     {
         my $url = $_->url_abs();
         (
-            $url !~ m{\?(?:mailing_lists\#|lost_mailing_lists|\z|action=|about_this_website|help_section|wiki_(?:news|tools)|policies_and_guidelines|most_wanted_pages|sidebar|perl_5_wiki)}
+            $url !~ m{\?(?:mailing_lists(?:\#|_\d)|lost_mailing_lists|\z|action=|about_this_website|help_section|wiki_(?:news|tools)|policies_and_guidelines|most_wanted_pages|sidebar|perl_5_wiki)}
         );
     }
     @$links
@@ -106,7 +119,7 @@ foreach my $l (@valid_links)
             if (!defined($value_a_tag))
             {
                 $value_url = "";
-                ($key, $value_content) = ($key =~ m{\A([^:]+):.*?\z}ms);
+                ($key, $value_content) = ($key =~ m{\A([^:]+):(.*?)\z}ms);
             }
             else
             {
@@ -142,7 +155,7 @@ foreach my $l (@valid_links)
 
     };
 
-    eval { $process_link->(); };
+    $process_link->();
 }
 continue
 {
