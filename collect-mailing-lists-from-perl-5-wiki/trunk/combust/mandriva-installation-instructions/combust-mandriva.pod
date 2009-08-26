@@ -21,20 +21,33 @@ Tried on Cooker - could work on earlier versions
 
 =head2 Patch combust
 
+Note - one needs to patch C<httpd2.tmpl> instead of C<httpd.tmpl>!
+
+    diff --git a/apache/conf/httpd2.tmpl b/apache/conf/httpd2.tmpl
+    index 7749416..bb35725 100644
     --- a/apache/conf/httpd2.tmpl
     +++ b/apache/conf/httpd2.tmpl
-    @@ -11 +11,2 @@ LoadModule apreq_module [% apache_modules %]/mod_apreq2.so
-    -LoadModule log_config_module [% apache_modules %]/mod_log_config.so
-    +#LoadModule log_config_module [% apache_modules %]/mod_log_config.so
+    @@ -6,9 +6,10 @@ PidFile             "[% config.log_path %]/httpd.pid"
+     
+     Listen              [% config.port %]
+     
+    -LoadModule perl_module [% apache_modules %]/mod_perl.so
+    -LoadModule apreq_module [% apache_modules %]/mod_apreq2.so
+    +LoadModule perl_module [% modperl_path %]
+    +LoadModule apreq_module /usr/lib/apache-extramodules/mod_apreq2.so
+     LoadModule log_config_module [% apache_modules %]/mod_log_config.so
     +LoadModule autoindex_module [% apache_modules %]/mod_autoindex.so
+     LoadModule alias_module [% apache_modules %]/mod_alias.so
+     LoadModule env_module [% apache_modules %]/mod_env.so
+     LoadModule status_module [% apache_modules %]/mod_status.so
 
 =head2 make config file
 
     cat > combust.conf <<EOF
     perl  = /usr/bin/perl
-    httpd = /usr/sbin/apache2
-    modperl_path = /usr/lib/apache2/modules/mod_perl.so
-    apache_libexec = /usr/lib/apache2/modules/
+    httpd = /usr/sbin/httpd
+    modperl_path = /usr/lib/apache-extramodules/mod_perl.so
+    apache_libexec = /usr/lib/apache
     servername = combust.mydomain.com
     sites = www, dev
     port = 8225
@@ -60,8 +73,8 @@ you're just working on your local machine, you can set them to C<127.0.0.1>
 
 From the combust checkout dir:
 
-    export CBROOT=$PWD CBROOTLOCAL=$PWD
-    bin/run_httpd
+    export CBROOT="$PWD" CBROOTLOCAL="$PWD"
+    ./bin/run_httpd
 
 ( You will probably have perl errors in your C<logs/error_log> )
 
@@ -83,6 +96,8 @@ Using apt-get:
      libapache2-request-perl 
     dh-make-perl libyahoo-search-perl
 
-Using urpmi
+Using urpmi on Mandriva:
     
-    urpmi perl-Config-Simple apache-mod_perl2 apache-
+    urpmi  perl-Config-Simple apache-mod_perl apache-mod_apreq perl-Apache-DBI perl-Exception-Class perl-Cache-Memcached perl-Cache-Cache 'perl(Apache2::Request)'
+    cpan2dist --verbose --format=CPANPLUS::Dist::Mdv --install --timeout 0 Yahoo::Search
+
