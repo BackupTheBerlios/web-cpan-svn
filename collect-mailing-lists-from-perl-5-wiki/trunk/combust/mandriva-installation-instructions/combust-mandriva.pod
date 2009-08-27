@@ -98,6 +98,13 @@ Using apt-get:
 
 Using urpmi on Mandriva:
     
-    urpmi  perl-Config-Simple apache-mod_perl apache-mod_apreq perl-Apache-DBI perl-Exception-Class perl-Cache-Memcached perl-Cache-Cache 'perl(Apache2::Request)'
-    cpan2dist --verbose --format=CPANPLUS::Dist::Mdv --install --timeout 0 Yahoo::Search
+    urpmi perl-Config-Simple apache-mod_perl apache-mod_apreq  \
+        perl-Apache-DBI perl-Exception-Class perl-Cache-Memcached \
+        perl-Cache-Cache 'perl(Apache2::Request)'
 
+    cpan2dist --verbose --format=CPANPLUS::Dist::Mdv --install \
+        --timeout 0 Yahoo::Search
+
+=back
+
+=cut
