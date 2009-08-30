@@ -11,11 +11,11 @@ Dist::Man - a simple starter kit for any module
 
 =head1 VERSION
 
-version 1.52
+version 0.0.1
 
 =cut
 
-our $VERSION = '1.52';
+our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 

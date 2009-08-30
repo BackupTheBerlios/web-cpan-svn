@@ -11,11 +11,11 @@ Dist::Man::Plugin::Template - module starter with templates
 
 =head1 VERSION
 
-Version 1.52
+Version 0.0.1
 
 =cut
 
-our $VERSION = '1.52';
+our $VERSION = '0.0.1';
 
 =head1 SYNOPSIS
 
