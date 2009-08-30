@@ -4,7 +4,7 @@ MANIFEST
 Makefile.PL
 README
 
-bin/module-starter
+bin/pl-dist-man
 lib/Dist/Man.pm
 lib/Dist/Man/App.pm
 lib/Dist/Man/Simple.pm
