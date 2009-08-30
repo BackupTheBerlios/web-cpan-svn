@@ -1,4 +1,4 @@
-package Module::Starter;
+package Dist::Man;
 # vi:et:sw=4 ts=4
 
 use warnings;
@@ -7,7 +7,7 @@ use Carp qw( croak );
 
 =head1 NAME
 
-Module::Starter - a simple starter kit for any module
+Dist::Man - a simple starter kit for any module
 
 =head1 VERSION
 
@@ -22,22 +22,22 @@ our $VERSION = '1.52';
 Nothing in here is meant for public consumption.  Use F<module-starter>
 from the command line.
 
-    module-starter --module=Foo::Bar,Foo::Bat \
+    pl-dist-man create --module=Foo::Bar,Foo::Bat \
         --author="Andy Lester" --email=andy@petdance.com
 
 =head1 DESCRIPTION
 
-This is the core module for Module::Starter.  If you're not looking to extend
+This is the core module for Dist::Man.  If you're not looking to extend
 or alter the behavior of this module, you probably want to look at
 L<module-starter> instead.
 
-Module::Starter is used to create a skeletal CPAN distribution, including basic
+Dist::Man is used to create a skeletal CPAN distribution, including basic
 builder scripts, tests, documentation, and module code.  This is done through
 just one method, C<create_distro>.
 
 =head1 METHODS
 
-=head2 Module::Starter->create_distro(%args)
+=head2 Dist::Man->create_distro(%args)
 
 C<create_distro> is the only method you should need to use from outside this
 module; all the other methods are called internally by this one.
@@ -63,17 +63,17 @@ It takes a hash of params, as follows:
 
 =head1 PLUGINS
 
-Module::Starter itself doesn't actually do anything.  It must load plugins that
+Dist::Man itself doesn't actually do anything.  It must load plugins that
 implement C<create_distro> and other methods.  This is done by the class's C<import>
 routine, which accepts a list of plugins to be loaded, in order.
 
-For more information, refer to L<Module::Starter::Plugin>.
+For more information, refer to L<Dist::Man::Plugin>.
 
 =cut
 
 sub import {
     my $class = shift;
-    my @plugins = ((@_ ? @_ : 'Module::Starter::Simple'), $class);
+    my @plugins = ((@_ ? @_ : 'Dist::Man::Simple'), $class);
     my $parent;
 
     while (my $child = shift @plugins) {
@@ -99,6 +99,9 @@ sub import {
 
 =head1 AUTHORS
 
+Shlomi Fish, L<http://www.shlomifish.org/> (while disclaiming any implicit
+or explicit claims on the code).
+
 Andy Lester, C<< <petdance at cpan.org> >>
 
 Ricardo Signes, C<< <rjbs at cpan.org> >>
@@ -109,48 +112,55 @@ C.J. Adams-Collier, C<< <cjac at colliertech.org> >>
 
 You can find documentation for this module with the perldoc command.
 
-    perldoc Module::Starter
+    perldoc Dist::Man
 
 You can also look for information at:
 
 =over 4
 
-=item * Source code at Google Code
+=item * Source code at Berlios.de
 
-L<http://code.google.com/p/module-starter/>
+B<FILL IN>
 
 =item * AnnoCPAN: Annotated CPAN documentation
 
-L<http://annocpan.org/dist/Module-Starter>
+L<http://annocpan.org/dist/Dist-Man>
 
 =item * CPAN Ratings
 
-L<http://cpanratings.perl.org/d/Module-Starter>
+L<http://cpanratings.perl.org/d/Dist-Man>
 
 =item * RT: CPAN's request tracker
 
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Module-Starter>
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Dist-Man>
 
 =item * Search CPAN
 
-L<http://search.cpan.org/dist/Module-Starter>
+L<http://search.cpan.org/dist/Dist-Man/>
 
 =back
 
 =head1 BUGS
 
 Please report any bugs or feature requests to
-C<bug-module-starter at rt.cpan.org>, or through the web interface at
+C<bug-dist-man at rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.  I will be notified, and then you'll automatically be
 notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
+
+=head2 Module-Starter
 
 Copyright 2005-2009 Andy Lester, Ricardo Signes and C.J. Adams-Collier,
 All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=head2 Dist-Man
+
+Modified by Shlomi Fish, 2009 - all rights disclaimed - may be used under
+any of the present or future terms of Module-Starter.
 
 =cut
 

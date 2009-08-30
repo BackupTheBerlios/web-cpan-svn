@@ -1,8 +1,8 @@
-package Module::Starter::App;
+package Dist::Man::App;
 
 =head1 NAME
 
-Module::Starter::App - the code behind the command line program
+Dist::Man::App - the code behind the command line program
 
 =cut
 
@@ -34,7 +34,7 @@ sub _config_read {
 
 =head2 run
 
-  Module::Starter::App->run;
+  Dist::Man::App->run;
 
 This is equivalent to runnint F<module-starter>.  Its behavior is still subject
 to change.
@@ -79,8 +79,8 @@ sub run {
         force        => \$config{force},
         verbose      => \$config{verbose},
         version      => sub {
-            require Module::Starter;
-            print "module-starter v$Module::Starter::VERSION\n";
+            require Dist::Man;
+            print "module-starter v$Dist::Man::VERSION\n";
             exit 1;
         },
         help         => sub { pod2usage(1); },
@@ -93,7 +93,7 @@ sub run {
       );
   }
 
-  $config{class} ||= 'Module::Starter';
+  $config{class} ||= 'Dist::Man';
 
   $config{builder} = ['ExtUtils::MakeMaker'] unless @{$config{builder}};
 

@@ -5,12 +5,12 @@ use 5.006001;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME                => 'Module::Starter',
+    NAME                => 'Dist::Man',
     AUTHOR              => 'Andy Lester <andy@petdance.com>',
-    VERSION_FROM        => 'lib/Module/Starter.pm',
+    VERSION_FROM        => 'lib/Dist/Man.pm',
     (eval { ExtUtils::MakeMaker->VERSION(6.21) } ? (LICENSE => 'perl') : ()),
-    ABSTRACT_FROM       => 'lib/Module/Starter.pm',
-    EXE_FILES           => [ 'bin/module-starter' ],
+    ABSTRACT_FROM       => 'lib/Dist/Man.pm',
+    EXE_FILES           => [ 'bin/pl-dist-man' ],
     PREREQ_PM => {
         'Test::More'            => 0,
         'ExtUtils::Command'     => 0,
@@ -19,7 +19,7 @@ WriteMakefile(
         'Pod::Usage'            => 0,
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean               => { FILES => 'Module-Release-*' },
+    clean               => { FILES => 'Dist-Man-*' },
 );
 
 sub MY::postamble {

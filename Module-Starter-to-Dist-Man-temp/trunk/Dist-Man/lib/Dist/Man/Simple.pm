@@ -1,4 +1,4 @@
-package Module::Starter::Simple;
+package Dist::Man::Simple;
 # vi:et:sw=4 ts=4
 
 use strict;
@@ -8,11 +8,11 @@ use ExtUtils::Command qw( rm_rf mkpath touch );
 use File::Spec ();
 use Carp qw( carp confess croak );
 
-use Module::Starter::BuilderSet;
+use Dist::Man::BuilderSet;
 
 =head1 NAME
 
-Module::Starter::Simple - a simple, comprehensive Module::Starter plugin
+Dist::Man::Simple - a simple, comprehensive Dist::Man plugin
 
 =head1 VERSION
 
@@ -24,22 +24,22 @@ our $VERSION = '1.52';
 
 =head1 SYNOPSIS
 
-    use Module::Starter qw(Module::Starter::Simple);
+    use Dist::Man qw(Dist::Man::Simple);
 
-    Module::Starter->create_distro(%args);
+    Dist::Man->create_distro(%args);
 
 =head1 DESCRIPTION
 
-Module::Starter::Simple is a plugin for Module::Starter that will perform all
+Dist::Man::Simple is a plugin for Dist::Man that will perform all
 the work needed to create a distribution.  Given the parameters detailed in
-L<Module::Starter>, it will create content, create directories, and populate
+L<Dist::Man>, it will create content, create directories, and populate
 the directories with the required files.
 
 =head1 CLASS METHODS
 
 =head2 C<< create_distro(%args) >>
 
-This method works as advertised in L<Module::Starter>.
+This method works as advertised in L<Dist::Man>.
 
 =cut
 
@@ -88,9 +88,9 @@ sub create_distro {
 
 =head2 C<< new(%args) >>
 
-This method is called to construct and initialize a new Module::Starter object.
+This method is called to construct and initialize a new Dist::Man object.
 It is never called by the end user, only internally by C<create_distro>, which
-creates ephemeral Module::Starter objects.  It's documented only to call it to
+creates ephemeral Dist::Man objects.  It's documented only to call it to
 the attention of subclass authors.
 
 =cut
@@ -399,7 +399,7 @@ sub create_Makefile_PL {
     my $main_module  = shift;
     my $builder_name = 'ExtUtils::MakeMaker';
     my $output_file  =
-    Module::Starter::BuilderSet->new()->file_for_builder($builder_name);
+    Dist::Man::BuilderSet->new()->file_for_builder($builder_name);
     my $fname        = File::Spec->catfile( $self->{basedir}, $output_file );
 
     $self->create_file(
@@ -427,7 +427,7 @@ sub create_MI_Makefile_PL {
     my $main_module  = shift;
     my $builder_name = 'Module::Install';
     my $output_file  =
-      Module::Starter::BuilderSet->new()->file_for_builder($builder_name);
+      Dist::Man::BuilderSet->new()->file_for_builder($builder_name);
     my $fname        = File::Spec->catfile( $self->{basedir}, $output_file );
 
     $self->create_file(
@@ -528,7 +528,7 @@ sub create_Build_PL {
     my $main_module  = shift;
     my $builder_name = 'Module::Build';
     my $output_file  =
-      Module::Starter::BuilderSet->new()->file_for_builder($builder_name);
+      Dist::Man::BuilderSet->new()->file_for_builder($builder_name);
     my $fname        = File::Spec->catfile( $self->{basedir}, $output_file );
 
     $self->create_file(
@@ -951,7 +951,7 @@ sub create_build {
         push( @builders, split($COMMA, $builder) );
     }
 
-    my $builder_set = Module::Starter::BuilderSet->new();
+    my $builder_set = Dist::Man::BuilderSet->new();
 
     # Remove mutually exclusive and unsupported builders
     @builders = $builder_set->check_compatibility( @builders );
@@ -1083,11 +1083,15 @@ be notified of progress on your bug as I make changes.
 
 =head1 AUTHOR
 
+Shlomi Fish, L<http://www.shlomifish.org/>
+
 Andy Lester, C<< <andy@petdance.com> >>
 
 C.J. Adams-Collier, C<< <cjac@colliertech.org> >>
 
 =head1 Copyright & License
+
+=head2 Module::Starter::Simple
 
 Copyright 2005-2007 Andy Lester and C.J. Adams-Collier, All Rights Reserved.
 
@@ -1096,6 +1100,11 @@ under the same terms as Perl itself.
 
 Please note that these modules are not products of or supported by the
 employers of the various contributors to the code.
+
+=head2 Dist::Man::Simple
+
+Modified by Shlomi Fish, while disclaiming any explicit or implicit ownership
+of the code. May be used under the present or future terms of Module-Starter.
 
 =cut
 

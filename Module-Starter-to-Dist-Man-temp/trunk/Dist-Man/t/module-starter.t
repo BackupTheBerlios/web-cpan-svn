@@ -33,7 +33,7 @@ use File::Find;
 
 use Carp qw/ carp /;
 
-use Module::Starter::BuilderSet;
+use Dist::Man::BuilderSet;
 
 # Since we're making system calls from this test, we have to be extra
 # paranoid.
@@ -111,7 +111,7 @@ sub generated_files {
     }
   }
 
-  my $builder_set = new Module::Starter::BuilderSet;
+  my $builder_set = new Dist::Man::BuilderSet;
   my @builders = $builder_set->check_compatibility($opts->{builder});
   foreach my $builder (@builders){
     my $build_file = $builder_set->file_for_builder($builder);
@@ -209,7 +209,7 @@ sub build_module_starter {
     $path_sep = ";";
   }
 
-  my $builder_set = new Module::Starter::BuilderSet;
+  my $builder_set = new Dist::Man::BuilderSet;
 
   # Use only the supported builders which are not mutually exclusive
   my @builders;
@@ -374,7 +374,7 @@ close $fh;
 
 run_module_starter ( %options,
                      module       => [ 'Foo::Bar' ],
-                     plugin       => [ 'Module::Starter::TestPlugin' ],
+                     plugin       => [ 'Dist::Man::TestPlugin' ],
                    );
 
 unlink $config_file;

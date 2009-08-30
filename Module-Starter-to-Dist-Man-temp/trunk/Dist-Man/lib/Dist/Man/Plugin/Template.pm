@@ -1,4 +1,4 @@
-package Module::Starter::Plugin::Template;
+package Dist::Man::Plugin::Template;
 # vi:et:sw=4 ts=4
 
 use warnings;
@@ -7,7 +7,7 @@ use Carp qw( confess );
 
 =head1 NAME
 
-Module::Starter::Plugin::Template - module starter with templates
+Dist::Man::Plugin::Template - module starter with templates
 
 =head1 VERSION
 
@@ -19,17 +19,17 @@ our $VERSION = '1.52';
 
 =head1 SYNOPSIS
 
- use Module::Starter qw(
-   Module::Starter::Simple
-   Module::Starter::Plugin::Template
+ use Dist::Man qw(
+   Dist::Man::Simple
+   Dist::Man::Plugin::Template
  );
 
- Module::Starter->create_distro(%args);
+ Dist::Man->create_distro(%args);
 
 =head1 DESCRIPTION
 
-This plugin is designed to be added to a Module::Starter::Simple-compatible
-Module::Starter class.  It adds stub methods for template retrieval and
+This plugin is designed to be added to a Dist::Man::Simple-compatible
+Dist::Man class.  It adds stub methods for template retrieval and
 rendering, and it replaces all of Simple's _guts methods with methods that will
 retrieve and render the apropriate templates.
 
@@ -54,7 +54,7 @@ sub new {
 
 =head2 C<< templates() >>
 
-This method is used to initialize the template store on the Module::Starter
+This method is used to initialize the template store on the Dist::Man
 object.  It returns a hash of templates; each key is a filename and each value
 is the body of the template.  The filename F<Module.pm> is used for the module
 template.
@@ -79,7 +79,7 @@ sub renderer {
 =head2 C<< render($template, \%options) >>
 
 The C<render> method will render the template passed to it, using the
-data in the Module::Starter object and in the hash of passed parameters.
+data in the Dist::Man object and in the hash of passed parameters.
 
 =cut
 
@@ -93,7 +93,7 @@ sub render {
 
 =head2 _guts methods
 
-All of the C<FILE_guts> methods from Module::Starter::Simple are subclassed to
+All of the C<FILE_guts> methods from Dist::Man::Simple are subclassed to
 look something like this:
 
     sub file_guts {
@@ -106,7 +106,7 @@ look something like this:
     }
 
 These methods will need to be rewritten when (as is likely)
-Module::Starter::Simple's _guts methods are refactored into a registry.
+Dist::Man::Simple's _guts methods are refactored into a registry.
 
 =over 4
 
@@ -244,10 +244,18 @@ notified of progress on your bug as I make changes.
 
 =head1 COPYRIGHT
 
+=head2 Module::Starter::Template
+
 Copyright 2005-2007 Ricardo SIGNES, All Rights Reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
+
+=head2 Dist::Man::Template
+
+Modified by Shlomi Fish while disclaiming any explicit or implicit ownership.
+May be used under the present or future terms of 
+L<Module::Starter::Template>.
 
 =cut
 

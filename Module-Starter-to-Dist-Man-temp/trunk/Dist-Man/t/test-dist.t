@@ -5,7 +5,7 @@ use warnings;
 
 use Test::More tests => 469;
 
-use Module::Starter;
+use Dist::Man;
 use File::Spec;
 use File::Path;
 use Carp;
@@ -569,7 +569,7 @@ package main;
         File::Spec->catdir("t", "data", "MyModule-Test")
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'MyModule-Test',
         modules => ['MyModule::Test', 'MyModule::Test::App'],
         dir     => $module_base_dir,
@@ -816,7 +816,7 @@ EOF
         File::Spec->catdir('t', 'data', 'Book-Park-Mansfield')
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -937,7 +937,7 @@ EOF
         File::Spec->catdir("t", "data", "second-Book-Park-Mansfield")
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -1137,7 +1137,7 @@ EOF
         File::Spec->catdir("t", "data", "x11l-Book-Park-Mansfield")
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -1337,7 +1337,7 @@ EOF
         File::Spec->catdir("t", "data", "bsdl-Book-Park-Mansfield")
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -1537,7 +1537,7 @@ EOF
         File::Spec->catdir('t', 'data', 'gpl-Book-Park-Mansfield')
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -1658,7 +1658,7 @@ EOF
         File::Spec->catdir('t', 'data', 'lgpl-Book-Park-Mansfield')
         ;
 
-    Module::Starter->create_distro(
+    Dist::Man->create_distro(
         distro  => 'Book-Park-Mansfield',
         modules => [
             'Book::Park::Mansfield',
@@ -1782,3 +1782,10 @@ t/test-dist.t - test the integrity of prepared distributions.
 =head1 AUTHOR
 
 Shlomi Fish, L<http://www.shlomifish.org/>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright by Shlomi Fish, 2009. This file is available under the MIT/X11 
+License:
+
+L<http://www.opensource.org/licenses/mit-license.php>
