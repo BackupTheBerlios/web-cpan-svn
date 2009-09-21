@@ -29,3 +29,4 @@ hi def screenplayTextAddress      term=bold cterm=bold gui=bold
 
 let b:current_syntax="ScreenplayText"
 
+runtime! syntax/xml.vim
