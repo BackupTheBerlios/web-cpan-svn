@@ -405,6 +405,12 @@ Trek - "We The Living Dead"</a> - all original text, but fan fiction of
 Star Trek.
 </li>
 <li>
+<a href="http://www.shlomifish.org/open-source/interviews/">Interviews with
+Open Source People</a> - several interviews whose original hacky 
+like-XML-but-not-quite source was converted to ScreenplayText and then
+rendered into XML and XHTML.
+</li>
+<li>
 Some shorter and sillier examples can be found <a href="http://svn.berlios.de/svnroot/repos/web-cpan/XML-Grammar-Screenplay/trunk/perl/modules/XML-Grammar-Screenplay/t/data/">in the test data directory</a>. 
 </li>
 </ul>
