@@ -114,11 +114,11 @@ sub convert_input_to_xsl_fo
         }
     );
 
-    foreach my $p (@{$doc_tree->{Raw_Para}})
+    foreach my $p (@{$doc_tree->{Text}->{Raw_Para}})
     {
         $writer->startTag([$fo_ns, "block"]);
 
-        $writer->characters($p->body());
+        $writer->characters($p->{q//});
 
         $writer->endTag();
     }
