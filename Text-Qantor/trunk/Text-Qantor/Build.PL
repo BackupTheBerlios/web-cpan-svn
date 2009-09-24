@@ -12,9 +12,10 @@ my $builder = Text::Qantor::Builder->new(
     dist_author         => 'Shlomi Fish <shlomif@cpan.org>',
     dist_version_from   => 'lib/Text/Qantor.pm',
     build_requires => {
+        'Moose' => 0,
+        'Regexp::Grammars' => 0,
         'Test::More' => 0,
         'version' => 0,
-        'Parse::Yapp' => 0,
     },
     add_to_cleanup      => [ 'Text-Qantor-*' ],
     create_makefile_pl => 'traditional',

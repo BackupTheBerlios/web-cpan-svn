@@ -50,9 +50,12 @@ macro_ident: MACRO_NAME # TODO - create a better regex for it than just
                    # alphanumeric chars.
     ;
 
-plain_para_text: TEXT
-    | plain_para_text TEXT { my $t1 = $_[1] ; my $t2 = $_[2] ; [$t1->[0].$t2->[0], $t1->[1]] }
-    ;
+plain_para_text: TEXT { my $t1 = $_[1] ; my $t2 = $_[2] ; [$t1->[0].$t2->[0], 
+$t1->[1]] };
+
+#plain_para_text: TEXT
+#    | plain_para_text TEXT { my $t1 = $_[1] ; my $t2 = $_[2] ; [$t1->[0].$t2->[0], $t1->[1]] }
+#    ;
 
 %%
 

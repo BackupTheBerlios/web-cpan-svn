@@ -75,4 +75,6 @@ foreach my $input_file (@files)
         [ location => $expected_file ],
         "'$input_file' generated good output"
     );
+    # TODO : Remove later.
+    last;
 }

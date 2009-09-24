@@ -101,18 +101,20 @@ sub convert_input_to_xsl_fo
 
     my $parser = Text::Qantor::Parser->new();
 
-    my $doc_tree = $parser->YYParse(yylex => 
-        sub {
-            return $self->_lexer($args, [@_]);
-        },
-        yyerror =>
-        sub {
-            return $self->_parser_error($args, [@_]);
-        },
-        yydebug => 0x1F,
+    my $text;
+
+    {
+        local $/;
+        $text = <$in_fh>;
+    }
+
+    my $doc_tree = $parser->parse(
+        {
+            text => $text,
+        }
     );
 
-    foreach my $p (@{$doc_tree->_list()})
+    foreach my $p (@{$doc_tree->{Raw_Para}})
     {
         $writer->startTag([$fo_ns, "block"]);
 
