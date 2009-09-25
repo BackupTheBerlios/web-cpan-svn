@@ -1,7 +1,9 @@
 Build.PL
 Changes
+extradata/qantor-xml.rng
 inc/Test/Run/Builder.pm
 inc/Text/Qantor/Builder.pm
+inc/XML/Grammar/Builder.pm
 lib/Text/Qantor/Parser/Elem/Base.pm
 lib/Text/Qantor/Parser/Elem/MacroCall.pm
 lib/Text/Qantor/Parser/Elem/ParaList.pm

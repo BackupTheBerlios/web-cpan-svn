@@ -5,6 +5,8 @@ use warnings;
 
 use Test::More tests => 3;
 
+use File::Spec;
+
 use lib "./t/lib";
 
 use Test::XML::Ordered qw(is_xml_ordered);
@@ -52,7 +54,11 @@ foreach my $input_file (@files)
 
     my $expected_file = "t/data/to-xsl-fo/qantor-xml/$base.xml";
 
-    my $qantor = Text::Qantor->new();
+    my $qantor = Text::Qantor->new(
+        {
+            data_dir => File::Spec->catdir(File::Spec->curdir(), "extradata"),
+        }
+    );
 
     open my $input_file_fh, "<", $input_file;
 

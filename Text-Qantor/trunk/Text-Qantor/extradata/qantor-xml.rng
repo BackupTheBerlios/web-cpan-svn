@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!-- $Id: testSuite.rng,v 1.12 2003/01/29 12:24:07 jjc Exp $ -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    >
+    <start>
+        <element name="doc">
+            <element name="body">
+                <oneOrMore>
+                    <ref name="p" />
+                </oneOrMore>
+            </element>
+        </element>
+    </start>
+    <define name="p">
+        <element name="p">
+            <oneOrMore>
+                <choice>
+                    <text />
+                    <ref name="b"/>
+                </choice>
+            </oneOrMore>
+        </element>
+    </define>
+    <define name="b">
+        <element name="b">
+            <text />
+        </element>
+    </define>
+</grammar>
+

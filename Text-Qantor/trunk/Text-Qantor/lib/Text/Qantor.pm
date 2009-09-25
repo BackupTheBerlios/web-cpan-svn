@@ -6,11 +6,16 @@ use strict;
 use Moose;
 
 use Carp;
+use File::Spec;
 
 use XML::Writer;
 use Text::Qantor::Parser;
+use Text::Qantor::ConfigData;
 
 has '_xml_out' => (is => "rw", isa => "XML::Writer");
+has '_data_dir' => (isa => 'Str', is => 'rw');
+has '_rng' => (isa => 'XML::LibXML::RelaxNG', is => 'rw');
+has '_xml_parser' => (isa => "XML::LibXML", is => 'rw');
 
 my $fo_ns = "http://www.w3.org/1999/XSL/Format";
 my $xlink_ns = "http://www.w3.org/1999/xlink";
@@ -63,6 +68,24 @@ sub new
 sub _init
 {
     my ($self, $args) = @_;
+
+    my $data_dir = $args->{'data_dir'} ||
+        Text::Qantor::ConfigData->config('extradata_install_path')->[0];
+
+    $self->_data_dir($data_dir);
+
+    my $rngschema =
+        XML::LibXML::RelaxNG->new(
+            location =>
+            File::Spec->catfile(
+                $self->_data_dir(), 
+                "qantor-xml.rng"
+            ),
+        );
+
+    $self->_rng($rngschema);
+
+    $self->_xml_parser(XML::LibXML->new());
 
     return;
 }
@@ -264,6 +287,56 @@ sub convert_input_to_xml
 
     return;
 }
+
+=head2 $qantor->validate_xml({%args})
+
+Validates the xml in %args for validity.
+
+    if (my $ret = self->validate_xml({in_fh => \*STDIN}))
+    {
+        # Error handling.
+    }
+
+=cut
+
+sub validate_xml
+{
+    my $self = shift;
+    my $args = shift;
+
+    my $source_dom =
+        $self->_xml_parser()->parse_fh($args->{in_fh})
+        ;
+
+    if (!$source_dom)
+    {
+        # TODO : Convert to Exception::Class objects.
+        return { error => "Unparsed", };
+    }
+    my $ret_code;
+
+    eval
+    {
+        $ret_code = $self->_rng()->validate($source_dom);
+    };
+
+    if (defined($ret_code) && ($ret_code == 0))
+    {
+        # It's OK.
+    }
+    else
+    {
+        return { 
+            error => "RelaxNG validation failed",
+            ret_code => $ret_code,
+            excpetion => $@,
+        };
+    }
+
+    # Return false upon success.
+    return;
+}
+
 
 sub _lexer
 {
