@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<doc xmlns="http://web-cpan.berlios.de/Qantor/qantor-xml/" xmlns:xlink="http://www.w3.org/1999/xlink" version="0.1" xml:id="index" xml:lang="en">
+<body>
+<p>
+First paragraph - foo is better.
+</p>
+<p>
+Second paragraph - bar is worse.
+</p>
+<p>
+Third paragraph - quux for the win!
+</p>
+</body>
+</doc>

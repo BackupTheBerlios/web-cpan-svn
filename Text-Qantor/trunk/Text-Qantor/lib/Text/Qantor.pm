@@ -13,6 +13,9 @@ use Text::Qantor::Parser;
 has '_xml_out' => (is => "rw", isa => "XML::Writer");
 
 my $fo_ns = "http://www.w3.org/1999/XSL/Format";
+my $xlink_ns = "http://www.w3.org/1999/xlink";
+my $qantor_xml_ns = "http://web-cpan.berlios.de/Qantor/qantor-xml/";
+my $xml_ns = "http://www.w3.org/XML/1998/namespace";
 
 =head1 NAME
 
@@ -161,6 +164,103 @@ sub convert_input_to_xsl_fo
     $writer->endTag(); # page-sequence
 
     $writer->endTag(); # End the root element.
+
+    return;
+}
+
+sub _write_xml_para
+{
+    my $self = shift;
+    my $p = shift;
+
+    my $writer = $self->_xml_out();
+
+    my $text_nodes = $p->{'Para_Text_Wrapper'};
+
+    foreach my $t_n (@$text_nodes)
+    {
+        if (exists($t_n->{'Plain_Para_Text'}))
+        {
+            $writer->characters($t_n->{'Plain_Para_Text'});
+        }
+        elsif (exists($t_n->{'Macro_Para_Text'}))
+        {
+            my $macro_call = $t_n->{'Macro_Para_Text'};
+            $writer->startTag([$qantor_xml_ns, "b"]);
+            $self->_write_xml_para(
+                $macro_call->{'Raw_Para'}
+            );
+            $writer->endTag(); # inline font-weight=bold
+        }
+    }
+
+    return;
+}
+
+=head2 $qantor->convert_input_to_xml({in_fh => \*STDIN, out_fh => \*STDOUT})
+
+Converts the input from the C<in_fh> filehandle to Qantor-XML and outputs it 
+to C<out_fh>.
+
+=cut
+
+sub convert_input_to_xml
+{
+    my ($self, $args) = @_;
+
+    my $in_fh = $args->{in_fh};
+    my $out_fh = $args->{out_fh};
+
+    my $writer = XML::Writer->new(
+        NAMESPACES => 1,
+        OUTPUT => $out_fh,
+        PREFIX_MAP =>
+        {
+            $qantor_xml_ns => '',
+            $xlink_ns => "xlink",
+            $xml_ns => "xml",
+        },
+        NEWLINES => 1,
+        ENCODING => "utf-8",
+    );
+
+    $self->_xml_out($writer);
+
+    $writer->xmlDecl("utf-8");
+
+    $writer->startTag("doc",
+        version => "0.1",
+        [$xml_ns, "id"] => "index",
+        [$xml_ns, "lang"] => "en",
+    );
+    $writer->startTag("body");
+
+    my $text;
+
+    {
+        local $/;
+        $text = <$in_fh>;
+    }
+
+    my $parser = Text::Qantor::Parser->new();
+
+    my $doc_tree = $parser->parse(
+        {
+            text => $text,
+        }
+    );
+
+    foreach my $p (@{$doc_tree->{Text}->{Raw_Para}})
+    {
+        $writer->startTag("p");
+        $self->_write_xml_para($p);
+        $writer->endTag(); # p
+    }
+
+    
+
+    $writer->endTag(); # body
+    $writer->endTag(); # doc
 
     return;
 }

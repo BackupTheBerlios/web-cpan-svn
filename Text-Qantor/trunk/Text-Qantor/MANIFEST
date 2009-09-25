@@ -15,10 +15,13 @@ qantor_grammar.yp
 README
 t/00-load.t
 t/01-convert-to-xsl-fo.t
+t/02-convert-to-qantor-xml.t
 t/data/to-xsl-fo/input/several-paras.qant
 t/data/to-xsl-fo/input/three-paras.qant
 t/data/to-xsl-fo/input/with-bold.qant
+t/data/to-xsl-fo/output-qantor-xml/placeholder.txt
 t/data/to-xsl-fo/output-xsl-fo/placeholder.txt
+t/data/to-xsl-fo/qantor-xml/three-paras.xml
 t/data/to-xsl-fo/xsl-fo/several-paras.fo
 t/data/to-xsl-fo/xsl-fo/three-paras.fo
 t/data/to-xsl-fo/xsl-fo/with-bold.fo
