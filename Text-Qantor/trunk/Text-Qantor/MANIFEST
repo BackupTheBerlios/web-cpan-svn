@@ -23,6 +23,7 @@ t/data/to-xsl-fo/output-qantor-xml/placeholder.txt
 t/data/to-xsl-fo/output-xsl-fo/placeholder.txt
 t/data/to-xsl-fo/qantor-xml/several-paras.xml
 t/data/to-xsl-fo/qantor-xml/three-paras.xml
+t/data/to-xsl-fo/qantor-xml/with-bold.xml
 t/data/to-xsl-fo/xsl-fo/several-paras.fo
 t/data/to-xsl-fo/xsl-fo/three-paras.fo
 t/data/to-xsl-fo/xsl-fo/with-bold.fo
