@@ -3,10 +3,16 @@ package Text::Qantor;
 use warnings;
 use strict;
 
+use Moose;
+
 use Carp;
 
 use XML::Writer;
 use Text::Qantor::Parser;
+
+has '_xml_out' => (is => "rw", isa => "XML::Writer");
+
+my $fo_ns = "http://www.w3.org/1999/XSL/Format";
 
 =head1 NAME
 
@@ -58,6 +64,35 @@ sub _init
     return;
 }
 
+sub _write_para
+{
+    my $self = shift;
+    my $p = shift;
+
+    my $writer = $self->_xml_out();
+
+    my $text_nodes = $p->{'Para_Text_Wrapper'};
+
+    foreach my $t_n (@$text_nodes)
+    {
+        if (exists($t_n->{'Plain_Para_Text'}))
+        {
+            $writer->characters($t_n->{'Plain_Para_Text'});
+        }
+        elsif (exists($t_n->{'Macro_Para_Text'}))
+        {
+            my $macro_call = $t_n->{'Macro_Para_Text'};
+            $writer->startTag([$fo_ns, "inline"], "font-weight" => "bold");
+            $self->_write_para(
+                $macro_call->{'Raw_Para'}
+            );
+            $writer->endTag(); # inline font-weight=bold
+        }
+    }
+
+    return;
+}
+
 =head2 $qantor->convert_input_to_xsl_fo({in_fh => \*STDIN, out_fh => \*STDOUT})
 
 Converts the input from the C<in_fh> filehandle to XSL-FO and outputs it to
@@ -72,7 +107,6 @@ sub convert_input_to_xsl_fo
     my $in_fh = $args->{in_fh};
     my $out_fh = $args->{out_fh};
 
-    my $fo_ns = "http://www.w3.org/1999/XSL/Format";
 
     my $writer = XML::Writer->new(
         NAMESPACES => 1,
@@ -84,6 +118,8 @@ sub convert_input_to_xsl_fo
         NEWLINES => 1,
         ENCODING => "utf-8",
     );
+
+    $self->_xml_out($writer);
 
     $writer->xmlDecl("utf-8");
     $writer->startTag([$fo_ns, "root"]);
@@ -117,10 +153,8 @@ sub convert_input_to_xsl_fo
     foreach my $p (@{$doc_tree->{Text}->{Raw_Para}})
     {
         $writer->startTag([$fo_ns, "block"]);
-
-        $writer->characters($p->{q//});
-
-        $writer->endTag();
+        $self->_write_para($p);
+        $writer->endTag(); # block
     }
 
     $writer->endTag(); # flow

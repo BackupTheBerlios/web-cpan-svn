@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3;
 
 use lib "./t/lib";
 
@@ -13,16 +13,16 @@ use IO::String;
 
 use Text::Qantor;
 
-# TEST:$num_files=2
+# TEST:$num_files=3
 my @files =
 (
     qw(
         t/data/to-xsl-fo/input/three-paras.qant
         t/data/to-xsl-fo/input/several-paras.qant
+        t/data/to-xsl-fo/input/with-bold.qant
     )
 );
 
-#       t/data/to-xsl-fo/input/with-bold.qant
 
 sub read_file
 {

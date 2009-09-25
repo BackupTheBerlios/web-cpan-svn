@@ -24,7 +24,7 @@ sub parse
         # <logfile: - > 
         # <debug: on>
 
-        \A <Input>
+        \A <Input> \z
 
         <token: Input>
             <Text> (?:<.Empty_Line>)?
@@ -37,12 +37,14 @@ sub parse
         <token: Empty_Line>
             <.Single_Empty_Line>+
         <token: Para_Text_Wrapper>
-            <Plain_Para_Text>
+            <Plain_Para_Text> 
+                |
+            <Macro_Para_Text>
         <token: Macro_Para_Text>
-            <MACRO_START> <MACRO_NAME> <MACRO_BODY_START> <Para_Text> <MACRO_BODY_END>
+            <MACRO_START> <MACRO_NAME> <MACRO_BODY_START> <Raw_Para> <MACRO_BODY_END>
         <token: MACRO_START> <.MATCH= (\\(?=\w)) >
         <token: MACRO_NAME> <MATCH= (\w+) >
-        <token: MACRO_BODY_START> <.MATCH= (?:\\\{) >
+        <token: MACRO_BODY_START> <.MATCH= (?:\{) >
         <token: MACRO_BODY_END> <.MATCH= (?:\}) >
         
         <token: Para_Text>
@@ -50,7 +52,7 @@ sub parse
                 |
             <Plain_Para_Text>
 
-        <token: Plain_Para_Text> <MATCH= ([^\n]+\n?) > 
+        <token: Plain_Para_Text> <MATCH= ([^\\\n\{\}]+\n?) > 
         /msx;
 
     };
