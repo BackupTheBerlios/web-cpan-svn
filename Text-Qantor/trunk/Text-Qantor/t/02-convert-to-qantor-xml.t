@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 3;
+use Test::More tests => 6;
 
 use File::Spec;
 
@@ -40,8 +40,6 @@ sub read_file
     close($in);
     return $contents;
 }
-
-
 
 foreach my $input_file (@files)
 {
@@ -82,4 +80,21 @@ foreach my $input_file (@files)
         [ location => $expected_file ],
         "'$input_file' generated good output"
     );
+
+    # Now let's validate the XMLs.
+    
+    {
+        open my $in, "<", $expected_file
+            or die "Could not open '$expected_file' - $!";
+        binmode $in, ":encoding(utf-8)";
+
+        my $error_code = $qantor->validate_xml({ in_fh => $in });
+        # TEST*$num_files
+        ok(
+            !$error_code,
+            "XML of '$expected_file' validates according to the RelaxNG",
+        ) or
+        diag(explain($error_code));
+        ;
+    }
 }

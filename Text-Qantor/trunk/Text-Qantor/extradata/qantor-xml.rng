@@ -2,9 +2,21 @@
 <!-- $Id: testSuite.rng,v 1.12 2003/01/29 12:24:07 jjc Exp $ -->
 <grammar xmlns="http://relaxng.org/ns/structure/1.0"
     datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    ns="http://web-cpan.berlios.de/Qantor/qantor-xml/"
     >
     <start>
         <element name="doc">
+            <attribute name="version" />
+            <!--
+                TODO : xml:id and xml:lang should be global for almost
+                all elements.
+            -->
+            <attribute name="xml:id">
+                <data type="NCName" />
+            </attribute>
+            <attribute name="xml:lang">
+                <data type="NCName" />
+            </attribute>
             <element name="body">
                 <oneOrMore>
                     <ref name="p" />
