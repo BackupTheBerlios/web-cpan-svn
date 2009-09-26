@@ -1,10 +1,11 @@
 Build.PL
 Changes
-MANIFEST
-README
+inc/Test/Run/Builder.pm
 lib/XML/GrammarBase.pm
+Makefile.PL
+MANIFEST
+META.yml
+README
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
-Makefile.PL
-META.yml
