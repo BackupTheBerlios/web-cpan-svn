@@ -5,48 +5,29 @@ use strict;
 
 =head1 NAME
 
-XML::GrammarBase - The great new XML::GrammarBase!
+XML::GrammarBase - Provide base classes for processors of specialized XML grammars.
 
 =head1 VERSION
 
-Version 0.01
+Version 0.0.1
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.0.1';
 
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    package XML::Grammar::MyGrammar::RelaxNG::Validate;
 
-Perhaps a little code snippet.
+    use Moose;
 
-    use XML::GrammarBase;
-
-    my $foo = XML::GrammarBase->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
+    extends(
+        "XML::Grammar::MyGrammar::Base",
+        "XML::GrammarBase::RelaxNG::Validate"
+    );
 
 =head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
 
 =head1 AUTHOR
 
@@ -66,7 +47,6 @@ automatically be notified of progress on your bug as I make changes.
 You can find documentation for this module with the perldoc command.
 
     perldoc XML::GrammarBase
-
 
 You can also look for information at:
 
