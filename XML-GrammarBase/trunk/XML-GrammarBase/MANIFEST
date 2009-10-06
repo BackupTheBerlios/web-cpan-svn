@@ -2,10 +2,12 @@ Build.PL
 Changes
 inc/Test/Run/Builder.pm
 lib/XML/GrammarBase.pm
+lib/XML/GrammarBase/RelaxNG/Validate.pm
 Makefile.PL
 MANIFEST
 META.yml
 README
 t/00-load.t
+t/data/screenplay-xml/xml/with-tags-inside-paragraphs.xml
 t/pod-coverage.t
 t/pod.t

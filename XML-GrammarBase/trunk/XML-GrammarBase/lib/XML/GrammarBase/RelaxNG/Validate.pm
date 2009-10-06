@@ -1,11 +1,12 @@
-package XML::GrammarBase;
+package XML::GrammarBase::RelaxNG::Validate;
 
-use warnings;
 use strict;
+use warnings;
+
 
 =head1 NAME
 
-XML::GrammarBase - Provide base classes for processors of specialized XML grammars.
+XML::GrammarBase::RelaxNG::Validate - base class for a RelaxNG validator
 
 =head1 VERSION
 
@@ -13,8 +14,14 @@ Version 0.0.1
 
 =cut
 
+use Moose;
+
 our $VERSION = '0.0.1';
 
+has '_cfg' => (isa => "XML::GrammarBase::Conf", is => 'rw');
+has '_data_dir' => (isa => 'Str', is => 'rw');
+has '_rng' => (isa => 'XML::LibXML::RelaxNG', is => 'rw');
+has '_xml_parser' => (isa => "XML::LibXML", is => 'rw');
 
 =head1 SYNOPSIS
 
@@ -22,11 +29,11 @@ our $VERSION = '0.0.1';
 
     use Moose;
 
-    has '_cfg' => (isa => "XML::Grammar::MyGrammar::Conf", is => "rw");
-
     extends(
         "XML::GrammarBase::RelaxNG::Validate"
     );
+
+    TODO : Fill in.
 
 =head1 FUNCTIONS
 
@@ -103,7 +110,7 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
-
 =cut
 
-1; # End of XML::GrammarBase
+1; # End of XML::GrammarBase::RelaxNG::Validate
+
