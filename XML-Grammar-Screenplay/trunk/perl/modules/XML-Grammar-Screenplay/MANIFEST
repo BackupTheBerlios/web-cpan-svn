@@ -62,3 +62,4 @@ t/proto-text-invalid.t
 t/proto-text-to-xml-using-custom-parser.t
 t/qnd-parser-unit.t
 t/to-docbook.t
+t/to-xhtml.t
