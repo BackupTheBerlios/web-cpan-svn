@@ -46,11 +46,23 @@ foreach my $fn (@tests)
         );
 
     # TEST*$num_texts*2
-    like ($docbook_text, qr{<article id="index"},
-        "Checking for article."
+    
+    my $parser = XML::LibXML->new();
+
+    my $doc = $parser->parse_string($docbook_text);
+
+    is (
+        scalar(() = $doc->findnodes(q{//article[@id='index']})),
+        1,
+        "Found one article with id index",
     );
-    like ($docbook_text, qr{<section role="description"},
-        "Checking for section."
+
+    ok (
+        (scalar(() = $doc->findnodes(q{//section[@role='description']}))
+            >=
+            1
+        ),
+        "Found role=description sections",
     );
 }
 
