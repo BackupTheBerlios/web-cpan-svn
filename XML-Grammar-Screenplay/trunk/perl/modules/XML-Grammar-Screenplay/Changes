@@ -1,5 +1,7 @@
 Revision history for XML-Grammar-Screenplay
 
+        - Added the resources and keywords to the Build.PL and META.yml.
+
 0.0600  Fri Oct  9 11:35:30 IST 2009
         - Converted the generated Screenplay-XML to its own namespace:
         http://web-cpan.berlios.de/modules/XML-Grammar-Screenplay/screenplay-xml-0.2/

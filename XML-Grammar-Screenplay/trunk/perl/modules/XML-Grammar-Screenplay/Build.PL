@@ -30,6 +30,32 @@ my $builder = XML::Grammar::Builder->new(
     },
     add_to_cleanup      => [ 'XML-Grammar-Screenplay-*' ],
     create_makefile_pl => 'passthrough',
+    meta_merge =>
+    {
+        resources =>
+        {
+            repository => "https://svn.berlios.de/svnroot/repos/web-cpan/XML-Grammar-Screenplay/",
+            homepage => "http://web-cpan.berlios.de/modules/XML-Grammar-Screenplay/",
+        },
+        keywords =>
+        [
+            "authoring",
+            "cinema",
+            "creative writing",
+            "films",
+            "grammar",
+            "movies",
+            "parsing",
+            "screenplay",
+            "screenplays",
+            "script",
+            "scripts",
+            "writing",
+            "xml",
+            "xml-libxml",
+            "xslt",
+        ],
+    },
 );
 
 $builder->create_build_script();
