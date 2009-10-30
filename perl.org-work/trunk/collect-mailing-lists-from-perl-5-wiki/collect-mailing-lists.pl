@@ -29,6 +29,22 @@ my $content = $mech->response()->content();
 my $start =qq{<h2 id="categories">Categories</h2>};
 my $end = qq{<h2 id="end_of_categories_marker_for_processing">End of Categories (Marker for Processing)</h2>};
 
+my %canonical_keys = 
+(
+    'Archive[s]' => "archives",
+    'Archive' => "archives",
+    'Mail-Archive Archive[s]' => "mail_archive",
+    "Comments" => "comments",
+    'Help' => "help",
+    "Homepage" => "homepage",
+    'Name' => "basename",
+    'NNTP Archive' => "nntp_archive_url",
+    'RSS RDF Feed' => "rss_rdf_feed_url",
+    "Subscribe" => "subscribe",
+    "Subscribe/Unsubscribe/Set Options" => "all_in_one_ml_settings",
+    "Unsubscribe" => "unsubscribe",
+);
+
 my ($catlinks) = ($content =~ m{\Q$start\E(.*?)\Q$end\E}ms);
 
 my @valid_links = 
@@ -114,18 +130,33 @@ foreach my $l (@valid_links)
         {
             my ($key) = ($item->as_HTML() =~ m{\A<li>([^<]+)<});
             my ($value_a_tag) = $item->findnodes("a");
-            my ($value_url, $value_content);
+            my ($value_url, $value_content, $value_prelude);
 
+            if ($key !~ m{:})
+            {
+                die qq{No colon (':') in key in item in "$url"!};
+            }
+            my $split_by_colon = sub { 
+                return ($key =~ m{\A([^:]+):(.*?)\z}ms);
+            };
             if (!defined($value_a_tag))
             {
                 $value_url = "";
-                ($key, $value_content) = ($key =~ m{\A([^:]+):(.*?)\z}ms);
+                $value_prelude = "";
+                ($key, $value_content) = $split_by_colon->();
             }
             else
             {
                 $value_url = $value_a_tag->attr("href");
+                ($key, $value_prelude) = $split_by_colon->();
                 $value_content = $value_a_tag->as_text();
             }
+
+            # Trim the value from leading and trailing whitespace.
+            $value_content =~ s{\A\s+}{};
+            $value_content =~ s{\s+\z}{};
+
+            $key =~ s{:\s*\z}{};
 
             print "------------------------\n";
             print "\tKey == $key\n",
@@ -133,11 +164,20 @@ foreach my $l (@valid_links)
                 "\tValue-content == $value_content\n"
                 ;
 
+            my $canon_key;
+
+            if (!defined($canon_key = $canonical_keys{$key}))
+            {
+                die "Could not find Canonical key for '$key'!";
+            }
+
             push @items_out,
                 +{
                     key => $key,
                     value_url => $value_url,
                     value_content => $value_content,
+                    value_prelude => $value_prelude,
+                    canon_key => $canon_key,
                 }
             ;
         }
