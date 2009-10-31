@@ -1,0 +1,42 @@
+0.0108  Wed Mar  4 22:10:25 IST 2009
+        - Sorted out the installation of the extradata elements.
+
+0.0107  Tue Mar  3 19:58:34 IST 2009
+        - converted Build.PL to inc/XML/Grammar/Builder.pm .
+
+0.0106 Mon Feb 16 10:14:43 IST 2009
+        - set the minimum version of perl that can compile this module,
+        to perl-5.8.x as it requires some ":utf8" stuff, and fails on
+        perl-5.6.x:
+            - http://nntp.x.perl.org/group/perl.cpan.testers/3301395
+
+0.0105 Sat Feb 14 21:18:05 IST 2009
+        - avoided creating an xmlns="" attribute in the output of several
+        elements which caused the XHTML to be invalid.
+
+0.0104  Thu Aug 21 17:39:45 IDT 2008
+        - Removed a binmode ":utf8" call from t/to-xhtml.t to settle
+        XML-LibXML on Mandriva Cooker and elsewhere.
+            - see https://qa.mandriva.com/show_bug.cgi?id=41993
+
+0.0103  Sat Aug  2 11:15:14 IDT 2008
+        - "documented" open in lib/XML/Grammar/Fortune.pm due to its
+        use Fatal call to settle t/pod-coverage.t.
+
+0.0102  Thu Jul 31 15:58:08 IDT 2008
+        - Converted create_makefile_pl from "traditional" to 
+        "passthrough" so it will run Build.PL and avoid the various
+        problems inherent in depending on the Makefile.PL generation.
+        - Hopefully it will silence CPAN Testers warnings such as:
+            - http://www.nntp.perl.org/group/perl.cpan.testers/2008/07/msg1958808.html
+
+0.0101  Fri Jul 25 17:24:08 IDT 2008
+        - Added the _data_dir() to the XSLT - it was an installation
+        copy-and-paste bug.
+
+0.01    Wed Jul 16 15:17:25 IDT 2008
+        - First version - implementing IRC conversations, <quote>,
+        <screenplay> and raw messages.
+        - No "human-friendly" documentation for the XML format, but there's
+        a Relax NG, and comprehensive examples, both for testing
+        and on http://www.shlomifish.org/humour/fortunes/ .
