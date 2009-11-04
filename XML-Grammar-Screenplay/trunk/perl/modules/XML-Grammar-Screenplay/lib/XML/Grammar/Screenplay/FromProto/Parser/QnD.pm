@@ -10,6 +10,9 @@ use Moose;
 has "_curr_line_idx" => (isa => "Int", is => "rw");
 has "_lines" => (isa => "ArrayRef", is => "rw");
 
+use XML::Grammar::Screenplay::FromProto::Nodes;
+
+
 sub _curr_line :lvalue
 {
     my $self = shift;
@@ -63,6 +66,71 @@ sub _skip_space
 }
 
 my $id_regex = '[a-zA-Z_\-]+';
+
+
+sub _new_node
+{
+    my $self = shift;
+    my $args = shift;
+
+    # t == type
+    my $class = 
+        "XML::Grammar::Screenplay::FromProto::Node::"
+        . delete($args->{'t'})
+        ;
+
+    return $class->new(%$args);
+}
+
+sub _create_elem
+{
+    my $self = shift;
+    my $open = shift;
+
+    my $children = @_ ? shift(@_) : $self->_new_empty_list();
+
+    return
+        $self->_new_node(
+            {
+                t => "Element",
+                name => $open->{name},
+                children => $children,
+                attrs => $open->{attrs},
+            }
+        );
+}
+
+sub _new_empty_list
+{
+    my $self = shift;
+    return $self->_new_list([]);
+}
+
+sub _new_list
+{
+    my $self = shift;
+    my $contents = shift;
+
+    return $self->_new_node(
+        {
+            t => "List",
+            contents => $contents,
+        }
+    );
+}
+
+sub _new_para
+{
+    my $self = shift;
+    my $contents = shift;
+
+    return $self->_new_node(
+        {
+            t => "Paragraph",
+            children => $self->_new_list($contents),
+        }
+    );
+}
 
 sub _parse_opening_tag
 {
@@ -152,15 +220,10 @@ sub _parse_text
     # If it's whitespace - return an empty list.
     if ((scalar(@ret) == 1) && (ref($ret[0]) eq "") && ($ret[0] !~ m{\S}))
     {
-        return 
-            XML::Grammar::Screenplay::FromProto::Node::List->new(
-                contents => []
-            );
+        return $self->_new_empty_list();
     }
 
-    return XML::Grammar::Screenplay::FromProto::Node::List->new(
-        contents => \@ret,
-        );
+    return $self->_new_list(\@ret);
 }
 
 sub _consume_paragraph
@@ -204,13 +267,13 @@ sub _parse_inner_desc
     );
 
     return
-        XML::Grammar::Screenplay::FromProto::Node::InnerDesc->new(
-            start => $start_line,
-            children => XML::Grammar::Screenplay::FromProto::Node::List->new(
-                contents => $inside
-            ),
+        $self->_new_node(
+            {
+                t => "InnerDesc",
+                start => $start_line,
+                children => $self->_new_list($inside),
+            }
         );
- 
 }
 
 sub _parse_inner_tag
@@ -223,14 +286,7 @@ sub _parse_inner_tag
     {
         $self->_skip_space();
 
-        return        
-            XML::Grammar::Screenplay::FromProto::Node::Element->new(
-                name => $open->{name},
-                children => XML::Grammar::Screenplay::FromProto::Node::List->new(
-                    contents => []
-                ),
-                attrs => $open->{attrs},
-            );
+        return $self->_create_elem($open);
     }
 
     my $inside = $self->_parse_inner_text();
@@ -244,13 +300,7 @@ sub _parse_inner_tag
             . "line $open->{line}"
         );
     }
-    return XML::Grammar::Screenplay::FromProto::Node::Element->new(
-        name => $open->{name},
-        children => XML::Grammar::Screenplay::FromProto::Node::List->new(
-            contents => $inside
-            ),
-        attrs => $open->{attrs},
-        );
+    return $self->_create_elem($open, $self->_new_list($inside));
 }
 
 sub _parse_inner_text
@@ -388,12 +438,7 @@ sub _parse_saying_first_para
     return
     +{
          character => $sayer,
-         para => XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-            children =>
-            XML::Grammar::Screenplay::FromProto::Node::List->new(
-                contents => $what,
-                )
-            ),
+         para => $self->_new_para($what),
     };
 }
 
@@ -425,13 +470,7 @@ sub _parse_saying_other_para
 
     my $what = $self->_parse_inner_text();
 
-    return
-        XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-            children =>
-            XML::Grammar::Screenplay::FromProto::Node::List->new(
-                contents => $what,
-                )
-        );
+    return $self->_new_para($what);
 }
 
 sub _parse_speech_unit
@@ -447,13 +486,12 @@ sub _parse_speech_unit
     }
 
     return
-        XML::Grammar::Screenplay::FromProto::Node::Saying->new(
-            character => $first->{character},
-            children => 
-                XML::Grammar::Screenplay::FromProto::Node::List->new(
-                    contents => [ $first->{para}, @others ],
-                ),
-        );
+        $self->_new_node({
+                t => "Saying",
+                character => $first->{character},
+                children => 
+                    $self->_new_list([ $first->{para}, @others ]),
+        });
 }
 
 sub _parse_desc_unit
@@ -496,22 +534,15 @@ sub _parse_desc_unit
         Carp::confess (qq{Description ("[ ... ]") that started on line $start_line does not terminate anywhere.});
     }
 
-    return XML::Grammar::Screenplay::FromProto::Node::Description->new(
-        children => 
-            XML::Grammar::Screenplay::FromProto::Node::List->new(
-                contents =>
+    return $self->_new_node({
+            t => "Description",
+            children => $self->_new_list(
             [
-            map { 
-            XML::Grammar::Screenplay::FromProto::Node::Paragraph->new(
-                children =>
-                    XML::Grammar::Screenplay::FromProto::Node::List->new(
-                        contents => $_,
-                        ),
-                    )
-            } @paragraphs
-            ],
-        ),
-    );
+                map { 
+                $self->_new_para($_),
+                } @paragraphs
+            ],),
+    });
 }
 
 sub _parse_non_tag_text_unit
@@ -596,10 +627,7 @@ sub _parse_top_level_tag
     {
         my $text = $self->_consume_up_to(qr{-->});
 
-        return
-            XML::Grammar::Screenplay::FromProto::Node::Comment->new(
-                text => $text
-            );
+        return $self->_new_node({ t => "Comment", text => $text, });
     }
 
     my $open = $self->_parse_opening_tag();
@@ -621,11 +649,7 @@ sub _parse_top_level_tag
             . "and $close->{name} on line $close->{line}"
         );
     }
-    return XML::Grammar::Screenplay::FromProto::Node::Element->new(
-        name => $open->{name},
-        children => $inside,
-        attrs => $open->{attrs},
-        );
+    return $self->_create_elem($open, $inside);
 }
 
 sub _consume
