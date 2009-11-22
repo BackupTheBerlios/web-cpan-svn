@@ -157,8 +157,6 @@ sub configure {
 			or return _error($sock, $!, "sock_info: $@");
     }
 
-    $sock->blocking($arg->{Blocking}) if defined $arg->{Blocking};
-
     # Previously IO-Socket-INET6 tried to bind even when one side
     # is AF_INET and the other AF_INET6 and this cannot work.
     #
@@ -239,6 +237,11 @@ sub configure {
 
 	$sock->socket($family, $type, $proto) or
 	    return _error($sock, $!, "socket: $!");
+
+	if (defined $arg->{Blocking}) {
+	    defined $sock->blocking($arg->{Blocking}) or
+		    return _error($sock, $!, "sockopt: $!");
+	}
 
 	if ($arg->{Reuse} || $arg->{ReuseAddr}) {
 	    $sock->sockopt(SO_REUSEADDR,1) or

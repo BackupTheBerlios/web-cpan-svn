@@ -1,3 +1,8 @@
+2009-11-23 Shlomi Fish <shlomif@iglu.org.il>
+	* Applied a modified version of a patch by Matthew Horsfall 
+	<wolfsage@gmail.com> in order to add t/blocking.t and deal with the
+	blocking sockets properly.
+
 2008-10-06 Shlomi Fish <shlomif@iglu.org.il>
 	* Applied a modified version of a patch by Anicka Bernathova
 	<anicka@suse.cz>:
