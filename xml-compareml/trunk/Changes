@@ -1,5 +1,6 @@
 Revision history for XML::CompareML
 
+0.2.6    Mon Nov 23 19:52:05 IST 2009
     - Provided a workaround for testing the code on recent (and older)
     versions of XML-LibXSLT.
 

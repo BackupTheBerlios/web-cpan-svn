@@ -1,6 +1,6 @@
 ---
 name: XML-CompareML
-version: v0.2.5
+version: v0.2.6
 author:
   - 'Shlomi Fish <shlomif@iglu.org.il>'
 abstract: A processor for the CompareML markup language
@@ -23,11 +23,11 @@ requires:
   strict: 0
   warnings: 0
 configure_requires:
-  Module::Build: 0.3306
+  Module::Build: 0.35
 provides:
   XML::CompareML:
     file: lib/XML/CompareML.pm
-    version: v0.2.5
+    version: v0.2.6
   XML::CompareML::Base:
     file: lib/XML/CompareML/Base.pm
   XML::CompareML::DTD::Generate:
@@ -36,7 +36,7 @@ provides:
     file: lib/XML/CompareML/DocBook.pm
   XML::CompareML::HTML:
     file: lib/XML/CompareML/HTML.pm
-generated_by: Module::Build version 0.3306
+generated_by: Module::Build version 0.35
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
