@@ -41,6 +41,15 @@ use Test::Differences;
     ok(length($buffer) > 0, "\$buffer was filled in");
 }
 
+sub normalize_space
+{
+    my $text_ref = shift;
+
+    ${$text_ref} =~ s{^[ \t]*}{}gms;
+
+    return;
+}
+
 # Check for actual content.
 {
     my $buffer = "";
@@ -71,6 +80,10 @@ use Test::Differences;
         $good_content = <$good_html_fh>;
     }
     close($good_html_fh);
+
+    normalize_space(\$buffer);
+    normalize_space(\$good_content);
+
     # TEST
     eq_or_diff ($buffer, $good_content, "XSLT Works");
 }
