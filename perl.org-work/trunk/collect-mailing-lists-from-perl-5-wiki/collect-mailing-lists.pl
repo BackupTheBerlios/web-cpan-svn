@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use Common;
+
 =head1 NAME
 
 collect-mailing-lists.pl - collect the mailing lists entries from
@@ -65,7 +67,7 @@ my @valid_links =
     @$links
 );
 
-my $yaml_fn = "p5wiki_mailing_lists_data_1.yml";
+my $yaml_fn = Common::get_yaml_fn();
 
 if (! -e $yaml_fn)
 {
