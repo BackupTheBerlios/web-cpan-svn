@@ -1,0 +1,11 @@
+tap-1.02:
+---------
+
+1. Add the COPYING file.
+
+2. Now disabling the thread-safety by default (in order to have it add
+-DLIBTAP_ENABLE_BROKEN_THREAD_SAFE .
+
+3. Changed configure.in to configure.ac.
+
+    -- Shlomi Fish , http://www.shlomifish.org/
