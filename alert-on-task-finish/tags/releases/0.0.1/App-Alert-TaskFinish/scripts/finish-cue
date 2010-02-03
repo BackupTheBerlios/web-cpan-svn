@@ -1,0 +1,3 @@
+#!/bin/bash
+xmessage "Your task has been finished! Go check it out." &
+mplayer /dosd/Music/mp3/Theme\ -\ Eurovision.mp2
