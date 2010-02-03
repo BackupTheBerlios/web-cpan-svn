@@ -12,6 +12,12 @@ my $builder = Module::Build->new(
     },
     add_to_cleanup      => [ 'App-Alert-TaskFinish-*' ],
     create_makefile_pl => 'traditional',
+    script_files =>
+    [qw(
+        scripts/finish-client
+        scripts/finish-cue
+        scripts/finish-server
+    )],
 );
 
 $builder->create_build_script();

@@ -1,8 +1,11 @@
 Build.PL
 Changes
+lib/App/Alert/TaskFinish.pm
 MANIFEST
 README
-lib/App/Alert/TaskFinish.pm
+scripts/finish-client
+scripts/finish-cue
+scripts/finish-server
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
