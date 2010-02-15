@@ -1,8 +1,9 @@
 Build.PL
 Changes
+inc/Test/Run/Builder.pm
+lib/App/Playerian.pm
 MANIFEST
 README
-lib/App/Playerian.pm
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
