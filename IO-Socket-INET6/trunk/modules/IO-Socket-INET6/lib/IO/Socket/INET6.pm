@@ -19,7 +19,7 @@ use Socket;
 # and PF_INET6 so selectively import things from Socket6.
 use Socket6 (
     qw(AI_PASSIVE inet_ntop inet_pton getaddrinfo 
-    sockaddr_in6 unpack_sockaddr_in6_all pack_sockaddr_in6_all)
+    sockaddr_in6 unpack_sockaddr_in6_all pack_sockaddr_in6_all in6addr_any)
 );
 
 use Carp;
@@ -120,21 +120,29 @@ sub _error {
 
 sub configure {
     my($sock,$arg) = @_;
-    my($lport,$rport,$laddr,$rpoty,$raddr,$family,$proto,$type); 
-    my($lres,$rres);
 
     $arg->{LocalAddr} = $arg->{LocalHost}
-	if exists $arg->{LocalHost} && !exists $arg->{LocalAddr};
+        if exists $arg->{LocalHost} && !exists $arg->{LocalAddr};
+    $arg->{PeerAddr} = $arg->{PeerHost}
+        if exists $arg->{PeerHost} && !exists $arg->{PeerAddr};
 
-    # Syntax Parsing...
-    ($laddr,$lport,$proto) = _sock_info($arg->{LocalAddr},
-						     $arg->{LocalPort},
-						      $arg->{Proto})
-	                          or return _error($sock, $!, "sock_info: $@");
+    my $family = $arg->{Domain};
+    # in case no local and peer is given we prefer AF_INET6
+    # because we are IO::Socket::INET6
+    $family ||= ! $arg->{LocalAddr} && ! $arg->{PeerAddr} && AF_INET6 
+        || AF_UNSPEC;
 
+    # parse Local*
+    my ($laddr,$lport,$proto) = _sock_info(
+        $arg->{LocalAddr},
+        $arg->{LocalPort},
+        $arg->{Proto}
+    ) or return _error($sock, $!, "sock_info: $@");
     $laddr ||= '';
     $lport ||= 0;
-    $family = $arg->{Domain} || AF_UNSPEC; 
+    $proto ||= (getprotobyname('tcp'))[2];
+
+
     # MSWin32 expects at least one of $laddr or $lport to be specified
     # and does not accept 0 for $lport if $laddr is specified.
     if ($^O eq 'MSWin32') {
@@ -145,175 +153,115 @@ sub configure {
             $lport = '';
         }
     } 
-    $proto ||= (getprotobyname('tcp'))[2];
-    $type = $arg->{Type} || $socket_type{(getprotobynumber($proto))[0]};
 
-    $arg->{PeerAddr} = $arg->{PeerHost}
-	if exists $arg->{PeerHost} && !exists $arg->{PeerAddr};
+    my $type = $arg->{Type} || $socket_type{(getprotobynumber($proto))[0]};
 
+    # parse Peer*
+    my($rport,$raddr); 
     unless(exists $arg->{Listen}) {
-    ($raddr,$rport,$proto) = _sock_info($arg->{PeerAddr},$arg->{PeerPort},
-						     $proto)
-			or return _error($sock, $!, "sock_info: $@");
+        ($raddr,$rport) = _sock_info(
+            $arg->{PeerAddr},
+            $arg->{PeerPort},
+            $proto
+        ) or return _error($sock, $!, "sock_info: $@");
     }
 
-    # Previously IO-Socket-INET6 tried to bind even when one side
-    # is AF_INET and the other AF_INET6 and this cannot work.
-    #
-    # The FAMILY_CHECK loop is meant to make sure both sides have
-    # the same family.
-
-    my @families;
-    if ($family == AF_UNSPEC) {
-        @families = (AF_INET6, AF_INET);
-    } else {
-        @families = ($family);
-    }
-
-    my $ok = 0;
-    my $msg;
-
-    my @lres;
+    # find out all combinations of local and remote addr with
+    # the same family
+    my @lres = getaddrinfo($laddr,$lport,$family,$type,$proto,AI_PASSIVE);
+    return _error($sock, $EINVAL, "getaddrinfo: $lres[0]") if @lres<5;
     my @rres;
+    if ( defined $raddr ) {
+        @rres = getaddrinfo($raddr,$rport,$family,$type,$proto);
+        return _error($sock, $EINVAL, "getaddrinfo: $rres[0]") if @rres<5;
+    }
 
-    FAMILY_CHECK:
-    for my $fam (@families) {
-
-        @lres = getaddrinfo(
-            $laddr,$lport,$fam,$type,$proto,AI_PASSIVE
-        );
-
-        if (scalar(@lres) < 5) {
-            $msg = $lres[0];
-            next FAMILY_CHECK;
-        }
-
-        if (defined $raddr) {
-            @rres = getaddrinfo(
-                $raddr,$rport,$fam,$type,$proto,AI_PASSIVE
-            );
-
-            if (scalar(@rres) >= 5) {
-                $ok = 1;
-                last FAMILY_CHECK;
+    my @flr;
+    for( my $l=0;$l<@lres;$l+=5) {
+        my $fam_listen = $lres[$l];
+        my $lsockaddr = $lres[$l+3];
+        if (@rres) {
+            # collect all combinations whith the same family in lres and rres
+            for( my $r=0;$r<@rres;$r+=5 ) {
+                next if $rres[0] != $fam_listen; # must be same family
+                push @flr,[ $fam_listen,$lsockaddr,$rres[$r+3] ];
             }
-            else {
-                $msg = $rres[0];
+        } else {
+            # collect only the binding side
+            push @flr,[ $fam_listen,$lsockaddr ];
+        }
+    }
+
+    # try to bind and maybe connect
+    # if multihomed try all combinations until success
+    for my $flr (@flr) {
+        my ($family,$lres,$rres) = @$flr;
+
+        if ( $family == AF_INET6) {
+            if ($arg->{LocalFlow} || $arg->{LocalScope}) {
+                my @sa_in6 = unpack_sockaddr_in6_all($lres);
+                $sa_in6[1] = $arg->{LocalFlow}  || 0;
+                $sa_in6[3] = _scope_ntohl($arg->{LocalScope}) || 0;
+                $lres = pack_sockaddr_in6_all(@sa_in6);
             }
         }
-        else {
-            $ok = 1;
-            last FAMILY_CHECK;
+
+        $sock->socket($family, $type, $proto) or
+            return _error($sock, $!, "socket: $!");
+
+        if (defined $arg->{Blocking}) {
+            defined $sock->blocking($arg->{Blocking}) or
+                return _error($sock, $!, "sockopt: $!");
         }
 
-    }
-
-    if (! $ok)
-    {
-        return _error($sock, $EINVAL, "getaddrinfo: $msg");
-    }
-
-    LOOP_LRES: while(1) {
-
-	$family = (exists $arg->{PeerAddr})? ($rres[0]):($lres[0]) ;  # One concrete family.
-
-	#printf "DEBUG $family \n";
-    my $fam_listen;
-	($fam_listen,undef,undef,$lres,undef,@lres) =  @lres;
-
-    if ($fam_listen != $family)
-    {
-        next LOOP_LRES;
-    }
-
-      	if ($lres && $family == AF_INET6) {
-       	    if ($arg->{LocalFlow} || $arg->{LocalScope}) {
-        	my @sa_in6 = unpack_sockaddr_in6_all($lres);
-		$sa_in6[1] = $arg->{LocalFlow}  || 0;
-		$sa_in6[3] = _scope_ntohl($arg->{LocalScope}) || 0;
-		$lres = pack_sockaddr_in6_all(@sa_in6);
-	    }
-	}
-
-	$sock->socket($family, $type, $proto) or
-	    return _error($sock, $!, "socket: $!");
-
-	if (defined $arg->{Blocking}) {
-	    defined $sock->blocking($arg->{Blocking}) or
-		    return _error($sock, $!, "sockopt: $!");
-	}
-
-	if ($arg->{Reuse} || $arg->{ReuseAddr}) {
-	    $sock->sockopt(SO_REUSEADDR,1) or
-		    return _error($sock, $!, "sockopt: $!");
-	}
-
-	if ($arg->{ReusePort}) {
-	    $sock->sockopt(SO_REUSEPORT,1) or
-		    return _error($sock, $!, "sockopt: $!");
-	}
-
-	if ($arg->{Broadcast}) {
-		$sock->sockopt(SO_BROADCAST,1) or
-		    return _error($sock, $!, "sockopt: $!");
-	}
-
-	if($lres || exists $arg->{Listen}) {
-	    $sock->bind($lres) or
-		    return _error($sock, $!, "bind: $!");
-	}
-
-	if(exists $arg->{Listen}) {
-	    $sock->listen($arg->{Listen} || 5) or
-		return _error($sock, $!, "listen: $!");
-	    last;
-	}
-
- 	# don't try to connect unless we're given a PeerAddr
- 	last unless exists($arg->{PeerAddr});
-
-	(undef ,undef , undef, $rres,undef , @rres) = @rres;
-
-	if ($rres && $family == AF_INET6) {
-	    if ($arg->{PeerFlow} || $arg->{PeerScope}) {
-	     	my @sa_in6 = unpack_sockaddr_in6_all($rres);
-		$sa_in6[1] = $arg->{PeerFlow}  || 0;
-		$sa_in6[3] = _scope_ntohl($arg->{PeerScope}) || 0;
-		$rres = pack_sockaddr_in6_all(@sa_in6);
-	    }
-	}
-	
-	last
-	    unless($type == SOCK_STREAM || defined $rres);  
-
-#	return _error($sock, $EINVAL, "Bad hostname '",$arg->{PeerAddr},"'")
-#	    unless (defined $rres);
-
-#        my $timeout = ${*$sock}{'io_socket_timeout'};
-#        my $before = time() if $timeout;
-	
-	undef $@;
-        if ($sock->connect($rres)) {
-#            ${*$sock}{'io_socket_timeout'} = $timeout;
-            return $sock;
+        if ($arg->{Reuse} || $arg->{ReuseAddr}) {
+            $sock->sockopt(SO_REUSEADDR,1) or
+                return _error($sock, $!, "sockopt: $!");
         }
 
-#
-# GOOD !!!
-	return _error($sock, $!, $@ || "Timeout")
-	    unless ((scalar(@rres)>=5) && ($arg->{MultiHomed}));
+        if ($arg->{ReusePort}) {
+            $sock->sockopt(SO_REUSEPORT,1) or
+                return _error($sock, $!, "sockopt: $!");
+        }
 
-#	if ($timeout) {
-#	    my $new_timeout = $timeout - (time() - $before);
-#	    return _error($sock,
-#                         (exists(&Errno::ETIMEDOUT) ? Errno::ETIMEDOUT() : $EINVAL),
-#                         "Timeout") if $new_timeout <= 0;
-#	    ${*$sock}{'io_socket_timeout'} = $new_timeout;
-#        }
+        if ($arg->{Broadcast}) {
+            $sock->sockopt(SO_BROADCAST,1) or
+                return _error($sock, $!, "sockopt: $!");
+        }
 
+        if( $family == AF_INET 
+            ? (sockaddr_in($lres))[1] ne INADDR_ANY 
+            : (sockaddr_in6($lres))[1] ne in6addr_any ) {
+            $sock->bind($lres) or
+                return _error($sock, $!, "bind: $!");
+        }
+
+        if(exists $arg->{Listen}) {
+            $sock->listen($arg->{Listen} || 5) or
+                return _error($sock, $!, "listen: $!");
+        }
+
+        # connect only if PeerAddr and thus $rres is given
+        last if ! $rres;
+
+        if ( $family == AF_INET6) {
+            if ($arg->{PeerFlow} || $arg->{PeerScope}) {
+                my @sa_in6 = unpack_sockaddr_in6_all($rres);
+                $sa_in6[1] = $arg->{PeerFlow}  || 0;
+                $sa_in6[3] = _scope_ntohl($arg->{PeerScope}) || 0;
+                $rres = pack_sockaddr_in6_all(@sa_in6);
+            }
+        }
+    
+        undef $@;
+        last if $sock->connect($rres);
+
+        return _error($sock, $!, $@ || "Timeout")
+            if ! $arg->{MultiHomed};
+        
     }
 
-    $sock;
+    return $sock;
 }
 
 sub _scope_ntohl($)
