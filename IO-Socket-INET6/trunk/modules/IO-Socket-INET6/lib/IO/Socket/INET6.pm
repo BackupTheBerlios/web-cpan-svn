@@ -229,9 +229,9 @@ sub configure {
                 return _error($sock, $!, "sockopt: $!");
         }
 
-        if( $family == AF_INET 
-            ? (sockaddr_in($lres))[1] ne INADDR_ANY 
-            : (sockaddr_in6($lres))[1] ne in6addr_any ) {
+        if( ( $family == AF_INET )
+            ? ((sockaddr_in($lres))[1] ne INADDR_ANY)
+            : ((sockaddr_in6($lres))[1] ne in6addr_any) ) {
             $sock->bind($lres) or
                 return _error($sock, $!, "bind: $!");
         }
