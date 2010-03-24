@@ -18,7 +18,7 @@ use Socket;
 # IO::Socket and Socket already import stuff here - possibly AF_INET6
 # and PF_INET6 so selectively import things from Socket6.
 use Socket6 (
-    qw(AI_PASSIVE inet_ntop inet_pton getaddrinfo 
+    qw(AI_PASSIVE getaddrinfo
     sockaddr_in6 unpack_sockaddr_in6_all pack_sockaddr_in6_all in6addr_any)
 );
 
@@ -55,7 +55,7 @@ sub _sock_info {
   my @serv = ();
 
   if (defined $addr) {
-	if (!inet_pton(AF_INET6,$addr)) {
+	if (!Socket6::inet_pton(AF_INET6,$addr)) {
          if($addr =~ s,^\[([\da-fA-F:]+)\]:([\w\(\)/]+)$,$1,) {
    	     $port = $2;
          } elsif($addr =~ s,^\[(::[\da-fA-F.:]+)\]:([\w\(\)/]+)$,$1,) {
@@ -331,7 +331,7 @@ sub sockhost {
     @_ == 1 or croak 'usage: $sock->sockhost()';
     my ($sock) = @_;
     return undef unless (my $addr = $sock->sockaddr);
-    inet_ntop($sock->sockdomain, $addr);
+    Socket6::inet_ntop($sock->sockdomain, $addr);
 }
 
 sub sockflow
@@ -368,7 +368,7 @@ sub peerhost {
     @_ == 1 or croak 'usage: $sock->peerhost()';
     my ($sock) = @_;
     return undef unless (my $addr = $sock->peeraddr);
-    inet_ntop($sock->sockdomain, $addr);
+    Socket6::inet_ntop($sock->sockdomain, $addr);
 }
 
 sub peerflow
@@ -509,7 +509,7 @@ Suppose either you have no IPv6 connectivity or www.perl.org has no http service
    $sock = IO::Socket::INET6->new('[::1]:25');
 
    $sock = IO::Socket::INET6->new(PeerPort  => 9999,
-                                 PeerAddr  => inet_ntop(AF_INET6,in6addr_broadcast),
+                                 PeerAddr  => Socket6::inet_ntop(AF_INET6,in6addr_broadcast),
                                  Proto     => udp,    
                                  LocalAddr => 'localhost',
                                  Broadcast => 1 ) 
