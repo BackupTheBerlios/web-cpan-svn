@@ -96,6 +96,14 @@ sub _next_elem
     return;
 }
 
+sub _ns
+{
+    my $elem = shift;
+    my $ns = $elem->namespaceURI();
+
+    return defined($ns) ? $ns : "";
+}
+
 sub _compare_loop
 {
     my $self = shift;
@@ -156,6 +164,10 @@ sub _compare_loop
             {
                 return $calc_prob->({param => "element_name"});
             }
+            if (_ns($self->_got) ne _ns($self->_expected))
+            {
+                return $calc_prob->({param => "mismatch_ns"});
+            }
         }
     }
     continue
@@ -191,6 +203,14 @@ sub _get_diag_message
             " ; " . 
             "Expected name: " . $self->_expected->name() . " at " .$self->_expected->lineNumber();
     }
+    elsif ($status_struct->{param} eq "mismatch_ns")
+    {
+        return
+            "Got Namespace: " . _ns($self->_got). " at " . $self->_got->lineNumber() . 
+            " ; " . 
+            "Expected Namespace: " . _ns($self->_expected) . " at " .$self->_expected->lineNumber();
+    }
+    
     else
     {
         die "Unknown param";

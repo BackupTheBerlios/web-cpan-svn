@@ -1,6 +1,7 @@
 Build.PL
 Changes
 extradata/qantor-xml.rng
+extradata/qantor-xml-to-xsl-fo.xslt
 inc/Test/Run/Builder.pm
 inc/Text/Qantor/Builder.pm
 inc/XML/Grammar/Builder.pm
@@ -10,6 +11,8 @@ lib/Text/Qantor/Parser/Elem/ParaList.pm
 lib/Text/Qantor/Parser/Elem/Para.pm
 lib/Text/Qantor/Parser.pm
 lib/Text/Qantor.pm
+lib/Text/Qantor/XML/Base.pm
+lib/Text/Qantor/XML/ToXSL_FO.pm
 Makefile.PL
 MANIFEST
 META.yml
