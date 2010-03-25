@@ -1,3 +1,4 @@
+2010-0325 Shlomi Fish <shlomif@iglu.org.il>
 	* Fix the inet_pton / inet_ntop import warnings:
 		- https://rt.cpan.org/Ticket/Display.html?id=55901
 		- Thanks to Todd Rinaldo for the patch.
@@ -6,6 +7,7 @@
 		- Regression from 2.57:
 		- https://rt.cpan.org/Ticket/Display.html?id=54656
 		- Thanks to Steffen Ullrich for the patch.
+	* New Release IO-Socket-INET6-2.60
 
 2010-03-19 Shlomi Fish <shlomif@iglu.org.il>
 	* Syntax change to adapt for older Perls:
