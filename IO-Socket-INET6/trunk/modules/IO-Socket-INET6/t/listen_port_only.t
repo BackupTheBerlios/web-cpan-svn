@@ -9,7 +9,8 @@ use Test::More;
 my ($server,$port);
 # try to create inet6 listener on some port, w/o given
 # LocalHost (should use :: then)
-for( my $i=0;$i<100;$i++) {
+for my $i (1 .. 100)
+{
 	$port = int(rand(50000)+2000);
 	$server = IO::Socket::INET6->new(
 		LocalPort => $port,
