@@ -12,5 +12,6 @@ t/host6.t
 t/io_multihomed6.t
 t/io_sock6.t
 t/io_udp6.t
+t/listen_port_only.t
 t/pod-coverage.t
 t/pod.t

@@ -229,11 +229,14 @@ sub configure {
                 return _error($sock, $!, "sockopt: $!");
         }
 
-        if( ( $family == AF_INET )
-            ? ((sockaddr_in($lres))[1] ne INADDR_ANY)
-            : ((sockaddr_in6($lres))[1] ne in6addr_any) ) {
-            $sock->bind($lres) or
-                return _error($sock, $!, "bind: $!");
+        if ( $family == AF_INET ) {
+            my ($p,$a) = sockaddr_in($lres);
+            $sock->bind($lres) or return _error($sock, $!, "bind: $!")
+                if ($a ne INADDR_ANY  or $p!=0);
+        } else {
+            my ($p,$a) = sockaddr_in6($lres);
+            $sock->bind($lres) or return _error($sock, $!, "bind: $!")
+                if ($a ne in6addr_any  or $p!=0);
         }
 
         if(exists $arg->{Listen}) {

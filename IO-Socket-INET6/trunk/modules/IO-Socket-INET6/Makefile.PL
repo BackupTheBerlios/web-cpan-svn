@@ -5,9 +5,15 @@ WriteMakefile
           'NAME' => 'IO::Socket::INET6',
           'VERSION_FROM' => 'lib/IO/Socket/INET6.pm',
           'PREREQ_PM' => {
+                           'Carp' => 0,
+                           'Errno' => 0,
+                           'Exporter' => 0,
                            'IO::Socket' => 0,
+                           'Socket' => 0,
                            'Socket6' => '0.12',
-                           'Test::More' => 0
+                           'Test::More' => 0,
+                           'strict' => 0,
+                           'warnings' => 0
                          },
           'INSTALLDIRS' => 'site',
           'EXE_FILES' => [],
