@@ -3,43 +3,20 @@ package XML::Grammar::Screenplay::FromProto::Parser::QnD;
 use strict;
 use warnings;
 
-use base 'XML::Grammar::Screenplay::FromProto::Parser';
-
 use Moose;
 
-has "_curr_line_idx" => (isa => "Int", is => "rw");
-has "_lines" => (isa => "ArrayRef", is => "rw");
+extends(
+    'XML::Grammar::Screenplay::FromProto::Parser',
+    'XML::Grammar::Fiction::FromProto::Parser::LineIterator',
+);
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
-
-sub _curr_line_copy
-{
-    my $self = shift;
-
-    return $self->_lines()->[$self->_curr_line_idx()];
-}
-
-sub _curr_line_ref
-{
-    my $self = shift;
-
-    return \($self->_lines()->[$self->_curr_line_idx()]);
-}
 
 sub _with_curr_line
 {
     my ($self, $sub_ref) = @_;
 
-    return $sub_ref->(\($self->_lines()->[$self->_curr_line_idx()]));
-}
-
-sub _next_line_ref
-{
-    my $self = shift;
-
-    $self->_curr_line_idx($self->_curr_line_idx()+1);
-
-    return $self->_curr_line_ref();
+    return $sub_ref->($self->curr_line_ref());
 }
 
 sub _init
@@ -54,14 +31,6 @@ sub _start
     my $self = shift;
 
     return $self->_parse_top_level_tag();
-}
-
-# Skip the whitespace.
-sub _skip_space
-{
-    my $self = shift;
-
-    $self->_consume(qr{\s});
 }
 
 my $id_regex = '[a-zA-Z_\-]+';
@@ -144,7 +113,7 @@ sub _parse_opening_tag
 
             if ($$l !~ m{\G<($id_regex)}g)
             {
-                Carp::confess("Cannot match opening tag at line " . $self->_get_line_num());
+                Carp::confess("Cannot match opening tag at line " . $self->line_num());
             }
             my $id = $1;
 
@@ -164,7 +133,7 @@ sub _parse_opening_tag
             {
                 Carp::confess (
                     "Cannot match the \">\" of the opening tag at line " 
-                        . $self->_get_line_num()
+                        . $self->line_num()
                 );
             }
             
@@ -172,18 +141,11 @@ sub _parse_opening_tag
             {
                 name => $id,
                 is_standalone => $is_standalone,
-                line => $self->_get_line_num(),
+                line => $self->line_num(),
                 attrs => \@attrs,
             };
         }
     );
-}
-
-sub _get_line_num
-{
-    my $self = shift;
-
-    return $self->_curr_line_idx()+1;
 }
 
 sub _parse_closing_tag
@@ -195,7 +157,7 @@ sub _parse_closing_tag
             my $l = shift;
             if ($$l !~ m{\G</($id_regex)>}g)
             {
-                Carp::confess("Cannot match closing tag at line ". $self->_get_line_num());
+                Carp::confess("Cannot match closing tag at line ". $self->line_num());
             }
 
             return
@@ -229,7 +191,7 @@ sub _consume_paragraph
 {
     my $self = shift;
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     return $self->_parse_inner_text();
 }
@@ -238,7 +200,7 @@ sub _parse_inner_desc
 {
     my $self = shift;
 
-    my $start_line = $self->_get_line_num();
+    my $start_line = $self->line_num();
 
     # Skip the [
     $self->_with_curr_line(
@@ -283,7 +245,7 @@ sub _parse_inner_tag
 
     if ($open->{is_standalone})
     {
-        $self->_skip_space();
+        $self->skip_multiline_space();
 
         return $self->_create_elem($open);
     }
@@ -308,12 +270,12 @@ sub _parse_inner_text
 
     my @contents;
 
-    my $start_line = $self->_curr_line_idx();
+    my $start_line = $self->line_num();
 
     my $curr_text = "";
 
     CONTENTS_LOOP:
-    while ($self->_curr_line_copy() ne "\n")
+    while (${$self->curr_line_copy()} ne "\n")
     {
         my $which_tag;
         # We need this to avoid appending the rest of the first line 
@@ -379,7 +341,7 @@ sub _parse_inner_text
                         if ($$l !~ m{\G(\&\w+;)}g)
                         {
                             Carp::confess("Cannot match entity (e.g: \"&quot;\") at line " .
-                                $self->_get_line_num()
+                                $self->line_num()
                             );
                         }
                         push @contents, HTML::Entities::decode_entities($1);
@@ -391,7 +353,7 @@ sub _parse_inner_text
     }
     continue
     {
-        if (!defined(${$self->_next_line_ref()}))
+        if (!defined(${$self->next_line_ref()}))
         {
             Carp::confess "End of file in an addressing paragraph starting at $start_line";
         }
@@ -419,13 +381,13 @@ sub _parse_saying_first_para
 
             if ($$l !~ /\G([^:\n\+]+): /cgms)
             {
-                Carp::confess("Cannot match addressing at line " . $self->_get_line_num());
+                Carp::confess("Cannot match addressing at line " . $self->line_num());
             }
             my $sayer = $1;
 
             if ($sayer =~ m{[\[\]]})
             {
-                Carp::confess("Tried to put an inner-desc inside an addressing at line " . $self->_get_line_num());
+                Carp::confess("Tried to put an inner-desc inside an addressing at line " . $self->line_num());
             }
 
             return ($sayer);
@@ -445,7 +407,7 @@ sub _parse_saying_other_para
 {
     my $self = shift;
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     my $verdict = $self->_with_curr_line(
         sub {
@@ -497,7 +459,7 @@ sub _parse_desc_unit
 {
     my $self = shift;
 
-    my $start_line = $self->_curr_line_idx();
+    my $start_line = $self->line_num();
 
     # Skip the [
     $self->_with_curr_line(
@@ -548,7 +510,7 @@ sub _parse_non_tag_text_unit
 {
     my $self = shift;
 
-    if (pos(${$self->_curr_line_ref()}) == 0)
+    if (pos(${$self->curr_line_ref()}) == 0)
     {
         return $self->_with_curr_line(
             sub {
@@ -563,7 +525,7 @@ sub _parse_non_tag_text_unit
                 }
                 else
                 {
-                    Carp::confess ("Line " . $self->_curr_line_idx() . 
+                    Carp::confess ("Line " . $self->line_num() . 
                         " is not a description or a saying."
                     );
                 }
@@ -572,7 +534,7 @@ sub _parse_non_tag_text_unit
     }
     else
     {
-        Carp::confess ("Line " . $self->_curr_line_idx() . 
+        Carp::confess ("Line " . $self->line_num() . 
             " has leading whitespace."
             );
     }
@@ -581,9 +543,9 @@ sub _parse_non_tag_text_unit
 sub _parse_text_unit
 {
     my $self = shift;
-    my $space = $self->_consume(qr{\s});
+    my $space = $self->consume(qr{\s});
 
-    if (${$self->_curr_line_ref()} =~ m{\G<})
+    if (${$self->curr_line_ref()} =~ m{\G<})
     {
         # If it's a tag.
 
@@ -591,7 +553,7 @@ sub _parse_text_unit
         # We have a tag.
 
         # If it's a closing tag - then backtrack.
-        if (${$self->_curr_line_ref()} =~ m{\G</})
+        if (${$self->curr_line_ref()} =~ m{\G</})
         {
             return undef;
         }
@@ -606,40 +568,30 @@ sub _parse_text_unit
     }
 }
 
-sub _curr_line_matches
-{
-    my $self = shift;
-    my $re = shift;
-
-    my $l = $self->_curr_line_ref();
-
-    return ($$l =~ $re);
-}
-
 sub _parse_top_level_tag
 {
     my $self = shift;
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     if ($self->_with_curr_line(sub { my $l = shift; return $$l =~ m{\G<!--}cg}))
     {
-        my $text = $self->_consume_up_to(qr{-->});
+        my $text = $self->consume_up_to(qr{-->});
 
         return $self->_new_node({ t => "Comment", text => $text, });
     }
 
     my $open = $self->_parse_opening_tag();
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     my $inside = $self->_parse_text();
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     my $close = $self->_parse_closing_tag();
 
-    $self->_skip_space();
+    $self->skip_multiline_space();
 
     if ($open->{name} ne $close->{name})
     {
@@ -651,80 +603,11 @@ sub _parse_top_level_tag
     return $self->_create_elem($open, $inside);
 }
 
-sub _consume
-{
-    my ($self, $match_regex) = @_;
-
-    my $return_value = "";
-    my $l = $self->_curr_line_ref();
-
-    while (defined($$l) && ($$l =~ m[\G(${match_regex}*)\z]cgms))
-    {
-        $return_value .= $$l;
-    }
-    continue
-    {
-        $self->_next_line_ref();
-        $l = $self->_curr_line_ref();
-    }
-
-    if (defined($$l) && ($$l =~ m[\G(${match_regex}*)]cg))
-    {
-        $return_value .= $1;
-    }
-
-    return $return_value;
-}
-
-# TODO : copied and pasted from _consume - abstract
-sub _consume_up_to
-{
-    my ($self, $match_regex) = @_;
-
-    my $return_value = "";
-    my $l = $self->_curr_line_ref();
-
-    LINE_LOOP:
-    while (defined($$l))
-    {
-        my $verdict = ($$l =~ m[\G(.*?)((?:${match_regex})|\z)]cgms);
-        $return_value .= $1;
-        
-        # Find if it matched the regex.
-        if (length($2) > 0)
-        {
-            last LINE_LOOP;
-        }
-    }
-    continue
-    {
-        $self->_next_line_ref();
-        $l = $self->_curr_line_ref();
-    }
-
-    return $return_value;
-}
-
-sub _setup_text
-{
-    my ($self, $text) = @_;
-
-    # We include the lines trailing newlines for safety.
-    # $self->_lines([$text =~ m{\A([^\n]*\n?)*\z}ms]);
-    $self->_lines([split(/^/, $text)]);
-
-    $self->_curr_line_idx(0);
-
-    ${$self->_curr_line_ref()} =~ m{\A}g;
-
-    return;
-}
-
 sub process_text
 {   
     my ($self, $text) = @_;
 
-    $self->_setup_text($text);
+    $self->setup_text($text);
 
     return $self->_start();
 }

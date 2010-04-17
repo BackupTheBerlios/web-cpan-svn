@@ -17,9 +17,9 @@ EOF
 
     my $parser = XML::Grammar::Screenplay::FromProto::Parser::QnD->new();
 
-    $parser->_setup_text($text);
+    $parser->setup_text($text);
 
-    my $ret = $parser->_consume(qr{[^<]});
+    my $ret = $parser->consume(qr{[^<]});
 
     # TEST
     is ($ret, "Hello ", "_consume works for first line");
@@ -39,9 +39,9 @@ EOF
 
     my $parser = XML::Grammar::Screenplay::FromProto::Parser::QnD->new();
 
-    $parser->_setup_text($text);
+    $parser->setup_text($text);
 
-    my $ret = $parser->_consume(qr{[^<]});
+    my $ret = $parser->consume(qr{[^<]});
 
     # TEST
     is ($ret, "Hello\nvoila the row kala:\n", 
@@ -60,7 +60,7 @@ EOF
 
     my $parser = XML::Grammar::Screenplay::FromProto::Parser::QnD->new();
 
-    $parser->_setup_text($text);
+    $parser->setup_text($text);
 
     my $ret = $parser->_parse_opening_tag();
 

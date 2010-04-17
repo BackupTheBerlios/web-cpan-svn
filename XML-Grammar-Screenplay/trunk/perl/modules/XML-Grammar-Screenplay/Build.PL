@@ -27,6 +27,7 @@ my $builder = XML::Grammar::Builder->new(
         'warnings' => 0,
         'XML::LibXSLT' => 0,
         'XML::Writer' => 0,
+        'XML::Grammar::Fiction::FromProto::Parser::LineIterator' => 0,
     },
     add_to_cleanup      => [ 'XML-Grammar-Screenplay-*' ],
     create_makefile_pl => 'passthrough',
