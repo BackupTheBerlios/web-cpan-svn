@@ -373,12 +373,12 @@ sub _parse_saying_first_para
         Carp::confess("Tried to put an inner-desc inside an addressing at line " . $self->line_num());
     }
 
-    my $what = $self->_parse_inner_text();
+    my $saying_inner_text = $self->_parse_inner_text();
 
     return
     +{
         character => $sayer,
-        para => $self->_new_para($what),
+        para => $self->_new_para($saying_inner_text),
     };
 }
 
