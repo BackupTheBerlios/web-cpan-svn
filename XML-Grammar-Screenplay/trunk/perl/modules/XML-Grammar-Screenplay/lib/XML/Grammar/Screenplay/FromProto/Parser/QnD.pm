@@ -397,22 +397,7 @@ sub _parse_saying_other_para
 
     $self->skip_multiline_space();
 
-    my $verdict = $self->_with_curr_line(
-        sub {
-            my $l = shift;
-
-            if ($$l !~ /\G\++: /cgms)
-            {
-                return;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-    );
-
-    if (!defined($verdict))
+    if (${$self->curr_line_ref()} !~ /\G\++: /cgms)
     {
         return;
     }
