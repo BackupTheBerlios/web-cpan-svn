@@ -252,6 +252,21 @@ sub _parse_inner_tag
     return $self->_create_elem($open, $self->_new_list($inside));
 }
 
+sub _determine_tag
+{
+    my $self = shift;
+
+    my $l = $self->curr_line_ref();
+
+    return
+          ($$l =~ m{\G\[}) ? "open_desc"
+        : ($$l =~ m{\G\&}) ? "entity"
+        : ($$l =~ m{\G(?:</|\])}) ? "close"
+        : ($$l =~ m{\G<}) ? "open_tag"
+        : undef
+        ;
+}
+
 sub _parse_inner_text
 {
     my $self = shift;
@@ -265,8 +280,6 @@ sub _parse_inner_text
     CONTENTS_LOOP:
     while (${$self->curr_line_copy()} ne "\n")
     {
-        my $which_tag;
-
         # We need this to avoid appending the rest of the first line 
         my $l = $self->curr_line_ref();
 
@@ -276,22 +289,7 @@ sub _parse_inner_text
 
         $curr_text .= (defined($1) ? $1 : "");
 
-        if ($$l =~ m{\G\[})
-        {
-            $which_tag = "open_desc";
-        }
-        elsif ($$l =~ m{\G\&})
-        {
-            $which_tag = "entity";
-        }                
-        elsif ($$l =~ m{\G(?:</|\])})
-        {
-            $which_tag = "close";
-        }
-        elsif ($$l =~ m{\G<})
-        {
-            $which_tag = "open_tag";
-        }
+        my $which_tag = $self->_determine_tag();
 
         push @contents, $curr_text;
 
