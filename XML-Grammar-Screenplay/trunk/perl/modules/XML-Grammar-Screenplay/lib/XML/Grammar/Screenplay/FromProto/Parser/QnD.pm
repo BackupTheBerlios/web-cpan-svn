@@ -104,48 +104,43 @@ sub _parse_opening_tag
 {
     my $self = shift;
 
-    # Now Lisp got nothing on us.
-    return $self->_with_curr_line(
-        sub {
-            # $l is a reference to the string of the current
-            # line
-            my $l = shift;
+    my $l = $self->curr_line_ref();
 
-            if ($$l !~ m{\G<($id_regex)}g)
-            {
-                Carp::confess("Cannot match opening tag at line " . $self->line_num());
-            }
-            my $id = $1;
+    if ($$l !~ m{\G<($id_regex)}g)
+    {
+        Carp::confess("Cannot match opening tag at line " . $self->line_num());
+    }
 
-            my @attrs;
+    my $id = $1;
 
-            while ($$l =~ m{\G\s*($id_regex)="([^"]+)"\s*}cg)
-            {
-                push @attrs, { 'key' => $1, 'value' => $2, };
-            }
+    my @attrs;
 
-            my $is_standalone = 0;
-            if ($$l =~ m{\G\s*/\s*>}cg)
-            {
-                $is_standalone = 1;
-            }
-            elsif ($$l !~ m{\G>}g)
-            {
-                Carp::confess (
-                    "Cannot match the \">\" of the opening tag at line " 
-                        . $self->line_num()
-                );
-            }
-            
-            return
-            {
-                name => $id,
-                is_standalone => $is_standalone,
-                line => $self->line_num(),
-                attrs => \@attrs,
-            };
-        }
-    );
+    while ($$l =~ m{\G\s*($id_regex)="([^"]+)"\s*}cg)
+    {
+        push @attrs, { 'key' => $1, 'value' => $2, };
+    }
+
+    my $is_standalone = 0;
+
+    if ($$l =~ m{\G\s*/\s*>}cg)
+    {
+        $is_standalone = 1;
+    }
+    elsif ($$l !~ m{\G>}g)
+    {
+        Carp::confess (
+            "Cannot match the \">\" of the opening tag at line " 
+            . $self->line_num()
+        );
+    }
+
+    return
+    {
+        name => $id,
+        is_standalone => $is_standalone,
+        line => $self->line_num(),
+        attrs => \@attrs,
+    };
 }
 
 sub _parse_closing_tag
