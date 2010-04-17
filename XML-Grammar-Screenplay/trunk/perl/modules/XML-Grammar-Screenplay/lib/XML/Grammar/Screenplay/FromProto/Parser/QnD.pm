@@ -12,13 +12,6 @@ extends(
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
 
-sub _with_curr_line
-{
-    my ($self, $sub_ref) = @_;
-
-    return $sub_ref->($self->curr_line_ref());
-}
-
 sub _init
 {
     my $self = shift;
