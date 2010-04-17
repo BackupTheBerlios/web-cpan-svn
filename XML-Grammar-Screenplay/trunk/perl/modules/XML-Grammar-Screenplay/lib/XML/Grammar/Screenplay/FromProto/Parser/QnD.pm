@@ -562,7 +562,7 @@ sub _parse_top_level_tag
 
     $self->skip_multiline_space();
 
-    if ($self->_with_curr_line(sub { my $l = shift; return $$l =~ m{\G<!--}cg}))
+    if (${$self->curr_line_ref()} =~ m{\G<!--}cg)
     {
         my $text = $self->consume_up_to(qr{-->});
 
