@@ -500,25 +500,22 @@ sub _parse_non_tag_text_unit
 
     if (pos(${$self->curr_line_ref()}) == 0)
     {
-        return $self->_with_curr_line(
-            sub {
-                my $l = shift;
-                if (substr($$l, 0, 1) eq "[")
-                {
-                    return $self->_parse_desc_unit();
-                }
-                elsif ($$l =~ m{\A[^:]+:})
-                {
-                    return $self->_parse_speech_unit();
-                }
-                else
-                {
-                    Carp::confess ("Line " . $self->line_num() . 
-                        " is not a description or a saying."
-                    );
-                }
-            }
-        );
+        my $l = $self->curr_line_ref();
+
+        if (substr($$l, 0, 1) eq "[")
+        {
+            return $self->_parse_desc_unit();
+        }
+        elsif ($$l =~ m{\A[^:]+:})
+        {
+            return $self->_parse_speech_unit();
+        }
+        else
+        {
+            Carp::confess ("Line " . $self->line_num() . 
+                " is not a description or a saying."
+            );
+        }
     }
     else
     {
