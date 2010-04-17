@@ -449,14 +449,8 @@ sub _parse_desc_unit
 
     my $start_line = $self->line_num();
 
-    # Skip the [
-    $self->_with_curr_line(
-        sub {
-            my $l = shift;
-
-            $$l =~ m{^\[}g;
-        }
-    );
+    # Skip the opening square bracket - '['
+    ${$self->curr_line_ref()} =~ m{\A\[}g;
 
     my @paragraphs;
 
