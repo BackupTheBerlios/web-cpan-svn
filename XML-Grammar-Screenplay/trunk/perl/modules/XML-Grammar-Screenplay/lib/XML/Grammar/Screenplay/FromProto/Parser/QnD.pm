@@ -465,16 +465,11 @@ sub _parse_desc_unit
     PARAS_LOOP:
     while ($is_end && ($para = $self->_consume_paragraph()))
     {
-        $self->_with_curr_line(
-            sub {
-                my $l = shift;
+        if (${$self->curr_line_ref()} =~ m{\G\]}cg)
+        {
+            $is_end = 0;
+        }
 
-                if ($$l =~ m{\G\]}cg)
-                {
-                    $is_end = 0;
-                }
-            }
-        );
         push @paragraphs, $para;
     }
 
