@@ -266,35 +266,32 @@ sub _parse_inner_text
     while (${$self->curr_line_copy()} ne "\n")
     {
         my $which_tag;
+
         # We need this to avoid appending the rest of the first line 
-        $self->_with_curr_line(
-            sub {
-                my $l = shift;
-                
-                # Apparently, perl does not always returns true in this
-                # case, so we need the defined($1) ? $1 : "" workaround.
-                $$l =~ m{\G([^\<\[\]\&]*)}cgms;
+        my $l = $self->curr_line_ref();
 
-                $curr_text .= (defined($1) ? $1 : "");
+        # Apparently, perl does not always returns true in this
+        # case, so we need the defined($1) ? $1 : "" workaround.
+        $$l =~ m{\G([^\<\[\]\&]*)}cgms;
 
-                if ($$l =~ m{\G\[})
-                {
-                    $which_tag = "open_desc";
-                }
-                elsif ($$l =~ m{\G\&})
-                {
-                    $which_tag = "entity";
-                }                
-                elsif ($$l =~ m{\G(?:</|\])})
-                {
-                    $which_tag = "close";
-                }
-                elsif ($$l =~ m{\G<})
-                {
-                    $which_tag = "open_tag";
-                }
-            }
-        );
+        $curr_text .= (defined($1) ? $1 : "");
+
+        if ($$l =~ m{\G\[})
+        {
+            $which_tag = "open_desc";
+        }
+        elsif ($$l =~ m{\G\&})
+        {
+            $which_tag = "entity";
+        }                
+        elsif ($$l =~ m{\G(?:</|\])})
+        {
+            $which_tag = "close";
+        }
+        elsif ($$l =~ m{\G<})
+        {
+            $which_tag = "open_tag";
+        }
 
         push @contents, $curr_text;
 
@@ -309,10 +306,10 @@ sub _parse_inner_text
             if (($which_tag eq "open_desc") || ($which_tag eq "open_tag"))
             {
                 push @contents, 
-                    (($which_tag eq "open_tag")
-                        ? $self->_parse_inner_tag()
-                        : $self->_parse_inner_desc()
-                    );
+                (($which_tag eq "open_tag")
+                    ? $self->_parse_inner_tag()
+                    : $self->_parse_inner_desc()
+                );
                 # Avoid skipping to the next line.
                 # Gotta love teh Perl!
                 redo CONTENTS_LOOP;
