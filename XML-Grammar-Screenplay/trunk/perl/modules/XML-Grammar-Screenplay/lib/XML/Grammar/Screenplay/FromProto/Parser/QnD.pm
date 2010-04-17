@@ -12,8 +12,7 @@ has "_lines" => (isa => "ArrayRef", is => "rw");
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
 
-
-sub _curr_line :lvalue
+sub _curr_line_copy
 {
     my $self = shift;
 
@@ -314,7 +313,7 @@ sub _parse_inner_text
     my $curr_text = "";
 
     CONTENTS_LOOP:
-    while ($self->_curr_line() ne "\n")
+    while ($self->_curr_line_copy() ne "\n")
     {
         my $which_tag;
         # We need this to avoid appending the rest of the first line 
@@ -584,7 +583,7 @@ sub _parse_text_unit
     my $self = shift;
     my $space = $self->_consume(qr{\s});
 
-    if ($self->_curr_line() =~ m{\G<})
+    if (${$self->_curr_line_ref()} =~ m{\G<})
     {
         # If it's a tag.
 
@@ -592,7 +591,7 @@ sub _parse_text_unit
         # We have a tag.
 
         # If it's a closing tag - then backtrack.
-        if ($self->_curr_line() =~ m{\G</})
+        if (${$self->_curr_line_ref()} =~ m{\G</})
         {
             return undef;
         }
@@ -716,7 +715,7 @@ sub _setup_text
 
     $self->_curr_line_idx(0);
 
-    $self->_curr_line() =~ m{\A}g;
+    ${$self->_curr_line_ref()} =~ m{\A}g;
 
     return;
 }
