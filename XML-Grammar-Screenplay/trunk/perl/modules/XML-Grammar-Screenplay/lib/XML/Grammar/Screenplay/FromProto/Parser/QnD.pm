@@ -498,10 +498,10 @@ sub _parse_non_tag_text_unit
 {
     my $self = shift;
 
-    if (pos(${$self->curr_line_ref()}) == 0)
-    {
-        my $l = $self->curr_line_ref();
+    my $l = $self->curr_line_ref();
 
+    if (pos($$l) == 0)
+    {
         if (substr($$l, 0, 1) eq "[")
         {
             return $self->_parse_desc_unit();
