@@ -147,20 +147,15 @@ sub _parse_closing_tag
 {
     my $self = shift;
 
-    return $self->_with_curr_line(
-        sub {
-            my $l = shift;
-            if ($$l !~ m{\G</($id_regex)>}g)
-            {
-                Carp::confess("Cannot match closing tag at line ". $self->line_num());
-            }
+    if (${$self->curr_line_ref()} !~ m{\G</($id_regex)>}g)
+    {
+        Carp::confess("Cannot match closing tag at line ". $self->line_num());
+    }
 
-            return
-            {
-                name => $1,
-            };
-        }
-    );
+    return
+    {
+        name => $1,
+    };
 }
 
 sub _parse_text
