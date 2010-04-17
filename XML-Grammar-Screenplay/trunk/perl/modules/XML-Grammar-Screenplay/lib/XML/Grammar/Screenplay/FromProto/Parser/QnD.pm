@@ -361,33 +361,24 @@ sub _parse_saying_first_para
 {
     my $self = shift;
 
-    my ($sayer, $what);
-    
-    ($sayer) = $self->_with_curr_line(
-        sub {
-            my $l = shift;
+    if (${$self->curr_line_ref()} !~ /\G([^:\n\+]+): /cgms)
+    {
+        Carp::confess("Cannot match addressing at line " . $self->line_num());
+    }
 
-            if ($$l !~ /\G([^:\n\+]+): /cgms)
-            {
-                Carp::confess("Cannot match addressing at line " . $self->line_num());
-            }
-            my $sayer = $1;
+    my $sayer = $1;
 
-            if ($sayer =~ m{[\[\]]})
-            {
-                Carp::confess("Tried to put an inner-desc inside an addressing at line " . $self->line_num());
-            }
+    if ($sayer =~ m{[\[\]]})
+    {
+        Carp::confess("Tried to put an inner-desc inside an addressing at line " . $self->line_num());
+    }
 
-            return ($sayer);
-        }
-    );
-
-    $what = $self->_parse_inner_text();
+    my $what = $self->_parse_inner_text();
 
     return
     +{
-         character => $sayer,
-         para => $self->_new_para($what),
+        character => $sayer,
+        para => $self->_new_para($what),
     };
 }
 
