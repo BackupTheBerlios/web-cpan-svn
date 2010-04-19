@@ -24,6 +24,7 @@ Makefile.PL
 MANIFEST
 META.yml # Will be created by "make dist"
 README
+rejects/FromProto_Parser_QnD.pm
 rejects/proto-text-to-xml.t
 t/00-load.t
 t/app-to-html.t
