@@ -43,6 +43,15 @@ before 'next_line_ref' => sub {
     return;
 };
 
+sub _add_to_top_tag
+{
+    my ($self, $child) = @_;
+
+    $self->_tags_stack->[-1]->append_child($child);
+
+    return;
+}
+
 sub _top_is_para
 {
     my $self = shift;
@@ -613,7 +622,7 @@ sub _merge_tag
 
     if (@{$self->_tags_stack()})
     {
-        $self->_tags_stack->[-1]->append_children([ $new_elem ]);
+        $self->_add_to_top_tag($new_elem);
         return;
     }
     else
@@ -642,7 +651,7 @@ sub _close_saying
             $open->detach_children(),
         );
 
-    $self->_tags_stack->[-1]->append_children([ $new_elem ]);
+    $self->_add_to_top_tag($new_elem);
 
     return;
 }
@@ -668,7 +677,7 @@ sub _close_para
                 $children
             );
 
-        $self->_tags_stack->[-1]->append_children([ $new_elem ]);
+        $self->_add_to_top_tag($new_elem);
     }
 
     $self->_in_para(0);
@@ -745,10 +754,8 @@ sub _parse_top_level_tag
         {
             my $text = $self->consume_up_to(qr{-->});
 
-            $self->_tags_stack->[-1]->append_children(
-                [
-                    $self->_new_node({ t => "Comment", text => $text, })
-                ]
+            $self->_add_to_top_tag(
+                $self->_new_node({ t => "Comment", text => $text, })
             );
             redo TAGS_LOOP;
         }
@@ -770,11 +777,7 @@ sub _parse_top_level_tag
         {
             if (length($1))
             {
-                $self->_tags_stack->[-1]->append_children(
-                    [
-                        $self->_new_text([" "]),
-                    ]
-                );
+                $self->_add_to_top_tag( $self->_new_text([" "]) );
             }
 
             $self->next_line_ref();
@@ -899,9 +902,7 @@ sub _parse_top_level_tag
                 }
                 elsif ($event->{'type'} eq "elem")
                 {
-                    $self->_tags_stack->[-1]->append_children(
-                        [ $event->{'elem'} ],
-                    );
+                    $self->_add_to_top_tag( $event->{'elem'} );
                 }
             }
         }
