@@ -75,7 +75,10 @@ foreach my $fn (@tests)
     my $dom = $xml_parser->parse_string($got_xml);
 
     my $code;
+    eval 
+    {
     $code = $rngschema->validate($dom);
+    };
 
     # TEST*$num_texts
     ok ((defined($code) && ($code == 0)),

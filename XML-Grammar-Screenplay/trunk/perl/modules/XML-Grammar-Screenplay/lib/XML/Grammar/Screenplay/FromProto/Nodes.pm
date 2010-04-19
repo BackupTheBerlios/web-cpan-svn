@@ -72,7 +72,7 @@ use Moose;
 
 extends("XML::Grammar::Screenplay::FromProto::Node::Text");
 
-has 'character' => (isa => "Str", is => "rw");
+has 'character' => (isa => "Str", is => "rw", required => 1,);
 
 package XML::Grammar::Screenplay::FromProto::Node::Description;
 

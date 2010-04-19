@@ -17,6 +17,7 @@ lib/XML/Grammar/Screenplay/FromProto/Parser/PRD.pm
 lib/XML/Grammar/Screenplay/FromProto/Parser/QnD.pm
 lib/XML/Grammar/Screenplay/FromProto.pm
 lib/XML/Grammar/Screenplay.pm
+lib/XML/Grammar/Screenplay/Struct/Tag.pm
 lib/XML/Grammar/Screenplay/ToDocBook.pm
 lib/XML/Grammar/Screenplay/ToHTML.pm
 Makefile.PL

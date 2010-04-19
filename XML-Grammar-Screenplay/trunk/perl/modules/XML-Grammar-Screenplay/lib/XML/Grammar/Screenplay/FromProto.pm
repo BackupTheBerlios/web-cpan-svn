@@ -17,6 +17,8 @@ use Moose;
 has "_parser" => ('isa' => "XML::Grammar::Screenplay::FromProto::Parser", 'is' => "rw");
 has "_writer" => ('isa' => "XML::Writer", 'is' => "rw");
 
+has '_buffer' => ('isa' => "ScalarRef[Str]", is => "rw");
+
 my $screenplay_ns = q{http://web-cpan.berlios.de/modules/XML-Grammar-Screenplay/screenplay-xml-0.2/};
 
 =head1 NAME
@@ -95,17 +97,34 @@ sub _output_tag_with_childs
         });
 }
 
-sub _get_text_start
+sub _handle_text_start
 {
     my ($self, $elem) = @_;
 
     if ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Saying"))
     {
-        return ["saying", 'character' => $elem->character()];
+        $self->_output_tag_with_childs(
+            {
+                start => ["saying", 'character' => $elem->character()],
+                elem => $elem,
+            },
+        );
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Description"))
     {
-        return ["description"];
+        $self->_output_tag_with_childs(
+            {
+                start => ["description"],
+                elem => $elem,
+            },
+        );
+    }
+    elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Text"))
+    {
+        foreach my $child (@{$elem->_get_childs()})
+        {
+            $self->_write_elem({ elem => $child,},);
+        }
     }
     else
     {
@@ -172,12 +191,7 @@ sub _write_elem
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Text"))
     {
-        $self->_output_tag_with_childs(
-            {
-                start => $self->_get_text_start($elem),
-                elem => $elem,
-            },
-        );
+        $self->_handle_text_start($elem);
     }
     elsif ($elem->isa("XML::Grammar::Screenplay::FromProto::Node::Comment"))
     {
@@ -266,8 +280,10 @@ sub convert
     }
 
     my $buffer = "";
+    $self->_buffer(\$buffer);
+    
     my $writer = XML::Writer->new(
-        OUTPUT => \$buffer, 
+        OUTPUT => $self->_buffer(), 
         ENCODING => "utf-8",
         NAMESPACES => 1,
         PREFIX_MAP =>
@@ -293,7 +309,7 @@ sub convert
 
     $writer->endTag();
     
-    return $buffer;
+    return ${$self->_buffer()};
 }
 
 =head1 AUTHOR

@@ -3,7 +3,7 @@ package XML::Grammar::Screenplay::FromProto::Parser;
 use strict;
 use warnings;
 
-use base 'XML::Grammar::Screenplay::Base';
+use Moose;
 
 1;
 
