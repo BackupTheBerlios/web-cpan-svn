@@ -18,7 +18,6 @@ use List::MoreUtils ();
 
 
 has "_tags_stack" => (isa=> "ArrayRef", is => "rw");
-has "_result_tag" => (isa => "XML::Grammar::Fiction::FromProto::Node::Element", is => "rw");
 has "_events_queue" =>
 (
     isa => "ArrayRef",
