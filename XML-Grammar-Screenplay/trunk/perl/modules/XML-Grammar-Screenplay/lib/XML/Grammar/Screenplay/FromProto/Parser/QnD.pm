@@ -57,11 +57,8 @@ sub _pop_tag
     return $open;
 }
 
-sub _push_tag
-{
-    my ($self, $new_elem) = @_;
-
-    push @{$self->_tags_stack()}, $new_elem; 
+after '_push_tag' => sub {
+    my $self = shift;
 
     my @ps = (grep { $_->name() eq "p" } @{$self->_tags_stack()});
 
@@ -80,7 +77,7 @@ sub _push_tag
     }
     
     return;
-}
+};
 
 sub _init
 {
