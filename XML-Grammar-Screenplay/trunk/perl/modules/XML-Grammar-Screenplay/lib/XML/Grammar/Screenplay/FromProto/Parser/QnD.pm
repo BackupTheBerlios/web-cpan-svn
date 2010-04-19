@@ -57,21 +57,27 @@ sub _pop_tag
     return $open;
 }
 
+sub _count_tags_in_stack
+{
+    my $self = shift;
+    my $name = shift;
+
+    my @tags = $self->_grep_tags_stack(sub { $_->name() eq $name; });
+
+    return scalar(@tags);
+}
+
 after '_push_tag' => sub {
     my $self = shift;
 
-    my @ps = (grep { $_->name() eq "p" } @{$self->_tags_stack()});
-
     # This is an assert - it must never happen.
-    if (@ps == 2)
+    if ($self->_count_tags_in_stack("p") == 2)
     {
         Carp::confess (qq{Two paragraphs in the tags stack.});
     }
 
-    my @sayings = (grep { $_->name() eq "saying" } @{$self->_tags_stack()});
-
     # This is an assert - it must never happen.
-    if (@sayings == 2)
+    if ($self->_count_tags_in_stack("saying") == 2)
     {
         Carp::confess (qq{Two sayings in the tags stack at the same time.});
     }
