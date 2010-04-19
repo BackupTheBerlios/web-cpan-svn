@@ -7,7 +7,7 @@ use Moose;
 
 extends(
     'XML::Grammar::Screenplay::FromProto::Parser',
-    'XML::Grammar::Fiction::FromProto::Parser::LineIterator',
+    'XML::Grammar::Fiction::FromProto::Parser::XmlIterator',
 );
 
 use XML::Grammar::Screenplay::FromProto::Nodes;
@@ -16,20 +16,6 @@ use XML::Grammar::Screenplay::Struct::Tag;
 use List::Util ();
 use List::MoreUtils ();
 
-
-has "_tags_stack" => (isa=> "ArrayRef", is => "rw");
-has "_events_queue" =>
-(
-    isa => "ArrayRef",
-    is => "rw", 
-    default => sub { []; },
-    traits => ['Array'],
-    handles =>
-    {
-        _enqueue_event => 'push',
-        _extract_event => 'shift',
-    },
-);
 has "_in_para" => (isa => "Bool", is => "rw");
 has "_in_saying" => (isa => "Bool", is => "rw");
 has "_prev_line_is_empty" => (isa => "Bool", is => "rw", default => 1);
@@ -41,15 +27,6 @@ before 'next_line_ref' => sub {
 
     return;
 };
-
-sub _add_to_top_tag
-{
-    my ($self, $child) = @_;
-
-    $self->_tags_stack->[-1]->append_child($child);
-
-    return;
-}
 
 sub _top_is_para
 {
@@ -737,8 +714,6 @@ sub _close_top_tags
 sub _parse_top_level_tag
 {
     my $self = shift;
-
-    $self->_tags_stack([]);
 
     # $self->skip_multiline_space();
 
