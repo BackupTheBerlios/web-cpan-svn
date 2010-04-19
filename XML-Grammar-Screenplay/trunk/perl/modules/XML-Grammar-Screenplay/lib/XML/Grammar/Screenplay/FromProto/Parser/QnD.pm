@@ -19,7 +19,18 @@ use List::MoreUtils ();
 
 has "_tags_stack" => (isa=> "ArrayRef", is => "rw");
 has "_result_tag" => (isa => "XML::Grammar::Fiction::FromProto::Node::Element", is => "rw");
-has "_events_queue" => (isa => "ArrayRef", is => "rw", default => sub { []; });
+has "_events_queue" =>
+(
+    isa => "ArrayRef",
+    is => "rw", 
+    default => sub { []; },
+    traits => ['Array'],
+    handles =>
+    {
+        _enqueue_event => 'push',
+        _extract_event => 'shift',
+    },
+);
 has "_in_para" => (isa => "Bool", is => "rw");
 has "_in_saying" => (isa => "Bool", is => "rw");
 has "_prev_line_is_empty" => (isa => "Bool", is => "rw", default => 1);
@@ -31,20 +42,6 @@ before 'next_line_ref' => sub {
 
     return;
 };
-
-sub _enqueue_event
-{
-    my ($self, $event) = @_;
-   
-    push (@{$self->_events_queue()}, $event);
-}
-
-sub _extract_event
-{
-    my $self = shift;
-
-    return shift(@{$self->_events_queue()});
-}
 
 sub _top_is_para
 {
