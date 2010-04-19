@@ -201,6 +201,18 @@ sub _new_para
     );
 }
 
+sub _new_comment
+{
+    my $self = shift;
+    my $text = shift;
+
+    return $self->_new_node(
+        {
+            t => "Comment",
+            text => $text,
+        }
+    );
+}
 
 sub _new_saying
 {
@@ -754,9 +766,7 @@ sub _parse_top_level_tag
         {
             my $text = $self->consume_up_to(qr{-->});
 
-            $self->_add_to_top_tag(
-                $self->_new_node({ t => "Comment", text => $text, })
-            );
+            $self->_add_to_top_tag( $self->_new_comment($text) );
             redo TAGS_LOOP;
         }
 
