@@ -1,9 +1,12 @@
-#!./perl
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
 
 BEGIN {
     unless(grep /blib/, @INC) {
-	chdir 't' if -d 't';
-	@INC = '../lib';
+        chdir 't' if -d 't';
+        unshift @INC,'../lib';
     }
 }
 
@@ -11,93 +14,133 @@ use Config;
 
 BEGIN {
     if(-d "lib" && -f "TEST") {
-	my $reason;
-	if (! $Config{'d_fork'}) {
-	    $reason = 'no fork';
-	}
-	elsif ($Config{'extensions'} !~ /\bSocket\b/) {
-	    $reason = 'Socket extension unavailable';
-	}
-	elsif ($Config{'extensions'} !~ /\bSocket6\b/) {
-	    $reason = 'Socket6 extension unavailable';
-	}
-	elsif ($Config{'extensions'} !~ /\bIO\b/) {
-	    $reason = 'IO extension unavailable';
-	}
-	if ($reason) {
-	    print "1..0 # Skip: $reason\n";
-	    exit 0;
+        my $reason;
+        if (! $Config{'d_fork'}) {
+            $reason = 'no fork';
+        }
+        elsif ($Config{'extensions'} !~ /\bSocket\b/) {
+            $reason = 'Socket extension unavailable';
+        }
+        elsif ($Config{'extensions'} !~ /\bSocket6\b/) {
+            $reason = 'Socket6 extension unavailable';
+        }
+        elsif ($Config{'extensions'} !~ /\bIO\b/) {
+            $reason = 'IO extension unavailable';
+        }
+        if ($reason) {
+            print "1..0 # SKIP $reason\n";
+            exit 0;
         }
     }
     if ($^O eq 'MSWin32') {
-        print "1..0 # Skip: accept() fails for IPv6 under MSWin32\n";
+        print "1..0 # SKIP accept() fails for IPv6 under MSWin32\n";
         exit 0;
     }
 }
 
-$| = 1;
+use IO::Socket::INET6;
 
-print "1..5\n";
+$| = 1;
+print "1..8\n";
 
 eval {
     $SIG{ALRM} = sub { die; };
     alarm 60;
 };
 
-# Okey:
-# To check the Multihome strategy, let's try the next :
-# Open a IPv4 server on a given port.
-# then, try a client on unspecified family -AF_UNSPEC-
-# The multihomed socket will try then firstly IPv6, fail,
-# and then IPv4.
-package main;
-
-use IO::Socket::INET6;
-
-$listen = IO::Socket::INET6->new(Listen => 2,
-				# 8080 is a commonly used port
-                # so we're using a more obscure port
-                # instead.
-				LocalPort => 28083,
-				Family => AF_INET,
-				Proto => 'tcp',
-				Timeout => 5,
-			       ) or die "$@";
+# find out if the host prefers inet or inet6 by offering
+# both and checking where it connects
+my ($port,@srv);
+for my $addr ( '127.0.0.1','::1' ) {
+    push @srv,
+        IO::Socket::INET6->new(
+            Listen => 2,
+            LocalAddr => $addr,
+            LocalPort => $port,
+        ) or die "listen on $addr port $port: $!";
+    $port ||= $srv[-1]->sockport;
+}
 
 print "ok 1\n";
 
-$port = $listen->sockport;
+if (my $pid = fork()) {
+    my $vec = '';
+    vec($vec,fileno($_),1) = 1 for(@srv);
+    select($vec,undef,undef,5) or die $!;
 
-if($pid = fork()) {
+    # connected to first, not second
+    my ($first,$second) = vec($vec,fileno($srv[0]),1) ? @srv[0,1]:@srv[1,0];
+    my $cl = $first->accept or die $!;
 
-    $sock = $listen->accept() or die "$!";
-    print "ok 2\n";
+    # listener should not work for next connect
+    # so it needs to try second
+    close($first); 
 
-    print $sock->getline();
-    print $sock "ok 4\n";
+    # make sure established connection works
+    my $fam0 = ( $cl->sockdomain == AF_INET ) ? 'inet':'inet6';
+    print {$cl} "ok 2 # $fam0\n";
+    print $cl->getline(); # ok 3
+    close($cl);
+
+    # ... ok 4 comes when client fails to connect to first
+
+    # wait for connect on second and make sure it works
+    $vec = '';
+    vec($vec,fileno($second),1) = 1;
+    if ( select($vec,undef,undef,5)) {
+        my $cl2 = $second->accept or die $!;
+        my $fam1 = ( $cl2->sockdomain == AF_INET ) ? 'inet':'inet6';
+        print {$cl2} "ok 5 # $fam1\n";
+        print $cl2->getline(); # ok 6
+        close($cl2);
+
+        # should be different families
+        print "not " if $fam0 eq $fam1;
+        print "ok 7\n";
+    }
 
     waitpid($pid,0);
+    print "ok 8\n";
 
-    $sock->close;
+} elsif (defined $pid) {
+    close($_) for (@srv);
+    # should work because server is listening on inet and inet6
+    my $cl = IO::Socket::INET6->new(
+        PeerPort => $port,
+        PeerAddr => 'localhost',
+        Timeout => 5,
+    ) or die "$@";
 
-    print "ok 5\n";
+    print $cl->getline(); # ok 2
+    print {$cl} "ok 3\n";
+    close($cl);
 
-} elsif(defined $pid) {
+    # this should not work because listener is closed
+    if ( $cl = IO::Socket::INET6->new(
+            PeerPort => $port,
+        PeerAddr => 'localhost',
+        Timeout => 5,
+    )) {
+        print "not ok 4\n";
+        exit;
+    }
+    print "ok 4\n";
 
-    $sock = IO::Socket::INET6->new(PeerPort => $port,
-		       Proto => 'tcp',
-		       PeerAddr => 'localhost',
-		       MultiHomed => 1,
-		       Timeout => 1,
-		      ) or die "$@";
-
-    print $sock "ok 3\n";
-    sleep(1); # race condition
-    print $sock->getline();
-
-    $sock->close;
-
+    # but same thing with multihoming should work because server
+    # is still listening on the other family
+    $cl = IO::Socket::INET6->new(
+        PeerPort => $port,
+        PeerAddr => 'localhost',
+        Timeout => 5,
+        MultiHomed => 1,
+    ) or do {
+        print "not ok 5\n";
+        exit;
+    };
+    print $cl->getline(); # ok 5
+    print {$cl} "ok 6\n";
     exit;
+
 } else {
-    die;
+    die $!; # fork failed
 }

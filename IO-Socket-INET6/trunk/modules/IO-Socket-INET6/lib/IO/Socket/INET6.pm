@@ -177,16 +177,21 @@ sub configure {
     }
 
     my @flr;
-    for( my $l=0;$l<@lres;$l+=5) {
-        my $fam_listen = $lres[$l];
-        my $lsockaddr = $lres[$l+3];
-        if (@rres) {
-            # collect all combinations whith the same family in lres and rres
-            for( my $r=0;$r<@rres;$r+=5 ) {
-                next if $rres[0] != $fam_listen; # must be same family
-                push @flr,[ $fam_listen,$lsockaddr,$rres[$r+3] ];
+    if (@rres) {
+        # collect all combinations whith the same family in lres and rres
+        # the order we search should be defined by the order of @rres, 
+        # not @lres!
+        for( my $r=0;$r<@rres;$r+=5 ) {
+            for( my $l=0;$l<@lres;$l+=5) {
+                my $fam_listen = $lres[$l];
+                next if $rres[$r] != $fam_listen; # must be same family
+                push @flr,[ $fam_listen,$lres[$l+3],$rres[$r+3] ];
             }
-        } else {
+        }
+    } else {
+        for( my $l=0;$l<@lres;$l+=5) {
+            my $fam_listen = $lres[$l];
+            my $lsockaddr = $lres[$l+3];
             # collect only the binding side
             push @flr,[ $fam_listen,$lsockaddr ];
         }
