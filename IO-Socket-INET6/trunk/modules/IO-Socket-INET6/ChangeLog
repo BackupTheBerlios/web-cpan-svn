@@ -1,6 +1,7 @@
 	* Solved "problems with multihomed and family order"
 		- https://rt.cpan.org/Ticket/Display.html?id=57676
 		- Thanks to Steffen Ullrich
+	* New Release IO-Socket-INET6-2.62
 
 2010-03-25 Shlomi Fish <shlomif@iglu.org.il>
 	* Fix the inet_pton / inet_ntop import warnings:
