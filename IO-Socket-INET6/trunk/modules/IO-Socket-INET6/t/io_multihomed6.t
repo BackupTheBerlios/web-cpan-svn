@@ -38,6 +38,31 @@ BEGIN {
     }
 }
 
+# check that localhost resolves to 127.0.0.1 and ::1
+# otherwise the test will not work
+use Socket;
+use Socket6;
+
+{
+    my %resolved_addresses;
+    my @r = getaddrinfo('localhost',1);
+    while (@r) {
+        my @values = splice(@r,0,5);
+        my ($fam,$addr) = @values[0,3];
+        $addr = 
+        (
+              ($fam == AF_INET)
+            ? ( (unpack_sockaddr_in($addr))[1]  )
+            : ( (unpack_sockaddr_in6($addr))[1] )
+        );
+        $resolved_addresses{inet_ntop($fam,$addr)}++;
+    }
+    if (! $resolved_addresses{'127.0.0.1'} || ! $resolved_addresses{'::1'}) {
+        print "1..0 # SKIP localhost does not resolve to both 127.0.0.1 and ::1\n";
+        exit 0;
+    }
+}
+
 use IO::Socket::INET6;
 
 $| = 1;

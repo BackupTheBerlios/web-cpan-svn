@@ -1,3 +1,8 @@
+	* Applied a modified patch to t/io_multihomed6.t to correct the test
+	on Fedora 10 and others:
+		- https://rt.cpan.org/Public/Bug/Display.html?id=57676
+
+2010-05-20 Shlomi Fish <shlomif@iglu.org.il>
 	* Solved "problems with multihomed and family order"
 		- https://rt.cpan.org/Ticket/Display.html?id=57676
 		- Thanks to Steffen Ullrich
