@@ -1,3 +1,9 @@
+2010-06-08 Shlomi Fish <shlomif@iglu.org.il>
+	* Applied a patch to fix t/io_multihomed6.t on old Perls / old Linux
+	distributions:
+		- https://rt.cpan.org/Ticket/Display.html?id=58198
+		- Thanks to Paul.
+
 2010-05-29 Shlomi Fish <shlomif@iglu.org.il>
 	* Applied a modified patch to t/io_multihomed6.t to correct the test
 	on Fedora 10 and others:

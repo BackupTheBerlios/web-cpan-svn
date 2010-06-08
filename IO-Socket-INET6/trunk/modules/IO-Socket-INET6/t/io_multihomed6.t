@@ -45,7 +45,14 @@ use Socket6;
 
 {
     my %resolved_addresses;
+
     my @r = getaddrinfo('localhost',1);
+
+    if (@r < 5) {
+        print "1..0 # SKIP getaddrinfo('localhost',1) failed: $r[0]\n";
+        exit 0;
+    }
+
     while (@r) {
         my @values = splice(@r,0,5);
         my ($fam,$addr) = @values[0,3];
