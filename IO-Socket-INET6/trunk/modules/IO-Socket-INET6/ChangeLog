@@ -3,6 +3,7 @@
 	distributions:
 		- https://rt.cpan.org/Ticket/Display.html?id=58198
 		- Thanks to Paul.
+	* New Release IO-Socket-INET6-2.64
 
 2010-05-29 Shlomi Fish <shlomif@iglu.org.il>
 	* Applied a modified patch to t/io_multihomed6.t to correct the test
