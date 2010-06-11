@@ -112,6 +112,8 @@ if (my $pid = fork()) {
     my $fam0 = ( $cl->sockdomain == AF_INET ) ? 'inet':'inet6';
     print {$cl} "ok 2 # $fam0\n";
     print $cl->getline(); # ok 3
+    # So we'll be sure ok 3 has already been printed.
+    print {$cl} "Move on, will ya!\n";
     close($cl);
 
     # ... ok 4 comes when client fails to connect to first
@@ -145,6 +147,8 @@ if (my $pid = fork()) {
 
     print $cl->getline(); # ok 2
     print {$cl} "ok 3\n";
+    # So we'll be sure ok 3 has already been printed.
+    $cl->getline();
     close($cl);
 
     # this should not work because listener is closed

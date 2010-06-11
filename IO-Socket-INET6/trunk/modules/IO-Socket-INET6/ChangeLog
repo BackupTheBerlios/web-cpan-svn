@@ -1,3 +1,9 @@
+	* Add a fix for t/io_multihomed6.t to make sure 
+	ok 3 will be printed before ok 4. due to many failures in the tests. 
+	Such as:
+		- http://www.cpantesters.org/cpan/report/07413426-b19f-3f77-b713-d32bba55d77f
+	* New Release IO-Socket-INET6-2.65
+
 2010-06-08 Shlomi Fish <shlomif@iglu.org.il>
 	* Applied a patch to fix t/io_multihomed6.t on old Perls / old Linux
 	distributions:
