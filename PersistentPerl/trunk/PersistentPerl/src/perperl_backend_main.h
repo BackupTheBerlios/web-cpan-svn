@@ -38,7 +38,7 @@ void * efence_realloc (void *ptr, size_t size);
 
 #else
 
-#define perperl_new(s,n,t)	New(123,s,n,t)
+#define perperl_new(s,n,t)	Newx(s,n,t)
 #define perperl_renew		Renew
 #define perperl_free		Safefree
 
