@@ -1,4 +1,4 @@
-AC_INIT(tap, 1.02)
+AC_INIT(tap, 1.03)
 AC_CONFIG_SRCDIR(src/tap.c)
 AM_INIT_AUTOMAKE([foreign])
 AC_PROG_CC
