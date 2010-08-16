@@ -1,0 +1,19 @@
+tap-1.03 (2010-08-16):
+----------------------
+
+1. Add the NEWS file (this file).
+
+2. Incorporated some portability changes and fixes from the
+CCAN ( http://ccan.ozlabs.org/ ) "tap" package.
+
+tap-1.02 (2010-01-04):
+----------------------
+
+1. Add the COPYING file.
+
+2. Now disabling the thread-safety by default (in order to have it add
+-DLIBTAP_ENABLE_BROKEN_THREAD_SAFE .
+
+3. Changed configure.in to configure.ac.
+
+    -- Shlomi Fish , http://www.shlomifish.org/
