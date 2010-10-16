@@ -1,0 +1,52 @@
+/*
+    The styles for the products' syndication.
+
+    See: http://search.cpan.org/dict/XML-Grammar-ProductsSyndication/ .
+*/
+
+.prod_cat, .prod, .prod_set
+{
+    margin-left:1em;
+}
+.prod, .prod_set
+{
+    margin-right: 1em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding:1em;
+    border: transparent 1.5pt solid;
+}
+.prod:hover, .prod_set:hover
+{
+   border-color: #006000;
+   background-color:#FFF5E8;
+}
+.prod .head
+{
+   display: inline-table;
+}
+.prod_img
+{
+  vertical-align: top;
+  display: table-cell;
+}
+.prod_img img
+{
+   border-width:0;
+}
+.prod_title
+{
+   vertical-align: top;
+   display: table-cell;
+   padding-top: 1em;
+}
+.prod_set .head ul
+{
+    margin-left:0;
+    list-style-type:none;
+    padding-left:0;
+}
+.prod_set .head li
+{
+    margin-bottom:0.5em;
+}

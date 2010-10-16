@@ -1,0 +1,25 @@
+Revision history for Task-Sites-ShlomiFish:
+
+0.0203     Sat Oct 16 10:22:45 IST 2010
+        - Add Spork::Shlomify , Text::VimColor and XML::Grammar::Fiction
+        that are now needed to build the site.
+        - Remove WWW::Google::SiteMap - no longer needed.
+        - Add the tag-release.pl file to tag a release using Subversion.
+
+0.0202     Wed Mar  4 15:12:10 IST 2009
+        - Added more dependencies: App::XML::DocBook::Builder , 
+        String::ShellQuote, and the XML::Grammar's.
+            - These are now required by the module.
+        - Revised the POD in lib/Task/Sites/ShlomiFish.pm to make the
+        intentions that this is a task for publically-available source
+        code clearer.
+        - Added the NOTE about the motivation to the POD.
+
+0.0201    Sun Sep 10 15:49:16 IDT 2006
+        - Added XML::Grammar::ProductsSyndication that is required for
+        the music syndication (and future syndications).
+        - Added XML::LibXML::XPathContext.
+
+0.0100    Thu Jun 15 13:48:49 IDT 2006
+        First version, released on an unsuspecting world.
+
