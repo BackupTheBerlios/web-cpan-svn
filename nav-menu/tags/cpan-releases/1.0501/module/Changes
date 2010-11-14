@@ -1,0 +1,101 @@
+Revision history for Perl extension Shlomif::NavMenu.
+
+1.0501    Sun Nov 14 12:11:19 IST 2010
+    - Now generating the Makefile.PL from the Build.PL using 
+    create_makefile_pl (less error-prone).
+
+1.0500    Fri Nov 12 20:43:08 IST 2010
+    - Convert from Class::Accessor to Class::XSAccessor for extra speed.
+    - Add the tag-release.pl file.
+
+1.0400    Wed Dec  9 11:44:05 IST 2009
+    - Got rid of the dependency on Error.pm.
+    - moved the HTML/ directory with the test scripts-support code from 
+    the root of the distribution to unde t/lib .
+
+1.0302    Thu Jun 25 16:48:42 IDT 2009
+    - Fixed some broken links and other inaccuracies in the POD of
+    lib/HTML/Widgets/NavMenu.pm .
+
+1.0301    Tue Jun 23 23:01:54 IDT 2009
+    - Changed the 'license' in Build.PL from "bsd" to the more accurate
+    "mit".
+    - Added keywords and links to the META.yml.
+
+1.0300    Sun Jun 14 13:57:09 IDT 2009
+    - Refactoring: Made HTML::Widgets::NavMenu::Object a sub-class of 
+    Class::Accessor to remove many "use base" calls to it.
+    - In progress - converting a flat %args hash (splatted into the @_)
+    into a single $args hash-ref.
+    - Removed a use lib "." from HTML::Widgets::NavMenu - it's a leftover
+    statement that could be a subtle bug.
+    - Refactoring: converted direct $self->{'field'} accesses to
+    accessors. (from all the classes).
+    - Fixed a bug with the HeaderRole where an empty <ul> was created.
+
+1.0201    Fri Mar 28 17:46:59 IDT 2008
+    - Fixed a case where a non-capturing expand in a node inside a
+    capturing expand caused the upper node to be non-capturing too.
+
+1.0200    Sun Mar 23 21:53:37 IST 2008
+    - Removed trailing whitespace from "# TEST" lines - this can confuse
+    early versions of Test-Count
+    - Fixed a "# TEST" instead of a "# TESTbr" line that confused Test-Count.
+    - Added the no_leading_dot option with a test.
+
+1.0100    Fri Feb  8 19:19:09 IST 2008
+    - Fixed a bug in HTML::Widgets::NavMenu::Url:
+    relative URL from a non-dir to a dir. It accidently had an
+    extraneous "../".
+    - Fixed the _get_leading_path_of_coords function in HTML::Widgets::NavMenu
+    to properly generate the topmost item of the breadcrumbs trail, which
+    should be in coords = [0] and not coord = []. The latter is meaningless
+    and ignored. This caused a subtle bug in combining the breadcrumbs
+    trails of my homesite.
+        - it became apparent when the URL of the [0] item was not empty.
+    - Added the 'capt' key to the 'expand' => keys for "capturing" regex.
+
+1.0001    Mon Sep 11 14:38:39 IDT 2006
+    - Added "use strict" and "use warnings" to all modules.
+    - Added a Test::Pod based test.
+    - Added a Test::Pod::Coverage test, and added POD to all modules.
+        - Some internal methods were prefixed with an underscore.
+    - Added the examples directory.
+
+1.0000    Sun Nov 06 16:01:00 IST 2005
+    - Made sure that the breadcrumbs trail in expanded sections will
+    display the components of the expanded sections.
+    - Fixed the POD.
+    - Added the link to the article to the POD.
+    - Bumped the major version number to 1.x and kept some digits into the
+    future to make CPAN and CPAN.pm happy.
+
+0.10.2    Wed Aug 24 20:37:55 IST 2005
+    (backdated - module was released on 17-August-2005)
+    - Added IO::Scalar to the Perl modules this module depends on. (it
+    is needed by the tests, but was not explicitly specified yet, because
+    it was believed to be part of the core distribution).
+    
+0.10.1    Mon Jul 25 17:19:05 IST 2005
+    - Fixed the building using "perl Makefile.PL" and "make".
+
+0.10.0    Tue Jul 12 20:45:40 IST 2005
+    - Added tests and refactored the code to have a 100% test coverage.
+    
+0.8.0     Sat Apr 23 12:48:40 IST 2005
+    - get_cross_host_rel_url is now part of the API.
+    - Now returning nav_links_obj
+    - Added some tests
+
+0.6.0     Thu Mar 24 15:15:40 IST 2005
+    - no longer making use of the CGI.pm module.
+    - extracted two methods in HTML::Widgets::NavMenu::Iterator::NavMenu
+      that can now be over-rided by the user.
+
+0.4.0     Thu Jan 20 16:49:15 IST 2005
+    - Added the url_is_abs option to the nodes.
+    - Many code cleanups.
+    
+0.2.0     Sun Jan  2 19:37:41 IST 2005
+    - First non-developer CPAN Release.
+
