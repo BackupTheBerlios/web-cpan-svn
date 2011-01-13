@@ -22,6 +22,10 @@ my $build = Test::Run::Builder->new(
     {
         'Test::More' => 0,
     },
+    configure_requires =>
+    {
+        'Module::Build' => '0.36',
+    },
     'license' => "perl",
     create_makefile_pl => 'traditional',
     meta_merge =>

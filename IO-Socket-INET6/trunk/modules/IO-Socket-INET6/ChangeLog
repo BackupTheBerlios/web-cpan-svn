@@ -1,3 +1,9 @@
+2011-01-13 Shlomi Fish <shlomif@iglu.org.il>
+	* Made the use Socket call import constants selectively, and not rely
+	on @EXPORT's whims:
+		- http://www.cpantesters.org/cpan/report/d6e547be-19b5-11e0-bbdc-e5c0d6c987b5
+	* New Release IO-Socket-INET6-2.66
+
 2010-06-11 Shlomi Fish <shlomif@iglu.org.il>
 	* Add a fix for t/io_multihomed6.t to make sure 
 	ok 3 will be printed before ok 4. due to many failures in the tests. 

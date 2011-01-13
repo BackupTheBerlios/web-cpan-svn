@@ -14,7 +14,7 @@ use warnings;
 
 our(@ISA, $VERSION);
 use IO::Socket;
-use Socket;
+use Socket (qw(AF_INET6 PF_INET6));
 # IO::Socket and Socket already import stuff here - possibly AF_INET6
 # and PF_INET6 so selectively import things from Socket6.
 use Socket6 (
@@ -23,11 +23,10 @@ use Socket6 (
 );
 
 use Carp;
-use Exporter;
 use Errno;
 
 @ISA = qw(IO::Socket);
-$VERSION = "2.65";
+$VERSION = "2.66";
 #Purpose: allow protocol independent protocol and original interface.
 
 my $EINVAL = exists(&Errno::EINVAL) ? Errno::EINVAL() : 1;
