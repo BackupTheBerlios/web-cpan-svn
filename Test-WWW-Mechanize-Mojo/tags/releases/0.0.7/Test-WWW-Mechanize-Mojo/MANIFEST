@@ -1,0 +1,22 @@
+buildlib/Test/Run/Builder.pm
+Build.PL
+CHANGES
+lib/Test/WWW/Mechanize/Mojo.pm
+Makefile.PL
+MANIFEST			This list of files
+META.yml
+README
+tag-release.pl
+t/auth-test.t
+t/cookies.t
+t/form_submit.t
+t/lib/Catty.pm
+t/lib/CattySession.pm
+t/lib/ExternalCatty.pm
+t/lib/mojjy.pl
+t/pod-coverage.t
+t/pod.t
+t/redirect.t
+t/simple.t
+t/useragent.t
+t/white_label.t
