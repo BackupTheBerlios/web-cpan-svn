@@ -13,8 +13,23 @@ use strict;
 use warnings;
 
 our(@ISA, $VERSION);
-use IO::Socket;
-use Socket (qw(AF_INET6 PF_INET6));
+
+# Do it so we won't import any symbols from IO::Socket which it does export
+# by default:
+# 
+# <LeoNerd> IO::Socket is stupidstupidstupid beyond belief. Despite being an
+# object class, it has an import method
+# <LeoNerd> So you have to use IO::Socket ();
+# <LeoNerd> Having done that, this test is now clean
+use IO::Socket ();
+
+use Socket (qw(
+    AF_INET6 PF_INET6 SOCK_RAW SOCK_STREAM INADDR_ANY SOCK_DGRAM
+    AF_INET SO_REUSEADDR SO_REUSEPORT AF_UNSPEC SO_BROADCAST
+    sockaddr_in
+    )
+);
+
 # IO::Socket and Socket already import stuff here - possibly AF_INET6
 # and PF_INET6 so selectively import things from Socket6.
 use Socket6 (
@@ -26,7 +41,7 @@ use Carp;
 use Errno;
 
 @ISA = qw(IO::Socket);
-$VERSION = "2.66";
+$VERSION = "2.67";
 #Purpose: allow protocol independent protocol and original interface.
 
 my $EINVAL = exists(&Errno::EINVAL) ? Errno::EINVAL() : 1;
