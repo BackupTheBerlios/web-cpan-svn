@@ -185,7 +185,9 @@ around '_parse_non_tag_text_unit' => sub {
 
     my $l = $self->curr_line_ref();
 
-    if ((pos($$l) == 0) && ($$l =~ m{\A[^\[<][^:]*:}))
+    if ((pos($$l) == 0) && ($$l =~ m{\A[^\[<][^:]*:})
+        && (! $self->_is_in_desc)
+    )
     {
         return $self->_parse_speech_unit();
     }
@@ -457,10 +459,16 @@ sub _list_valid_tag_events
     return [qw(para saying)];
 }
 
+sub _is_in_desc {
+    my $self = shift;
+
+    return $self->_top_tag()->name() eq "desc";
+}
+
 after '_handle_open_tag' => sub {
     my $self = shift;
 
-    if ($self->_top_tag()->name() eq "desc")
+    if ($self->_is_in_desc)
     {
         $self->_start_para();
     }

@@ -18,6 +18,9 @@ Hi I went to the store and
         - they cancelled each other most of the time except for in this 
         case.
 
+        - Screenplay: fix a colon inside a description that broke the 
+        proto-text. (E.g: "[David turns towards Goliath and says:]").
+
 0.1.3       Fri Dec 17 19:38:45 IST 2010
         - Moved some unused source files to the rejects directory.
         - Convert to the new XML-Grammar-Fiction-Builder which uses
