@@ -21,7 +21,6 @@ sub _get_id_regex
     return qr{[a-zA-Z_\-]+};
 }
 
-my $id_regex = $self->_get_id_regex();
 
 sub _parse_opening_tag_attrs
 {
@@ -46,14 +45,17 @@ sub _parse_opening_tag
 {
     my ($self) = @_;
 
-    my (undef, $tag_name, $attrs) = $self->expect( 
-        qr/<($id_regex)\s*((?:\s+${id_regex}="[^"]+")*)>/
+    my $id_regex = $self->_get_id_regex();
+
+    my (undef, $tag_name, $attrs, $trail_slash) = $self->expect( 
+        qr/<($id_regex)\s*((?:\s+${id_regex}="[^"]+")*)(?:\s*\/\s*)?>/
     );
+
     $self->commit;
 
     return XML::Grammar::Fiction::Struct::Tag->new(
-        name => $id,
-        is_standalone => $is_standalone,
+        name => $tag_name,
+        is_standalone => (length($trail_slash) > 0),
         line => $self->line_num(),
         attrs => $self->_parse_opening_tag_attrs($attrs),
     );
@@ -62,6 +64,8 @@ sub _parse_opening_tag
 sub _parse_closing_tag
 {
     my $self = shift;
+
+    my $id_regex = $self->_get_id_regex();
 
     if (my (undef, $id) = $self->expect(qr{</($id_regex)>}))
     {
@@ -144,11 +148,17 @@ sub _open_close_tag
 
 sub parse
 {
+    my ($self) = @_;
+
+    return $self->_open_close_tag();
+}
+
+=begin foo
+
+sub parse
+{
    my $self = shift;
 
-   return $self->sequence_of(
-
-   )
    $self->sequence_of(
       sub { $self->any_of(
 
@@ -161,26 +171,47 @@ sub parse
    );
 }
 
+=end foo
+
+=cut
+
 package main;
 
 use Data::Dumper;
 
-if( !caller ) {
-   my $parser = PodParser->new;
+my $parser = XML::Grammar::Fiction::Parser::MGC->new;
 
-   while( defined( my $line = <> ) ) {
-      my $ret = eval { $parser->from_string( $line ) };
-      print $@ and next if $@;
+sub _slurp
+{
+    my $filename = shift;
 
-      print Dumper( $ret );
-   }
+    open my $in, "<", $filename
+        or die "Cannot open '$filename' for slurping - $!";
+
+    local $/;
+    my $contents = <$in>;
+
+    close($in);
+
+    return $contents;
 }
+
+my $input_str = do { local $/; <ARGV> };
+my $ret = eval { $parser->from_string( $input_str ) };
+
+if ($@)
+{
+    die $@;
+}
+
+print Dumper( $ret );
 
 1;
 
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2011 by Paul Evans. 
+Copyright 2011 by Shlomi Fish. 
 
 This program is distributed under the MIT (X11) License:
 L<http://www.opensource.org/licenses/mit-license.php>
