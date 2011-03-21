@@ -197,12 +197,7 @@ sub _slurp
 }
 
 my $input_str = do { local $/; <ARGV> };
-my $ret = eval { $parser->from_string( $input_str ) };
-
-if ($@)
-{
-    die $@;
-}
+my $ret = $parser->from_string( $input_str );
 
 print Dumper( $ret );
 
