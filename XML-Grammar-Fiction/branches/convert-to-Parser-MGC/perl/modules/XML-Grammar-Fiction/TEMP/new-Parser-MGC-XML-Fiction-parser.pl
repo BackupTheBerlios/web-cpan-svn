@@ -116,7 +116,7 @@ sub _open_close_tag
         {
             return $self->any_of(
                 sub {
-                    my (undef, $text) = $self->expect(qr/([^<]+)/);
+                    my (undef, $text) = $self->expect(qr/([^<]*)/ms);
 
                     return $self->_new_text([$text]);
                 },
