@@ -375,7 +375,7 @@ EOF
 <p>
 XML-Grammar-Screenplay is a processor for well-formed plain text representing
 Screenplays. This in turn is rendered into a specialized XML format, and
-that in turn can be converted to HTML or DocBook/XML.
+that in turn can be converted to HTML.
 </p>
 
 <h2>Project Resources</h2>
@@ -409,6 +409,12 @@ Star Trek.
 Open Source People</a> - several interviews whose original hacky 
 like-XML-but-not-quite source was converted to ScreenplayText and then
 rendered into XML and XHTML.
+</li>
+<li>
+<a href="http://www.shlomifish.org/humour/by-others/hitchhiker-guide-to-star-trek-tng.html">"The Hitchhiker's Guide to Star Trek - The Next Generation"</a> - David T. Lu's and Mickey McCarter's old parodical screenplay crosses <i>The 
+Hitchhiker's Guide to the Galaxy</i> and <i>Star Trek: The Next Generation</i>.
+It was converted into Screenplay-Text format using a crude perl-5.10.x script
+and from that translated into XHTML.
 </li>
 <li>
 Some shorter and sillier examples can be found <a href="http://svn.berlios.de/svnroot/repos/web-cpan/XML-Grammar-Screenplay/trunk/perl/modules/XML-Grammar-Screenplay/t/data/">in the test data directory</a>. 
