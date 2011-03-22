@@ -105,14 +105,20 @@ sub _open_close_tag
 
     my $inner = $self->scope_of(
         undef, sub { 
-            return $self->any_of(
+            return $self->sequence_of(
                 sub {
-                    my (undef, $text) = $self->expect(qr/([^<]*)/ms);
+                    return $self->any_of(
+                        sub {
+                            my (undef, $text) = $self->expect(qr/([^<]+)/ms);
 
-                    return $self->_new_text([$text]);
-                },
-                sub {
-                    $self->_open_close_tag(),
+                            $self->commit;
+
+                            return $self->_new_text([$text]);
+                        },
+                        sub {
+                            $self->_open_close_tag(),
+                        },
+                    );
                 },
             );
         }, qr{</}
