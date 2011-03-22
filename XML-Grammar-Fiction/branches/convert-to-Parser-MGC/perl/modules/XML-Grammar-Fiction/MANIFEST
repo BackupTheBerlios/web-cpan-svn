@@ -22,6 +22,7 @@ lib/XML/Grammar/Fiction/Err.pm
 lib/XML/Grammar/Fiction/Event.pm
 lib/XML/Grammar/Fiction/FromProto/Nodes.pm
 lib/XML/Grammar/Fiction/FromProto/Parser/LineIterator.pm
+lib/XML/Grammar/Fiction/FromProto/Parser/MGC.pm
 lib/XML/Grammar/Fiction/FromProto/Parser.pm
 lib/XML/Grammar/Fiction/FromProto/Parser/QnD.pm
 lib/XML/Grammar/Fiction/FromProto/Parser/XmlIterator.pm

@@ -11,7 +11,13 @@ use XML::LibXML;
 
 use XML::Grammar::Fiction::FromProto;
 
-use XML::Grammar::Fiction::FromProto::Parser::QnD;
+# use XML::Grammar::Fiction::FromProto::Parser::QnD;
+use XML::Grammar::Fiction::FromProto::Parser::MGC;
+
+$SIG{__WARN__} = sub {
+    my ($warning) = @_;
+    die $warning;
+};
 
 sub load_xml
 {
@@ -52,7 +58,7 @@ my @tests = (qw(
 # TEST:$num_texts=3
 
 my $grammar = XML::Grammar::Fiction::FromProto->new({
-        parser_class => "XML::Grammar::Fiction::FromProto::Parser::QnD",
+        parser_class => "XML::Grammar::Fiction::FromProto::Parser::MGC",
     });
 
 my $rngschema = XML::LibXML::RelaxNG->new(
