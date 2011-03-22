@@ -65,11 +65,12 @@ sub _parse_closing_tag
 
     my $id_regex = $self->_get_id_regex();
 
-    if (my (undef, $id) = $self->expect(qr{</($id_regex)>}))
+    if (my (undef, $id) = $self->expect(qr{($id_regex)>}))
     {
         return XML::Grammar::Fiction::Struct::Tag->new(
             name => $id,
-            line => $self->line_num(),
+            # TODO : replace with a more meaningful line number.
+            line => 1,
         );
     }
     else
@@ -83,37 +84,27 @@ sub _parse_closing_tag
 
 sub _merge_tag
 {
-    my $self = shift;
-    my $open_tag = shift;
+    my ($self, $open_tag, $inner) = @_;
 
     my $new_elem = 
         $self->_create_elem(
             $open_tag, 
-            $self->_new_list($open_tag->detach_children()),
+            $self->_new_list($inner),
         );
 
-    if (! $self->_tag_stack_is_empty())
-    {
-        $self->_add_to_top_tag($new_elem);
-        return;
-    }
-    else
-    {
-        return $new_elem;
-    }
+    return $new_elem;
 }
 
 sub _open_close_tag
 {
     my ($self) = @_;
 
-    my @ret;
+    my $id_regex = $self->_get_id_regex();
 
-    push @ret, $self->_parse_opening_tag();
+    my $open = $self->_parse_opening_tag();
 
-    push @ret, $self->sequence_of(
-        sub
-        {
+    my $inner = $self->scope_of(
+        undef, sub { 
             return $self->any_of(
                 sub {
                     my (undef, $text) = $self->expect(qr/([^<]*)/ms);
@@ -124,13 +115,10 @@ sub _open_close_tag
                     $self->_open_close_tag(),
                 },
             );
-        },
+        }, qr{</}
     );
 
-    push @ret, $self->_parse_closing_tag();
-
-    my $open = $ret[0];
-    my $close = $ret[-1];
+    my $close = $self->_parse_closing_tag();
 
     if ($open->name() ne $close->name())
     {
@@ -141,7 +129,7 @@ sub _open_close_tag
         );
     }
 
-    return $self->_merge_tag($open);
+    return $self->_merge_tag($open, [$inner]);
 }
 
 sub parse
