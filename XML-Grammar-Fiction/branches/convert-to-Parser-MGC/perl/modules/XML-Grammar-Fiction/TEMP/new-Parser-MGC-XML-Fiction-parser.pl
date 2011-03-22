@@ -24,8 +24,7 @@ sub _get_id_regex
 
 sub _parse_opening_tag_attrs
 {
-    my $self = shift;
-    my $l = shift;
+    my ($self, $l) = @_;
 
     my @attrs;
 
@@ -33,7 +32,7 @@ sub _parse_opening_tag_attrs
 
     $l =~ m{^};
 
-    while ($$l =~ m{\G\s*($id_regex)="([^"]+)"\s*}cg)
+    while ($l =~ m{\G\s*($id_regex)="([^"]+)"\s*}cg)
     {
         push @attrs, { 'key' => $1, 'value' => $2, };
     }
@@ -51,12 +50,11 @@ sub _parse_opening_tag
         qr/<($id_regex)\s*((?:\s+${id_regex}="[^"]+")*)(?:\s*\/\s*)?>/
     );
 
-    $self->commit;
-
     return XML::Grammar::Fiction::Struct::Tag->new(
         name => $tag_name,
         is_standalone => (length($trail_slash) > 0),
-        line => $self->line_num(),
+        # TODO : put something meaningful here
+        line => 1,
         attrs => $self->_parse_opening_tag_attrs($attrs),
     );
 }
