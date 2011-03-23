@@ -169,7 +169,7 @@ sub parse
 {
     my ($self) = @_;
 
-    $self->expect(qr/[\s\n]*/);
+    $self->expect(qr/(?:[\s\n]*)/ms);
 
     return $self->scope_of(undef,
         sub { return $self->_open_close_tag(); },
@@ -187,7 +187,7 @@ sub process_text
     my ($self, $string) = @_;
 
     # Don't skip whitespace.
-    $self->{patterns}->{ws} = qr//;
+    $self->{patterns}->{ws} = qr/(?!)/;
 
     return $self->from_string($string);
 }
