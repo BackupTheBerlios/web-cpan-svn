@@ -55,6 +55,7 @@ rejects/proto-text-to-xml.t
 rejects/QnD.pm
 rejects/Screenplay_Parser_QnD.pm
 t/00-load.t
+tag-release.pl
 t/app-to-html.t
 t/boilerplate.t
 t/data/docbook/with-internal-description.docbook.xml
@@ -118,6 +119,7 @@ t/screenplay/data/proto-text/with-comments.txt
 t/screenplay/data/proto-text/with-description.txt
 t/screenplay/data/proto-text/with-dialogue.txt
 t/screenplay/data/proto-text/with-entities.txt
+t/screenplay/data/proto-text/with-i-element-inside-paragraphs.txt
 t/screenplay/data/proto-text/with-internal-description-at-start-of-line.txt
 t/screenplay/data/proto-text/with-internal-description.txt
 t/screenplay/data/proto-text/with-multi-line-comments.txt
@@ -133,6 +135,7 @@ t/screenplay/data/xml/with-comments.xml
 t/screenplay/data/xml/with-description.xml
 t/screenplay/data/xml/with-dialogue.xml
 t/screenplay/data/xml/with-entities.xml
+t/screenplay/data/xml/with-i-element-inside-paragraphs.xml
 t/screenplay/data/xml/with-internal-description-at-start-of-line.xml
 t/screenplay/data/xml/with-internal-description.xml
 t/screenplay/data/xml/with-multi-line-comments.xml

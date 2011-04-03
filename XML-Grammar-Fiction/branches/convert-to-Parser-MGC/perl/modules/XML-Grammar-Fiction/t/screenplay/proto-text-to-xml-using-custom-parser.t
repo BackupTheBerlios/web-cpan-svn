@@ -34,6 +34,7 @@ my @tests = (qw(
         dialogue-with-several-paragraphs
         with-description
         with-tags-inside-paragraphs
+        with-i-element-inside-paragraphs
         with-internal-description
         with-comments
         with-multi-para-desc

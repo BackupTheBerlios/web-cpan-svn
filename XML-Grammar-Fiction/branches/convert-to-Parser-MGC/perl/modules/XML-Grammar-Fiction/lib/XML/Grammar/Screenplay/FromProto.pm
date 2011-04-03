@@ -13,11 +13,11 @@ text representing a screenplay to an XML format.
 
 =head1 VERSION
 
-Version 0.1.3
+Version 0.1.4
 
 =cut
 
-our $VERSION = '0.1.3';
+our $VERSION = '0.1.4';
 
 =head2 new()
 
@@ -132,6 +132,11 @@ sub _handle_elem_of_name_section
 sub _bold_tag_name
 {
     return "bold";
+}
+
+sub _italics_tag_name
+{
+    return "italics";
 }
 
 sub _write_elem

@@ -22,11 +22,11 @@ text representing prose to an XML format.
 
 =head1 VERSION
 
-Version 0.1.3
+Version 0.1.4
 
 =cut
 
-our $VERSION = '0.1.3';
+our $VERSION = '0.1.4';
 
 =head2 new()
 
@@ -127,20 +127,10 @@ sub _bold_tag_name
     return "b";
 }
 
-sub _handle_elem_of_name_i
+sub _italics_tag_name
 {
-    my ($self, $elem) = @_;
-
-    $self->_output_tag_with_childs(
-        {
-            start => ["i"],
-            elem => $elem,
-        }
-    );
-
-    return;
+    return "i";
 }
-
 
 sub _handle_text_start
 {
