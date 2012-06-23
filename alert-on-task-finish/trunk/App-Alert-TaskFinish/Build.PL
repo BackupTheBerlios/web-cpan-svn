@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name         => 'App::Alert::TaskFinish',
     license             => 'mit',
-    dist_author         => q{Shlomi Fish <shlomif@iglu.org.il>},
+    dist_author         => q{Shlomi Fish <shlomif@cpan.org>},
     dist_version_from   => 'lib/App/Alert/TaskFinish.pm',
     build_requires => {
         'Test::More' => 0,
